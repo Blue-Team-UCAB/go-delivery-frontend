@@ -1,2 +1,2 @@
 # go-delivery-frontend
-Frontend for Go Delivery
+Frontend for Go Delivery🏍️
