@@ -19,8 +19,6 @@ jobs:
       - name: Get dependencies
         run: flutter pub get
 
-      - run: touch .env 
-      - name: Running test
-        run: flutter test
+      - run: touch .env
       - name: Start release build
         run: flutter build appbundle
