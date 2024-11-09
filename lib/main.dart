@@ -12,11 +12,10 @@ import 'injector.dart';
 import 'presentation/core/app.dart';
 
 void main() async {
-  // Ensure that the WidgetsBinding is initializedz
   WidgetsFlutterBinding.ensureInitialized();
 
   // Register the background message handler
-  //FirebaseNotificationsManager.onBackgroundMessage(
+  // FirebaseNotificationsManager.onBackgroundMessage(
   //    firebaseMessagingBackgroundHandler);
 
   // Initialize Firebase, and pass the default options (firebase_options.dart)

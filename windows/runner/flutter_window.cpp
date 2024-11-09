@@ -2,7 +2,7 @@
 
 #include <optional>
 
-#include "flutter/generated_plugin_registrant.h"
+#include "../../../../AppData/Local/Pub/Cache/hosted/pub.dev/flutter_local_notifications-18.0.0/example/linux/flutter/generated_plugin_registrant.h"
 
 FlutterWindow::FlutterWindow(const flutter::DartProject& project)
     : project_(project) {}
