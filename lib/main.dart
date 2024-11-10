@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_delivery_frontend/presentation/catalog/catalog.dart';
+import 'presentation/widgets/navbar.dart';
 
 void main() {
   runApp(const MyApp());
@@ -105,6 +106,14 @@ class _MyHomePageState extends State<MyHomePage> {
         tooltip: 'Increment',
         child: const Icon(Icons.add),
       ), // This trailing comma makes auto-formatting nicer for build methods.
+      bottomNavigationBar: CustomNavBar(
+        selectedIndex: _counter,
+        onItemTapped: (valueIndex) {
+          setState(() {
+            _counter = valueIndex;
+          });
+        },
+      ),
     );
   }
 }
