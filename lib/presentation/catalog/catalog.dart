@@ -10,7 +10,9 @@ class CatalogScreen extends StatelessWidget {
       id: 'pr1',
       name: 'Producto 1',
       price: 9.99,
+      currency: 'USD',
       weight: 1.0,
+      stock: 500,
       description: 'Descripción del producto 1',
       category: Category(
         icon: 'https://via.placeholder.com/20',
@@ -23,7 +25,9 @@ class CatalogScreen extends StatelessWidget {
       id: 'pr2',
       name: 'Producto 2',
       price: 19.99,
+      currency: 'USD',
       weight: 1.5,
+      stock: 500,
       description: 'Descripción del producto 2',
       category: Category(
         icon: 'https://via.placeholder.com/20',
