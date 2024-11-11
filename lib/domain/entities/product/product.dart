@@ -8,6 +8,8 @@ class Product {
   final String description;
   final Category category;
   final String imageUrl;
+  final String currency;
+  final int stock;
 
   Product({
     required this.id,
@@ -17,5 +19,7 @@ class Product {
     required this.description,
     required this.category,
     required this.imageUrl,
+    required this.currency,
+    required this.stock,
   });
 }
