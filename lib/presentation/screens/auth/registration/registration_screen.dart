@@ -2,10 +2,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:go_delivery_frontend/presentation/core/common/validator.dart';
+import 'package:go_delivery_frontend/presentation/screens/auth/registration/registration_validators.dart';
 import 'package:go_router/go_router.dart';
 
 import 'dialog_registration_window.dart';
-import 'inputDecoration.dart';
+import 'inputDecorationRegister.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({Key? key}) : super(key: key);
@@ -24,47 +26,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
   bool _obscurePassword = true;
   bool _obscureConfirmPassword = true;
   bool _isLoading = false;
-
-  String? _validateName(String? value) {
-    if (value == null || value.isEmpty) {
-      return 'Por favor ingresa tu nombre';
-    }
-    if (value.length < 3) {
-      return 'El nombre debe tener al menos 3 caracteres';
-    }
-    return null;
-  }
-
-  String? _validateEmail(String? value) {
-    if (value == null || value.isEmpty) {
-      return 'Por favor ingresa tu correo electrónico';
-    }
-    final emailRegex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
-    if (!emailRegex.hasMatch(value)) {
-      return 'Ingresa un correo electrónico válido';
-    }
-    return null;
-  }
-
-  String? _validatePassword(String? value) {
-    if (value == null || value.isEmpty) {
-      return 'Por favor ingresa una contraseña';
-    }
-    if (value.length < 6) {
-      return 'La contraseña debe tener al menos 6 caracteres';
-    }
-    return null;
-  }
-
-  String? _validatePhone(String? value) {
-    if (value == null || value.isEmpty) {
-      return 'Por favor ingresa su número de telefono';
-    }
-    if (value.length < 10) {
-      return 'Ingresa un numero de telefono valido';
-    }
-    return null;
-  }
 
   String? _validateConfirmPassword(String? value) {
     if (value == null || value.isEmpty) {
@@ -125,24 +86,36 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         const SizedBox(height: 14),
                         TextFormField(
                           controller: _nameController,
-                          validator: _validateName,
-                          decoration: inputDecorationBuilder.buildInputDecoration('Nombre de Usuario Nuevo'),
+                          validator: (value) {
+                            final result = registrationValidator.usernameValidator.validate(value);
+                            return result.isSuccessful() ? null : result.getError().message;
+                          },
+                          decoration: inputDecorationBuilderRegister.buildInputDecorationRegister
+                            ('Nombre de Usuario Nuevo'),
                           textCapitalization: TextCapitalization.words,
                         ),
                         const SizedBox(height: 14),
                         TextFormField(
                           controller: _emailController,
-                          validator: _validateEmail,
+                          validator: (value) {
+                            final result = registrationValidator.emailValidator.validate(value);
+                            return result.isSuccessful() ? null : result.getError().message;
+                          },
                           keyboardType: TextInputType.emailAddress,
-                          decoration: inputDecorationBuilder.buildInputDecoration(
+                          decoration: inputDecorationBuilderRegister.buildInputDecorationRegister
+                            (
                               'Correo electrónico'),
                         ),
                         const SizedBox(height: 14),
                         TextFormField(
                           controller: _phoneController,
-                          validator: _validatePhone,
+                          validator: (value) {
+                            final result = registrationValidator.phoneValidator.validate(value);
+                            return result.isSuccessful() ? null : result.getError().message;
+                          },
                           keyboardType: TextInputType.phone,
-                          decoration: inputDecorationBuilder.buildInputDecoration('Número de teléfono'),
+                          decoration: inputDecorationBuilderRegister.buildInputDecorationRegister
+                            ('Número de teléfono'),
                           inputFormatters: [
                             FilteringTextInputFormatter.digitsOnly,
                             LengthLimitingTextInputFormatter(11),
@@ -151,9 +124,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         const SizedBox(height: 14),
                         TextFormField(
                           controller: _passwordController,
-                          validator: _validatePassword,
+                          validator: (value) {
+                            final result = registrationValidator.passwordValidator.validate(value);
+                            return result.isSuccessful() ? null : result.getError().message;
+                          },
                           obscureText: _obscurePassword,
-                          decoration: inputDecorationBuilder.buildInputDecoration('Contraseña')
+                          decoration: inputDecorationBuilderRegister.buildInputDecorationRegister
+                            ('Contraseña')
                               .copyWith(
                             suffixIcon: IconButton(
                               icon: Icon(
@@ -172,8 +149,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           controller: _confirmPasswordController,
                           validator: _validateConfirmPassword,
                           obscureText: _obscureConfirmPassword,
-                          decoration: inputDecorationBuilder.buildInputDecoration(
-                              'Confirmar contraseña').copyWith(
+                          decoration: inputDecorationBuilderRegister.buildInputDecorationRegister
+                            ('Confirmar contraseña').copyWith(
                             suffixIcon: IconButton(
                               icon: Icon(
                                 _obscureConfirmPassword
@@ -226,7 +203,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               style: TextStyle(fontFamily: 'Montserrat'),
                             ),
                             TextButton(
-                              onPressed: () => context.pop(),
+                              onPressed: () { context.push('/login'); },
                               child: const Text(
                                 'Iniciar sesión',
                                 style: TextStyle(
@@ -261,7 +238,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
   }
 
   Future<void> _handleRegistration() async {
+
     if (_formKey.currentState!.validate()) {
+
       setState(() {
         _isLoading = true;
       });

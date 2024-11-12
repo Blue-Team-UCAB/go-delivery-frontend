@@ -1,45 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:go_delivery_frontend/presentation/screens/auth/login/login_validators.dart';
 import 'package:go_router/go_router.dart';
 
-class LoginScreen extends StatefulWidget {
-  const LoginScreen({Key? key, this.onPressRegister, this.onPressLogin}) : super(key: key);
+import 'inputDecorationLogin.dart';
 
-  final void Function()? onPressRegister;
-  final void Function()? onPressLogin;
+class LoginScreen extends StatefulWidget {
+  const LoginScreen({Key? key,
+    this.onLoginSuccess,
+    }) : super(key: key);
+
+  final void Function()? onLoginSuccess;
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  State<LoginScreen> createState() => LoginScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class LoginScreenState extends State<LoginScreen> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   bool _obscurePassword = true;
-
-  InputDecoration _buildInputDecoration(String hint) {
-    return InputDecoration(
-      hintText: hint,
-      hintStyle: const TextStyle(
-        fontFamily: 'Montserrat',
-        color: Colors.grey,
-      ),
-      filled: true,
-      fillColor: Colors.white,
-      border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(12),
-        borderSide: BorderSide(color: Colors.grey[300]!),
-      ),
-      enabledBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(12),
-        borderSide: BorderSide(color: Colors.grey[300]!),
-      ),
-      focusedBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(12),
-        borderSide: const BorderSide(color: Color(0xFF02066F)),
-      ),
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -80,18 +60,28 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                       ),
                       const SizedBox(height: 24),
-                      TextField(
+                      TextFormField(
                         controller: _emailController,
+                        validator: (value) {
+                          final result = loginValidator.emailValidator.validate(value);
+                          return result.isSuccessful() ? null : result.getError().message;
+                        },
                         keyboardType: TextInputType.emailAddress,
                         style: const TextStyle(fontFamily: 'Montserrat'),
-                        decoration: _buildInputDecoration('Correo electrónico'),
+                        decoration: inputDecorationBuilderLogin.
+                        buildInputDecorationLogin('Correo electrónico'),
                       ),
                       const SizedBox(height: 16),
-                      TextField(
+                      TextFormField(
                         controller: _passwordController,
+                        validator: (value) {
+                          final result = loginValidator.passwordValidator.validate(value);
+                          return result.isSuccessful() ? null : result.getError().message;
+                        },
                         obscureText: _obscurePassword,
                         style: const TextStyle(fontFamily: 'Montserrat'),
-                        decoration: _buildInputDecoration('Contraseña').copyWith(
+                        decoration: inputDecorationBuilderLogin.
+                        buildInputDecorationLogin('Contraseña').copyWith(
                           suffixIcon: IconButton(
                             icon: Icon(
                               _obscurePassword ? Icons.visibility_off : Icons.visibility,
@@ -118,7 +108,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                       ),
                       ElevatedButton(
-                        onPressed: () { loginPressedCallback(); },
+                        onPressed: () { context.push('/'); },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: const Color(0xFF02066F),
                           padding: const EdgeInsets.symmetric(vertical: 16),
@@ -146,7 +136,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                           ),
                           TextButton(
-                            onPressed: () { registerPressedCallback(); },
+                            onPressed: () { context.push('/register'); },
                             child: const Text(
                               'Regístrate ahora',
                               style: TextStyle(
@@ -208,12 +198,10 @@ class _LoginScreenState extends State<LoginScreen> {
     super.dispose();
   }
 
-  void loginPressedCallback() {
-    widget.onPressLogin?.call();
+  void onLoginSuccessCallback() {
+    //LocalStorageService().setKeyValue('', true);
+    widget.onLoginSuccess?.call();
   }
 
-  void registerPressedCallback() {
-    widget.onPressRegister?.call();
-  }
+
 }
-

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../application/BLoc/themes/themes_bloc.dart';
 import '../../../infrastructure/datasources/localstorage/localstorage_impl.dart';
@@ -80,7 +81,7 @@ class WelcomeScreenState extends State<WelcomeScreen> {
 
   void skipPressedCallback() {
     LocalStorageService().setKeyValue('initialized', true);
-    widget.onPressSkip?.call();
+    context.push('/login');
   }
 
 

@@ -2,7 +2,7 @@ import 'package:go_delivery_frontend/presentation/screens/catalog/catalog.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../infrastructure/datasources/localstorage/localstorage_impl.dart';
-import '../../screens/auth/login_screen.dart';
+import '../../screens/auth/login/login_screen.dart';
 import '../../screens/auth/registration/registration_screen.dart';
 import '../../screens/splash/splash_screen.dart';
 import '../../screens/welcome/welcome_screen.dart';
@@ -26,9 +26,7 @@ class RoutesManager {
           path: '/welcome',
           pageBuilder: (context, state) => CustomTransitions.slideRight(
             key: state.pageKey,
-            child: WelcomeScreen(
-                onPressSkip: () => context.go('/login'),
-            )
+            child: const WelcomeScreen()
           )
       ),
       GoRoute(
@@ -36,25 +34,23 @@ class RoutesManager {
           pageBuilder: (context, state) => CustomTransitions.slideRight(
             key: state.pageKey,
             child: LoginScreen(
-              onPressRegister: () => context.go('/register'),
-              onPressLogin: () => context.go('/catalog'),
-           )),
+                onLoginSuccess: () => context.go('/')
+            )
+          )
       ),
       GoRoute(
           path: '/register',
           pageBuilder: (context, state) => CustomTransitions.slideRight(
             key: state.pageKey,
-            child: const RegisterScreen(),
-          )),
+            child: RegisterScreen(),
+          )
+      ),
       GoRoute(
-          path: '/catalog',
+          path: '/',
           pageBuilder: (context, state) => CustomTransitions.slideRight(
             key: state.pageKey,
             child: CatalogScreen(),
-          )),
-      GoRoute(
-        path: '/',
-        redirect: (_, __) => '/home/0',
+          )
       ),
     ],
     redirect: (context, state) async {

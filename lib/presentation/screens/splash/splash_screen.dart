@@ -3,17 +3,17 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../application/BLoc/themes/themes_bloc.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen(
-      {super.key,
-      required this.onSplashScreenFade,
+      {super.key, required this.onSplashScreenFade,
       required this.splashScreenDurationSeconds});
 
-  final void Function() onSplashScreenFade;
   final int splashScreenDurationSeconds;
+  final void Function() onSplashScreenFade;
 
   @override
   SplashScreenState createState() => SplashScreenState();

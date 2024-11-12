@@ -4,10 +4,19 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="5aadad3a-72e7-45a0-8ecd-bfbee38abce3" name="Changes" comment=":pencil: Merging everything and auth :pencil:">
+    <list default="true" id="5aadad3a-72e7-45a0-8ecd-bfbee38abce3" name="Changes" comment=":pencil: :Fire: Hot fix :fire: :pencil:">
+      <change afterPath="$PROJECT_DIR$/lib/presentation/core/common/validator.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/presentation/screens/auth/login/inputDecorationLogin.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/presentation/screens/auth/password_recovery/forgot_pass_screen.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/presentation/screens/auth/registration/registration_validators.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/android/app/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/android/app/build.gradle" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pubspec.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/pubspec.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/presentation/core/router/app_router.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/presentation/core/router/app_router.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/presentation/screens/auth/forgot_pass_screen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/presentation/screens/auth/login/login_validators.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/presentation/screens/auth/login_screen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/presentation/screens/auth/login/login_screen.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/presentation/screens/auth/registration/inputDecoration.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/presentation/screens/auth/registration/inputDecorationRegister.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/presentation/screens/auth/registration/registration_screen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/presentation/screens/auth/registration/registration_screen.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/presentation/screens/splash/splash_screen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/presentation/screens/splash/splash_screen.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/presentation/screens/welcome/welcome_screen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/presentation/screens/welcome/welcome_screen.dart" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -60,11 +69,11 @@
       <recent name="C:\Users\Administrator\StudioProjects\go-delivery-frontend\lib\presentation\screens" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
-      <recent name="C:\Users\Administrator\StudioProjects\go-delivery-frontend\lib\application" />
-      <recent name="C:\Users\Administrator\StudioProjects\go-delivery-frontend\lib\infrastructure\mappers" />
-      <recent name="C:\Users\Administrator\StudioProjects\go-delivery-frontend\lib\domain\datasources\api" />
-      <recent name="C:\Users\Administrator\StudioProjects\go-delivery-frontend\android\app\src\main" />
-      <recent name="C:\Users\Administrator\StudioProjects\go-delivery-frontend\android\app\src\main\kotlin" />
+      <recent name="C:\Users\Administrator\StudioProjects\go-delivery-frontend\lib\presentation\core\common" />
+      <recent name="C:\Users\Administrator\StudioProjects\go-delivery-frontend\lib\presentation\screens\auth\login" />
+      <recent name="C:\Users\Administrator\StudioProjects\go-delivery-frontend\lib\presentation\screens\auth" />
+      <recent name="C:\Users\Administrator\StudioProjects\go-delivery-frontend\lib\presentation\screens\auth\password_recovery" />
+      <recent name="C:\Users\Administrator\StudioProjects\go-delivery-frontend\assets" />
     </key>
   </component>
   <component name="TaskManager">
@@ -76,7 +85,15 @@
       <option name="project" value="LOCAL" />
       <updated>1731440118836</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary=":pencil: :Fire: Hot fix :fire: :pencil:">
+      <option name="closed" value="true" />
+      <created>1731440615149</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1731440615149</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -87,6 +104,7 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value=":pencil: Merging everything and auth :pencil:" />
-    <option name="LAST_COMMIT_MESSAGE" value=":pencil: Merging everything and auth :pencil:" />
+    <MESSAGE value=":pencil: :Fire: Hot fix :fire: :pencil:" />
+    <option name="LAST_COMMIT_MESSAGE" value=":pencil: :Fire: Hot fix :fire: :pencil:" />
   </component>
 </project>
