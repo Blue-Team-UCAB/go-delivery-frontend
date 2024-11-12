@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:go_delivery_frontend/presentation/catalog/catalog.dart';
+import 'package:go_delivery_frontend/injector.dart';
+import 'package:go_delivery_frontend/presentation/screens/catalog/catalog.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await InjectManager.setUpInjections();
   runApp(const MyApp());
 }
 

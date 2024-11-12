@@ -21,80 +21,73 @@ class ProductCard extends StatelessWidget {
           ),
         ],
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          // Imagen del producto
-          ClipRRect(
-            borderRadius: const BorderRadius.only(
-              topLeft: Radius.circular(12.0),
-              topRight: Radius.circular(12.0),
+      child: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            // Imagen del producto
+            ClipRRect(
+              borderRadius: const BorderRadius.only(
+                topLeft: Radius.circular(12.0),
+                topRight: Radius.circular(12.0),
+              ),
+              child: Image.network(
+                product.imageUrl,
+                height: 130,
+                fit: BoxFit.cover,
+              ),
             ),
-            child: Image.network(
-              product.imageUrl,
-              height: 130,
-              fit: BoxFit.cover,
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  product.name,
-                  style: const TextStyle(
-                    fontSize: 14.0,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                Text(
-                  '\$${product.price.toStringAsFixed(2)}',
-                  style: TextStyle(
-                    fontSize: 12.0,
-                    color: Colors.green[700],
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-                const SizedBox(height: 5),
-                // Mostrar solo el nombre de la categoría sin imagen
-                Text(
-                  product.category.name,
-                  style: TextStyle(
-                    fontSize: 10.0,
-                    color: Colors.grey[600],
-                  ),
-                ),
-                const SizedBox(height: 10),
-                // Botón de añadir al carrito (plano con borde azul)
-                Center(
-                  child: OutlinedButton(
-                    onPressed: () {
-                      // Lógica para añadir al carrito
-                    },
-                    style: OutlinedButton.styleFrom(
-                      side: const BorderSide(
-                          color: Color(0xFF2000B1)), // Borde azul
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8.0),
-                      ),
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 20, vertical: 5),
-                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    product.name,
+                    style: const TextStyle(
+                      fontSize: 14.0,
+                      fontWeight: FontWeight.bold,
                     ),
-                    child: const Text(
-                      'Añadir al carrito',
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: Color(0xFF2000B1),
+                  ),
+                  Text(
+                    '\$${product.price.toStringAsFixed(2)}',
+                    style: TextStyle(
+                      fontSize: 12.0,
+                      color: Colors.green[700],
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  // Botón de añadir al carrito (plano con borde azul)
+                  Center(
+                    child: OutlinedButton(
+                      onPressed: () {
+                        // Lógica para añadir al carrito
+                      },
+                      style: OutlinedButton.styleFrom(
+                        side: const BorderSide(
+                            color: Color(0xFF2000B1)), // Borde azul
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8.0),
+                        ),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 20, vertical: 5),
+                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      ),
+                      child: const Text(
+                        'Añadir al carrito',
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: Color(0xFF2000B1),
+                        ),
                       ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

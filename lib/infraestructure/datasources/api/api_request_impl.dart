@@ -24,18 +24,13 @@ class ApiRequestManagerImpl extends IApiRequestManager {
           options: Options(method: method),
           queryParameters: queryParameters);
 
-      print(
-          'Response data in request: ${response.data}'); // Imprime la respuesta
-
-      // Usamos el mapper para transformar la respuesta en el tipo T
+      print('Response data in request: ${response.data}');
       return Result.success(mapper(response.data));
     } on DioError catch (e) {
       print('DioError in request: $e');
-      // Devolvemos un Result.fail con el error apropiado
       return Result.fail(handleException(e));
     } catch (e) {
       print('Error in request: $e');
-      // En caso de otro error desconocido, retornamos un Result.fail con una excepción genérica
       return Result.fail(const UnknownFailure());
     }
   }
