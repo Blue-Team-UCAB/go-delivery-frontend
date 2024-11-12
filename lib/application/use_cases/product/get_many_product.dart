@@ -1,9 +1,9 @@
 import 'package:go_delivery_frontend/common/result.dart';
-import 'package:go_delivery_frontend/common/failure.dart';
+import 'package:go_delivery_frontend/common/use_cases.dart';
 import 'package:go_delivery_frontend/domain/entities/product/product.dart';
 import 'package:go_delivery_frontend/domain/repositories/product/product_repository.dart';
 
-class GetProductsUseCaseInput {
+class GetProductsUseCaseInput extends IUseCaseInput {
   final int page;
   final int perPage;
   final String category;
@@ -16,20 +16,16 @@ class GetProductsUseCaseInput {
 }
 
 class GetProductsUseCase {
-  final ProductRepository repository;
+  final ProductRepository _productRepository;
 
-  GetProductsUseCase(this.repository);
+  GetProductsUseCase({required ProductRepository productRepository})
+      : _productRepository = productRepository;
 
-  Future<Result<List<Product>>> execute(GetProductsUseCaseInput input) async {
-    try {
-      final products = await repository.getProducts(
-        page: input.page,
-        perPage: input.perPage,
-        category: input.category,
-      );
-      return Result.success(products);
-    } catch (e) {
-      return Result.fail(const UnknownFailure());
-    }
+  Future<Result<List<Product>>> execute(GetProductsUseCaseInput input) {
+    return _productRepository.getProducts(
+      page: input.page,
+      perPage: input.perPage,
+      category: input.category,
+    );
   }
 }
