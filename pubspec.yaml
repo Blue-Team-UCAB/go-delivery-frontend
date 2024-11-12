@@ -35,9 +35,39 @@ dev_dependencies:
   flutter_lints: ^4.0.0
 
 flutter:
+  uses-material-design: true
   assets:
     - .env
-  uses-material-design: true
+    - lib/presentation/core/app.dart
+    - assets/icon/logo-white.svg
+    - assets/icon/logo.svg
+    - assets/icon/google.svg
+    - assets/icon/facebook.svg
+    - assets/icon/apple.svg
+  fonts:
+    - family: Montserrat
+      fonts:
+        - asset: fonts/Montserrat-Regular.ttf
+          style: normal
+          weight: 400
+        - asset: fonts/Montserrat-SemiBold.ttf
+          style: normal
+          weight: 400
+        - asset: fonts/Montserrat-SemiBoldItalic.ttf
+          style: italic
+          weight: 500
+        - asset: fonts/Montserrat-Thin.ttf
+          style: normal
+          weight: 400
+        - asset: fonts/Montserrat-Italic.ttf
+          style: italic
+          weight: 400
+        - asset: fonts/Montserrat-Black.ttf
+          style: normal
+          weight: 800
+        - asset: fonts/Montserrat-Bold.ttf
+          style: normal
+          weight: 700
 
 flutter_launcher_icons:
   android: "launcher_icon"
