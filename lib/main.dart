@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_delivery_frontend/presentation/catalog/catalog.dart';
+import 'presentation/widgets/navbar.dart';
 
 void main() {
   runApp(const MyApp());
@@ -15,7 +16,6 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: CatalogScreen(),
     );
   }
 }
