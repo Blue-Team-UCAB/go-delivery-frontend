@@ -2,7 +2,7 @@ import 'package:go_delivery_frontend/domain/entities/product/product.dart';
 import 'package:go_delivery_frontend/domain/repositories/product/product_repository.dart';
 import 'package:go_delivery_frontend/infraestructure/datasources/api/api_request.dart';
 import 'package:go_delivery_frontend/infraestructure/mappers/product/product_mapper.dart';
-import 'package:go_delivery_frontend/application/localstorage/localstorage.dart';
+import 'package:go_delivery_frontend/application/key_value_storage/key_value.dart';
 import 'package:go_delivery_frontend/common/result.dart';
 
 class ProductRepositoryImpl extends ProductRepository {
