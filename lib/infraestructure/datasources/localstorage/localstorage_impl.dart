@@ -1,5 +1,5 @@
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:go_delivery_frontend/application/localstorage/localstorage.dart';
+import 'package:go_delivery_frontend/application/key_value_storage/localstorage.dart';
 
 class LocalStorageImpl extends LocalStorage {
   final SharedPreferences _prefs;
