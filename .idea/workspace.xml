@@ -1,5 +1,107 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="5aadad3a-72e7-45a0-8ecd-bfbee38abce3" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/assets/icons/icon/apple.svg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/icons/icon/facebook.svg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/icons/icon/google.svg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/fonts/Montserrat-Black.ttf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/fonts/Montserrat-BlackItalic.ttf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/fonts/Montserrat-Bold.ttf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/fonts/Montserrat-BoldItalic.ttf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/fonts/Montserrat-ExtraBold.ttf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/fonts/Montserrat-ExtraBoldItalic.ttf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/fonts/Montserrat-ExtraLight.ttf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/fonts/Montserrat-ExtraLightItalic.ttf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/fonts/Montserrat-Italic.ttf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/fonts/Montserrat-Light.ttf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/fonts/Montserrat-LightItalic.ttf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/fonts/Montserrat-Medium.ttf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/fonts/Montserrat-MediumItalic.ttf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/fonts/Montserrat-Regular.ttf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/fonts/Montserrat-SemiBold.ttf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/fonts/Montserrat-SemiBoldItalic.ttf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/fonts/Montserrat-Thin.ttf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/fonts/Montserrat-ThinItalic.ttf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/application/BLoc/auth/login/login_bloc.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/application/BLoc/auth/login/login_event.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/application/BLoc/auth/login/login_state.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/application/BLoc/auth/recover_password/recover_password_bloc.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/application/BLoc/auth/recover_password/recover_password_event.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/application/BLoc/auth/recover_password/recover_password_state.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/application/BLoc/auth/register/register_bloc.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/application/BLoc/auth/register/register_event.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/application/BLoc/auth/register/register_state.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/application/BLoc/notifications/bloc/notifications_bloc.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/application/BLoc/notifications/bloc/notifications_event.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/application/BLoc/notifications/bloc/notifications_state.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/application/BLoc/notifications/notification-list/notification_list_bloc.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/application/BLoc/notifications/notification-list/notification_list_event.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/application/BLoc/notifications/notification-list/notification_list_state.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/application/BLoc/notifications/notifications_manager.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/application/BLoc/themes/themes_bloc.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/application/BLoc/themes/themes_event.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/application/BLoc/themes/themes_state.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/domain/entities/notifications/notification.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/domain/repositories/notifications/notifications_repository.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/domain/repositories/user/user_repository.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/infrastructure/mappers/local_notifications.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/infrastructure/mappers/notification/notification_mapper.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/infrastructure/mappers/push_message_model.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/infrastructure/repositories/notifications/notifications_repository_impl.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/presentation/core/app.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/presentation/core/router/app_router.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/presentation/core/theme/theme.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/presentation/core/transition/transitions.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/presentation/screens/auth/forgot_pass_screen.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/presentation/screens/auth/login_screen.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/presentation/screens/auth/registration/code_verification_screen.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/presentation/screens/auth/registration/dialog_registration_window.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/presentation/screens/auth/registration/inputDecoration.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/presentation/screens/auth/registration/registration_screen.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/presentation/screens/splash/splash_screen.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/presentation/screens/welcome/welcome_screen.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/android/app/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/android/app/build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/android/app/src/main/AndroidManifest.xml" beforeDir="false" afterPath="$PROJECT_DIR$/android/app/src/main/AndroidManifest.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/android/app/src/main/res/drawable-v21/launch_background.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/android/app/src/main/res/drawable/launch_background.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/android/app/src/main/res/mipmap-hdpi/ic_launcher.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/android/app/src/main/res/mipmap-mdpi/ic_launcher.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/android/app/src/main/res/mipmap-xhdpi/ic_launcher.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/android/app/src/main/res/mipmap-xxhdpi/ic_launcher.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/android/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/android/app/src/main/res/values-night/styles.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/android/app/src/main/res/values/styles.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/application/key_value_storage/localstorage.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/application/key_value_storage/localstorage.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/infraestructure/datasources/api/api_request.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/application/api/api_request.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/infraestructure/datasources/api/api_request_impl.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/infrastructure/datasources/api/api_request_impl.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/infraestructure/datasources/localstorage/localstorage_impl.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/infrastructure/datasources/localstorage/localstorage_impl.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/infraestructure/mappers/category/category_mapper.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/infrastructure/mappers/category/category_mapper.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/infraestructure/mappers/discount/coupon/coupon_mapper.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/infrastructure/mappers/discount/coupon/coupon_mapper.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/infraestructure/mappers/discount/promotion/promotion_mapper.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/infrastructure/mappers/discount/promotion/promotion_mapper.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/infraestructure/mappers/product/product_mapper.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/infrastructure/mappers/product/product_mapper.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/infraestructure/repositories/product/product_repository_impl.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/infrastructure/repositories/product/product_repository_impl.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/injector.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/injector.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/main.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/main.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/presentation/auth/onboarding.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/application/core/bloc/ensure_bloc.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/macos/Flutter/GeneratedPluginRegistrant.swift" beforeDir="false" afterPath="$PROJECT_DIR$/macos/Flutter/GeneratedPluginRegistrant.swift" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pubspec.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/pubspec.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/widget_test.dart" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/windows/flutter/generated_plugin_registrant.cc" beforeDir="false" afterPath="$PROJECT_DIR$/windows/flutter/generated_plugin_registrant.cc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/windows/flutter/generated_plugins.cmake" beforeDir="false" afterPath="$PROJECT_DIR$/windows/flutter/generated_plugins.cmake" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ClangdSettings">
+    <option name="formatViaClangd" value="false" />
+  </component>
   <component name="FileEditorManager">
     <leaf>
       <file leaf-file-name="main.dart" pinned="false" current-in-tab="true">
@@ -13,24 +115,49 @@
       </file>
     </leaf>
   </component>
-  <component name="ToolWindowManager">
-    <editor active="true" />
-    <layout>
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
-    </layout>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectView">
-    <navigator currentView="ProjectPane" proportions="" version="1">
-    </navigator>
+    <navigator currentView="ProjectPane" proportions="" version="1" />
     <panes>
       <pane id="ProjectPane">
         <option name="show-excluded-files" value="false" />
       </pane>
     </panes>
   </component>
-  <component name="PropertiesComponent">
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
-    <property name="dart.analysis.tool.window.force.activate" value="true" />
-    <property name="show.migrate.to.gradle.popup" value="false" />
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Flutter.main.dart.executor": "Run",
+    "dart.analysis.tool.window.visible": "false",
+    "git-widget-placeholder": "auth__new",
+    "last_opened_file_path": "C:/Users/Administrator/StudioProjects/go-delivery-frontend/lib/infrastructure/repositories"
+  }
+}]]></component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\Administrator\StudioProjects\go-delivery-frontend\lib\infrastructure\repositories" />
+      <recent name="C:\Users\Administrator\StudioProjects\go-delivery-frontend\lib\domain\repositories" />
+      <recent name="C:\Users\Administrator\StudioProjects\go-delivery-frontend\lib\application\BLoc" />
+      <recent name="C:\Users\Administrator\StudioProjects\go-delivery-frontend\lib\domain\repositories\notifications" />
+      <recent name="C:\Users\Administrator\StudioProjects\go-delivery-frontend\lib\presentation\screens" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\Administrator\StudioProjects\go-delivery-frontend\lib\application" />
+      <recent name="C:\Users\Administrator\StudioProjects\go-delivery-frontend\lib\infrastructure\mappers" />
+      <recent name="C:\Users\Administrator\StudioProjects\go-delivery-frontend\lib\domain\datasources\api" />
+      <recent name="C:\Users\Administrator\StudioProjects\go-delivery-frontend\android\app\src\main" />
+      <recent name="C:\Users\Administrator\StudioProjects\go-delivery-frontend\android\app\src\main\kotlin" />
+    </key>
+  </component>
+  <component name="TaskManager">
+    <servers />
+  </component>
+  <component name="ToolWindowManager">
+    <editor active="true" />
+    <layout>
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+    </layout>
   </component>
 </project>
