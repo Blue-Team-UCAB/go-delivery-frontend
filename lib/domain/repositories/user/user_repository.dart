@@ -7,7 +7,6 @@ abstract class UserRepository {
       required String name,
       required String phone});
   Future<Result<bool>> login(String email, String password);
-
   Future<Result<bool>> sendRecoveryCode(String email);
   Future<Result<bool>> validateRecoveryCode(String email, String code);
   Future<Result<bool>> changePassword(

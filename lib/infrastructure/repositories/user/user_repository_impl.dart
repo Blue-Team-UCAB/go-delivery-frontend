@@ -1,10 +1,10 @@
 import 'package:go_delivery_frontend/common/failure.dart';
 
-import '../../../../../application/api/api_request.dart';
-import '../../../../../application/key_value_storage/localstorage.dart';
-import '../../../../../common/result.dart';
-import '../../../../../domain/repositories/user/user_repository.dart';
-import '../../../../mappers/user/user_mapper.dart';
+import '../../../application/api/api_request.dart';
+import '../../../application/key_value_storage/localstorage.dart';
+import '../../../common/result.dart';
+import '../../../domain/repositories/user/user_repository.dart';
+import '../../mappers/user/user_mapper.dart';
 
 enum UserType { CLIENT, ADMIN }
 
@@ -63,11 +63,12 @@ class UserRepositoryImpl implements UserRepository {
   }) async {
     try {
       final response = await _apiRequestManager.request<bool>(
-        '/register',
+        '/auth/register',
         'POST',
             (data) {
+          final id = ClientMapper.fromJson(data['id']);
+          print("SUCCESS AQUI EL ID NUEVO: {$id}");
 
-          final client = ClientMapper.fromJson(data['user']);
           return true;
         },
         body: {
@@ -88,7 +89,7 @@ class UserRepositoryImpl implements UserRepository {
   Future<Result<bool>> sendRecoveryCode(String email) async {
     try {
       final response = await _apiRequestManager.request<bool>(
-        '/send-recovery-code',
+        '/send-recover_password-code',
         'POST',
             (data) => data['success'] as bool,
         body: {'email': email},
@@ -96,7 +97,7 @@ class UserRepositoryImpl implements UserRepository {
       return response;
     } catch (e) {
       print('Error in UserRepositoryImpl.sendRecoveryCode: $e');
-      return Result.fail(Exception('Failed to send recovery code') as Failure);
+      return Result.fail(Exception('Failed to send recover_password code') as Failure);
     }
   }
 
@@ -104,7 +105,7 @@ class UserRepositoryImpl implements UserRepository {
   Future<Result<bool>> validateRecoveryCode(String email, String code) async {
     try {
       final response = await _apiRequestManager.request<bool>(
-        '/validate-recovery-code',
+        '/validate-recover_password-code',
         'POST',
             (data) => data['valid'] as bool,
         body: {'email': email, 'code': code},
@@ -112,7 +113,7 @@ class UserRepositoryImpl implements UserRepository {
       return response;
     } catch (e) {
       print('Error in UserRepositoryImpl.validateRecoveryCode: $e');
-      return Result.fail(Exception('Failed to validate recovery code') as Failure);
+      return Result.fail(Exception('Failed to validate recover_password code') as Failure);
     }
   }
 

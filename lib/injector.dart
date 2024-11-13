@@ -1,5 +1,6 @@
 import 'package:get_it/get_it.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:go_delivery_frontend/application/use_cases/auth/register/register_usecase_input.dart';
 import 'package:go_delivery_frontend/infrastructure/datasources/api/api_request_impl.dart';
 import 'package:go_delivery_frontend/infrastructure/datasources/localstorage/localstorage_impl.dart';
 import 'package:go_delivery_frontend/domain/repositories/product/product_repository.dart';
@@ -11,7 +12,7 @@ import 'application/BLoc/auth/recover_password/recover_password_bloc.dart';
 import 'application/BLoc/auth/register/register_bloc.dart';
 import 'application/BLoc/themes/themes_bloc.dart';
 import 'application/use_cases/auth/login/login_usecase_input.dart';
-import 'infrastructure/repositories/user/auth/login/login_repository_impl.dart';
+import 'infrastructure/repositories/user/user_repository_impl.dart';
 
 final getIt = GetIt.instance;
 
@@ -33,13 +34,23 @@ class InjectManager {
     final userRepository = UserRepositoryImpl(
         apiRequestManager: apiRequestManagerImpl,
         localStorage: localStorageService);
+
     // Registrar el repositorio de usuarios
     getIt.registerFactory(() =>
         LoginBloc(userRespository: userRepository));
+    getIt.registerFactory(() =>
+        RegisterBloc(userRepository.register));
+    getIt.registerSingleton(
+        RecoverPasswordBloc(userRespository: userRepository));
+
     //caso de uso
     final loginUseCase = LoginUseCase(userRepository: userRepository);
+    final registerUseCase = RegisterUseCase(userRepository: userRepository);
+   // final recoveryUseCase
+
     //registrar caso de uso
     getIt.registerSingleton<LoginUseCase>(loginUseCase);
+    getIt.registerSingleton<RegisterUseCase>(registerUseCase);
     // ======================================================================= //
 
 
