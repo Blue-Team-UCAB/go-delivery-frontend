@@ -6,7 +6,12 @@ import 'package:go_delivery_frontend/domain/repositories/product/product_reposit
 import 'package:go_delivery_frontend/infrastructure/repositories/product/product_repository_impl.dart';
 import 'package:go_delivery_frontend/application/use_cases/product/get_many_product.dart';
 
+import 'application/BLoc/auth/login/login_bloc.dart';
+import 'application/BLoc/auth/recover_password/recover_password_bloc.dart';
+import 'application/BLoc/auth/register/register_bloc.dart';
 import 'application/BLoc/themes/themes_bloc.dart';
+import 'application/use_cases/auth/login/login_usecase_input.dart';
+import 'infrastructure/repositories/user/auth/login/login_repository_impl.dart';
 
 final getIt = GetIt.instance;
 
@@ -24,20 +29,17 @@ class InjectManager {
 
 
     // ============================= AUTH ==================================== //
-    /*
-    final userRepositoryImpl = UserRepositoryImpl(
-        userDatasource: apiUserDatasource,
-        keyValueStorage: localStorageService);
 
+    final userRepository = UserRepositoryImpl(
+        apiRequestManager: apiRequestManagerImpl,
+        localStorage: localStorageService);
     // Registrar el repositorio de usuarios
     getIt.registerFactory(() =>
-        RegisterBloc(userRepositoryImpl.register));
-    getIt.registerFactory(() =>
-        LoginBloc(userRespository: userRepositoryImpl));
-    getIt.registerSingleton(
-        RecoverPasswordBloc(userRespository: userRepositoryImpl));
-
-    */
+        LoginBloc(userRespository: userRepository));
+    //caso de uso
+    final loginUseCase = LoginUseCase(userRepository: userRepository);
+    //registrar caso de uso
+    getIt.registerSingleton<LoginUseCase>(loginUseCase);
     // ======================================================================= //
 
 

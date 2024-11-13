@@ -46,7 +46,7 @@ class RoutesManager {
           )
       ),
       GoRoute(
-          path: '/',
+          path: '/catalog',
           pageBuilder: (context, state) => CustomTransitions.slideRight(
             key: state.pageKey,
             child: CatalogScreen(),

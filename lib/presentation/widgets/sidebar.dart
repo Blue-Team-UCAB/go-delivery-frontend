@@ -11,7 +11,7 @@ class Sidebar extends StatelessWidget {
           children: [
             UserAccountsDrawerHeader(
               accountName: const Text('Usuario'),
-              accountEmail: const Text('user@example.com'),
+              accountEmail: const Text('client@example.com'),
               currentAccountPicture: CircleAvatar(
                 backgroundColor: Colors.white,
                 child: const Text('U'),

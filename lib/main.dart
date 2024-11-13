@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_delivery_frontend/injector.dart';
 import 'package:go_delivery_frontend/presentation/core/app.dart';
+import 'application/BLoc/auth/login/login_bloc.dart';
 import 'application/BLoc/auth/recover_password/recover_password_bloc.dart';
 import 'application/BLoc/notifications/bloc/notifications_bloc.dart';
 import 'application/BLoc/themes/themes_bloc.dart';
@@ -12,8 +13,12 @@ void main() async {
 
   await LocalNotifications().initializeLocalNotifications();
   await InjectManager.setUpInjections();
-  runApp(MultiBlocProvider(providers: [
-    BlocProvider(create: (_) => getIt<ThemesBloc>()),
+  runApp(MultiBlocProvider(providers:
+  [
+    BlocProvider(
+        create: (_) => getIt<LoginBloc>()),
+    BlocProvider(
+        create: (_) => getIt<ThemesBloc>()),
     BlocProvider(
         create: (_) => getIt<NotificationsBloc>()),
     BlocProvider(

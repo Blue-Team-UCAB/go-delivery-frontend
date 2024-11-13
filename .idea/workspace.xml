@@ -4,19 +4,20 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="5aadad3a-72e7-45a0-8ecd-bfbee38abce3" name="Changes" comment=":pencil: :Fire: Hot fix :fire: :pencil:">
-      <change afterPath="$PROJECT_DIR$/lib/presentation/core/common/validator.dart" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/presentation/screens/auth/login/inputDecorationLogin.dart" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/presentation/screens/auth/password_recovery/forgot_pass_screen.dart" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/presentation/screens/auth/registration/registration_validators.dart" afterDir="false" />
+    <list default="true" id="5aadad3a-72e7-45a0-8ecd-bfbee38abce3" name="Changes" comment=":pencil: Validators refactor :pencil:">
+      <change afterPath="$PROJECT_DIR$/lib/application/use_cases/auth/login/login_usecase_input.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/domain/entities/client/client.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/infrastructure/mappers/user/user_mapper.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/infrastructure/repositories/user/auth/login/login_repository_impl.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/presentation/screens/auth/registration/register_button_handler.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/android/app/src/main/AndroidManifest.xml" beforeDir="false" afterPath="$PROJECT_DIR$/android/app/src/main/AndroidManifest.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/injector.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/injector.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/main.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/main.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/presentation/core/router/app_router.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/presentation/core/router/app_router.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/presentation/screens/auth/forgot_pass_screen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/presentation/screens/auth/login/login_validators.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/presentation/screens/auth/login_screen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/presentation/screens/auth/login/login_screen.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/presentation/screens/auth/registration/inputDecoration.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/presentation/screens/auth/registration/inputDecorationRegister.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/presentation/screens/auth/registration/registration_screen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/presentation/screens/auth/registration/registration_screen.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/presentation/screens/splash/splash_screen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/presentation/screens/splash/splash_screen.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/presentation/screens/welcome/welcome_screen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/presentation/screens/welcome/welcome_screen.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/presentation/screens/auth/login/login_screen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/presentation/screens/auth/login/login_screen.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/presentation/widgets/sidebar.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/presentation/widgets/sidebar.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/windows/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/windows/.gitignore" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -69,11 +70,11 @@
       <recent name="C:\Users\Administrator\StudioProjects\go-delivery-frontend\lib\presentation\screens" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\Administrator\StudioProjects\go-delivery-frontend\lib\infrastructure\repositories\user\auth" />
       <recent name="C:\Users\Administrator\StudioProjects\go-delivery-frontend\lib\presentation\core\common" />
       <recent name="C:\Users\Administrator\StudioProjects\go-delivery-frontend\lib\presentation\screens\auth\login" />
       <recent name="C:\Users\Administrator\StudioProjects\go-delivery-frontend\lib\presentation\screens\auth" />
       <recent name="C:\Users\Administrator\StudioProjects\go-delivery-frontend\lib\presentation\screens\auth\password_recovery" />
-      <recent name="C:\Users\Administrator\StudioProjects\go-delivery-frontend\assets" />
     </key>
   </component>
   <component name="TaskManager">
@@ -93,7 +94,15 @@
       <option name="project" value="LOCAL" />
       <updated>1731440615149</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary=":pencil: Validators refactor :pencil:">
+      <option name="closed" value="true" />
+      <created>1731450179800</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1731450179800</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -105,6 +114,7 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value=":pencil: Merging everything and auth :pencil:" />
     <MESSAGE value=":pencil: :Fire: Hot fix :fire: :pencil:" />
-    <option name="LAST_COMMIT_MESSAGE" value=":pencil: :Fire: Hot fix :fire: :pencil:" />
+    <MESSAGE value=":pencil: Validators refactor :pencil:" />
+    <option name="LAST_COMMIT_MESSAGE" value=":pencil: Validators refactor :pencil:" />
   </component>
 </project>
