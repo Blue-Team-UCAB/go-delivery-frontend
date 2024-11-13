@@ -1,4 +1,5 @@
 import "package:flutter/material.dart";
+import "package:go_router/go_router.dart";
 
 // TODO: link theme context to a custom theme file with primary, secondary... colors 2024-11-09
 class CustomNavBar extends StatelessWidget {
@@ -47,8 +48,9 @@ class CustomNavBar extends StatelessWidget {
         children: [
           ClipRRect(
             borderRadius:
-            BorderRadius.circular(20.0), // Set the border radius here
+            const BorderRadius.only(topLeft:  Radius.circular(30), topRight:Radius.circular(30)), // Set the border radius here
             child: BottomAppBar(
+              color: const Color(0xFFFFFFFF),
               shape: const CircularNotchedRectangle(),
               notchMargin: 6.0,
               child: Container(
@@ -73,16 +75,16 @@ class CustomNavBar extends StatelessWidget {
             bottom: 50,
             left:
             MediaQuery.of(context).size.width / 2 - 30, // Center the button
-            child: _buildCenterButton(),
+            child: _buildCenterButton(context),
           ),
         ],
       ),
     );
   }
 
-  Widget _buildCenterButton() {
+  Widget _buildCenterButton(BuildContext context) {
     return FloatingActionButton(
-      onPressed: () => onItemTapped(2),
+      onPressed: () => context.push('/Cart'),
       backgroundColor: const Color(0xFF2000B1),
       shape: const CircleBorder(),
       elevation: 6.0, // Add some elevation for better visibility

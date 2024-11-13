@@ -9,7 +9,7 @@ class AppTheme {
         useMaterial3: true,
         brightness: isDarkMode ? Brightness.dark : Brightness.light,
         colorSchemeSeed: Colors.blue,
-        fontFamily: 'Montserrat',
+        fontFamily: 'Inter, Montserrat',
         appBarTheme: const AppBarTheme(
           centerTitle: false,
           iconTheme: IconThemeData(

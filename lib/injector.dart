@@ -10,6 +10,7 @@ import 'package:go_delivery_frontend/application/use_cases/product/get_many_prod
 import 'application/BLoc/auth/login/login_bloc.dart';
 import 'application/BLoc/auth/recover_password/recover_password_bloc.dart';
 import 'application/BLoc/auth/register/register_bloc.dart';
+import 'application/BLoc/cart/cart_bloc.dart';
 import 'application/BLoc/themes/themes_bloc.dart';
 import 'application/use_cases/auth/login/login_usecase_input.dart';
 import 'infrastructure/repositories/user/user_repository_impl.dart';
@@ -54,6 +55,9 @@ class InjectManager {
     getIt.registerSingleton<RegisterUseCase>(registerUseCase);
     // ======================================================================= //
 
+    // ============================= CART ==================================== //
+    getIt.registerSingleton(CartBloc());
+    // ======================================================================= //
 
     // ============================= NOTIFICATIONS =========================== //
     /*

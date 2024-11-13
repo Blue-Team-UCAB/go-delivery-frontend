@@ -1,3 +1,4 @@
+import 'package:go_delivery_frontend/presentation/screens/cart/cart_screen.dart';
 import 'package:go_delivery_frontend/presentation/screens/catalog/catalog.dart';
 import 'package:go_delivery_frontend/presentation/screens/checkout/checkout_screen.dart';
 import 'package:go_router/go_router.dart';
@@ -57,6 +58,13 @@ class RoutesManager {
           pageBuilder: (context, state) => CustomTransitions.slideRight(
             key: state.pageKey,
             child: CheckoutScreen(),
+          )
+      ),
+      GoRoute(
+          path: '/Cart',
+          pageBuilder: (context, state) => CustomTransitions.slideRight(
+            key: state.pageKey,
+            child: const CartScreen(),
           )
       ),
       GoRoute(

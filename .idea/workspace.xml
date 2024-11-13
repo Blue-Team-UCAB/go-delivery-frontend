@@ -1,27 +1,40 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="AutoImportSettings">
-    <option name="autoReloadType" value="SELECTIVE" />
+    <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="5aadad3a-72e7-45a0-8ecd-bfbee38abce3" name="Changes" comment=":pencil: fixes on Login BLoc">
-      <change afterPath="$PROJECT_DIR$/lib/infrastructure/mappers/user/client_mapper.dart" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/infrastructure/models/user_model.dart" afterDir="false" />
+    <list default="true" id="5aadad3a-72e7-45a0-8ecd-bfbee38abce3" name="Changes" comment=":pencil: FROM MOISES: added code verification screen :pencil:">
+      <change afterPath="$PROJECT_DIR$/fonts/Inter_18pt-Bold.ttf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/fonts/Inter_18pt-ExtraBold.ttf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/fonts/Inter_18pt-ExtraLight.ttf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/fonts/Inter_18pt-Light.ttf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/fonts/Inter_18pt-Medium.ttf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/fonts/Inter_18pt-Regular.ttf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/fonts/Inter_18pt-SemiBold.ttf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/fonts/Inter_18pt-Thin.ttf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/application/BLoc/cart/cart_bloc.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/application/BLoc/cart/cart_event.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/application/BLoc/cart/cart_state.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/domain/entities/cart/cartitem.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/infrastructure/mappers/cart/cart_item_mapper.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/presentation/screens/cart/cart_screen.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/presentation/screens/screens.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/presentation/widgets/cart/cart_footer_box.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/presentation/widgets/cart/cart_item.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Dart_Packages.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Dart_Packages.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Dart_SDK.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Dart_SDK.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/application/BLoc/auth/login/login_bloc.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/application/BLoc/auth/login/login_bloc.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/application/BLoc/auth/login/login_event.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/application/BLoc/auth/login/login_event.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/domain/entities/client/client.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/domain/entities/client/client.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/infrastructure/datasources/api/api_request_impl.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/infrastructure/datasources/api/api_request_impl.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/infrastructure/mappers/user/user_mapper.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/infrastructure/mappers/user/user_mapper.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/infrastructure/repositories/product/product_repository_impl.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/infrastructure/repositories/product/product_repository_impl.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/infrastructure/repositories/user/user_repository_impl.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/infrastructure/repositories/user/user_repository_impl.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/presentation/auth/forgot_pass_screen.dart" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/presentation/auth/registration/code_verification_screen.dart" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/go_delivery_frontend.iml" beforeDir="false" afterPath="$PROJECT_DIR$/go_delivery_frontend.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/injector.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/injector.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/main.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/main.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/presentation/core/router/app_router.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/presentation/core/router/app_router.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/presentation/screens/auth/login/login_screen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/presentation/screens/auth/login/login_screen.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/presentation/screens/auth/password_recovery/forgot_pass_screen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/presentation/screens/auth/password_recovery/forgot_pass_screen.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/presentation/screens/auth/registration/registration_screen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/presentation/screens/auth/registration/registration_screen.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/presentation/screens/checkout_screen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/presentation/screens/checkout/checkout_screen.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/presentation/core/theme/theme.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/presentation/core/theme/theme.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/presentation/screens/catalog/catalog.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/presentation/screens/catalog/catalog.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/presentation/screens/homescreen/homescreen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/presentation/screens/homescreen/homescreen.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/presentation/widgets/card.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/presentation/widgets/card.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/presentation/widgets/navbar.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/presentation/widgets/navbar.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pubspec.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/pubspec.yaml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -52,6 +65,22 @@
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
+  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
+  "lastFilter": {
+    "state": "OPEN",
+    "assignee": "GelArria"
+  }
+}]]></component>
+  <component name="GithubPullRequestsUISettings"><![CDATA[{
+  "selectedUrlAndAccountId": {
+    "url": "https://github.com/Blue-Team-UCAB/go-delivery-frontend.git",
+    "accountId": "dfa18d3c-34ad-4c44-bef3-34222254b536"
+  }
+}]]></component>
+  <component name="ProjectColorInfo"><![CDATA[{
+  "associatedIndex": 4
+}]]></component>
+  <component name="ProjectId" id="2onwvq9pWwBIIDdLbuyaaMyPvRI" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectView">
     <navigator currentView="ProjectPane" proportions="" version="1" />
@@ -61,23 +90,27 @@
       </pane>
     </panes>
   </component>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "Flutter.main.dart.executor": "Run",
     "ScreenRecorder.SavePath": "C:\\Users\\Administrator\\Desktop\\Escritorio",
     "dart.analysis.tool.window.visible": "false",
-    "git-widget-placeholder": "37ff425a",
+    "git-widget-placeholder": "auth__new",
     "io.flutter.reload.alreadyRun": "true",
-    "last_opened_file_path": "C:/Users/Administrator/Desktop/Escritorio"
+    "last_opened_file_path": "C:/Users/Administrator/StudioProjects/go-delivery-frontend/lib/infrastructure/mappers/cart"
   }
 }]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
-      <recent name="C:\Users\Administrator\StudioProjects\go-delivery-frontend\lib\infrastructure\repositories" />
-      <recent name="C:\Users\Administrator\StudioProjects\go-delivery-frontend\lib\domain\repositories" />
-      <recent name="C:\Users\Administrator\StudioProjects\go-delivery-frontend\lib\application\BLoc" />
-      <recent name="C:\Users\Administrator\StudioProjects\go-delivery-frontend\lib\domain\repositories\notifications" />
-      <recent name="C:\Users\Administrator\StudioProjects\go-delivery-frontend\lib\presentation\screens" />
+      <recent name="C:\Users\Administrator\StudioProjects\go-delivery-frontend\lib\infrastructure\mappers\cart" />
+      <recent name="C:\Users\Administrator\StudioProjects\go-delivery-frontend\fonts" />
+      <recent name="C:\Users\Administrator\StudioProjects\go-delivery-frontend\lib\application\BLoc\cart" />
+      <recent name="C:\Users\Administrator\StudioProjects\go-delivery-frontend\lib\domain\entities\cart" />
+      <recent name="C:\Users\Administrator\StudioProjects\go-delivery-frontend\lib\presentation\screens\cart" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\Users\Administrator\StudioProjects\go-delivery-frontend\lib\presentation\screens\auth\password_recovery" />
@@ -87,6 +120,7 @@
       <recent name="C:\Users\Administrator\StudioProjects\go-delivery-frontend\lib\presentation\core\common" />
     </key>
   </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task id="LOCAL-00001" summary=":pencil: Merging everything and auth :pencil:">
       <option name="closed" value="true" />
@@ -144,7 +178,15 @@
       <option name="project" value="LOCAL" />
       <updated>1731480433620</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL-00008" summary=":pencil: FROM MOISES: added code verification screen :pencil:">
+      <option name="closed" value="true" />
+      <created>1731520614724</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1731520614724</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -172,6 +214,7 @@
     <MESSAGE value=":pencil: Registration conection with backend datasource :gear:" />
     <MESSAGE value=":pencil: getting rid of useless class" />
     <MESSAGE value=":pencil: fixes on Login BLoc" />
-    <option name="LAST_COMMIT_MESSAGE" value=":pencil: fixes on Login BLoc" />
+    <MESSAGE value=":pencil: FROM MOISES: added code verification screen :pencil:" />
+    <option name="LAST_COMMIT_MESSAGE" value=":pencil: FROM MOISES: added code verification screen :pencil:" />
   </component>
 </project>
