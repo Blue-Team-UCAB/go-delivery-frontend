@@ -36,10 +36,10 @@ class CartItemWidget extends StatelessWidget {
               padding: const EdgeInsets.symmetric(vertical: 5,horizontal: 10),
               child: Row(
                 children: [
-                  const SizedBox(
+                  SizedBox(
                     width: 90,
                     height: 90, 
-                    child: Image(image: NetworkImage('https://ih1.redbubble.net/image.3729888756.6985/bg,f8f8f8-flat,750x,075,f-pad,750x1000,f8f8f8.jpg'))
+                    child: Image(image: NetworkImage(item.imgUrl))
                   ),
                   
                   DataBox(

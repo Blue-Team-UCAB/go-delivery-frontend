@@ -8,17 +8,7 @@ part 'cart_state.dart';
 
 class CartBloc extends Bloc<CartEvent, CartState> {
   CartBloc() : super(const CartState(
-    items: [
-    CartItem(id:'1' ,name: 'Dorito', imgUrl: 'imgUrl', price: 2.30, presentation: '150 gr',quantity: 1),
-    CartItem(id:'2' ,name: 'Seven Up', imgUrl: 'imgUrl', price: 1.20, presentation: '1.5 Lt',quantity: 1),
-    CartItem(id:'3' ,name: 'Pepito', imgUrl: 'imgUrl', price: 1.30, presentation: '150 gr',quantity: 1),
-    CartItem(id:'4' ,name: 'Coca-Cola', imgUrl: 'imgUrl', price: 1.00, presentation: '1.5 Lt',quantity: 1),
-    CartItem(id:'5' ,name: 'Yuka-Chips', imgUrl: 'imgUrl', price: 3.30, presentation: '150 gr',quantity: 1),
-    CartItem(id:'6' ,name: 'Redbull', imgUrl: 'imgUrl', price: 0.70, presentation: '0.5 Lt',quantity: 1),
-    CartItem(id:'7' ,name: 'Pepsi', imgUrl: 'imgUrl', price: 1.00, presentation: '1.5 Lt',quantity: 1),
-    CartItem(id:'8' ,name: 'Simply Jalapeño', imgUrl: 'imgUrl', price: 3.00, presentation: '150 gr',quantity: 1),
-    CartItem(id:'9' ,name: 'Monster Original', imgUrl: 'imgUrl', price: 0.80, presentation: '0.5 Lt',quantity: 1),
-  ]
+    items: []
   )) {
 
     on<AddCartItem>(_addCartItemHandler);

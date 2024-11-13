@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_delivery_frontend/application/BLoc/blocs.dart';
 import 'package:go_delivery_frontend/domain/entities/product/product.dart';
+import 'package:go_delivery_frontend/infraestructure/mappers/cart/cart_item_mapper.dart';
 
 class ProductCard extends StatelessWidget {
   final Product product;
@@ -62,7 +65,7 @@ class ProductCard extends StatelessWidget {
                   Center(
                     child: OutlinedButton(
                       onPressed: () {
-                        // Lógica para añadir al carrito
+                        context.read<CartBloc>().addCartItem(CartItemMapper.fromProduct(product).toCartItemEntity());
                       },
                       style: OutlinedButton.styleFrom(
                         side: const BorderSide(

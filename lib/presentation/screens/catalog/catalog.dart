@@ -12,10 +12,10 @@ import 'package:go_delivery_frontend/application/BLoc/product/product_many/produ
 // ignore: use_key_in_widget_constructors
 class CatalogScreen extends StatefulWidget {
   @override
-  _CatalogScreenState createState() => _CatalogScreenState();
+  CatalogScreenState createState() => CatalogScreenState();
 }
 
-class _CatalogScreenState extends State<CatalogScreen> {
+class CatalogScreenState extends State<CatalogScreen> {
   // Aquí defines _counter como la variable que manejará el índice seleccionado.
   int _counter = 0;
 

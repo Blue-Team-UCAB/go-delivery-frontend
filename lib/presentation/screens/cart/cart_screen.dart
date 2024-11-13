@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_delivery_frontend/domain/entities/cart/cartitem.dart';
 import 'package:go_delivery_frontend/application/BLoc/blocs.dart';
 import 'package:go_delivery_frontend/presentation/widgets/cart/cart_item.dart';
 import 'package:go_delivery_frontend/presentation/widgets/cart/cart_footer_box.dart';
+import 'package:go_router/go_router.dart';
 
 
 class CartScreen extends StatelessWidget {
+
+  static const name = 'cart-screen';
   const CartScreen({super.key});
 
   final CartItem testing =  const CartItem(id:'fe', name: 'Pringles FlamingHot Queso', imgUrl: 'imgUrl', price: 2.30, presentation: '150 gr',quantity: 1);
@@ -15,20 +18,20 @@ class CartScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: const Padding(
-          padding: EdgeInsets.all(4.0),
-          child: Icon(Icons.arrow_back_ios_new),
+        leading:Padding(
+          padding: const EdgeInsets.all(4.0),
+          child: IconButton(icon: const Icon(Icons.arrow_back_ios_new), onPressed: () {context.pop();},),
         ),
         title: const Text('Carrito'),
         centerTitle: true,
       ),
       body: _CartView(),
-      floatingActionButton: FloatingActionButton(
-        onPressed: (){
-          context.read<CartBloc>().addCartItem(testing);
-        },
-        child: const Icon(Icons.add),
-        ),
+      // floatingActionButton: FloatingActionButton(
+      //   onPressed: (){
+      //     context.read<CartBloc>().addCartItem(testing);
+      //   },
+      //   child: const Icon(Icons.add),
+      //   ),
     );
   }
 }
