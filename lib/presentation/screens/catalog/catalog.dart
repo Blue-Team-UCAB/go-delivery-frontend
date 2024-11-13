@@ -35,10 +35,13 @@ class CatalogScreenState extends State<CatalogScreen> {
           const LoadProductList(page: 1, perPage: 10, category: 'all'),
         ),
       child: Scaffold(
+        backgroundColor: const Color(0xFFEBEAED),
         appBar: AppBar(
+          scrolledUnderElevation: 0,
+          backgroundColor: Colors.transparent,
           title: const Text(
             'Catálogo',
-            style: TextStyle(fontWeight: FontWeight.bold),
+            style: TextStyle(fontWeight: FontWeight.bold,fontSize: 26),
           ),
           actions: [
             IconButton(
@@ -61,31 +64,24 @@ class CatalogScreenState extends State<CatalogScreen> {
         ),
         endDrawer: Sidebar(),
         body: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Padding(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: TextButton.icon(
-                  onPressed: () {
-                    // Acción para registrar la ubicación
-                  },
-                  icon: const Icon(Icons.location_on, color: Color(0xFF2000B1)),
-                  label: const Text(
-                    'Registre su ubicación',
-                    style: TextStyle(color: Color(0xFF2000B1)),
-                  ),
-                  style: TextButton.styleFrom(
-                    padding: EdgeInsets.zero,
-                    alignment: Alignment.centerLeft,
-                  ),
-                ),
-              ),
+            ListTile(
+              leading: Container(
+                width: 45,
+                height: 45,
+                decoration: BoxDecoration(color: const Color(0xFF2000B1),borderRadius: BorderRadius.circular(25)),
+                child: const Icon(Icons.location_on_outlined, color: Color(0xffffffff),)),
+              title: const Text('Entregar a',style: TextStyle(fontFamily: 'Inter', fontWeight: FontWeight.w400, fontSize: 12),),
+              subtitle: const Text('El Paraíso, Plaza Madariaga',style: TextStyle(fontFamily: 'Inter', fontWeight: FontWeight.w500, fontSize: 16),),
+              trailing: const Icon(Icons.arrow_forward_ios),
+              onTap: () {},
+
             ),
             Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: const EdgeInsets.only(top:16 ,left:18,right: 18.0),
               child: Container(
+                height: 54,
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 decoration: BoxDecoration(
                   color: Colors.white,
@@ -125,6 +121,7 @@ class CatalogScreenState extends State<CatalogScreen> {
                 ),
               ),
             ),
+            const SizedBox(height: 20,),
             Expanded(
               child: BlocBuilder<ProductListBloc, ProductListState>(
                 builder: (context, state) {
@@ -132,14 +129,14 @@ class CatalogScreenState extends State<CatalogScreen> {
                     return const Center(child: CircularProgressIndicator());
                   } else if (state is ProductListLoaded) {
                     return Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                      padding: const EdgeInsets.symmetric(horizontal: 20.0),
                       child: GridView.builder(
                         gridDelegate:
                             const SliverGridDelegateWithFixedCrossAxisCount(
                           crossAxisCount: 2,
-                          crossAxisSpacing: 8.0,
-                          mainAxisSpacing: 8.0,
-                          childAspectRatio: 0.7,
+                          crossAxisSpacing: 20.0,
+                          mainAxisSpacing: 20.0,
+                          childAspectRatio: 0.66,
                         ),
                         itemCount: state.products.length,
                         itemBuilder: (context, index) {

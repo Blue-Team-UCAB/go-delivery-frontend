@@ -37,7 +37,7 @@ class MyApp extends StatelessWidget {
       title: 'Go Delivery',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.white),
+        fontFamily: 'Inter',
         useMaterial3: true,
       ),
       // home: CatalogScreen(),

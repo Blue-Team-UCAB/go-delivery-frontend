@@ -48,8 +48,9 @@ class CustomNavBar extends StatelessWidget {
         children: [
           ClipRRect(
             borderRadius:
-                BorderRadius.circular(20.0), // Set the border radius here
+                const BorderRadius.only(topLeft:  Radius.circular(30), topRight:Radius.circular(30)), // Set the border radius here
             child: BottomAppBar(
+              color: const Color(0xFFFFFFFF),
               shape: const CircularNotchedRectangle(),
               notchMargin: 6.0,
               child: Container(
