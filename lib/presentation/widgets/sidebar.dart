@@ -1,6 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import '../../../infrastructure/datasources/localstorage/localstorage_impl.dart';
+import 'dialog_darken_window.dart';
 
 class Sidebar extends StatelessWidget {
+  final String userName;    // Add these parameters
+  final String userEmail;
+  final VoidCallback onLogout;
+
+  // Create a constructor that requires these parameters
+  const Sidebar({
+    Key? key,
+    required this.userName,
+    required this.userEmail,
+    required this.onLogout,
+  }) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return Drawer(
@@ -9,12 +24,12 @@ class Sidebar extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            UserAccountsDrawerHeader(
-              accountName: const Text('Usuario'),
-              accountEmail: const Text('client@example.com'),
-              currentAccountPicture: CircleAvatar(
+              UserAccountsDrawerHeader(
+              accountName: Text(userName),
+              accountEmail: Text(userEmail),
+              currentAccountPicture: const CircleAvatar(
                 backgroundColor: Colors.white,
-                child: const Text('U'),
+                child: Text('U'),
               ),
             ),
             ListTile(
@@ -54,9 +69,7 @@ class Sidebar extends StatelessWidget {
               leading: const Icon(Icons.exit_to_app, color: Colors.red),
               title: const Text('Cerrar sesión',
                   style: TextStyle(color: Colors.red)),
-              onTap: () {
-                // Cerrar sesión
-              },
+              onTap: onLogout,
             ),
           ],
         ),

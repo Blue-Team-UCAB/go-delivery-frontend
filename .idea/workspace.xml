@@ -4,37 +4,16 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="5aadad3a-72e7-45a0-8ecd-bfbee38abce3" name="Changes" comment=":pencil: FROM MOISES: added code verification screen :pencil:">
-      <change afterPath="$PROJECT_DIR$/fonts/Inter_18pt-Bold.ttf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/fonts/Inter_18pt-ExtraBold.ttf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/fonts/Inter_18pt-ExtraLight.ttf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/fonts/Inter_18pt-Light.ttf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/fonts/Inter_18pt-Medium.ttf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/fonts/Inter_18pt-Regular.ttf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/fonts/Inter_18pt-SemiBold.ttf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/fonts/Inter_18pt-Thin.ttf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/application/BLoc/cart/cart_bloc.dart" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/application/BLoc/cart/cart_event.dart" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/application/BLoc/cart/cart_state.dart" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/domain/entities/cart/cartitem.dart" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/infrastructure/mappers/cart/cart_item_mapper.dart" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/presentation/screens/cart/cart_screen.dart" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/presentation/screens/screens.dart" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/presentation/widgets/cart/cart_footer_box.dart" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/presentation/widgets/cart/cart_item.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Dart_Packages.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Dart_Packages.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Dart_SDK.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Dart_SDK.xml" afterDir="false" />
+    <list default="true" id="5aadad3a-72e7-45a0-8ecd-bfbee38abce3" name="Changes" comment=":pencil: hot fix :fire: : Theme file updated">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/go_delivery_frontend.iml" beforeDir="false" afterPath="$PROJECT_DIR$/go_delivery_frontend.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/injector.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/injector.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/main.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/main.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/presentation/core/router/app_router.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/presentation/core/router/app_router.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/presentation/core/theme/theme.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/presentation/core/theme/theme.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/application/BLoc/auth/login/login_bloc.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/application/BLoc/auth/login/login_bloc.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/presentation/screens/auth/login/login_screen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/presentation/screens/auth/login/login_screen.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/presentation/screens/auth/login/login_validators.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/presentation/screens/auth/login/login_validators.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/presentation/screens/auth/registration/dialog_registration_window.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/presentation/widgets/dialog_darken_window.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/presentation/screens/auth/registration/registration_screen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/presentation/screens/auth/registration/registration_screen.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/presentation/screens/catalog/catalog.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/presentation/screens/catalog/catalog.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/presentation/screens/homescreen/homescreen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/presentation/screens/homescreen/homescreen.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/presentation/widgets/card.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/presentation/widgets/card.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/presentation/widgets/navbar.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/presentation/widgets/navbar.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pubspec.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/pubspec.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/presentation/screens/welcome/welcome_screen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/presentation/screens/welcome/welcome_screen.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/presentation/widgets/sidebar.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/presentation/widgets/sidebar.dart" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -98,6 +77,7 @@
   "keyToString": {
     "Flutter.main.dart.executor": "Run",
     "ScreenRecorder.SavePath": "C:\\Users\\Administrator\\Desktop\\Escritorio",
+    "com.android.tools.idea.streaming.zoom.toolbar.visible": "false",
     "dart.analysis.tool.window.visible": "false",
     "git-widget-placeholder": "auth__new",
     "io.flutter.reload.alreadyRun": "true",
@@ -113,11 +93,11 @@
       <recent name="C:\Users\Administrator\StudioProjects\go-delivery-frontend\lib\presentation\screens\cart" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\Administrator\StudioProjects\go-delivery-frontend\lib\presentation\widgets" />
       <recent name="C:\Users\Administrator\StudioProjects\go-delivery-frontend\lib\presentation\screens\auth\password_recovery" />
       <recent name="C:\Users\Administrator\StudioProjects\go-delivery-frontend\lib\presentation\screens\checkout" />
       <recent name="C:\Users\Administrator\StudioProjects\go-delivery-frontend\lib\infrastructure\repositories\user" />
       <recent name="C:\Users\Administrator\StudioProjects\go-delivery-frontend\lib\infrastructure\repositories\user\auth" />
-      <recent name="C:\Users\Administrator\StudioProjects\go-delivery-frontend\lib\presentation\core\common" />
     </key>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
@@ -186,7 +166,23 @@
       <option name="project" value="LOCAL" />
       <updated>1731520614724</updated>
     </task>
-    <option name="localTasksCounter" value="9" />
+    <task id="LOCAL-00009" summary=":pencil: FROM GUSTAVO: Added Cart Module and Blocs :pencil:">
+      <option name="closed" value="true" />
+      <created>1731527739992</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1731527739992</updated>
+    </task>
+    <task id="LOCAL-00010" summary=":pencil: hot fix :fire: : Theme file updated">
+      <option name="closed" value="true" />
+      <created>1731529159067</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1731529159067</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -215,6 +211,8 @@
     <MESSAGE value=":pencil: getting rid of useless class" />
     <MESSAGE value=":pencil: fixes on Login BLoc" />
     <MESSAGE value=":pencil: FROM MOISES: added code verification screen :pencil:" />
-    <option name="LAST_COMMIT_MESSAGE" value=":pencil: FROM MOISES: added code verification screen :pencil:" />
+    <MESSAGE value=":pencil: FROM GUSTAVO: Added Cart Module and Blocs :pencil:" />
+    <MESSAGE value=":pencil: hot fix :fire: : Theme file updated" />
+    <option name="LAST_COMMIT_MESSAGE" value=":pencil: hot fix :fire: : Theme file updated" />
   </component>
 </project>

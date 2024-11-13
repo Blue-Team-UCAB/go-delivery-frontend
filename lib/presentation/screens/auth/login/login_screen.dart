@@ -42,6 +42,7 @@ class LoginFormState extends State<LoginForm> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   bool _obscurePassword = true;
+  final _formKey = GlobalKey<FormState>();
 
   @override
   void initState() {
@@ -59,7 +60,9 @@ class LoginFormState extends State<LoginForm> {
   }
 
   void _pressSubmit() {
-    context.read<LoginBloc>().submit();
+    if (_formKey.currentState!.validate()) {
+      context.read<LoginBloc>().submit();
+    }
   }
 
   @override
@@ -74,6 +77,7 @@ class LoginFormState extends State<LoginForm> {
             context.go('/catalog');
           } else if (state.formStatus == LoginFormStatus.invalid &&
               state.errorMessage.isNotEmpty) {
+
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
                   duration: const Duration(milliseconds: 1000),
@@ -104,183 +108,186 @@ class LoginFormState extends State<LoginForm> {
                           topRight: Radius.circular(30),
                         ),
                       ),
-                      child: SingleChildScrollView(
-                        padding: const EdgeInsets.all(24),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                          children: [
-                            const Text(
-                              'Bienvenido',
-                              style: TextStyle(
-                                fontFamily: 'Montserrat',
-                                fontSize: 28,
-                                fontWeight: FontWeight.w800,
-                                color: Colors.black,
-                              ),
-                            ),
-                            const SizedBox(height: 24),
-                            TextFormField(
-                              onChanged: (value) =>
-                                  context.read<LoginBloc>().changeEmail(value),
-                              controller: _emailController,
-                              validator: (value) {
-                                final result = loginValidator.emailValidator
-                                    .validate(value);
-                                return result.isSuccessful()
-                                    ? null
-                                    : result.getError().message;
-                              },
-                              keyboardType: TextInputType.emailAddress,
-                              style: const TextStyle(fontFamily: 'Montserrat'),
-                              decoration: inputDecorationBuilderLogin
-                                  .buildInputDecorationLogin(
-                                      'Correo electrónico'),
-                            ),
-                            const SizedBox(height: 16),
-                            TextFormField(
-                              onChanged: (value) => context
-                                  .read<LoginBloc>()
-                                  .changePassword(value),
-                              controller: _passwordController,
-                              validator: (value) {
-                                final result = loginValidator.passwordValidator
-                                    .validate(value);
-                                return result.isSuccessful()
-                                    ? null
-                                    : result.getError().message;
-                              },
-                              obscureText: _obscurePassword,
-                              style: const TextStyle(fontFamily: 'Montserrat'),
-                              decoration: inputDecorationBuilderLogin
-                                  .buildInputDecorationLogin('Contraseña')
-                                  .copyWith(
-                                    suffixIcon: IconButton(
-                                      icon: Icon(
-                                        _obscurePassword
-                                            ? Icons.visibility_off
-                                            : Icons.visibility,
-                                        color: Colors.grey,
-                                      ),
-                                      onPressed: () => setState(() =>
-                                          _obscurePassword = !_obscurePassword),
-                                    ),
-                                  ),
-                            ),
-                            Align(
-                              alignment: Alignment.centerLeft,
-                              child: TextButton(
-                                onPressed: () {
-                                    context.push('/password/reset');
-                                },
-                                style: TextButton.styleFrom(
-                                  foregroundColor: const Color(0xFF02066F),
-                                ),
-                                child: const Text(
-                                  '¿Olvidaste la contraseña?',
-                                  style: TextStyle(
-                                    fontFamily: 'Montserrat',
-                                    fontWeight: FontWeight.w500,
-                                  ),
+                      child: Form(
+                        key: _formKey,
+                        child: SingleChildScrollView(
+                          padding: const EdgeInsets.all(24),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              const Text(
+                                'Bienvenido',
+                                style: TextStyle(
+                                  fontFamily: 'Montserrat',
+                                  fontSize: 28,
+                                  fontWeight: FontWeight.w800,
+                                  color: Colors.black,
                                 ),
                               ),
-                            ),
-                            BlocBuilder<LoginBloc, LoginState>(
-                              builder: (context, state) {
-                                return ElevatedButton(
-                                  onPressed: state.formStatus ==
-                                          LoginFormStatus.posting
+                              const SizedBox(height: 24),
+                              TextFormField(
+                                onChanged: (value) =>
+                                    context.read<LoginBloc>().changeEmail(value),
+                                controller: _emailController,
+                                validator: (value) {
+                                  final result = loginValidator.emailValidator
+                                      .validate(value);
+                                  return result.isSuccessful()
                                       ? null
-                                      : _pressSubmit,
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: const Color(0xFF02066F),
-                                    padding: const EdgeInsets.symmetric(
-                                        vertical: 16),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(12),
-                                    ),
-                                  ),
-                                  child: state.formStatus ==
-                                          LoginFormStatus.posting
-                                      ? const CircularProgressIndicator(
-                                          color: Colors.white)
-                                      : const Text(
-                                          'Iniciar sesión',
-                                          style: TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 16,
-                                            fontFamily: 'Montserrat',
-                                            fontWeight: FontWeight.w700,
-                                          ),
+                                      : result.getError().message;
+                                },
+                                keyboardType: TextInputType.emailAddress,
+                                style: const TextStyle(fontFamily: 'Montserrat'),
+                                decoration: inputDecorationBuilderLogin
+                                    .buildInputDecorationLogin(
+                                        'Correo electrónico'),
+                              ),
+                              const SizedBox(height: 16),
+                              TextFormField(
+                                onChanged: (value) => context
+                                    .read<LoginBloc>()
+                                    .changePassword(value),
+                                controller: _passwordController,
+                                validator: (value) {
+                                  final result = loginValidator.passwordValidator
+                                      .validate(value);
+                                  return result.isSuccessful()
+                                      ? null
+                                      : result.getError().message;
+                                },
+                                obscureText: _obscurePassword,
+                                style: const TextStyle(fontFamily: 'Montserrat'),
+                                decoration: inputDecorationBuilderLogin
+                                    .buildInputDecorationLogin('Contraseña')
+                                    .copyWith(
+                                      suffixIcon: IconButton(
+                                        icon: Icon(
+                                          _obscurePassword
+                                              ? Icons.visibility_off
+                                              : Icons.visibility,
+                                          color: Colors.grey,
                                         ),
-                                );
-                              },
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                const Text(
-                                  '¿No eres miembro?',
-                                  style: TextStyle(
-                                    fontFamily: 'Montserrat',
-                                    fontSize: 12,
-                                  ),
-                                ),
-                                TextButton(
+                                        onPressed: () => setState(() =>
+                                            _obscurePassword = !_obscurePassword),
+                                      ),
+                                    ),
+                              ),
+                              Align(
+                                alignment: Alignment.centerLeft,
+                                child: TextButton(
                                   onPressed: () {
-                                    context.push('/register');
+                                      context.push('/password/reset');
                                   },
                                   style: TextButton.styleFrom(
                                     foregroundColor: const Color(0xFF02066F),
                                   ),
                                   child: const Text(
-                                    'Regístrate ahora',
+                                    '¿Olvidaste la contraseña?',
                                     style: TextStyle(
                                       fontFamily: 'Montserrat',
-                                      fontWeight: FontWeight.w600,
-                                      fontSize: 12,
+                                      fontWeight: FontWeight.w500,
                                     ),
                                   ),
                                 ),
-                              ],
-                            ),
-                            const Text(
-                              'O continúa con',
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                fontFamily: 'Montserrat',
-                                color: Colors.grey,
                               ),
-                            ),
-                            const SizedBox(height: 16),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                for (final icon in [
-                                  'google',
-                                  'apple',
-                                  'facebook'
-                                ]) ...[
-                                  if (icon != 'google')
-                                    const SizedBox(width: 16),
-                                  CircleAvatar(
-                                    radius: 24,
-                                    backgroundColor: {
-                                      'google': const Color(0xFFEA4335),
-                                      'apple': Colors.black,
-                                      'facebook': const Color(0xFF1877F2),
-                                    }[icon],
-                                    child: SvgPicture.asset(
-                                      'assets/icon/$icon.svg',
-                                      colorFilter: const ColorFilter.mode(
-                                          Colors.white, BlendMode.srcIn),
-                                      height: 24,
+                              BlocBuilder<LoginBloc, LoginState>(
+                                builder: (context, state) {
+                                  return ElevatedButton(
+                                    onPressed: state.formStatus ==
+                                            LoginFormStatus.posting
+                                        ? null
+                                        : _pressSubmit,
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: const Color(0xFF02066F),
+                                      padding: const EdgeInsets.symmetric(
+                                          vertical: 16),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(12),
+                                      ),
+                                    ),
+                                    child: state.formStatus ==
+                                            LoginFormStatus.posting
+                                        ? const CircularProgressIndicator(
+                                            color: Colors.white)
+                                        : const Text(
+                                            'Iniciar sesión',
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 16,
+                                              fontFamily: 'Montserrat',
+                                              fontWeight: FontWeight.w700,
+                                            ),
+                                          ),
+                                  );
+                                },
+                              ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  const Text(
+                                    '¿No eres miembro?',
+                                    style: TextStyle(
+                                      fontFamily: 'Montserrat',
+                                      fontSize: 12,
+                                    ),
+                                  ),
+                                  TextButton(
+                                    onPressed: () {
+                                      context.push('/register');
+                                    },
+                                    style: TextButton.styleFrom(
+                                      foregroundColor: const Color(0xFF02066F),
+                                    ),
+                                    child: const Text(
+                                      'Regístrate ahora',
+                                      style: TextStyle(
+                                        fontFamily: 'Montserrat',
+                                        fontWeight: FontWeight.w600,
+                                        fontSize: 12,
+                                      ),
                                     ),
                                   ),
                                 ],
-                              ],
-                            ),
-                          ],
-                        ),
+                              ),
+                              const Text(
+                                'O continúa con',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontFamily: 'Montserrat',
+                                  color: Colors.grey,
+                                ),
+                              ),
+                              const SizedBox(height: 16),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  for (final icon in [
+                                    'google',
+                                    'apple',
+                                    'facebook'
+                                  ]) ...[
+                                    if (icon != 'google')
+                                      const SizedBox(width: 16),
+                                    CircleAvatar(
+                                      radius: 24,
+                                      backgroundColor: {
+                                        'google': const Color(0xFFEA4335),
+                                        'apple': Colors.black,
+                                        'facebook': const Color(0xFF1877F2),
+                                      }[icon],
+                                      child: SvgPicture.asset(
+                                        'assets/icon/$icon.svg',
+                                        colorFilter: const ColorFilter.mode(
+                                            Colors.white, BlendMode.srcIn),
+                                        height: 24,
+                                      ),
+                                    ),
+                                  ],
+                                ],
+                              ),
+                            ],
+                          ),
+                        )
                       ),
                     ),
                   ),
