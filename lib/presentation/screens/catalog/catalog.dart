@@ -1,6 +1,7 @@
 import 'package:get_it/get_it.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_delivery_frontend/presentation/widgets/navbar.dart';
 import 'package:go_delivery_frontend/presentation/widgets/card.dart';
 import 'package:go_delivery_frontend/presentation/widgets/sidebar.dart';
 import 'package:go_delivery_frontend/application/use_cases/product/get_many_product.dart';
@@ -9,7 +10,22 @@ import 'package:go_delivery_frontend/application/BLoc/product/product_many/produ
 import 'package:go_delivery_frontend/application/BLoc/product/product_many/product_many_event.dart';
 
 // ignore: use_key_in_widget_constructors
-class CatalogScreen extends StatelessWidget {
+class CatalogScreen extends StatefulWidget {
+  @override
+  _CatalogScreenState createState() => _CatalogScreenState();
+}
+
+class _CatalogScreenState extends State<CatalogScreen> {
+  // Aquí defines _counter como la variable que manejará el índice seleccionado.
+  int _counter = 0;
+
+  // Función para actualizar el índice cuando un ítem es tocado.
+  void _onNavItemTapped(int valueIndex) {
+    setState(() {
+      _counter = valueIndex; // Actualizamos el valor de _counter
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
@@ -28,7 +44,7 @@ class CatalogScreen extends StatelessWidget {
             IconButton(
               icon: const Icon(Icons.notifications_outlined),
               onPressed: () {
-                // Notificación Screen
+                // Acción para ir a la pantalla de notificaciones
               },
             ),
             Builder(
@@ -36,15 +52,14 @@ class CatalogScreen extends StatelessWidget {
                 return IconButton(
                   icon: const Icon(Icons.menu),
                   onPressed: () {
-                    Scaffold.of(innerContext)
-                        .openEndDrawer(); // Abre el endDrawer
+                    Scaffold.of(innerContext).openEndDrawer();
                   },
                 );
               },
             ),
           ],
         ),
-        endDrawer: Sidebar(), // Usa el endDrawer en lugar de drawer
+        endDrawer: Sidebar(),
         body: Column(
           children: [
             Padding(
@@ -142,6 +157,10 @@ class CatalogScreen extends StatelessWidget {
               ),
             ),
           ],
+        ),
+        bottomNavigationBar: CustomNavBar(
+          selectedIndex: _counter,
+          onItemTapped: _onNavItemTapped,
         ),
       ),
     );
