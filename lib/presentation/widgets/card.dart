@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_delivery_frontend/application/BLoc/blocs.dart';
 import 'package:go_delivery_frontend/domain/entities/product/product.dart';
+import 'package:go_delivery_frontend/infraestructure/mappers/cart/cart_item_mapper.dart';
 
 class ProductCard extends StatelessWidget {
   final Product product;
@@ -10,97 +13,81 @@ class ProductCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: const Color(0xFFFFFFFF),
         borderRadius: BorderRadius.circular(12.0),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.3),
-            spreadRadius: 2,
-            blurRadius: 5,
-            offset: const Offset(0, 3),
-          ),
-        ],
       ),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        mainAxisSize:
-            MainAxisSize.min, // Se asegura que el Column se ajuste al contenido
         children: [
-          // Imagen
-          Padding(
-            padding: const EdgeInsets.only(top: 8.0),
-            child: ClipRRect(
-              borderRadius: const BorderRadius.only(
-                topLeft: Radius.circular(12.0),
-                topRight: Radius.circular(12.0),
-              ),
-              child: Image.network(
-                product.imageUrl,
-                height: 120, // Ajustar la altura de la imagen
-                fit: BoxFit.cover,
-              ),
+          // Imagen del producto
+          ClipRRect(
+            borderRadius: const BorderRadius.only(
+              topLeft: Radius.circular(12.0),
+              topRight: Radius.circular(12.0),
+            ),
+            child: Image.network(
+              product.imageUrl,
+              height: 100,
+              fit: BoxFit.contain,
             ),
           ),
-          // Contenido de la tarjeta
           Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: const EdgeInsets.all(15.0),
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                // Título del producto
                 Text(
                   product.name,
+                  maxLines: 2,
                   style: const TextStyle(
-                    fontSize: 12.0,
-                    fontWeight: FontWeight.bold,
+                    fontFamily: 'Inter',
+                    fontSize: 14.0,
+                    fontWeight: FontWeight.w400,
                   ),
-                  overflow: TextOverflow.ellipsis,
-                  maxLines: 2, // Limita a dos líneas
                 ),
-                // Precio
                 Text(
                   '\$${product.price.toStringAsFixed(2)}',
-                  style: TextStyle(
-                    fontSize: 10.0,
-                    color: Colors.green[700],
-                    fontWeight: FontWeight.w500,
-                  ),
-                  overflow: TextOverflow.ellipsis,
-                ),
-                const SizedBox(height: 5),
-                // Categoría del producto
-                Text(
-                  product.category.name,
                   style: const TextStyle(
-                    fontSize: 8.0,
-                    fontWeight: FontWeight.w400,
-                    color: Colors.black54,
+                    fontFamily: 'Inter',
+                    fontSize: 16,
+                    fontWeight: FontWeight.w800,
                   ),
-                  overflow: TextOverflow.ellipsis,
                 ),
-                const SizedBox(height: 5),
-                // Botón de añadir al carrito
-                Center(
-                  child: OutlinedButton(
-                    onPressed: () {
-                      // Lógica para añadir al carrito
-                    },
-                    style: OutlinedButton.styleFrom(
-                      side: const BorderSide(
-                          color: Color(0xFF2000B1)), // Borde azul
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8.0),
-                      ),
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 18, vertical: 3),
-                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                    ),
-                    child: const Text(
-                      'Añadir al carrito',
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: Color(0xFF2000B1),
-                      ),
+                const SizedBox(height: 10),
+                // Botón de añadir al carrito (plano con borde azul)
+                OutlinedButton.icon(
+                  iconAlignment: IconAlignment.start,
+                  onPressed: () {
+                    context.read<CartBloc>().addCartItem(
+                        CartItemMapper.fromProduct(product).toCartItemEntity());
+                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                        duration: Duration(seconds: 1),
+                        behavior: SnackBarBehavior.floating,
+                        margin:
+                            EdgeInsets.only(bottom: 25, right: 20, left: 20),
+                        backgroundColor: Color(0xfc009e4f),
+                        content: Text('Agregado Satisfactoriamente')));
+
+                    // ScaffoldMessenger.of(context).showSnackBar(const SnackBar(backgroundColor: Color(0xFF88e788),content: Text('Agregado Satisfactoriamente')));
+                  },
+                  style: ButtonStyle(
+                    alignment: Alignment.center,
+                    side: const WidgetStatePropertyAll(
+                        BorderSide(color: Color(0xFF2000B1))),
+                    shape: WidgetStatePropertyAll(RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12))),
+                  ),
+                  icon: const Icon(
+                    Icons.add_shopping_cart,
+                    size: 18,
+                    color: Color(0xFF2000B1),
+                  ),
+                  label: const Text(
+                    'Añadir',
+                    style: TextStyle(
+                      fontFamily: 'Inter',
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
+                      color: Color(0xFF2000B1),
                     ),
                   ),
                 ),
