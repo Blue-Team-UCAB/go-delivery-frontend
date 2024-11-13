@@ -1,8 +1,10 @@
 import 'package:go_delivery_frontend/presentation/screens/catalog/catalog.dart';
+import 'package:go_delivery_frontend/presentation/screens/checkout/checkout_screen.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../infrastructure/datasources/localstorage/localstorage_impl.dart';
 import '../../screens/auth/login/login_screen.dart';
+import '../../screens/auth/password_recovery/forgot_pass_screen.dart';
 import '../../screens/auth/registration/registration_screen.dart';
 import '../../screens/splash/splash_screen.dart';
 import '../../screens/welcome/welcome_screen.dart';
@@ -33,9 +35,7 @@ class RoutesManager {
           path: '/login',
           pageBuilder: (context, state) => CustomTransitions.slideRight(
             key: state.pageKey,
-            child: LoginScreen(
-                onLoginSuccess: () => context.go('/')
-            )
+            child: LoginScreen()
           )
       ),
       GoRoute(
@@ -52,17 +52,32 @@ class RoutesManager {
             child: CatalogScreen(),
           )
       ),
+      GoRoute(
+          path: '/checkout',
+          pageBuilder: (context, state) => CustomTransitions.slideRight(
+            key: state.pageKey,
+            child: CheckoutScreen(),
+          )
+      ),
+      GoRoute(
+          path: '/password/reset',
+          pageBuilder: (context, state) => CustomTransitions.slideRight(
+            key: state.pageKey,
+            child: ForgotPasswordScreen(),
+          )
+      ),
     ],
     redirect: (context, state) async {
       final isGoingTo = state.matchedLocation;
       final isAdmin =
           await LocalStorageService().getValue<bool>('isAdmin') != null;
       final isAutorized =
-          await LocalStorageService().getValue<String>('token') != null;
+          await LocalStorageService().getValue<String>('appToken') != null;
       final hasSeenWelcome =
           await LocalStorageService().getValue<bool>('initialized') != null;
 
       if (isGoingTo == '/splash') return null;
+
 
       if (!isAutorized) {
         if (isGoingTo == '/register' ||
@@ -75,8 +90,7 @@ class RoutesManager {
       }
 
       if (isGoingTo == '/welcome') {
-        if (isAdmin) return '/admin/0';
-        if (isAutorized) return '/';
+        if (isAutorized) return '/catalog';
         if (hasSeenWelcome) return '/login';
         return null;
       }

@@ -1,8 +1,8 @@
 class Client {
-  final String id;
-  final String name;
-  final String phone;
-  final String email;
+  final String? id;
+  final String? name;
+  final String? phone;
+  final String? email;
   final String? avatarImage;
 
   Client(

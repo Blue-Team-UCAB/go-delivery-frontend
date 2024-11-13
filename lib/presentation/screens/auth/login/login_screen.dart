@@ -11,9 +11,7 @@ import '../../../../injector.dart';
 import 'inputDecorationLogin.dart';
 
 class LoginScreen extends StatefulWidget {
-  const LoginScreen({Key? key, this.onLoginSuccess}) : super(key: key);
-
-  final void Function()? onLoginSuccess;
+  const LoginScreen({Key? key}) : super(key: key);
 
   @override
   State<LoginScreen> createState() => _LoginScreenState();
@@ -25,7 +23,7 @@ class _LoginScreenState extends State<LoginScreen> {
     return BlocProvider<LoginBloc>(
       // BlocProvider in LoginScreen
       create: (context) => getIt<LoginBloc>(), // Or your creation logic
-      child: LoginForm(onLoginSuccess: widget.onLoginSuccess),
+      child: const LoginForm(),
     );
   }
 }
@@ -64,10 +62,6 @@ class LoginFormState extends State<LoginForm> {
     context.read<LoginBloc>().submit();
   }
 
-  void onLoginSuccessCallback() {
-    widget.onLoginSuccess?.call();
-  }
-
   @override
   Widget build(BuildContext context) {
     bool isDarkMode = context.watch<ThemesBloc>().isDarkMode;
@@ -77,11 +71,7 @@ class LoginFormState extends State<LoginForm> {
             previous.formStatus != current.formStatus,
         listener: (context, state) {
           if (state.formStatus == LoginFormStatus.valid) {
-            if (state.isClient) {
-              widget.onLoginSuccess?.call();
-            } else {
-              widget.onLoginSuccess?.call();
-            }
+            context.go('/catalog');
           } else if (state.formStatus == LoginFormStatus.invalid &&
               state.errorMessage.isNotEmpty) {
             ScaffoldMessenger.of(context).showSnackBar(
@@ -179,8 +169,9 @@ class LoginFormState extends State<LoginForm> {
                             Align(
                               alignment: Alignment.centerLeft,
                               child: TextButton(
-                                onPressed: () {},
-                                // TODO Add forgot password logic route
+                                onPressed: () {
+                                    context.push('/password/reset');
+                                },
                                 style: TextButton.styleFrom(
                                   foregroundColor: const Color(0xFF02066F),
                                 ),

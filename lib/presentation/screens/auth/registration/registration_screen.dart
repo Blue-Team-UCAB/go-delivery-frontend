@@ -102,7 +102,13 @@ class RegisterFormState  extends State<RegisterForm> {
             if (state.registerFormStatus == RegisterFormStatus.invalid) {
               ScaffoldMessenger.of(context).hideCurrentSnackBar();
               ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text(state.errorMessage)),
+                SnackBar(
+                  content: Text(
+                    'Error al registrar: ${state.errorMessage}',
+                    style: const TextStyle(fontFamily: 'Montserrat'),
+                  ),
+                  backgroundColor: Colors.red,
+                ),
               );
             }
 
@@ -208,7 +214,7 @@ class RegisterFormState  extends State<RegisterForm> {
                                 ('Número de teléfono'),
                               inputFormatters: [
                                 FilteringTextInputFormatter.digitsOnly,
-                                LengthLimitingTextInputFormatter(11),
+                                LengthLimitingTextInputFormatter(12),
                               ],
                             ),
                             const SizedBox(height: 14),

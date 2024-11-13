@@ -1,10 +1,12 @@
 import 'package:go_delivery_frontend/common/failure.dart';
+import 'package:go_delivery_frontend/infrastructure/mappers/user/user_mapper.dart';
 
 import '../../../application/api/api_request.dart';
 import '../../../application/key_value_storage/localstorage.dart';
 import '../../../common/result.dart';
+import '../../../domain/entities/client/client.dart';
 import '../../../domain/repositories/user/user_repository.dart';
-import '../../mappers/user/user_mapper.dart';
+import '../../mappers/user/client_mapper.dart';
 
 enum UserType { CLIENT, ADMIN }
 
@@ -20,31 +22,29 @@ class UserRepositoryImpl implements UserRepository {
 
   @override
   Future<Result<bool>> login(String email, String password) async {
-
-    print(email);
-    print(password);
-
     try {
       final response = await _apiRequestManager.request<bool>(
         '/auth/login',
         'POST',
-            (data) {
-          final client = ClientMapper.fromJson(data['user']);
-          final token = data['token'] as String;
-          final type = data['type'] == 'CLIENT' ? UserType.CLIENT : UserType.ADMIN;
+        (data) {
+          if (data['error'] != null) {
+            throw Exception(data['error']);
+          } else {
+            final userData = data['value'] as Map<String, dynamic>;
+            var user = UserMapper.fromJson(userData);
 
-          print(token);
-          print("cliente: {$client}");
-          print("tipo de cliente: {$type}");
+            _apiRequestManager.setHeaders(
+                'Authorization', 'Bearer ${user.token}');
 
-          _localStorage.setKeyValue<String>('token', token);
-          _localStorage.setKeyValue<bool>('isAdmin',true);
-
+            _localStorage.setKeyValue<bool>('isAdmin', true);
+            _localStorage.setKeyValue<String>('appToken', user.token);
+          }
           return true;
         },
-        body: {
-          'email': email,
-          'password': password,
+        body:
+        {
+          "email": email,
+          "password": password
         },
       );
       return response;
@@ -66,15 +66,12 @@ class UserRepositoryImpl implements UserRepository {
         '/auth/register',
         'POST',
             (data) {
-          final id = ClientMapper.fromJson(data['id']);
-          print("SUCCESS AQUI EL ID NUEVO: {$id}");
-
           return true;
         },
         body: {
           'email': email,
-          'password': password,
           'name': name,
+          'password': password,
           'phone': phone,
         },
       );

@@ -16,10 +16,10 @@ class ProductRepositoryImpl extends ProductRepository {
   })  : _apiRequestManager = apiRequestManager,
         _localStorage = localStorage;
 
-  //Future<void> _addAuthorizationHeader() async {
-  //  final token = await _localStorage.getAuthorizationToken();
-  //  _apiRequestManager.setHeaders('Authorization', 'Bearer $token');
-  //}
+  Future<void> _addAuthorizationHeader() async {
+    final token = await _localStorage.getAuthorizationToken();
+    _apiRequestManager.setHeaders('Authorization', 'Bearer $token');
+  }
 
   @override
   Future<Result<List<Product>>> getProducts({
@@ -27,7 +27,7 @@ class ProductRepositoryImpl extends ProductRepository {
     required int perPage,
     required String category,
   }) async {
-    //await _addAuthorizationHeader();
+    await _addAuthorizationHeader();
     try {
       final response = await _apiRequestManager.request(
         '/product',
