@@ -180,15 +180,16 @@ class LoginFormState extends State<LoginForm> {
                               alignment: Alignment.centerLeft,
                               child: TextButton(
                                 onPressed: () {},
+                                // TODO Add forgot password logic route
+                                style: TextButton.styleFrom(
+                                  foregroundColor: const Color(0xFF02066F),
+                                ),
                                 child: const Text(
                                   '¿Olvidaste la contraseña?',
                                   style: TextStyle(
                                     fontFamily: 'Montserrat',
                                     fontWeight: FontWeight.w500,
                                   ),
-                                ),
-                                style: TextButton.styleFrom(
-                                  foregroundColor: const Color(0xFF02066F),
                                 ),
                               ),
                             ),
@@ -237,6 +238,9 @@ class LoginFormState extends State<LoginForm> {
                                   onPressed: () {
                                     context.push('/register');
                                   },
+                                  style: TextButton.styleFrom(
+                                    foregroundColor: const Color(0xFF02066F),
+                                  ),
                                   child: const Text(
                                     'Regístrate ahora',
                                     style: TextStyle(
@@ -244,9 +248,6 @@ class LoginFormState extends State<LoginForm> {
                                       fontWeight: FontWeight.w600,
                                       fontSize: 12,
                                     ),
-                                  ),
-                                  style: TextButton.styleFrom(
-                                    foregroundColor: const Color(0xFF02066F),
                                   ),
                                 ),
                               ],
@@ -279,7 +280,8 @@ class LoginFormState extends State<LoginForm> {
                                     }[icon],
                                     child: SvgPicture.asset(
                                       'assets/icon/$icon.svg',
-                                      color: Colors.white,
+                                      colorFilter: const ColorFilter.mode(
+                                          Colors.white, BlendMode.srcIn),
                                       height: 24,
                                     ),
                                   ),
