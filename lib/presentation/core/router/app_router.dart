@@ -1,14 +1,7 @@
-import 'package:go_delivery_frontend/presentation/screens/cart/cart_screen.dart';
-import 'package:go_delivery_frontend/presentation/screens/catalog/catalog.dart';
-import 'package:go_delivery_frontend/presentation/screens/checkout/checkout_screen.dart';
+import 'package:go_delivery_frontend/presentation/screens/screens.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../infrastructure/datasources/localstorage/localstorage_impl.dart';
-import '../../screens/auth/login/login_screen.dart';
-import '../../screens/auth/password_recovery/forgot_pass_screen.dart';
-import '../../screens/auth/registration/registration_screen.dart';
-import '../../screens/splash/splash_screen.dart';
-import '../../screens/welcome/welcome_screen.dart';
 import '../transition/transitions.dart';
 
 class RoutesManager {
@@ -36,14 +29,14 @@ class RoutesManager {
           path: '/login',
           pageBuilder: (context, state) => CustomTransitions.slideRight(
             key: state.pageKey,
-            child: LoginScreen()
+            child: const LoginScreen()
           )
       ),
       GoRoute(
           path: '/register',
           pageBuilder: (context, state) => CustomTransitions.slideRight(
             key: state.pageKey,
-            child: RegisterScreen(),
+            child: const RegisterScreen(),
           )
       ),
       GoRoute(
@@ -71,7 +64,7 @@ class RoutesManager {
           path: '/password/reset',
           pageBuilder: (context, state) => CustomTransitions.slideRight(
             key: state.pageKey,
-            child: ForgotPasswordScreen(),
+            child: const ForgotPasswordScreen(),
           )
       ),
     ],

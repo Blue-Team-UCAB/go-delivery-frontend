@@ -74,8 +74,8 @@ class CatalogScreenState extends State<CatalogScreen> {
                   height: 45,
                   decoration: BoxDecoration(color: const Color(0xFF2000B1),borderRadius: BorderRadius.circular(25)),
                   child: const Icon(Icons.location_on_outlined, color: Color(0xffffffff),)),
-              title: const Text('Entregar a',style: TextStyle(fontFamily: 'Inter', fontWeight: FontWeight.w400, fontSize: 12),),
-              subtitle: const Text('El Paraíso, Plaza Madariaga',style: TextStyle(fontFamily: 'Inter', fontWeight: FontWeight.w500, fontSize: 16),),
+              title: const Text('Entregar a',style: TextStyle(fontFamily: 'Inter', fontWeight: FontWeight.w400, fontSize: 12,color: Color(0xFF000000)),),
+              subtitle: const Text('El Paraíso, Plaza Madariaga',style: TextStyle(fontFamily: 'Inter', fontWeight: FontWeight.w500, fontSize: 16,color: Color(0xFF000000)),),
               trailing: const Icon(Icons.arrow_forward_ios),
               onTap: () {},
 
