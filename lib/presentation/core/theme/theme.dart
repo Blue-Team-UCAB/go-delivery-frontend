@@ -10,31 +10,6 @@ class AppTheme {
         brightness: isDarkMode ? Brightness.dark : Brightness.light,
         colorSchemeSeed: Colors.blue,
         fontFamily: 'Inter, Montserrat',
-        appBarTheme: const AppBarTheme(
-          centerTitle: false,
-          iconTheme: IconThemeData(
-            color: Colors.white,
-          ),
-          backgroundColor: Colors.blue,
-          titleTextStyle: TextStyle(
-            color: Colors.white,
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
-          ),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.only(
-              bottomRight: Radius.circular(60),
-            ),
-          ),
-        ),
-        drawerTheme: const DrawerThemeData(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.only(
-              topRight: Radius.circular(0),
-              bottomRight: Radius.circular(100),
-            ),
-          ),
-        ),
         sliderTheme: SliderThemeData(
           inactiveTrackColor: Colors.transparent,
           thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 5.0),
