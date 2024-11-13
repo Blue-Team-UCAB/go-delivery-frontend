@@ -12,17 +12,15 @@ import 'package:go_delivery_frontend/application/BLoc/product/product_many/produ
 // ignore: use_key_in_widget_constructors
 class CatalogScreen extends StatefulWidget {
   @override
+  // ignore: library_private_types_in_public_api
   _CatalogScreenState createState() => _CatalogScreenState();
 }
 
 class _CatalogScreenState extends State<CatalogScreen> {
-  // Aquí defines _counter como la variable que manejará el índice seleccionado.
   int _counter = 0;
-
-  // Función para actualizar el índice cuando un ítem es tocado.
   void _onNavItemTapped(int valueIndex) {
     setState(() {
-      _counter = valueIndex; // Actualizamos el valor de _counter
+      _counter = valueIndex;
     });
   }
 
@@ -40,6 +38,8 @@ class _CatalogScreenState extends State<CatalogScreen> {
             'Catálogo',
             style: TextStyle(fontWeight: FontWeight.bold),
           ),
+          backgroundColor: Colors.white,
+          elevation: 0,
           actions: [
             IconButton(
               icon: const Icon(Icons.notifications_outlined),
