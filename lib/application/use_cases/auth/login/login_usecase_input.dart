@@ -19,6 +19,9 @@ class LoginUseCase {
       : _userRepository = userRepository;
 
   Future<Result<bool>> execute(LoginUseCaseInput input) {
-    return _userRepository.login(input.email, input.password);
+    return _userRepository.login(
+        input.email,
+        input.password
+    );
   }
 }

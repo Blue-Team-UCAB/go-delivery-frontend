@@ -35,18 +35,19 @@ class InjectManager {
         apiRequestManager: apiRequestManagerImpl,
         localStorage: localStorageService);
 
-    // Registrar el repositorio de usuarios
+    //caso de uso
+    final loginUseCase = LoginUseCase(userRepository: userRepository);
+    final registerUseCase = RegisterUseCase(userRepository: userRepository);
+
+    // Registrar
     getIt.registerFactory(() =>
-        LoginBloc(userRespository: userRepository));
+        LoginBloc(loginUseCase: loginUseCase));
     getIt.registerFactory(() =>
         RegisterBloc(userRepository.register));
     getIt.registerSingleton(
         RecoverPasswordBloc(userRespository: userRepository));
 
-    //caso de uso
-    final loginUseCase = LoginUseCase(userRepository: userRepository);
-    final registerUseCase = RegisterUseCase(userRepository: userRepository);
-   // final recoveryUseCase
+    //final recoveryUseCase
 
     //registrar caso de uso
     getIt.registerSingleton<LoginUseCase>(loginUseCase);

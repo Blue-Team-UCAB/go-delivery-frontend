@@ -1,16 +1,18 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_delivery_frontend/application/use_cases/auth/login/login_usecase_input.dart';
 
 import '../../../../domain/repositories/user/user_repository.dart';
 import '../../../core/bloc/ensure_bloc.dart';
+import '../../../use_cases/product/get_many_product.dart';
 
 part 'login_event.dart';
 part 'login_state.dart';
 
 class LoginBloc extends SafeBloc<LoginEvent, LoginState> {
-  final UserRepository userRespository;
+  final LoginUseCase loginUseCase;
 
-  LoginBloc({required this.userRespository}) : super(const LoginState()) {
+  LoginBloc({required this.loginUseCase}) : super(const LoginState()) {
     on<EmailChanged>(_onEmailChanged);
     on<PasswordChanged>(_onPasswordChanged);
     on<ErrorOccurred>(_onErrorOcurred);
@@ -59,8 +61,12 @@ class LoginBloc extends SafeBloc<LoginEvent, LoginState> {
           errorMessage: 'Invalid fields. You must enter your credentials'));
       return;
     }
-    final isLoggedResult =
-        await userRespository.login(state.email, state.password);
+    final isLoggedResult = await loginUseCase.execute(
+      LoginUseCaseInput(
+          email: state.email,
+          password: state.password,
+      ),
+    );
 
     if (isLoggedResult.isSuccessful()) {
       final isLogged = isLoggedResult.getValue();

@@ -66,7 +66,6 @@ class RegisterFormState  extends State<RegisterForm> {
       });
 
       try {
-        // Add your registration logic here
         await context.read<RegisterBloc>().obSubmitRegister();
 
         if (mounted) {

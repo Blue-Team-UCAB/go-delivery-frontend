@@ -23,6 +23,11 @@ class RegisterUseCase {
       : _userRepository = userRepository;
 
   Future<Result<bool>> execute(RegisterUseCaseInput input) {
-    return _userRepository.register(email: input.email, password: input.password, name: input.name, phone: input.phone);
+    return _userRepository.register(
+        email: input.email,
+        password: input.password,
+        name: input.name,
+        phone: input.phone
+    );
   }
 }
