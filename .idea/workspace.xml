@@ -4,13 +4,24 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="5aadad3a-72e7-45a0-8ecd-bfbee38abce3" name="Changes" comment=":pencil: getting rid of useless class">
+    <list default="true" id="5aadad3a-72e7-45a0-8ecd-bfbee38abce3" name="Changes" comment=":pencil: fixes on Login BLoc">
+      <change afterPath="$PROJECT_DIR$/lib/infrastructure/mappers/user/client_mapper.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/infrastructure/models/user_model.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/application/BLoc/auth/login/login_bloc.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/application/BLoc/auth/login/login_bloc.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/application/use_cases/auth/login/login_usecase_input.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/application/use_cases/auth/login/login_usecase_input.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/application/use_cases/auth/register/register_usecase_input.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/application/use_cases/auth/register/register_usecase_input.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/injector.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/injector.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/application/BLoc/auth/login/login_event.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/application/BLoc/auth/login/login_event.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/domain/entities/client/client.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/domain/entities/client/client.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/infrastructure/datasources/api/api_request_impl.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/infrastructure/datasources/api/api_request_impl.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/infrastructure/mappers/user/user_mapper.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/infrastructure/mappers/user/user_mapper.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/infrastructure/repositories/product/product_repository_impl.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/infrastructure/repositories/product/product_repository_impl.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/infrastructure/repositories/user/user_repository_impl.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/infrastructure/repositories/user/user_repository_impl.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/presentation/auth/forgot_pass_screen.dart" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/presentation/auth/registration/code_verification_screen.dart" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/presentation/core/router/app_router.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/presentation/core/router/app_router.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/presentation/screens/auth/login/login_screen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/presentation/screens/auth/login/login_screen.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/presentation/screens/auth/password_recovery/forgot_pass_screen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/presentation/screens/auth/password_recovery/forgot_pass_screen.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/presentation/screens/auth/registration/registration_screen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/presentation/screens/auth/registration/registration_screen.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/presentation/screens/checkout_screen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/presentation/screens/checkout/checkout_screen.dart" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -34,6 +45,11 @@
     </leaf>
   </component>
   <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="auth_new" />
+      </map>
+    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
@@ -48,10 +64,11 @@
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "Flutter.main.dart.executor": "Run",
+    "ScreenRecorder.SavePath": "C:\\Users\\Administrator\\Desktop\\Escritorio",
     "dart.analysis.tool.window.visible": "false",
-    "git-widget-placeholder": "auth__new",
+    "git-widget-placeholder": "37ff425a",
     "io.flutter.reload.alreadyRun": "true",
-    "last_opened_file_path": "C:/Users/Administrator/StudioProjects/go-delivery-frontend/lib/infrastructure/repositories"
+    "last_opened_file_path": "C:/Users/Administrator/Desktop/Escritorio"
   }
 }]]></component>
   <component name="RecentsManager">
@@ -63,11 +80,11 @@
       <recent name="C:\Users\Administrator\StudioProjects\go-delivery-frontend\lib\presentation\screens" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\Administrator\StudioProjects\go-delivery-frontend\lib\presentation\screens\auth\password_recovery" />
+      <recent name="C:\Users\Administrator\StudioProjects\go-delivery-frontend\lib\presentation\screens\checkout" />
       <recent name="C:\Users\Administrator\StudioProjects\go-delivery-frontend\lib\infrastructure\repositories\user" />
       <recent name="C:\Users\Administrator\StudioProjects\go-delivery-frontend\lib\infrastructure\repositories\user\auth" />
       <recent name="C:\Users\Administrator\StudioProjects\go-delivery-frontend\lib\presentation\core\common" />
-      <recent name="C:\Users\Administrator\StudioProjects\go-delivery-frontend\lib\presentation\screens\auth\login" />
-      <recent name="C:\Users\Administrator\StudioProjects\go-delivery-frontend\lib\presentation\screens\auth" />
     </key>
   </component>
   <component name="TaskManager">
@@ -119,7 +136,15 @@
       <option name="project" value="LOCAL" />
       <updated>1731478842342</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary=":pencil: fixes on Login BLoc">
+      <option name="closed" value="true" />
+      <created>1731480433620</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1731480433620</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -128,6 +153,17 @@
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
     </layout>
   </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value=":pencil: Merging everything and auth :pencil:" />
     <MESSAGE value=":pencil: :Fire: Hot fix :fire: :pencil:" />
@@ -135,6 +171,7 @@
     <MESSAGE value=":gear: :fire: Hotfix Repository Login use case :fire: :gear:" />
     <MESSAGE value=":pencil: Registration conection with backend datasource :gear:" />
     <MESSAGE value=":pencil: getting rid of useless class" />
-    <option name="LAST_COMMIT_MESSAGE" value=":pencil: getting rid of useless class" />
+    <MESSAGE value=":pencil: fixes on Login BLoc" />
+    <option name="LAST_COMMIT_MESSAGE" value=":pencil: fixes on Login BLoc" />
   </component>
 </project>

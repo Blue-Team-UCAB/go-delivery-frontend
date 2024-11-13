@@ -45,6 +45,7 @@ class ApiRequestManagerImpl extends IApiRequestManager {
         return const NoInternetFailure();
       case DioExceptionType.badResponse:
         if (e.response?.data['message'] is String) {
+          print("Error en autorización");
           return NoAuthorizeFailure(message: e.response?.data['message']);
         } else {
           return const NoAuthorizeFailure(message: 'Error desconocido');

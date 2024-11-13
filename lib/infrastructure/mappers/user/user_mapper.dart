@@ -1,23 +1,19 @@
-import '../../../domain/entities/client/client.dart';
+import '../../models/user_model.dart';
 
-class ClientMapper {
-  static Client fromJson(Map<String, dynamic> json) {
-    return Client(
-      id: json['id'] as String,
-      name: json['name'] as String,
-      phone: json['phone'] as String,
-      email: json['email'] as String,
-      avatarImage: json['avatarImage'] as String?,
+class UserMapper {
+  static User fromJson(Map<String, dynamic> json) {
+    return User(
+      name: json['name'] as String? ?? '',
+      email: json['email'] as String? ?? '',
+      token: json['token'] as String? ?? '',
     );
   }
 
-  static Map<String, dynamic> toJson(Client client) {
+  static Map<String, dynamic> toJson(User user) {
     return {
-      'id': client.id,
-      'name': client.name,
-      'phone': client.phone,
-      'email': client.email,
-      'avatarImage': client.avatarImage,
+      'name': user.name,
+      'email': user.email,
+      'token': user.token,
     };
   }
 }

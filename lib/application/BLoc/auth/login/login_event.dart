@@ -20,7 +20,8 @@ class LoginFormSubmited extends LoginEvent {}
 
 class ErrorOccurred extends LoginEvent {
   final String errorMessage;
-  ErrorOccurred({required this.errorMessage});
+  final String? message;
+  ErrorOccurred({required this.errorMessage, this.message});
 }
 
 class LoginCompleted extends LoginEvent {

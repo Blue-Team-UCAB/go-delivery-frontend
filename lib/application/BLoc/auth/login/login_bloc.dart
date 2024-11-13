@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:go_delivery_frontend/application/use_cases/auth/login/login_usecase_input.dart';
 
 import '../../../../domain/repositories/user/user_repository.dart';
@@ -57,6 +58,8 @@ class LoginBloc extends SafeBloc<LoginEvent, LoginState> {
   Future<void> submit() async {
     add(LoginFormSubmited());
     if (state.email == '' || state.password == '') {
+      print("LOGIN hay algo VACIO");
+
       add(ErrorOccurred(
           errorMessage: 'Invalid fields. You must enter your credentials'));
       return;
@@ -67,6 +70,10 @@ class LoginBloc extends SafeBloc<LoginEvent, LoginState> {
           password: state.password,
       ),
     );
+
+    print(isLoggedResult.isSuccess);
+    print(isLoggedResult.error);
+    print(isLoggedResult.value);
 
     if (isLoggedResult.isSuccessful()) {
       final isLogged = isLoggedResult.getValue();
