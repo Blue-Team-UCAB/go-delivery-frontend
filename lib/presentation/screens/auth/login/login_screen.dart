@@ -22,7 +22,8 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<LoginBloc>(  // BlocProvider in LoginScreen
+    return BlocProvider<LoginBloc>(
+      // BlocProvider in LoginScreen
       create: (context) => getIt<LoginBloc>(), // Or your creation logic
       child: LoginForm(onLoginSuccess: widget.onLoginSuccess),
     );
@@ -38,7 +39,8 @@ class LoginForm extends StatefulWidget {
   LoginFormState createState() => LoginFormState();
 }
 
-class LoginFormState extends State<LoginForm> { // Corrected line
+class LoginFormState extends State<LoginForm> {
+  // Corrected line
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   bool _obscurePassword = true;
@@ -59,7 +61,7 @@ class LoginFormState extends State<LoginForm> { // Corrected line
   }
 
   void _pressSubmit() {
-      context.read<LoginBloc>().submit();
+    context.read<LoginBloc>().submit();
   }
 
   void onLoginSuccessCallback() {
@@ -72,18 +74,16 @@ class LoginFormState extends State<LoginForm> { // Corrected line
 
     return BlocConsumer<LoginBloc, LoginState>(
         listenWhen: (previous, current) =>
-            previous.formStatus != current.formStatus
-        ,
+            previous.formStatus != current.formStatus,
         listener: (context, state) {
           if (state.formStatus == LoginFormStatus.valid) {
-
-            if(state.isClient) {
+            if (state.isClient) {
               widget.onLoginSuccess?.call();
             } else {
               widget.onLoginSuccess?.call();
             }
-
-          } else if (state.formStatus == LoginFormStatus.invalid && state.errorMessage.isNotEmpty) {
+          } else if (state.formStatus == LoginFormStatus.invalid &&
+              state.errorMessage.isNotEmpty) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
                   duration: const Duration(milliseconds: 1000),
@@ -91,7 +91,7 @@ class LoginFormState extends State<LoginForm> { // Corrected line
             );
           }
         },
-        builder: (context,state) {
+        builder: (context, state) {
           return Scaffold(
             backgroundColor: const Color(0xFF02066F),
             body: SafeArea(
@@ -136,42 +136,45 @@ class LoginFormState extends State<LoginForm> { // Corrected line
                               validator: (value) {
                                 final result = loginValidator.emailValidator
                                     .validate(value);
-                                return result.isSuccessful() ? null : result
-                                    .getError()
-                                    .message;
+                                return result.isSuccessful()
+                                    ? null
+                                    : result.getError().message;
                               },
                               keyboardType: TextInputType.emailAddress,
                               style: const TextStyle(fontFamily: 'Montserrat'),
-                              decoration: inputDecorationBuilderLogin.
-                              buildInputDecorationLogin('Correo electrónico'),
+                              decoration: inputDecorationBuilderLogin
+                                  .buildInputDecorationLogin(
+                                      'Correo electrónico'),
                             ),
                             const SizedBox(height: 16),
                             TextFormField(
-                              onChanged: (value) =>
-                                  context.read<LoginBloc>().changePassword(value),
+                              onChanged: (value) => context
+                                  .read<LoginBloc>()
+                                  .changePassword(value),
                               controller: _passwordController,
                               validator: (value) {
                                 final result = loginValidator.passwordValidator
                                     .validate(value);
-                                return result.isSuccessful() ? null : result
-                                    .getError()
-                                    .message;
+                                return result.isSuccessful()
+                                    ? null
+                                    : result.getError().message;
                               },
                               obscureText: _obscurePassword,
                               style: const TextStyle(fontFamily: 'Montserrat'),
-                              decoration: inputDecorationBuilderLogin.
-                              buildInputDecorationLogin('Contraseña').copyWith(
-                                suffixIcon: IconButton(
-                                  icon: Icon(
-                                    _obscurePassword
-                                        ? Icons.visibility_off
-                                        : Icons.visibility,
-                                    color: Colors.grey,
+                              decoration: inputDecorationBuilderLogin
+                                  .buildInputDecorationLogin('Contraseña')
+                                  .copyWith(
+                                    suffixIcon: IconButton(
+                                      icon: Icon(
+                                        _obscurePassword
+                                            ? Icons.visibility_off
+                                            : Icons.visibility,
+                                        color: Colors.grey,
+                                      ),
+                                      onPressed: () => setState(() =>
+                                          _obscurePassword = !_obscurePassword),
+                                    ),
                                   ),
-                                  onPressed: () => setState(() =>
-                                  _obscurePassword = !_obscurePassword),
-                                ),
-                              ),
                             ),
                             Align(
                               alignment: Alignment.centerLeft,
@@ -193,7 +196,7 @@ class LoginFormState extends State<LoginForm> { // Corrected line
                               builder: (context, state) {
                                 return ElevatedButton(
                                   onPressed: state.formStatus ==
-                                      LoginFormStatus.posting
+                                          LoginFormStatus.posting
                                       ? null
                                       : _pressSubmit,
                                   style: ElevatedButton.styleFrom(
@@ -205,18 +208,18 @@ class LoginFormState extends State<LoginForm> { // Corrected line
                                     ),
                                   ),
                                   child: state.formStatus ==
-                                      LoginFormStatus.posting
+                                          LoginFormStatus.posting
                                       ? const CircularProgressIndicator(
-                                      color: Colors.white)
+                                          color: Colors.white)
                                       : const Text(
-                                    'Iniciar sesión',
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 16,
-                                      fontFamily: 'Montserrat',
-                                      fontWeight: FontWeight.w700,
-                                    ),
-                                  ),
+                                          'Iniciar sesión',
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 16,
+                                            fontFamily: 'Montserrat',
+                                            fontWeight: FontWeight.w700,
+                                          ),
+                                        ),
                                 );
                               },
                             ),
@@ -227,6 +230,7 @@ class LoginFormState extends State<LoginForm> { // Corrected line
                                   '¿No eres miembro?',
                                   style: TextStyle(
                                     fontFamily: 'Montserrat',
+                                    fontSize: 12,
                                   ),
                                 ),
                                 TextButton(
@@ -238,6 +242,7 @@ class LoginFormState extends State<LoginForm> { // Corrected line
                                     style: TextStyle(
                                       fontFamily: 'Montserrat',
                                       fontWeight: FontWeight.w600,
+                                      fontSize: 12,
                                     ),
                                   ),
                                   style: TextButton.styleFrom(
@@ -263,8 +268,8 @@ class LoginFormState extends State<LoginForm> { // Corrected line
                                   'apple',
                                   'facebook'
                                 ]) ...[
-                                  if (icon != 'google') const SizedBox(
-                                      width: 16),
+                                  if (icon != 'google')
+                                    const SizedBox(width: 16),
                                   CircleAvatar(
                                     radius: 24,
                                     backgroundColor: {
@@ -290,8 +295,7 @@ class LoginFormState extends State<LoginForm> { // Corrected line
               ),
             ),
           );
-        }
-    );
+        });
   }
 
   @override
@@ -302,6 +306,4 @@ class LoginFormState extends State<LoginForm> { // Corrected line
     _passwordController.dispose();
     super.dispose();
   }
-
-
 }
