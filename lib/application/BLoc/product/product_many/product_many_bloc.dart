@@ -22,8 +22,7 @@ class ProductListBloc extends Bloc<ProductListEvent, ProductListState> {
             ? state
             : ProductListLoaded(products: [], hasReachedMax: false, page: 1);
 
-        emit(ProductListLoading(
-            currentState.products)); // Mantén la lista actual de productos
+        emit(ProductListLoading(currentState.products));
 
         final result = await _getProductsUseCase.execute(
           GetProductsUseCaseInput(
@@ -42,15 +41,11 @@ class ProductListBloc extends Bloc<ProductListEvent, ProductListState> {
             page: event.page,
           ));
         } else {
-          // Si el Result es fallido, emitimos el ProductListFailed con el error contenido en el Result
-          emit(ProductListFailed(
-              result)); // Pasar el result con error directamente
+          emit(ProductListFailed(result));
         }
       } catch (e) {
-        // En caso de que ocurra un error inesperado (como un error de conexión o similar)
         print('Error in ProductListBloc: $e');
-        emit(ProductListFailed(Result.fail(
-            e.toString() as Failure))); // Manejo del error con Result
+        emit(ProductListFailed(Result.fail(e.toString() as Failure)));
       }
     }
   }

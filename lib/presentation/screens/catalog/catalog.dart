@@ -23,12 +23,9 @@ class CatalogScreenState extends State<CatalogScreen> {
   @override
   void initState() {
     super.initState();
-    // Cargar los primeros productos al inicio
     BlocProvider.of<ProductListBloc>(context).add(
       LoadProductList(page: _currentPage, take: 6),
     );
-
-    // Escuchar el ScrollController para detectar cuando llegamos al final
     _scrollController.addListener(_onScroll);
   }
 
@@ -38,15 +35,14 @@ class CatalogScreenState extends State<CatalogScreen> {
     super.dispose();
   }
 
-  // Función que maneja el evento de scroll
   void _onScroll() {
     if (_scrollController.position.pixels ==
         _scrollController.position.maxScrollExtent) {
       if (!_isLoadingMore && !_hasLoadedAllProducts) {
         setState(() {
-          _isLoadingMore = true; // Iniciamos la carga de más productos
+          _isLoadingMore = true;
         });
-        _currentPage++; // Aumentamos el número de página
+        _currentPage++;
         BlocProvider.of<ProductListBloc>(context).add(
           LoadProductList(page: _currentPage, take: 6),
         );
@@ -54,7 +50,6 @@ class CatalogScreenState extends State<CatalogScreen> {
     }
   }
 
-  // Método para manejar el tap en el menú de navegación
   void _onNavItemTapped(int valueIndex) {
     setState(() {
       _counter = valueIndex;
@@ -176,7 +171,6 @@ class CatalogScreenState extends State<CatalogScreen> {
                 if (state is ProductListLoading && state.products.isEmpty) {
                   return const Center(child: CircularProgressIndicator());
                 } else if (state is ProductListLoaded) {
-                  // Si hemos alcanzado el límite de productos
                   _hasLoadedAllProducts = state.hasReachedMax;
                   _isLoadingMore = false;
 
@@ -210,7 +204,7 @@ class CatalogScreenState extends State<CatalogScreen> {
                     child: Text('Error: ${state.result.getError().message}'),
                   );
                 }
-                return const Center(child: Text('No products available.'));
+                return const Center(child: SizedBox.shrink());
               },
             ),
           ),
