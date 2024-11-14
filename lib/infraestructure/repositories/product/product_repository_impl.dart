@@ -23,7 +23,7 @@ class ProductRepositoryImpl extends ProductRepository {
   @override
   Future<Result<List<Product>>> getProducts({
     required int page,
-    required int perPage,
+    required int take,
     required String category,
   }) async {
     //await _addAuthorizationHeader();

@@ -20,7 +20,7 @@ class ProductListBloc extends Bloc<ProductListEvent, ProductListState> {
       final result = await _getProductsUseCase.execute(
         GetProductsUseCaseInput(
           page: event.page,
-          perPage: event.perPage,
+          take: event.take,
           category: event.category,
         ),
       );

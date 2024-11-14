@@ -30,7 +30,7 @@ class CatalogScreenState extends State<CatalogScreen> {
       create: (context) => ProductListBloc(
         GetIt.instance<GetProductsUseCase>(),
       )..add(
-          const LoadProductList(page: 1, perPage: 10, category: 'all'),
+          const LoadProductList(page: 1, take: 10, category: 'all'),
         ),
       child: Scaffold(
         backgroundColor: const Color(0xFFEBEAED),
