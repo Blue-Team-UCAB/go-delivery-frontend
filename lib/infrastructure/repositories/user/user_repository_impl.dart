@@ -4,9 +4,7 @@ import 'package:go_delivery_frontend/infrastructure/mappers/user/user_mapper.dar
 import '../../../application/api/api_request.dart';
 import '../../../application/key_value_storage/localstorage.dart';
 import '../../../common/result.dart';
-import '../../../domain/entities/client/client.dart';
 import '../../../domain/repositories/user/user_repository.dart';
-import '../../mappers/user/client_mapper.dart';
 
 enum UserType { CLIENT, ADMIN }
 

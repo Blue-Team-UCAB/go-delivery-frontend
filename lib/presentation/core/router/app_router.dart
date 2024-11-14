@@ -67,6 +67,16 @@ class RoutesManager {
             child: const ForgotPasswordScreen(),
           )
       ),
+      GoRoute(
+        
+        path: '/productdetail/:name',
+        pageBuilder: (context, state) {
+          final productName = state.pathParameters['name'] ?? 'no-name'; 
+          return CustomTransitions.slideRight(
+            key: state.pageKey,
+            child: ProductDetailScreen(productId: productName)
+        );}, 
+      )
     ],
     redirect: (context, state) async {
       final isGoingTo = state.matchedLocation;

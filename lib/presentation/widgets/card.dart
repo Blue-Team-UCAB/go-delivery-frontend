@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_delivery_frontend/domain/entities/product/product.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import '../../application/BLoc/cart/cart_bloc.dart';
 import '../../infrastructure/mappers/cart/cart_item_mapper.dart';
 
@@ -13,11 +14,14 @@ class ProductCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: (){print(product.name);},
+      onTap: (){context.push('/productdetail/${product.id}');},
       child: Container(
-        decoration: const BoxDecoration(
-          color: Color(0xFFFFFFFF),
-          borderRadius: BorderRadius.all(Radius.circular(12.0)),
+        decoration: BoxDecoration(
+          border: Border.all(
+            color: Color(0xFFD5CCFF)
+          ),
+          color: const Color(0xFFFFFFFF),
+          borderRadius: const BorderRadius.all(Radius.circular(12.0)),
         ),
         child: Column(
           children: [
@@ -30,10 +34,11 @@ class ProductCard extends StatelessWidget {
               child: Image.network(
                 product.imageUrl,
                 height: 100,
-                fit: BoxFit.contain,
+                width: 100,
+                fit: BoxFit.cover,
               ),
               ),
-            Padding(
+            Padding(              
               padding: const EdgeInsets.all(15.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,

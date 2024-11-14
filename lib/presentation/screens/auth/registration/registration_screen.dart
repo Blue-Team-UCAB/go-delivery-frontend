@@ -13,7 +13,7 @@ import 'dialog_registration_window.dart';
 import 'inputDecorationRegister.dart';
 
 class RegisterScreen extends StatefulWidget {
-  const RegisterScreen({Key? key}) : super(key: key);
+  const RegisterScreen({super.key});
 
   @override
   State<RegisterScreen> createState() => _RegisterScreenState();
@@ -30,7 +30,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 }
 
 class RegisterForm extends StatefulWidget {
-  const RegisterForm({Key? key}) : super(key: key);
+  const RegisterForm({super.key});
 
   @override
   RegisterFormState createState() => RegisterFormState();

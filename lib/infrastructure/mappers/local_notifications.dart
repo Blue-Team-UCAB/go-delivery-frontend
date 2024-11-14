@@ -42,7 +42,7 @@ class LocalNotifications extends LocalNotificationsManager {
       requestSoundPermission: true,
     );
 
-    final initializationSettings = InitializationSettings(
+    final initializationSettings = const InitializationSettings(
       android: initializationSettingsAndroid,
       iOS: initializationSettingsDarwin,
     );

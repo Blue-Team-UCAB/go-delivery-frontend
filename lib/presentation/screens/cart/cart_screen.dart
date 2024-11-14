@@ -27,12 +27,6 @@ class CartScreen extends StatelessWidget {
         centerTitle: true,
       ),
       body: _CartView(),
-      // floatingActionButton: FloatingActionButton(
-      //   onPressed: (){
-      //     context.read<CartBloc>().addCartItem(testing);
-      //   },
-      //   child: const Icon(Icons.add),
-      //   ),
     );
   }
 }
