@@ -6,7 +6,6 @@ import 'package:go_delivery_frontend/presentation/screens/auth/login/login_valid
 import 'package:go_router/go_router.dart';
 
 import '../../../../application/BLoc/auth/login/login_bloc.dart';
-import '../../../../domain/repositories/user/user_repository.dart';
 import '../../../../injector.dart';
 import 'inputDecorationLogin.dart';
 
@@ -170,7 +169,7 @@ class LoginFormState extends State<LoginForm> {
                               alignment: Alignment.centerLeft,
                               child: TextButton(
                                 onPressed: () {
-                                    context.push('/password/reset');
+                                  context.push('/password/reset');
                                 },
                                 style: TextButton.styleFrom(
                                   foregroundColor: const Color(0xFF02066F),

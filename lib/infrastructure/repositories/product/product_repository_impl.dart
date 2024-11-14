@@ -48,4 +48,24 @@ class ProductRepositoryImpl extends ProductRepository {
       rethrow;
     }
   }
+
+  // Implementación del método getProductById
+  @override
+  Future<Result<Product>> getProductById(String productId) async {
+    await _addAuthorizationHeader();
+    try {
+      final response = await _apiRequestManager.request(
+        '/product/$productId',
+        'GET',
+        (data) {
+          final product = ProductMapper.fromJson(data);
+          return product;
+        },
+      );
+      return response;
+    } catch (e) {
+      print('Error in ProductRepositoryImpl.getProductById: $e');
+      rethrow;
+    }
+  }
 }

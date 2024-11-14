@@ -6,4 +6,7 @@ abstract class ProductRepository {
     required int page,
     required int take,
   });
+
+  // Método para obtener un producto por su ID
+  Future<Result<Product>> getProductById(String productId);
 }

@@ -1,8 +1,10 @@
 import 'package:get_it/get_it.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:go_delivery_frontend/application/BLoc/blocs.dart';
+import 'package:go_delivery_frontend/application/BLoc/product/product_detail/product_detail_bloc.dart';
 import 'package:go_delivery_frontend/application/BLoc/product/product_many/product_many_bloc.dart';
 import 'package:go_delivery_frontend/application/use_cases/auth/register/register_usecase_input.dart';
+import 'package:go_delivery_frontend/application/use_cases/product/get_one_product.dart';
 import 'package:go_delivery_frontend/infrastructure/datasources/api/api_request_impl.dart';
 import 'package:go_delivery_frontend/infrastructure/datasources/localstorage/localstorage_impl.dart';
 import 'package:go_delivery_frontend/domain/repositories/product/product_repository.dart';
@@ -79,17 +81,23 @@ class InjectManager {
       apiRequestManager: apiRequestManagerImpl,
       localStorage: localStorageService,
     );
+
     // Registrar el repositorio de productos
     getIt.registerSingleton<ProductRepository>(productRepository);
+
     // Casos de Uso
-    final getProductsUseCase = GetProductsUseCase(
-      productRepository: productRepository,
-    );
+    final getProductsUseCase =
+        GetProductsUseCase(productRepository: productRepository);
+    final getOneProductUseCase =
+        GetOneProductUseCase(productRepository: productRepository);
+
     // Registrar el caso de uso de obtención de productos
     getIt.registerSingleton<GetProductsUseCase>(getProductsUseCase);
+    getIt.registerSingleton<GetOneProductUseCase>(getOneProductUseCase);
     // ======================================================================= //
 
     // BLOC del Carrito
     getIt.registerSingleton(ProductListBloc(getProductsUseCase));
+    getIt.registerSingleton(ProductDetailBloc(getOneProductUseCase));
   }
 }
