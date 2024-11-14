@@ -32,6 +32,8 @@ class CatalogScreenState extends State<CatalogScreen> {
   @override
   void initState() {
     super.initState();
+    _counter = widget.initialCounterNavbar;
+
     BlocProvider.of<ProductListBloc>(context).add(
       LoadProductList(page: _currentPage, take: 6),
     );
@@ -65,10 +67,28 @@ class CatalogScreenState extends State<CatalogScreen> {
     });
   }
 
-  @override
-  void initState() {
-    super.initState();
-    _counter = widget.initialCounterNavbar;
+  void showLogoutDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AnimatedSuccessDialog( // Assuming you have this custom dialog
+          title: 'Salir Sesion',
+          message: 'Estas seguro de salir de tu Sesion?',
+          buttonText: 'Salir',
+          rejectButtonText: 'Cancelar',
+          onButtonPressed: () {
+            Navigator.of(context).pop();
+            LocalStorageService().removeKey('appToken'); // Your logic
+            context.go('/login');
+          },
+          onRejectPressed: () {
+            Navigator.of(context).pop();
+            context.push('/Catalog');
+          },
+          icon: Icons.warning,
+        );
+      },
+    );
   }
 
   @override
@@ -102,7 +122,14 @@ class CatalogScreenState extends State<CatalogScreen> {
           ),
         ],
       ),
-      endDrawer: const Sidebar(),
+      endDrawer: Sidebar( // Assuming you have this widget
+        userName: 'User Name',
+        userEmail: 'user@example.com',
+        onLogout: () {
+          Navigator.pop(context);
+          showLogoutDialog(context);
+        },
+      ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
