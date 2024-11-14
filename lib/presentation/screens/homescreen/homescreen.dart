@@ -139,6 +139,7 @@ class HomeScreenState extends State<HomeScreen> {
               Text(
                 'Hola',
                 style: TextStyle(
+                  fontFamily: 'Montserrat',
                   color: Colors.white,
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
@@ -147,6 +148,7 @@ class HomeScreenState extends State<HomeScreen> {
               Text(
                 'Compra tus productos favoritos',
                 style: TextStyle(
+                  fontFamily: 'Montserrat',
                   color: Colors.white70,
                   fontSize: 14,
                 ),
@@ -181,7 +183,7 @@ class HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildContent() {
-    return SingleChildScrollView(
+    return const SingleChildScrollView(
       child: Padding(
         padding: EdgeInsets.only(top: 10),
         child: Column(

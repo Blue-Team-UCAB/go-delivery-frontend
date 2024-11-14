@@ -23,6 +23,7 @@ class ComboSection extends StatelessWidget {
                 Text(
                   'Combos ofertados',
                   style: TextStyle(
+                    fontFamily: 'Montserrat',
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
                   ),
@@ -30,6 +31,7 @@ class ComboSection extends StatelessWidget {
                 Text(
                   'Ver todos',
                   style: TextStyle(
+                    fontFamily: 'Montserrat',
                     color: Color(0xFF2000B1),
                     fontWeight: FontWeight.bold,
                   ),
@@ -132,11 +134,12 @@ class ComboCard extends StatelessWidget {
                   children: [
                     Text(
                       title,
-                      style: const TextStyle(fontWeight: FontWeight.bold),
+                      style: const TextStyle( fontFamily: 'Montserrat',
+                          fontWeight: FontWeight.w400),
                       overflow: TextOverflow.ellipsis,
                       maxLines: 2,
                     ),
-                    Text('$price \$', style: const TextStyle(fontWeight: FontWeight.bold)),
+                    Text('$price \$', style: const TextStyle(fontFamily: 'Montserrat',fontWeight: FontWeight.bold)),
                     const SizedBox(height: 20),
                     Expanded( // Flexible ElevatedButton
                       child: SizedBox(
@@ -153,7 +156,13 @@ class ComboCard extends StatelessWidget {
                               borderRadius: BorderRadius.circular(8),
                             ),
                           ),
-                          child: const Text('Agregar'),
+                          child: const Text(
+                            'Agregar',
+                            style: TextStyle( fontFamily: 'Montserrat',
+                                fontWeight: FontWeight.w400),
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 2,
+                          ),
                         ),
                       ),
                     ),

@@ -46,6 +46,7 @@ class _CategoryTabsState extends State<CategoryTabs> {
         child: Text(
           text,
           style: TextStyle(
+            fontFamily: 'Montserrat',
             color: isSelected ? Colors.white : Colors.black,
             fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
           ),

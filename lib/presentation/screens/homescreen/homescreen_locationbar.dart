@@ -48,11 +48,11 @@ class _LocationBarState extends State<LocationBar> {
                     children: [
                       const Text(
                         'Entrega a',
-                        style: TextStyle(color: Colors.black54, fontSize: 12),
+                        style: TextStyle(fontFamily: 'Montserrat',color: Colors.black54, fontSize: 12),
                       ),
                       Text(
                         location, // Display the current location
-                        style: const TextStyle(color: Colors.black, fontSize: 14),
+                        style: const TextStyle(fontFamily: 'Montserrat',color: Colors.black, fontSize: 13,fontWeight: FontWeight.w600),
                         overflow: TextOverflow.ellipsis,
                       ),
                     ],

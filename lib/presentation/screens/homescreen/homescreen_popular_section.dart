@@ -15,6 +15,7 @@ class PopularSection extends StatelessWidget {
           child: Text(
             'Populares',
             style: TextStyle(
+              fontFamily: 'Montserrat',
               fontSize: 18,
               fontWeight: FontWeight.bold,
             ),
@@ -27,7 +28,7 @@ class PopularSection extends StatelessWidget {
           itemCount: 3, // You can adjust this based on your data
           itemBuilder: (context, index) {
             return Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+              padding: const EdgeInsets.symmetric(horizontal: 16),
               child: PopularItem(
                 name: 'Doritos 150g',
                 price: '1.35',
@@ -107,16 +108,18 @@ class PopularItem extends StatelessWidget {
                 Text(
                   name,
                   style: const TextStyle(
+                    fontFamily: 'Montserrat',
                     fontWeight: FontWeight.w600,
-                    fontSize: 16,
+                    fontSize: 14,
                   ),
                 ),
                 const SizedBox(height: 4),
                 Text(
                   '\$$price',
                   style: TextStyle(
+                    fontFamily: 'Montserrat',
                     color: Colors.grey[600],
-                    fontSize: 14,
+                    fontSize: 16,
                   ),
                 ),
               ],
@@ -140,9 +143,10 @@ class PopularItem extends StatelessWidget {
               child: const Text(
                 'Agregar',
                 style: TextStyle(
+                  fontFamily: 'Montserrat',
                   color: Color(0xFF2000B1),
                   fontSize: 14,
-                  fontWeight: FontWeight.w600,
+                  fontWeight: FontWeight.w400,
                 ),
               ),
             ),
