@@ -1,3 +1,10 @@
 export 'cart/cart_screen.dart';
 export 'catalog/catalog.dart';
 export 'homescreen/homescreen.dart';
+export 'auth/login/login_screen.dart';
+export 'auth/password_recovery/forgot_pass_screen.dart';
+export 'auth/registration/registration_screen.dart';
+export 'checkout/checkout_screen.dart';
+export 'splash/splash_screen.dart';
+export 'welcome/welcome_screen.dart';
+export 'detail/product_detail_screen.dart';

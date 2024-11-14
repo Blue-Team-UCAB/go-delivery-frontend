@@ -47,8 +47,9 @@ class CustomNavBar extends StatelessWidget {
         clipBehavior: Clip.none, // Allow overflow for the FAB
         children: [
           ClipRRect(
-            borderRadius:
-                const BorderRadius.only(topLeft:  Radius.circular(30), topRight:Radius.circular(30)), // Set the border radius here
+            borderRadius: const BorderRadius.only(
+                topLeft: Radius.circular(30),
+                topRight: Radius.circular(30)), // Set the border radius here
             child: BottomAppBar(
               color: const Color(0xFFFFFFFF),
               shape: const CircularNotchedRectangle(),
