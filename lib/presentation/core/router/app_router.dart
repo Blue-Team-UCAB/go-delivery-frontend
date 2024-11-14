@@ -8,6 +8,7 @@ import '../../../infrastructure/datasources/localstorage/localstorage_impl.dart'
 import '../../screens/auth/login/login_screen.dart';
 import '../../screens/auth/password_recovery/forgot_pass_screen.dart';
 import '../../screens/auth/registration/registration_screen.dart';
+import '../../screens/notification/notification_screen.dart';
 import '../../screens/splash/splash_screen.dart';
 import '../../screens/welcome/welcome_screen.dart';
 import '../transition/transitions.dart';
@@ -66,6 +67,13 @@ class RoutesManager {
           pageBuilder: (context, state) => CustomTransitions.slideRight(
             key: state.pageKey,
             child: const CartScreen(),
+          )
+      ),
+      GoRoute(
+          path: '/notification',
+          pageBuilder: (context, state) => CustomTransitions.slideRight(
+            key: state.pageKey,
+            child: const NotificationScreen(),
           )
       ),
       GoRoute(
