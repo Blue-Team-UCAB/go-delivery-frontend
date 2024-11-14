@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 class Sidebar extends StatelessWidget {
+  const Sidebar({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Drawer(
@@ -9,12 +11,12 @@ class Sidebar extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            UserAccountsDrawerHeader(
-              accountName: const Text('Usuario'),
-              accountEmail: const Text('user@example.com'),
+            const UserAccountsDrawerHeader(
+              accountName: Text('Usuario'),
+              accountEmail: Text('client@example.com'),
               currentAccountPicture: CircleAvatar(
                 backgroundColor: Colors.white,
-                child: const Text('U'),
+                child: Text('U'),
               ),
             ),
             ListTile(

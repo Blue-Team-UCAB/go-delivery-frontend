@@ -1,4 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_delivery_frontend/common/result.dart';
+import 'package:go_delivery_frontend/common/failure.dart';
 import 'package:go_delivery_frontend/application/use_cases/product/get_many_product.dart';
 import 'package:go_delivery_frontend/application/BLoc/product/product_many/product_many_event.dart';
 import 'package:go_delivery_frontend/application/BLoc/product/product_many/product_many_state.dart';
@@ -15,25 +17,35 @@ class ProductListBloc extends Bloc<ProductListEvent, ProductListState> {
     Emitter<ProductListState> emit,
   ) async {
     if (state is ProductListInitial || state is ProductListLoaded) {
-      emit(ProductListLoading(state.products));
+      try {
+        final currentState = state is ProductListLoaded
+            ? state
+            : ProductListLoaded(products: [], hasReachedMax: false, page: 1);
 
-      final result = await _getProductsUseCase.execute(
-        GetProductsUseCaseInput(
-          page: event.page,
-          perPage: event.perPage,
-          category: event.category,
-        ),
-      );
+        emit(ProductListLoading(currentState.products));
 
-      if (result.isSuccessful()) {
-        final newProducts = result.getValue();
-        emit(ProductListLoaded(
-          products: [...state.products, ...newProducts],
-          hasReachedMax: newProducts.isEmpty,
-          page: event.page,
-        ));
-      } else {
-        emit(ProductListFailed(result));
+        final result = await _getProductsUseCase.execute(
+          GetProductsUseCaseInput(
+            page: event.page,
+            take: event.take,
+          ),
+        );
+
+        if (result.isSuccessful()) {
+          final newProducts = result.getValue();
+          final hasReachedMax = newProducts.isEmpty;
+
+          emit(ProductListLoaded(
+            products: [...currentState.products, ...newProducts],
+            hasReachedMax: hasReachedMax,
+            page: event.page,
+          ));
+        } else {
+          emit(ProductListFailed(result));
+        }
+      } catch (e) {
+        print('Error in ProductListBloc: $e');
+        emit(ProductListFailed(Result.fail(e.toString() as Failure)));
       }
     }
   }
