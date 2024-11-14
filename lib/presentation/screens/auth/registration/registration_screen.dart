@@ -7,7 +7,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../../application/BLoc/auth/register/register_bloc.dart';
 import '../../../../injector.dart';
-import 'dialog_registration_window.dart';
+import '../../../widgets/dialog_darken_window.dart';
 import 'inputDecorationRegister.dart';
 
 class RegisterScreen extends StatefulWidget {
@@ -41,6 +41,7 @@ class RegisterFormState extends State<RegisterForm> {
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
   final _phoneController = TextEditingController();
+  final _countryCodeController = TextEditingController();
   bool _obscurePassword = true;
   bool _obscureConfirmPassword = true;
   bool _isLoading = false;
@@ -103,11 +104,23 @@ class RegisterFormState extends State<RegisterForm> {
                   'Error al registrar: ${state.errorMessage}',
                   style: const TextStyle(fontFamily: 'Montserrat'),
                 ),
-                backgroundColor: Colors.red,
-              ),
-            );
-          }
+              );
+            }
 
+            if (state.registerFormStatus == RegisterFormStatus.valid) {
+
+              showDialog(
+                context: context,
+                barrierDismissible: false,
+                barrierColor: Colors.transparent,
+                builder: (BuildContext context) {
+                  return AnimatedSuccessDialog(
+                    onButtonPressed: () {
+                      context.go('/login');
+                    },
+                  );
+                },
+              );
           if (state.registerFormStatus == RegisterFormStatus.valid) {
             showDialog(
               context: context,
@@ -148,19 +161,153 @@ class RegisterFormState extends State<RegisterForm> {
                           topRight: Radius.circular(30),
                         ),
                       ),
-                      child: SingleChildScrollView(
-                        padding: const EdgeInsets.all(24),
-                        child: Form(
-                          key: _formKey,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
-                            children: [
-                              const Text(
-                                'Registrate',
-                                style: TextStyle(
-                                  fontFamily: 'Montserrat',
-                                  fontSize: 28,
-                                  fontWeight: FontWeight.w800,
+                    ),
+                    child: SingleChildScrollView(
+                      padding: const EdgeInsets.all(24),
+                      child: Form(
+                        key: _formKey,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            const Text(
+                              'Registrate',
+                              style: TextStyle(
+                                fontFamily: 'Montserrat',
+                                fontSize: 28,
+                                fontWeight: FontWeight.w800,
+                              ),
+                            ),
+                            const Text(
+                              'Rellena con tus datos y registrate!',
+                              style: TextStyle(
+                                fontFamily: 'Montserrat',
+                                color: Colors.grey,
+                              ),
+                            ),
+                            const SizedBox(height: 14),
+                            TextFormField(
+                              onChanged: context.read<RegisterBloc>().fullnameChanged,
+                              controller: _nameController,
+                              validator: (value) {
+                                final result = registrationValidator.usernameValidator.validate(value);
+                                return result.isSuccessful() ? null : result.getError().message;
+                              },
+                              decoration: inputDecorationBuilderRegister.buildInputDecorationRegister
+                                ('Nombre de Usuario Nuevo'),
+                              textCapitalization: TextCapitalization.words,
+                            ),
+                            const SizedBox(height: 14),
+                            TextFormField(
+                              onChanged: context.read<RegisterBloc>().emailChanged,
+                              controller: _emailController,
+                              validator: (value) {
+                                final result = registrationValidator.emailValidator.validate(value);
+                                return result.isSuccessful() ? null : result.getError().message;
+                              },
+                              keyboardType: TextInputType.emailAddress,
+                              decoration: inputDecorationBuilderRegister.buildInputDecorationRegister
+                                (
+                                  'Correo electrónico'),
+                            ),
+                            const SizedBox(height: 14),
+                            Row(
+                              children: [
+                                SizedBox(
+                                  width: 70,
+                                  child: TextFormField(
+                                    controller: _countryCodeController,
+                                    decoration: inputDecorationBuilderRegister.buildInputDecorationRegister('+58'),
+                                    keyboardType: TextInputType.number,
+                                    inputFormatters: [
+                                      FilteringTextInputFormatter.digitsOnly,
+                                      LengthLimitingTextInputFormatter(3),
+                                    ],
+                                    textAlign: TextAlign.center,
+                                    onChanged: (countryCode) {
+                                      // Combine both values and send to bloc
+                                      final completePhone = '$countryCode${_phoneController.text}';
+                                      context.read<RegisterBloc>().phoneChanged(completePhone);
+                                    },
+                                  ),
+                                ),
+                                const SizedBox(width: 8),
+                                Expanded(
+                                  child: TextFormField(
+                                    controller: _phoneController,
+                                    validator: (value) {
+                                      final result = registrationValidator.phoneValidator.validate(value);
+                                      return result.isSuccessful() ? null : result.getError().message;
+                                    },
+                                    keyboardType: TextInputType.phone,
+                                    decoration: inputDecorationBuilderRegister.buildInputDecorationRegister('Número de teléfono'),
+                                    inputFormatters: [
+                                      FilteringTextInputFormatter.digitsOnly,
+                                      LengthLimitingTextInputFormatter(10),
+                                    ],
+                                    onChanged: (phone) {
+                                      // Combine both values and send to bloc
+                                      final completePhone = '${_countryCodeController.text}$phone';
+                                      context.read<RegisterBloc>().phoneChanged(completePhone);
+                                    },
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 14),
+                            TextFormField(
+                              onChanged: context.read<RegisterBloc>().passwordChanged,
+                              controller: _passwordController,
+                              validator: (value) {
+                                final result = registrationValidator.passwordValidator.validate(value);
+                                return result.isSuccessful() ? null : result.getError().message;
+                              },
+                              obscureText: _obscurePassword,
+                              decoration: inputDecorationBuilderRegister.buildInputDecorationRegister
+                                ('Contraseña')
+                                  .copyWith(
+                                suffixIcon: IconButton(
+                                  icon: Icon(
+                                    _obscurePassword ? Icons.visibility_off : Icons
+                                        .visibility,
+                                    color: Colors.grey,
+                                  ),
+                                  onPressed: () =>
+                                      setState(() =>
+                                      _obscurePassword = !_obscurePassword),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: 14),
+                            TextFormField(
+                              controller: _confirmPasswordController,
+                              validator: _validateConfirmPassword,
+                              obscureText: _obscureConfirmPassword,
+                              decoration: inputDecorationBuilderRegister.buildInputDecorationRegister
+                                ('Confirmar contraseña').copyWith(
+                                suffixIcon: IconButton(
+                                  icon: Icon(
+                                    _obscureConfirmPassword
+                                        ? Icons.visibility_off
+                                        : Icons.visibility,
+                                    color: Colors.grey,
+                                  ),
+                                  onPressed: () =>
+                                      setState(() =>
+                                      _obscureConfirmPassword =
+                                      !_obscureConfirmPassword),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: 24),
+                            ElevatedButton(
+                              onPressed: state.registerFormStatus == RegisterFormStatus.posting
+                                ? null
+                                : _handleRegistration,
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: const Color(0xFF02066F),
+                                padding: const EdgeInsets.symmetric(vertical: 16),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12),
                                 ),
                               ),
                               const Text(
@@ -358,6 +505,7 @@ class RegisterFormState extends State<RegisterForm> {
     _passwordController.dispose();
     _confirmPasswordController.dispose();
     _phoneController.dispose();
+    _countryCodeController.dispose();
     super.dispose();
   }
 }

@@ -81,7 +81,7 @@ class WelcomeScreenState extends State<WelcomeScreen> {
 
   void skipPressedCallback() {
     LocalStorageService().setKeyValue('initialized', true);
-    context.push('/login');
+    context.go('/login');
   }
 
 

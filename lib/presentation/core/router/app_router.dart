@@ -43,7 +43,7 @@ class RoutesManager {
           path: '/catalog',
           pageBuilder: (context, state) => CustomTransitions.slideRight(
             key: state.pageKey,
-            child: CatalogScreen(),
+            child: CatalogScreen(initialCounterNavbar: 1),
           )
       ),
       GoRoute(
@@ -58,6 +58,20 @@ class RoutesManager {
           pageBuilder: (context, state) => CustomTransitions.slideRight(
             key: state.pageKey,
             child: const CartScreen(),
+          )
+      ),
+      GoRoute(
+          path: '/notification',
+          pageBuilder: (context, state) => CustomTransitions.slideRight(
+            key: state.pageKey,
+            child: const NotificationScreen(),
+          )
+      ),
+      GoRoute(
+          path: '/',
+          pageBuilder: (context, state) => CustomTransitions.slideRight(
+            key: state.pageKey,
+            child: const HomeScreen(initialCounterNavbar: 0),
           )
       ),
       GoRoute(
@@ -101,7 +115,7 @@ class RoutesManager {
       }
 
       if (isGoingTo == '/welcome') {
-        if (isAutorized) return '/catalog';
+        if (isAutorized) return '/';
         if (hasSeenWelcome) return '/login';
         return null;
       }

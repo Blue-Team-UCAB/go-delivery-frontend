@@ -6,14 +6,23 @@ import 'package:go_delivery_frontend/presentation/widgets/sidebar.dart';
 import 'package:go_delivery_frontend/application/BLoc/product/product_many/product_many_bloc.dart';
 import 'package:go_delivery_frontend/application/BLoc/product/product_many/product_many_state.dart';
 import 'package:go_delivery_frontend/application/BLoc/product/product_many/product_many_event.dart';
+import 'package:go_router/go_router.dart';
+
+import '../../../infrastructure/datasources/localstorage/localstorage_impl.dart';
+import '../../widgets/dialog_darken_window.dart';
 
 // ignore: use_key_in_widget_constructors
 class CatalogScreen extends StatefulWidget {
+  final int initialCounterNavbar;
+
+  const CatalogScreen({super.key, required this.initialCounterNavbar});
+
   @override
   CatalogScreenState createState() => CatalogScreenState();
 }
 
 class CatalogScreenState extends State<CatalogScreen> {
+
   int _counter = 0;
   final ScrollController _scrollController = ScrollController();
   bool _isLoadingMore = false;
@@ -54,6 +63,12 @@ class CatalogScreenState extends State<CatalogScreen> {
     setState(() {
       _counter = valueIndex;
     });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _counter = widget.initialCounterNavbar;
   }
 
   @override
@@ -152,6 +167,7 @@ class CatalogScreenState extends State<CatalogScreen> {
                       style: TextStyle(color: Colors.grey),
                     ),
                   ),
+
                   IconButton(
                     icon: const Icon(Icons.filter_list, color: Colors.grey),
                     onPressed: () {

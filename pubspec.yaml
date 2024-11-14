@@ -45,6 +45,7 @@ flutter:
     - assets/icon/google.svg
     - assets/icon/facebook.svg
     - assets/icon/apple.svg
+    - assets/not-found-image.svg
   fonts:
     - family: Montserrat
       fonts:
