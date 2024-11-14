@@ -39,7 +39,7 @@ class ProductDetailScreen extends StatelessWidget {
         ),
       ),
       body: Container(
-        color: Color(0xFFFFFFFF),
+        color: const Color(0xFFFFFFFF),
         child: SingleChildScrollView(
           padding: const EdgeInsets.only(right: 24.0,left:24.0, bottom: 24),
           child: Column(
