@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_delivery_frontend/application/BLoc/blocs.dart';
+import 'package:go_delivery_frontend/application/BLoc/product/product_many/product_many_bloc.dart';
 import 'package:go_delivery_frontend/config/router/app_router.dart';
 import 'package:go_delivery_frontend/injector.dart';
-
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -17,17 +17,14 @@ class BlocsProviders extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MultiBlocProvider(
-      providers: [
-        BlocProvider(create: (context)=> GetIt.instance<CartBloc>())
-      ], 
-      child: const MyApp());
+    return MultiBlocProvider(providers: [
+      BlocProvider(create: (context) => GetIt.instance<CartBloc>()),
+      BlocProvider(create: (context) => GetIt.instance<ProductListBloc>())
+    ], child: const MyApp());
   }
 }
 
-
 class MyApp extends StatelessWidget {
-
   const MyApp({super.key});
 
   @override

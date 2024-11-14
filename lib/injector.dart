@@ -1,6 +1,7 @@
 import 'package:get_it/get_it.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:go_delivery_frontend/application/BLoc/blocs.dart';
+import 'package:go_delivery_frontend/application/BLoc/product/product_many/product_many_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:go_delivery_frontend/infraestructure/datasources/api/api_request_impl.dart';
 import 'package:go_delivery_frontend/infraestructure/datasources/localstorage/localstorage_impl.dart';
@@ -17,7 +18,8 @@ class InjectManager {
     final apiRequestManagerImpl = ApiRequestManagerImpl(
       baseUrl: dotenv.env['API_URL']!,
     );
-    apiRequestManagerImpl.setHeaders('Authorization', 'bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjllYTZmMmUwLWIxYTAtNGYzMC05MTMyLTNjMWZjYTU0NTViOCIsImlhdCI6MTczMTQ2NjcyNCwiZXhwIjoxNzMxNTUzMTI0fQ.g08wRaHlxr0IGoz57eh-wviWz1iv03D-y_vTy6nNyi8');
+    apiRequestManagerImpl.setHeaders('Authorization',
+        'bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjllYTZmMmUwLWIxYTAtNGYzMC05MTMyLTNjMWZjYTU0NTViOCIsImlhdCI6MTczMTQ2NjcyNCwiZXhwIjoxNzMxNTUzMTI0fQ.g08wRaHlxr0IGoz57eh-wviWz1iv03D-y_vTy6nNyi8');
 
     // Repositorios
 
@@ -39,5 +41,6 @@ class InjectManager {
 
     // BLOC del Carrito
     getIt.registerSingleton(CartBloc());
+    getIt.registerSingleton(ProductListBloc(getProductsUseCase));
   }
 }

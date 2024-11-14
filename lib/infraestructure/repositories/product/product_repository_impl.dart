@@ -31,6 +31,11 @@ class ProductRepositoryImpl extends ProductRepository {
       final response = await _apiRequestManager.request(
         '/product',
         'GET',
+        queryParameters: {
+          'category': category,
+          'page': page.toString(),
+          'take': take.toString(),
+        },
         (data) {
           List<Product> products = (data['products'] as List)
               .map((productData) => ProductMapper.fromJson(productData))
