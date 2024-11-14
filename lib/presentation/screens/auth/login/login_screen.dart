@@ -74,7 +74,7 @@ class LoginFormState extends State<LoginForm> {
             previous.formStatus != current.formStatus,
         listener: (context, state) {
           if (state.formStatus == LoginFormStatus.valid) {
-            context.go('/catalog');
+            context.go('/');
           } else if (state.formStatus == LoginFormStatus.invalid &&
               state.errorMessage.isNotEmpty) {
 

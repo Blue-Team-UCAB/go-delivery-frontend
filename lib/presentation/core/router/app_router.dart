@@ -1,6 +1,7 @@
 import 'package:go_delivery_frontend/presentation/screens/cart/cart_screen.dart';
 import 'package:go_delivery_frontend/presentation/screens/catalog/catalog.dart';
 import 'package:go_delivery_frontend/presentation/screens/checkout/checkout_screen.dart';
+import 'package:go_delivery_frontend/presentation/screens/homescreen/homescreen.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../infrastructure/datasources/localstorage/localstorage_impl.dart';
@@ -68,6 +69,13 @@ class RoutesManager {
           )
       ),
       GoRoute(
+          path: '/',
+          pageBuilder: (context, state) => CustomTransitions.slideRight(
+            key: state.pageKey,
+            child: const HomeScreen(),
+          )
+      ),
+      GoRoute(
           path: '/password/reset',
           pageBuilder: (context, state) => CustomTransitions.slideRight(
             key: state.pageKey,
@@ -98,7 +106,7 @@ class RoutesManager {
       }
 
       if (isGoingTo == '/welcome') {
-        if (isAutorized) return '/catalog';
+        if (isAutorized) return '/';
         if (hasSeenWelcome) return '/login';
         return null;
       }
