@@ -87,7 +87,7 @@ class CatalogScreenState extends State<CatalogScreen> {
           ),
         ],
       ),
-      endDrawer: Sidebar(),
+      endDrawer: const Sidebar(),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [

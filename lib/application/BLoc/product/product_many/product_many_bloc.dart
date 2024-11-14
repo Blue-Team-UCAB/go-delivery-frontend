@@ -20,7 +20,8 @@ class ProductListBloc extends Bloc<ProductListEvent, ProductListState> {
       try {
         final currentState = state is ProductListLoaded
             ? state
-            : ProductListLoaded(products: [], hasReachedMax: false, page: 1);
+            : const ProductListLoaded(
+                products: [], hasReachedMax: false, page: 1);
 
         emit(ProductListLoading(currentState.products));
 

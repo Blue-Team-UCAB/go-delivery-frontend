@@ -18,14 +18,14 @@ class ProductCard extends StatelessWidget {
         context.push('/productdetail/${product.id}');
       },
       child: Container(
+        height: 280,
         decoration: BoxDecoration(
-          border: Border.all(color: Color(0xFFD5CCFF)),
+          border: Border.all(color: const Color(0xFFD5CCFF)),
           color: const Color(0xFFFFFFFF),
           borderRadius: const BorderRadius.all(Radius.circular(14.0)),
         ),
         child: Column(
           children: [
-            // Imagen del producto
             ClipRRect(
               borderRadius: const BorderRadius.only(
                 topLeft: Radius.circular(12.0),
@@ -60,8 +60,7 @@ class ProductCard extends StatelessWidget {
                         fontWeight: FontWeight.w800,
                         color: Color(0xFF000000)),
                   ),
-                  const SizedBox(height: 10),
-                  // Botón de añadir al carrito (plano con borde azul)
+                  const SizedBox(height: 8),
                   OutlinedButton.icon(
                     iconAlignment: IconAlignment.start,
                     onPressed: () {
@@ -75,8 +74,6 @@ class ProductCard extends StatelessWidget {
                               EdgeInsets.only(bottom: 25, right: 20, left: 20),
                           backgroundColor: Color(0xfc009e4f),
                           content: Text('Agregado Satisfactoriamente')));
-
-                      // ScaffoldMessenger.of(context).showSnackBar(const SnackBar(backgroundColor: Color(0xFF88e788),content: Text('Agregado Satisfactoriamente')));
                     },
                     style: ButtonStyle(
                       alignment: Alignment.center,
@@ -94,7 +91,7 @@ class ProductCard extends StatelessWidget {
                       'Añadir',
                       style: TextStyle(
                         fontFamily: 'Inter',
-                        fontSize: 14,
+                        fontSize: 13,
                         fontWeight: FontWeight.w600,
                         color: Color(0xFF2000B1),
                       ),
