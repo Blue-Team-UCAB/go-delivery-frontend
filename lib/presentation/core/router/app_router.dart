@@ -23,7 +23,7 @@ class RoutesManager {
             key: state.pageKey,
             child: SplashScreen(
                 splashScreenDurationSeconds: 3,
-                onSplashScreenFade: () => context.go('/welcome')
+                onSplashScreenFade: () => context.go('/notification')
             )
         ),
       ),
