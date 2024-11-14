@@ -19,7 +19,7 @@ class InjectManager {
       baseUrl: dotenv.env['API_URL']!,
     );
     apiRequestManagerImpl.setHeaders('Authorization',
-        'bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjllYTZmMmUwLWIxYTAtNGYzMC05MTMyLTNjMWZjYTU0NTViOCIsImlhdCI6MTczMTQ2NjcyNCwiZXhwIjoxNzMxNTUzMTI0fQ.g08wRaHlxr0IGoz57eh-wviWz1iv03D-y_vTy6nNyi8');
+        'bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVlZTMyMTQ3LWQ3MDgtNDNjMy04ZDA4LWFmNmEyOWIxN2QzZiIsImlhdCI6MTczMTU0ODk0NSwiZXhwIjoxNzMxNjM1MzQ1fQ.gHPTvblefIXrfEJlOxocd8jL3aCj68np2aGTMsp2dNo');
 
     // Repositorios
 

@@ -24,7 +24,6 @@ class ProductRepositoryImpl extends ProductRepository {
   Future<Result<List<Product>>> getProducts({
     required int page,
     required int take,
-    required String category,
   }) async {
     //await _addAuthorizationHeader();
     try {
@@ -32,7 +31,6 @@ class ProductRepositoryImpl extends ProductRepository {
         '/product',
         'GET',
         queryParameters: {
-          'category': category,
           'page': page.toString(),
           'take': take.toString(),
         },
