@@ -12,9 +12,14 @@ class CustomNavBar extends StatelessWidget {
     required this.onItemTapped,
   });
 
-  Widget _buildNavItem(IconData icon, String label, int index) {
+  Widget _buildNavItem(IconData icon, String label, int index,BuildContext context, String direccion) {
     return GestureDetector(
-      onTap: () => onItemTapped(index),
+      onTap: ()
+      {
+        onItemTapped(index);
+        if(direccion.isNotEmpty)
+          context.go(direccion);
+      },
       child: Column(
         mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.center,
@@ -59,13 +64,13 @@ class CustomNavBar extends StatelessWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
-                    _buildNavItem(Icons.home, "Home", 0),
+                    _buildNavItem(Icons.home, "Home", 0, context, '/'),
                     const SizedBox(width: 10),
-                    _buildNavItem(Icons.search, "Buscar", 1),
+                    _buildNavItem(Icons.search, "Buscar", 1, context, '/Catalog'),
                     const SizedBox(width: 60), // Space for the center button
-                    _buildNavItem(Icons.receipt, "Ordenes", 3),
+                    _buildNavItem(Icons.receipt, "Ordenes", 3, context, ''),
                     const SizedBox(width: 10),
-                    _buildNavItem(Icons.person, "Perfil", 4),
+                    _buildNavItem(Icons.person, "Perfil", 4, context, ''),
                   ],
                 ),
               ),

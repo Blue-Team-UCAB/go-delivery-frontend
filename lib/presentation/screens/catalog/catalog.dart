@@ -15,12 +15,17 @@ import '../../widgets/dialog_darken_window.dart';
 
 // ignore: use_key_in_widget_constructors
 class CatalogScreen extends StatefulWidget {
+  final int initialCounterNavbar;
+
+  const CatalogScreen({super.key, required this.initialCounterNavbar});
+
   @override
   CatalogScreenState createState() => CatalogScreenState();
 }
 
 class CatalogScreenState extends State<CatalogScreen> {
   // Aquí defines _counter como la variable que manejará el índice seleccionado.
+
   int _counter = 0;
   bool _showLogoutDialog = false;
 
@@ -29,6 +34,12 @@ class CatalogScreenState extends State<CatalogScreen> {
     setState(() {
       _counter = valueIndex; // Actualizamos el valor de _counter
     });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _counter = widget.initialCounterNavbar;
   }
 
   @override

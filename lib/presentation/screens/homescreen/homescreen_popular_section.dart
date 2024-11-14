@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 
 class PopularSection extends StatelessWidget {
   const PopularSection({Key? key}) : super(key: key);
@@ -44,18 +45,21 @@ class PopularItem extends StatelessWidget {
   final String name;
   final String price;
   final String imageUrl;
+  final String defaultImageUrl; // For the default image
 
   const PopularItem({
     Key? key,
     required this.name,
     required this.price,
     required this.imageUrl,
+    this.defaultImageUrl = 'assets/not-found-image.svg', // Default value
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(12),
+      margin: const EdgeInsets.symmetric(vertical: 8), // Add some margin
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(8),
@@ -65,10 +69,10 @@ class PopularItem extends StatelessWidget {
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.grey.withOpacity(0.1),
-            spreadRadius: 0,
+            color: Colors.grey.withOpacity(0.2),
+            spreadRadius: 4,
             blurRadius: 4,
-            offset: Offset(0, 2),
+            offset: const Offset(0, 2),
           ),
         ],
       ),
@@ -83,9 +87,15 @@ class PopularItem extends StatelessWidget {
             ),
             child: ClipRRect(
               borderRadius: BorderRadius.circular(8),
-              child: Image.asset(
+              child: Image.network(
                 imageUrl,
                 fit: BoxFit.cover,
+                errorBuilder: (context, error, stackTrace) {
+                  return SvgPicture.asset(
+                    defaultImageUrl,
+                    fit: BoxFit.cover,
+                  );
+                },
               ),
             ),
           ),
@@ -112,10 +122,13 @@ class PopularItem extends StatelessWidget {
               ],
             ),
           ),
+          const SizedBox(width: 16), // Add some spacing
           SizedBox(
             height: 36,
             child: OutlinedButton(
-              onPressed: () {},
+              onPressed: () {
+                // Add your onPressed logic here
+              },
               style: OutlinedButton.styleFrom(
                 backgroundColor: Colors.white,
                 side: const BorderSide(color: Color(0xFF2000B1)),

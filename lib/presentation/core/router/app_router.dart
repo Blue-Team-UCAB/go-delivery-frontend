@@ -52,7 +52,7 @@ class RoutesManager {
           path: '/catalog',
           pageBuilder: (context, state) => CustomTransitions.slideRight(
             key: state.pageKey,
-            child: CatalogScreen(),
+            child: CatalogScreen(initialCounterNavbar: 1),
           )
       ),
       GoRoute(
@@ -80,7 +80,7 @@ class RoutesManager {
           path: '/',
           pageBuilder: (context, state) => CustomTransitions.slideRight(
             key: state.pageKey,
-            child: const HomeScreen(),
+            child: const HomeScreen(initialCounterNavbar: 0),
           )
       ),
       GoRoute(
