@@ -6,12 +6,11 @@ import 'package:go_delivery_frontend/presentation/screens/auth/login/login_valid
 import 'package:go_router/go_router.dart';
 
 import '../../../../application/BLoc/auth/login/login_bloc.dart';
-import '../../../../domain/repositories/user/user_repository.dart';
 import '../../../../injector.dart';
 import 'inputDecorationLogin.dart';
 
 class LoginScreen extends StatefulWidget {
-  const LoginScreen({Key? key}) : super(key: key);
+  const LoginScreen({super.key});
 
   @override
   State<LoginScreen> createState() => _LoginScreenState();
@@ -29,7 +28,7 @@ class _LoginScreenState extends State<LoginScreen> {
 }
 
 class LoginForm extends StatefulWidget {
-  const LoginForm({Key? key, this.onLoginSuccess}) : super(key: key);
+  const LoginForm({super.key, this.onLoginSuccess});
 
   final void Function()? onLoginSuccess;
 

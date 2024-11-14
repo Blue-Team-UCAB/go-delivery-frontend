@@ -1,7 +1,7 @@
 import 'package:go_delivery_frontend/domain/entities/product/product.dart';
 import 'package:go_delivery_frontend/domain/repositories/product/product_repository.dart';
 import 'package:go_delivery_frontend/infrastructure/mappers/product/product_mapper.dart';
-import 'package:go_delivery_frontend/application/key_value_storage/localstorage.dart';
+import 'package:go_delivery_frontend/application/key_value_storage/key_value.dart';
 import 'package:go_delivery_frontend/common/result.dart';
 
 import '../../../application/api/api_request.dart';
@@ -24,14 +24,17 @@ class ProductRepositoryImpl extends ProductRepository {
   @override
   Future<Result<List<Product>>> getProducts({
     required int page,
-    required int perPage,
-    required String category,
+    required int take,
   }) async {
     await _addAuthorizationHeader();
     try {
       final response = await _apiRequestManager.request(
         '/product',
         'GET',
+        queryParameters: {
+          'page': page.toString(),
+          'take': take.toString(),
+        },
         (data) {
           List<Product> products = (data['products'] as List)
               .map((productData) => ProductMapper.fromJson(productData))
@@ -42,6 +45,26 @@ class ProductRepositoryImpl extends ProductRepository {
       return response;
     } catch (e) {
       print('Error in ProductRepositoryImpl.getProducts: $e');
+      rethrow;
+    }
+  }
+
+  // Implementación del método getProductById
+  @override
+  Future<Result<Product>> getProductById(String productId) async {
+    await _addAuthorizationHeader();
+    try {
+      final response = await _apiRequestManager.request(
+        '/product/$productId',
+        'GET',
+        (data) {
+          final product = ProductMapper.fromJson(data);
+          return product;
+        },
+      );
+      return response;
+    } catch (e) {
+      print('Error in ProductRepositoryImpl.getProductById: $e');
       rethrow;
     }
   }

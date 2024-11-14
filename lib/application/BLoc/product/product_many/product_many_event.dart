@@ -6,15 +6,13 @@ abstract class ProductListEvent extends Equatable {
 
 class LoadProductList extends ProductListEvent {
   final int page;
-  final int perPage;
-  final String category;
+  final int take;
 
   const LoadProductList({
     required this.page,
-    required this.perPage,
-    required this.category,
+    required this.take,
   });
 
   @override
-  List<Object?> get props => [page, perPage, category];
+  List<Object?> get props => [page, take];
 }

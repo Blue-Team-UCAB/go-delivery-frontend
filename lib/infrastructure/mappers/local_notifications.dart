@@ -22,8 +22,7 @@ class LocalNotifications extends LocalNotificationsManager {
         android: androidDetails,
         iOS: DarwinNotificationDetails(
           presentSound: true,
-        )
-    );
+        ));
 
     final flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
 
@@ -35,14 +34,14 @@ class LocalNotifications extends LocalNotificationsManager {
     final flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
 
     const initializationSettingsAndroid =
-    AndroidInitializationSettings('icon_app');
+        AndroidInitializationSettings('icon_app');
     const initializationSettingsDarwin = DarwinInitializationSettings(
       requestAlertPermission: true,
       requestBadgePermission: true,
       requestSoundPermission: true,
     );
 
-    final initializationSettings = InitializationSettings(
+    const initializationSettings = InitializationSettings(
       android: initializationSettingsAndroid,
       iOS: initializationSettingsDarwin,
     );
@@ -53,7 +52,7 @@ class LocalNotifications extends LocalNotificationsManager {
     );
   }
 
-  void iosShowNotification(int id, String? title, String? body, String? data){
+  void iosShowNotification(int id, String? title, String? body, String? data) {
     showLocalNotification(id: id, title: title, body: body, data: data);
   }
 

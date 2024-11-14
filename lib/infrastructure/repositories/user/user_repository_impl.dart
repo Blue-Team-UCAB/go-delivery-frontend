@@ -2,11 +2,9 @@ import 'package:go_delivery_frontend/common/failure.dart';
 import 'package:go_delivery_frontend/infrastructure/mappers/user/user_mapper.dart';
 
 import '../../../application/api/api_request.dart';
-import '../../../application/key_value_storage/localstorage.dart';
+import 'package:go_delivery_frontend/application/key_value_storage/key_value.dart';
 import '../../../common/result.dart';
-import '../../../domain/entities/client/client.dart';
 import '../../../domain/repositories/user/user_repository.dart';
-import '../../mappers/user/client_mapper.dart';
 
 enum UserType { CLIENT, ADMIN }
 
@@ -41,11 +39,7 @@ class UserRepositoryImpl implements UserRepository {
           }
           return true;
         },
-        body:
-        {
-          "email": email,
-          "password": password
-        },
+        body: {"email": email, "password": password},
       );
       return response;
     } catch (e) {
@@ -65,7 +59,7 @@ class UserRepositoryImpl implements UserRepository {
       final response = await _apiRequestManager.request<bool>(
         '/auth/register',
         'POST',
-            (data) {
+        (data) {
           return true;
         },
         body: {
@@ -88,13 +82,14 @@ class UserRepositoryImpl implements UserRepository {
       final response = await _apiRequestManager.request<bool>(
         '/send-recover_password-code',
         'POST',
-            (data) => data['success'] as bool,
+        (data) => data['success'] as bool,
         body: {'email': email},
       );
       return response;
     } catch (e) {
       print('Error in UserRepositoryImpl.sendRecoveryCode: $e');
-      return Result.fail(Exception('Failed to send recover_password code') as Failure);
+      return Result.fail(
+          Exception('Failed to send recover_password code') as Failure);
     }
   }
 
@@ -104,23 +99,25 @@ class UserRepositoryImpl implements UserRepository {
       final response = await _apiRequestManager.request<bool>(
         '/validate-recover_password-code',
         'POST',
-            (data) => data['valid'] as bool,
+        (data) => data['valid'] as bool,
         body: {'email': email, 'code': code},
       );
       return response;
     } catch (e) {
       print('Error in UserRepositoryImpl.validateRecoveryCode: $e');
-      return Result.fail(Exception('Failed to validate recover_password code') as Failure);
+      return Result.fail(
+          Exception('Failed to validate recover_password code') as Failure);
     }
   }
 
   @override
-  Future<Result<bool>> changePassword(String email, String code, String password) async {
+  Future<Result<bool>> changePassword(
+      String email, String code, String password) async {
     try {
       final response = await _apiRequestManager.request<bool>(
         '/change-password',
         'POST',
-            (data) => data['success'] as bool,
+        (data) => data['success'] as bool,
         body: {'email': email, 'code': code, 'password': password},
       );
       return response;

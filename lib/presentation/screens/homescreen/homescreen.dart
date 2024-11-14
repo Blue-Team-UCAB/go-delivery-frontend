@@ -3,6 +3,7 @@ import 'package:go_delivery_frontend/presentation/screens/homescreen/category_ta
 import 'package:go_delivery_frontend/presentation/screens/homescreen/homescreen_combo_section.dart';
 import 'package:go_router/go_router.dart';
 
+
 import '../../../infrastructure/datasources/localstorage/localstorage_impl.dart';
 import '../../widgets/dialog_darken_window.dart';
 import '../../widgets/navbar.dart';
@@ -198,4 +199,3 @@ class HomeScreenState extends State<HomeScreen> {
     );
   }
 }
-

@@ -7,8 +7,8 @@ class AppTheme {
 
   ThemeData getTheme() => ThemeData(
         useMaterial3: true,
-        brightness: isDarkMode ? Brightness.dark : Brightness.light,
-        colorSchemeSeed: Colors.blue,
+        brightness: isDarkMode ? Brightness.light : Brightness.light,
+        colorSchemeSeed: const Color(0xFFFFFFFF),
         fontFamily: 'Inter, Montserrat',
         sliderTheme: SliderThemeData(
           inactiveTrackColor: Colors.transparent,

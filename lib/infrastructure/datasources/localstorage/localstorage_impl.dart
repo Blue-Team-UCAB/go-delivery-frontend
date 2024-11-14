@@ -1,5 +1,5 @@
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:go_delivery_frontend/application/key_value_storage/localstorage.dart';
+import 'package:go_delivery_frontend/application/key_value_storage/key_value.dart';
 
 class LocalStorageService extends LocalStorage {
   Future<SharedPreferences> getSharedPrefs() async {

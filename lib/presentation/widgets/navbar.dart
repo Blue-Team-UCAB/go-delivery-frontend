@@ -27,7 +27,7 @@ class CustomNavBar extends StatelessWidget {
           Icon(
             icon,
             color:
-            selectedIndex == index ? const Color(0xFF2000B1) : Colors.grey,
+                selectedIndex == index ? const Color(0xFF2000B1) : Colors.grey,
           ),
           Text(
             label,
@@ -36,7 +36,7 @@ class CustomNavBar extends StatelessWidget {
                   ? const Color(0xFF2000B1)
                   : Colors.grey,
               fontWeight:
-              selectedIndex == index ? FontWeight.bold : FontWeight.normal,
+                  selectedIndex == index ? FontWeight.bold : FontWeight.normal,
             ),
           ),
         ],
@@ -52,8 +52,9 @@ class CustomNavBar extends StatelessWidget {
         clipBehavior: Clip.none, // Allow overflow for the FAB
         children: [
           ClipRRect(
-            borderRadius:
-            const BorderRadius.only(topLeft:  Radius.circular(30), topRight:Radius.circular(30)), // Set the border radius here
+            borderRadius: const BorderRadius.only(
+                topLeft: Radius.circular(30),
+                topRight: Radius.circular(30)), // Set the border radius here
             child: BottomAppBar(
               color: const Color(0xFFFFFFFF),
               shape: const CircularNotchedRectangle(),
@@ -79,7 +80,7 @@ class CustomNavBar extends StatelessWidget {
           Positioned(
             bottom: 50,
             left:
-            MediaQuery.of(context).size.width / 2 - 30, // Center the button
+                MediaQuery.of(context).size.width / 2 - 30, // Center the button
             child: _buildCenterButton(context),
           ),
         ],
