@@ -115,7 +115,6 @@ class RoutesManager {
 
       if (isGoingTo == '/splash') return null;
 
-
       if (!isAutorized) {
         if (isGoingTo == '/register' ||
             isGoingTo == '/password/reset' ||

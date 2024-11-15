@@ -28,14 +28,10 @@ class _PopularSectionState extends State<PopularSection> {
     if (_scrollController.position.pixels ==
         _scrollController.position.maxScrollExtent) {
       if (!_isLoading && _hasMore) {
-        context.read<ProductListBloc>().add(
-              LoadProductList(
-                  page: (context.read<ProductListBloc>().state
-                              as ProductListLoaded)
-                          .page +
-                      1,
-                  take: 4),
-            );
+        context.read<ProductListBloc>().add(LoadProductList(
+            page: (context.read<ProductListBloc>().state
+            as ProductListLoaded).page + 1, take: 4),
+        );
       }
     }
   }

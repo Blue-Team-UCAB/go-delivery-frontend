@@ -17,7 +17,9 @@ class _ComboSectionState extends State<ComboSection> {
   @override
   void initState() {
     super.initState();
-    context.read<BundleListBloc>().add(const LoadBundleList(page: 1, take: 2));
+    BlocProvider.of<BundleListBloc>(context).add(
+        const LoadBundleList(page: 1, take: 4)
+    );
   }
 
   @override
