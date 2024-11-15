@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_delivery_frontend/application/BLoc/product/product_many/product_many_bloc.dart';
+import 'package:go_delivery_frontend/application/BLoc/product/popular/product_popular_many_bloc.dart';
 import 'package:go_delivery_frontend/application/BLoc/product/product_many/product_many_state.dart';
 import 'package:go_delivery_frontend/application/BLoc/product/product_many/product_many_event.dart';
 
@@ -14,26 +14,12 @@ class PopularSection extends StatefulWidget {
 }
 
 class _PopularSectionState extends State<PopularSection> {
-  final ScrollController _scrollController = ScrollController();
   bool _isLoading = false;
   bool _hasMore = true;
 
   @override
   void initState() {
     super.initState();
-    _scrollController.addListener(_scrollListener);
-  }
-
-  void _scrollListener() {
-    if (_scrollController.position.pixels ==
-        _scrollController.position.maxScrollExtent) {
-      if (!_isLoading && _hasMore) {
-        context.read<ProductListBloc>().add(LoadProductList(
-            page: (context.read<ProductListBloc>().state
-            as ProductListLoaded).page + 1, take: 4),
-        );
-      }
-    }
   }
 
   @override
@@ -53,16 +39,15 @@ class _PopularSectionState extends State<PopularSection> {
           ),
         ),
         const SizedBox(height: 16),
-        BlocBuilder<ProductListBloc, ProductListState>(
+        BlocBuilder<ProductPopularListBloc, ProductListState>(
           builder: (context, state) {
             if (state is ProductListLoading && _isLoading) {
               return const Center(child: CircularProgressIndicator());
             } else if (state is ProductListLoaded) {
               _isLoading = false;
-              _hasMore = state.products.length > state.page * 4;
+              _hasMore = state.products.length > state.page * 10;
 
               return ListView.builder(
-                controller: _scrollController,
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
                 itemCount: state.products.length + (_hasMore ? 1 : 0),
@@ -94,7 +79,7 @@ class _PopularSectionState extends State<PopularSection> {
               return Center(child: Text('Error: ${state.result}'));
             } else {
               context
-                  .read<ProductListBloc>()
+                  .read<ProductPopularListBloc>()
                   .add(const LoadProductList(page: 1, take: 4));
               return const Center(child: CircularProgressIndicator());
             }
@@ -106,7 +91,6 @@ class _PopularSectionState extends State<PopularSection> {
 
   @override
   void dispose() {
-    _scrollController.dispose();
     super.dispose();
   }
 }

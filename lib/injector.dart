@@ -3,6 +3,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:go_delivery_frontend/application/BLoc/blocs.dart';
 import 'package:go_delivery_frontend/application/BLoc/bundle/bundle_detail/bundle_detail_bloc.dart';
 import 'package:go_delivery_frontend/application/BLoc/bundle/bundle_many/bundle_many_bloc.dart';
+import 'package:go_delivery_frontend/application/BLoc/product/popular/product_popular_many_bloc.dart';
 import 'package:go_delivery_frontend/application/BLoc/product/product_detail/product_detail_bloc.dart';
 import 'package:go_delivery_frontend/application/BLoc/product/product_many/product_many_bloc.dart';
 import 'package:go_delivery_frontend/application/use_cases/auth/register/register_usecase_input.dart';
@@ -106,8 +107,10 @@ class InjectManager {
     getIt.registerSingleton(ProductListBloc(getProductsUseCase));
     getIt.registerSingleton(ProductDetailBloc(getOneProductUseCase));
 
+    // Popular List
+    getIt.registerSingleton(ProductPopularListBloc(getProductsUseCase));
 
-        // ============================= BUNDLES ============================= //
+    // ============================= BUNDLES ============================= //
     // Repositorio
     final bundleRepository = BundleRepositoryImpl(
       apiRequestManager: apiRequestManagerImpl,
@@ -131,6 +134,7 @@ class InjectManager {
     // BLOC del Carrito
     getIt.registerSingleton(BundleListBloc(getBundlesUseCase));
     getIt.registerSingleton(BundleDetailBloc(getOneBundleUseCase));
+
 
   }
 }
