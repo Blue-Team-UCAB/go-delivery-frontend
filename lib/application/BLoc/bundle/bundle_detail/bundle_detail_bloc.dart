@@ -30,6 +30,18 @@ class BundleDetailBloc extends Bloc<BundleDetailEvent, BundleDetailState> {
 
         if (result.isSuccessful()) {
           final bundle = result.getValue();
+
+          // Imprimir la data de los productos del bundle
+          print('Productos en el bundle:');
+          bundle.products.forEach((product) {
+            print('Producto: ${product.name}, URL imagen: ${product.imageUrl}');
+          });
+
+          // Si la URL de la imagen está vacía, asignar la imagen predeterminada
+          if (bundle.imageUrl.isEmpty) {
+            bundle.imageUrl = 'https://via.placeholder.com/150';
+          }
+
           emit(BundleDetailLoaded(bundle));
         } else {
           emit(BundleDetailFailed(result));

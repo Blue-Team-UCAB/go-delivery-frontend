@@ -5,9 +5,15 @@ import 'package:go_delivery_frontend/infrastructure/mappers/product/product_mapp
 class BundleMapper {
   static Bundle fromJson(Map<String, dynamic> json) {
     try {
-      List<Product> products = (json['products'] as List?)
-              ?.map((productData) => ProductMapper.fromJson(productData))
-              .toList() ??
+      List<Product> products = (json['products'] as List?)?.map((productData) {
+            final product = ProductMapper.fromJson(productData);
+            if (product.imageUrl.isEmpty) {
+              print('Producto sin imagen, asignando URL por defecto');
+              product.imageUrl = 'https://via.placeholder.com/150';
+            }
+
+            return product;
+          }).toList() ??
           [];
 
       return Bundle(

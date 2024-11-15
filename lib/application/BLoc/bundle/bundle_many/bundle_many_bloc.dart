@@ -37,7 +37,7 @@ class BundleListBloc extends Bloc<BundleListEvent, BundleListState> {
           final hasReachedMax = newBundles.isEmpty;
 
           emit(BundleListLoaded(
-            bundles: [...currentState.bundles, ...newBundles],
+            bundles: [...newBundles],
             hasReachedMax: hasReachedMax,
             page: event.page,
           ));

@@ -7,7 +7,7 @@ class Product {
   final double weight;
   final String description;
   final Category category;
-  final String imageUrl;
+  String imageUrl;
   final String currency;
   final int stock;
 
