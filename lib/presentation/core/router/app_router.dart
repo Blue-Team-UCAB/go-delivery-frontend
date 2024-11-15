@@ -1,3 +1,4 @@
+import 'package:go_delivery_frontend/presentation/screens/detail/bundle_detail_screen.dart';
 import 'package:go_delivery_frontend/presentation/screens/screens.dart';
 import 'package:go_router/go_router.dart';
 
@@ -91,7 +92,17 @@ class RoutesManager {
             key: state.pageKey,
             child: ProductDetailScreen(productId: productName)
         );}, 
-      )
+      ),
+      GoRoute(
+        
+        path: '/bundledetail/:name',
+        pageBuilder: (context, state) {
+          final bundleName = state.pathParameters['name'] ?? 'no-name'; 
+          return CustomTransitions.slideRight(
+            key: state.pageKey,
+            child: BundleDetailScreen(bundleId: bundleName)
+        );}, 
+      ),
     ],
     redirect: (context, state) async {
       final isGoingTo = state.matchedLocation;

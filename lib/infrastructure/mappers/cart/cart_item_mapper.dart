@@ -1,3 +1,4 @@
+import 'package:go_delivery_frontend/domain/entities/bundle/bundle.dart';
 import 'package:go_delivery_frontend/domain/entities/cart/cartitem.dart';
 import 'package:go_delivery_frontend/domain/entities/product/product.dart';
 
@@ -24,6 +25,9 @@ class CartItemMapper {
   factory CartItemMapper.fromProduct(Product producto) => CartItemMapper(
     id: producto.id, name: producto.name, imgUrl: producto.imageUrl, price: producto.price, presentation: 'presentation', quantity: 1);
 
+  factory CartItemMapper.fromBundle(Bundle bundle) => CartItemMapper(
+    id: bundle.id, name: bundle.name, imgUrl: bundle.imageUrl, price: bundle.price, presentation: bundle.description, quantity: 1);
+  
   CartItem toCartItemEntity() => CartItem(
       id: id,
       name : name,

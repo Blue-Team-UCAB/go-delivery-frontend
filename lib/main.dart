@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
+import 'package:go_delivery_frontend/application/BLoc/bundle/bundle_detail/bundle_detail_bloc.dart';
+import 'package:go_delivery_frontend/application/BLoc/bundle/bundle_many/bundle_many_bloc.dart';
 import 'package:go_delivery_frontend/application/BLoc/product/product_detail/product_detail_bloc.dart';
 import 'package:go_delivery_frontend/injector.dart';
 import 'package:go_delivery_frontend/presentation/core/app.dart';
@@ -24,5 +26,7 @@ void main() async {
     BlocProvider(create: (_) => getIt<RecoverPasswordBloc>()),
     BlocProvider(create: (_) => GetIt.instance<ProductListBloc>()),
     BlocProvider(create: (_) => GetIt.instance<ProductDetailBloc>()),
+    BlocProvider(create: (_) => GetIt.instance<BundleListBloc>()),
+    BlocProvider(create: (_) => GetIt.instance<BundleDetailBloc>()),
   ], child: const GoDelyApp()));
 }
