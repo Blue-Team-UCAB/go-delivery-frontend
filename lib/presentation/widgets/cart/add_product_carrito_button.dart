@@ -4,10 +4,10 @@ import 'package:go_delivery_frontend/domain/entities/product/product.dart';
 import 'package:go_delivery_frontend/application/BLoc/cart/cart_bloc.dart';
 import 'package:go_delivery_frontend/infrastructure/mappers/cart/cart_item_mapper.dart';
 
-class AddCarritoButton extends StatelessWidget {
+class AddProductCarritoButton extends StatelessWidget {
   final Product? product;
 
-  const AddCarritoButton({super.key, this.product});
+  const AddProductCarritoButton({super.key, this.product});
 
   @override
   Widget build(BuildContext context) {

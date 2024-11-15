@@ -3,26 +3,20 @@ import 'package:go_delivery_frontend/common/use_cases.dart';
 import 'package:go_delivery_frontend/domain/entities/bundle/bundle.dart';
 import 'package:go_delivery_frontend/domain/repositories/bundle/bundle_repository.dart';
 
-class GetBundlesUseCaseInput extends IUseCaseInput {
-  final int page;
-  final int take;
+//Añadiendo un comentario para poder hacer commit
+class GetOneBundleUseCaseInput extends IUseCaseInput {
+  final String bundleId;
 
-  GetBundlesUseCaseInput({
-    required this.page,
-    required this.take,
-  });
+  GetOneBundleUseCaseInput({required this.bundleId});
 }
 
-class GetBundlesUseCase {
+class GetOneBundleUseCase {
   final BundleRepository _bundleRepository;
 
-  GetBundlesUseCase({required BundleRepository bundleRepository})
+  GetOneBundleUseCase({required BundleRepository bundleRepository})
       : _bundleRepository = bundleRepository;
 
-  Future<Result<List<Bundle>>> execute(GetBundlesUseCaseInput input) {
-    return _bundleRepository.getBundles(
-      page: input.page,
-      take: input.take,
-    );
+  Future<Result<Bundle>> execute(GetOneBundleUseCaseInput input) {
+    return _bundleRepository.getBundleById(input.bundleId);
   }
 }

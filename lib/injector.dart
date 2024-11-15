@@ -1,13 +1,19 @@
 import 'package:get_it/get_it.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:go_delivery_frontend/application/BLoc/blocs.dart';
+import 'package:go_delivery_frontend/application/BLoc/bundle/bundle_detail/bundle_detail_bloc.dart';
+import 'package:go_delivery_frontend/application/BLoc/bundle/bundle_many/bundle_many_bloc.dart';
 import 'package:go_delivery_frontend/application/BLoc/product/product_detail/product_detail_bloc.dart';
 import 'package:go_delivery_frontend/application/BLoc/product/product_many/product_many_bloc.dart';
 import 'package:go_delivery_frontend/application/use_cases/auth/register/register_usecase_input.dart';
+import 'package:go_delivery_frontend/application/use_cases/bundle/get_many_bundle.dart';
+import 'package:go_delivery_frontend/application/use_cases/bundle/get_one_bundle.dart';
 import 'package:go_delivery_frontend/application/use_cases/product/get_one_product.dart';
+import 'package:go_delivery_frontend/domain/repositories/bundle/bundle_repository.dart';
 import 'package:go_delivery_frontend/infrastructure/datasources/api/api_request_impl.dart';
 import 'package:go_delivery_frontend/infrastructure/datasources/localstorage/localstorage_impl.dart';
 import 'package:go_delivery_frontend/domain/repositories/product/product_repository.dart';
+import 'package:go_delivery_frontend/infrastructure/repositories/bundle/bundle_repository_impl.dart';
 import 'package:go_delivery_frontend/infrastructure/repositories/product/product_repository_impl.dart';
 import 'package:go_delivery_frontend/application/use_cases/product/get_many_product.dart';
 
@@ -99,5 +105,32 @@ class InjectManager {
     // BLOC del Carrito
     getIt.registerSingleton(ProductListBloc(getProductsUseCase));
     getIt.registerSingleton(ProductDetailBloc(getOneProductUseCase));
+
+
+        // ============================= BUNDLES ============================= //
+    // Repositorio
+    final bundleRepository = BundleRepositoryImpl(
+      apiRequestManager: apiRequestManagerImpl,
+      localStorage: localStorageService,
+    );
+
+    // Registrar el repositorio de bundles
+    getIt.registerSingleton<BundleRepository>(bundleRepository);
+
+    // Casos de Uso
+    final getBundlesUseCase =
+        GetBundlesUseCase(bundleRepository: bundleRepository);
+    final getOneBundleUseCase =
+        GetOneBundleUseCase(bundleRepository: bundleRepository);
+
+    // Registrar el caso de uso de obtención de bundles
+    getIt.registerSingleton<GetBundlesUseCase>(getBundlesUseCase);
+    getIt.registerSingleton<GetOneBundleUseCase>(getOneBundleUseCase);
+    // ======================================================================= //
+
+    // BLOC del Carrito
+    getIt.registerSingleton(BundleListBloc(getBundlesUseCase));
+    getIt.registerSingleton(BundleDetailBloc(getOneBundleUseCase));
+
   }
 }

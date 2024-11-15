@@ -1,23 +1,37 @@
 import 'package:flutter/material.dart';
+import 'package:go_delivery_frontend/application/BLoc/bundle/bundle_detail/bundle_detail_bloc.dart';
+import 'package:go_delivery_frontend/application/BLoc/bundle/bundle_detail/bundle_detail_state.dart';
+import 'package:go_delivery_frontend/application/BLoc/bundle/bundle_detail/bundle_detail_event.dart';
+import 'package:go_delivery_frontend/domain/entities/bundle/bundle.dart';
+import 'package:go_delivery_frontend/presentation/widgets/bundle_card.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_delivery_frontend/presentation/widgets/card.dart';
-import 'package:go_delivery_frontend/presentation/widgets/cart/add_product_carrito_button.dart';
-import 'package:go_delivery_frontend/application/BLoc/product/product_detail/product_detail_bloc.dart';
-import 'package:go_delivery_frontend/application/BLoc/product/product_detail/product_detail_event.dart';
-import 'package:go_delivery_frontend/application/BLoc/product/product_detail/product_detail_state.dart';
+import 'package:go_delivery_frontend/presentation/widgets/cart/add_bundle_carrito_button.dart';
 
-class ProductDetailScreen extends StatelessWidget {
-  static const name = 'product-detail-screen';
+class BundleDetailScreen extends StatelessWidget {
+  static const name = 'bundle-detail-screen';
 
-  final String productId;
+  final String bundleId;
 
-  const ProductDetailScreen({super.key, required this.productId});
+  final Bundle bundleTest = Bundle(
+    id: '057259f8-c42b-4c3f-ac5a-d27b809d764d', 
+    name: "combo fiestero", 
+    description: "Llevate 3 doritos con 2 pepsi", 
+    currency: 'USD', 
+    price: 12, 
+    stock: 2, 
+    weight: 2.45, 
+    imageUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRwTPyzqVBSXWNlO05RXeRe0K-xp1mXNsbXsg&s', 
+    caducityDate: DateTime(1), 
+    products: []
+  );
+
+  BundleDetailScreen({super.key, required this.bundleId});
 
   @override
   Widget build(BuildContext context) {
-    final productDetailBloc = context.read<ProductDetailBloc>();
-    productDetailBloc.add(LoadProductDetail(productId: productId));
+    final bundleDetailBloc = context.read<BundleDetailBloc>();
+    bundleDetailBloc.add(LoadBundleDetail(bundleId: bundleId));
 
     return Scaffold(
       appBar: AppBar(
@@ -35,14 +49,14 @@ class ProductDetailScreen extends StatelessWidget {
       ),
       body: Container(
         color: const Color(0xFFFFFFFF),
-        child: BlocBuilder<ProductDetailBloc, ProductDetailState>(
+        child: BlocBuilder<BundleDetailBloc, BundleDetailState>(
           builder: (context, state) {
-            if (state is ProductDetailLoading) {
+            if (state is BundleDetailLoading) {
               return const Center(child: CircularProgressIndicator());
             }
 
-            if (state is ProductDetailLoaded) {
-              final product = state.product;
+            if (state is BundleDetailLoaded) {
+              final bundle = state.bundle;
 
               return SingleChildScrollView(
                 padding:
@@ -52,7 +66,7 @@ class ProductDetailScreen extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Image.network(
-                      product!.imageUrl,
+                      bundle!.imageUrl,
                       fit: BoxFit.fill,
                       alignment: Alignment.center,
                       height: 400,
@@ -61,7 +75,7 @@ class ProductDetailScreen extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          product.name,
+                          bundle.name,
                           style: const TextStyle(
                             fontFamily: 'Inter',
                             fontWeight: FontWeight.w800,
@@ -70,7 +84,7 @@ class ProductDetailScreen extends StatelessWidget {
                         ),
                         const SizedBox(height: 6),
                         Text(
-                          '\$${product.price}',
+                          '\$${bundle.price}',
                           style: const TextStyle(
                             fontFamily: 'Inter',
                             fontWeight: FontWeight.w500,
@@ -79,7 +93,7 @@ class ProductDetailScreen extends StatelessWidget {
                         ),
                         const SizedBox(height: 24),
                         Text(
-                          product.description,
+                          bundle.description,
                           maxLines: 2,
                           style: const TextStyle(
                             fontFamily: 'Inter',
@@ -99,7 +113,7 @@ class ProductDetailScreen extends StatelessWidget {
                               ),
                             ),
                             Text(
-                              '${product.weight}',
+                              '${bundle.weight}',
                               style: const TextStyle(
                                 fontFamily: 'Inter',
                                 fontWeight: FontWeight.w400,
@@ -139,19 +153,19 @@ class ProductDetailScreen extends StatelessWidget {
                               SizedBox(
                                 width: 200,
                                 height: 255,
-                                child: ProductCard(product: product),
+                                child: BundleCard(bundle:bundleTest),
                               ),
                               const SizedBox(width: 20),
                               SizedBox(
                                 width: 200,
                                 height: 255,
-                                child: ProductCard(product: product),
+                                child: BundleCard(bundle:bundleTest),
                               ),
                               const SizedBox(width: 20),
                               SizedBox(
                                 width: 200,
                                 height: 255,
-                                child: ProductCard(product: product),
+                                child: BundleCard(bundle:bundleTest),
                               ),
                             ],
                           ),
@@ -163,7 +177,7 @@ class ProductDetailScreen extends StatelessWidget {
               );
             }
 
-            if (state is ProductDetailFailed) {
+            if (state is BundleDetailFailed) {
               return Center(
                 child: Text(
                   'Error: ${state.result}',
@@ -179,11 +193,11 @@ class ProductDetailScreen extends StatelessWidget {
       bottomNavigationBar: Container(
         color: const Color(0xFFFFFFFF),
         padding: const EdgeInsets.all(24.0),
-        child: BlocBuilder<ProductDetailBloc, ProductDetailState>(
+        child: BlocBuilder<BundleDetailBloc, BundleDetailState>(
           builder: (context, state) {
-            if (state is ProductDetailLoaded) {
-              final product = state.product;
-              return AddProductCarritoButton(product: product);
+            if (state is BundleDetailLoaded) {
+              final bundle = state.bundle;
+              return AddBundleCarritoButton(bundle:bundle);
             }
             return const SizedBox();
           },
