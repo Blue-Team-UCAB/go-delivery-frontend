@@ -1,6 +1,5 @@
 import 'package:equatable/equatable.dart';
 
-// Evento abstracto para el detalle de un bundle
 abstract class BundleDetailEvent extends Equatable {
   const BundleDetailEvent();
 

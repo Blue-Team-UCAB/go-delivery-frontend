@@ -2,7 +2,6 @@ import 'package:equatable/equatable.dart';
 import 'package:go_delivery_frontend/common/result.dart';
 import 'package:go_delivery_frontend/domain/entities/bundle/bundle.dart';
 
-// Estado abstracto para el detalle de un bundle
 abstract class BundleDetailState extends Equatable {
   final Bundle? bundle;
 
