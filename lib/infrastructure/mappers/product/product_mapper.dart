@@ -9,7 +9,7 @@ class ProductMapper {
           ? CategoryMapper.fromJson(json['category'])
           : Category(id: '', name: 'Sin categoría', icon: '');
 
-      final String imageUrl = json['imagenUrl'] as String? ?? '';
+      final String imageUrl = json['imageUrl'] as String? ?? '';
 
       return Product(
         id: json['id'] as String? ?? '',
