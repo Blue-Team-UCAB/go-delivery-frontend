@@ -1,17 +1,16 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
 class PopularSection extends StatelessWidget {
-  const PopularSection({Key? key}) : super(key: key);
+  const PopularSection({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
+        const Padding(
+          padding: EdgeInsets.symmetric(horizontal: 16),
           child: Text(
             'Populares',
             style: TextStyle(
@@ -24,11 +23,11 @@ class PopularSection extends StatelessWidget {
         const SizedBox(height: 16),
         ListView.builder(
           shrinkWrap: true,
-          physics: NeverScrollableScrollPhysics(),
+          physics: const NeverScrollableScrollPhysics(),
           itemCount: 3, // You can adjust this based on your data
           itemBuilder: (context, index) {
-            return Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
+            return const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16),
               child: PopularItem(
                 name: 'Doritos 150g',
                 price: '1.35',
@@ -49,12 +48,12 @@ class PopularItem extends StatelessWidget {
   final String defaultImageUrl; // For the default image
 
   const PopularItem({
-    Key? key,
+    super.key,
     required this.name,
     required this.price,
     required this.imageUrl,
     this.defaultImageUrl = 'assets/not-found-image.svg', // Default value
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

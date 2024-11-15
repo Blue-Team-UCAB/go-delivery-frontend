@@ -8,4 +8,3 @@ export 'checkout/checkout_screen.dart';
 export 'splash/splash_screen.dart';
 export 'welcome/welcome_screen.dart';
 export 'detail/product_detail_screen.dart';
-import 'notification/notification_screen.dart';

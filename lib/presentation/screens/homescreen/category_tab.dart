@@ -1,8 +1,7 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class CategoryTabs extends StatefulWidget {
-  const CategoryTabs({Key? key}) : super(key: key);
+  const CategoryTabs({super.key});
 
   @override
   _CategoryTabsState createState() => _CategoryTabsState();

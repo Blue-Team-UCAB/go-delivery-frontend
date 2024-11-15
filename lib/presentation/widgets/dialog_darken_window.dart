@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 
 class AnimatedSuccessDialog extends StatefulWidget {
   final String title;
@@ -149,7 +148,7 @@ class _AnimatedSuccessDialogState extends State<AnimatedSuccessDialog>
                                 ),
                                 child: Text(
                                   widget.rejectButtonText!,
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                     fontFamily: 'Montserrat',
                                     fontWeight: FontWeight.w600,
                                   ),

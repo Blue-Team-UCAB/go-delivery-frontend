@@ -1,7 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
-import '../../../infrastructure/datasources/localstorage/localstorage_impl.dart';
-import 'dialog_darken_window.dart';
 
 class Sidebar extends StatelessWidget {
   final String userName;    // Add these parameters
@@ -10,11 +7,11 @@ class Sidebar extends StatelessWidget {
 
   // Create a constructor that requires these parameters
   const Sidebar({
-    Key? key,
+    super.key,
     required this.userName,
     required this.userEmail,
     required this.onLogout,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

@@ -17,8 +17,9 @@ class CustomNavBar extends StatelessWidget {
       onTap: ()
       {
         onItemTapped(index);
-        if(direccion.isNotEmpty)
+        if(direccion.isNotEmpty) {
           context.go(direccion);
+        }
       },
       child: Column(
         mainAxisSize: MainAxisSize.min,
