@@ -18,15 +18,20 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await LocalNotifications().initializeLocalNotifications();
   await InjectManager.setUpInjections();
-  runApp(MultiBlocProvider(providers: [
-    BlocProvider(create: (_) => GetIt.instance<CartBloc>()),
-    BlocProvider(create: (_) => getIt<LoginBloc>()),
-    BlocProvider(create: (_) => getIt<ThemesBloc>()),
-    BlocProvider(create: (_) => getIt<NotificationsBloc>()),
-    BlocProvider(create: (_) => getIt<RecoverPasswordBloc>()),
-    BlocProvider(create: (_) => GetIt.instance<ProductListBloc>()),
-    BlocProvider(create: (_) => GetIt.instance<ProductDetailBloc>()),
-    BlocProvider(create: (_) => GetIt.instance<BundleListBloc>()),
-    BlocProvider(create: (_) => GetIt.instance<BundleDetailBloc>()),
-  ], child: const GoDelyApp()));
+  runApp(
+    MultiBlocProvider(
+      providers: [
+        BlocProvider(create: (_) => getIt<CartBloc>()),
+        BlocProvider(create: (_) => getIt<LoginBloc>()),
+        BlocProvider(create: (_) => getIt<ThemesBloc>()),
+        BlocProvider(create: (_) => getIt<NotificationsBloc>()),
+        BlocProvider(create: (_) => getIt<RecoverPasswordBloc>()),
+        BlocProvider(create: (_) => getIt<ProductListBloc>()),
+        BlocProvider(create: (_) => getIt<ProductDetailBloc>()),
+        BlocProvider(create: (_) => getIt<BundleListBloc>()),
+        BlocProvider(create: (_) => getIt<BundleDetailBloc>()),
+      ],
+      child: const GoDelyApp(),
+    ),
+  );
 }

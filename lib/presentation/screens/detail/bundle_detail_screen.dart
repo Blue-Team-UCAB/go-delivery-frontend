@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:go_delivery_frontend/application/BLoc/bundle/bundle_detail/bundle_detail_bloc.dart';
 import 'package:go_delivery_frontend/application/BLoc/bundle/bundle_detail/bundle_detail_state.dart';
 import 'package:go_delivery_frontend/application/BLoc/bundle/bundle_detail/bundle_detail_event.dart';
-import 'package:go_delivery_frontend/domain/entities/bundle/bundle.dart';
 import 'package:go_delivery_frontend/presentation/widgets/bundle_card.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -13,24 +12,12 @@ class BundleDetailScreen extends StatelessWidget {
 
   final String bundleId;
 
-  final Bundle bundleTest = Bundle(
-    id: '057259f8-c42b-4c3f-ac5a-d27b809d764d', 
-    name: "combo fiestero", 
-    description: "Llevate 3 doritos con 2 pepsi", 
-    currency: 'USD', 
-    price: 12, 
-    stock: 2, 
-    weight: 2.45, 
-    imageUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRwTPyzqVBSXWNlO05RXeRe0K-xp1mXNsbXsg&s', 
-    caducityDate: DateTime(1), 
-    products: []
-  );
-
   BundleDetailScreen({super.key, required this.bundleId});
 
   @override
   Widget build(BuildContext context) {
     final bundleDetailBloc = context.read<BundleDetailBloc>();
+    // Disparamos el evento para cargar los detalles del bundle
     bundleDetailBloc.add(LoadBundleDetail(bundleId: bundleId));
 
     return Scaffold(
@@ -42,7 +29,7 @@ class BundleDetailScreen extends StatelessWidget {
           child: IconButton(
             icon: const Icon(Icons.close),
             onPressed: () {
-              context.pop();
+              context.pop(); // Cerrar pantalla
             },
           ),
         ),
@@ -153,19 +140,20 @@ class BundleDetailScreen extends StatelessWidget {
                               SizedBox(
                                 width: 200,
                                 height: 255,
-                                child: BundleCard(bundle:bundleTest),
+                                child: BundleCard(
+                                    bundle: bundle), // Utilizamos BundleCard
                               ),
                               const SizedBox(width: 20),
                               SizedBox(
                                 width: 200,
                                 height: 255,
-                                child: BundleCard(bundle:bundleTest),
+                                child: BundleCard(bundle: bundle),
                               ),
                               const SizedBox(width: 20),
                               SizedBox(
                                 width: 200,
                                 height: 255,
-                                child: BundleCard(bundle:bundleTest),
+                                child: BundleCard(bundle: bundle),
                               ),
                             ],
                           ),
@@ -197,7 +185,7 @@ class BundleDetailScreen extends StatelessWidget {
           builder: (context, state) {
             if (state is BundleDetailLoaded) {
               final bundle = state.bundle;
-              return AddBundleCarritoButton(bundle:bundle);
+              return AddBundleCarritoButton(bundle: bundle);
             }
             return const SizedBox();
           },

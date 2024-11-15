@@ -75,8 +75,7 @@ class BundleCard extends StatelessWidget {
                     iconAlignment: IconAlignment.start,
                     onPressed: () {
                       context.read<CartBloc>().addCartItem(
-                          CartItemMapper.fromBundle(bundle)
-                              .toCartItemEntity());
+                          CartItemMapper.fromBundle(bundle).toCartItemEntity());
                       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                           duration: Duration(seconds: 1),
                           behavior: SnackBarBehavior.floating,
@@ -86,12 +85,11 @@ class BundleCard extends StatelessWidget {
                           content: Text('Agregado Satisfactoriamente')));
                     },
                     style: ButtonStyle(
-                      alignment: Alignment.center,
-                      side: const WidgetStatePropertyAll(
-                          BorderSide(color: Color(0xFF2000B1))),
-                      shape: WidgetStatePropertyAll(RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12))),
-                    ),
+                        alignment: Alignment.center,
+                        side: const WidgetStatePropertyAll(
+                            BorderSide(color: Color(0xFF2000B1))),
+                        shape: WidgetStatePropertyAll(RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12)))),
                     icon: const Icon(
                       Icons.add_shopping_cart,
                       size: 18,

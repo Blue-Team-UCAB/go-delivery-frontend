@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_delivery_frontend/application/BLoc/product/product_many/product_many_bloc.dart';
+import 'package:go_delivery_frontend/application/BLoc/product/product_many/product_many_state.dart';
+import 'package:go_delivery_frontend/application/BLoc/product/product_many/product_many_event.dart';
 
 class PopularSection extends StatelessWidget {
   const PopularSection({super.key});
@@ -21,19 +25,41 @@ class PopularSection extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 16),
-        ListView.builder(
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          itemCount: 3, // You can adjust this based on your data
-          itemBuilder: (context, index) {
-            return const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16),
-              child: PopularItem(
-                name: 'Doritos 150g',
-                price: '1.35',
-                imageUrl: 'assets/doritos.png',
-              ),
-            );
+        // BlocBuilder para escuchar los cambios en el estado
+        BlocBuilder<ProductListBloc, ProductListState>(
+          builder: (context, state) {
+            if (state is ProductListLoading) {
+              // Mostrar un indicador de carga mientras se traen los productos
+              return const Center(child: CircularProgressIndicator());
+            } else if (state is ProductListLoaded) {
+              // Pasar los productos cargados al ListView.builder
+              return ListView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: state.products
+                    .length, // Aquí usamos la longitud de los productos cargados
+                itemBuilder: (context, index) {
+                  final product = state.products[index];
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: PopularItem(
+                      name: product.name,
+                      price: product.price.toString(),
+                      imageUrl: product.imageUrl,
+                    ),
+                  );
+                },
+              );
+            } else if (state is ProductListFailed) {
+              // Mostrar error si la carga falla
+              return Center(child: Text('Error: ${state.result}'));
+            } else {
+              // Si no hay estado cargado, disparar la carga inicial de productos
+              context.read<ProductListBloc>().add(
+                    const LoadProductList(page: 1, take: 10),
+                  );
+              return const Center(child: CircularProgressIndicator());
+            }
           },
         ),
       ],

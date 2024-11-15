@@ -5,20 +5,24 @@ import 'package:go_delivery_frontend/infrastructure/mappers/product/product_mapp
 class BundleMapper {
   static Bundle fromJson(Map<String, dynamic> json) {
     try {
-      List<Product> products = (json['products'] as List)
-          .map((productData) => ProductMapper.fromJson(productData))
-          .toList();
+      List<Product> products = (json['products'] as List?)
+              ?.map((productData) => ProductMapper.fromJson(productData))
+              .toList() ??
+          [];
 
       return Bundle(
-        id: json['id'] as String,
-        name: json['name'] as String,
-        description: json['description'] as String,
-        currency: json['currency'] as String,
-        price: (json['price'] as num).toDouble(),
-        stock: json['stock'] as int,
-        weight: (json['weight'] as num).toDouble(),
-        imageUrl: json['imageUrl'] as String,
-        caducityDate: DateTime.parse(json['caducityDate'] as String),
+        id: json['id'] as String? ?? '',
+        name: json['name'] as String? ?? 'Sin nombre',
+        description:
+            json['description'] as String? ?? 'Descripción no disponible',
+        currency: json['currency'] as String? ?? 'USD',
+        price: (json['price'] as num?)?.toDouble() ?? 0.0,
+        stock: json['stock'] as int? ?? 0,
+        weight: (json['weight'] as num?)?.toDouble() ?? 0.0,
+        imageUrl: json['imageUrl'] as String? ?? '',
+        caducityDate: json['caducityDate'] != null
+            ? DateTime.parse(json['caducityDate'] as String)
+            : DateTime.now(),
         products: products,
       );
     } catch (e) {
