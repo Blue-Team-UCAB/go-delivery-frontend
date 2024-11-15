@@ -4,7 +4,6 @@ import 'package:go_delivery_frontend/presentation/widgets/bundle_card.dart';
 import 'package:go_delivery_frontend/application/BLoc/bundle/bundle_many/bundle_many_bloc.dart';
 import 'package:go_delivery_frontend/application/BLoc/bundle/bundle_many/bundle_many_event.dart';
 import 'package:go_delivery_frontend/application/BLoc/bundle/bundle_many/bundle_many_state.dart';
-import 'package:go_delivery_frontend/presentation/screens/detail/bundle_detail_screen.dart';
 
 class ComboSection extends StatefulWidget {
   const ComboSection({super.key});
@@ -77,22 +76,15 @@ class _ComboSectionState extends State<ComboSection> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       for (var bundle in bundles)
-                        GestureDetector(
-                          onTap: () {
-                            // Navegar al detalle del bundle cuando se selecciona
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) =>
-                                    BundleDetailScreen(bundleId: bundle.id),
-                              ),
-                            );
-                          },
-                          child: SizedBox(
-                            width: 200,
-                            height: 280,
-                            child: BundleCard(bundle: bundle),
+                        Row(
+                          children: [
+                          SizedBox(
+                              width: 200,
+                              height: 280,
+                              child: BundleCard(bundle: bundle),
                           ),
+                          const SizedBox(width: 20)
+                          ]
                         ),
                     ],
                   ),
