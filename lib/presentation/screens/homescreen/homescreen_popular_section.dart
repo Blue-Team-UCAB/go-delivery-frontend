@@ -70,7 +70,7 @@ class _PopularSectionState extends State<PopularSection> {
 
                   final product = state.products[index];
                   return Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 6),
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
                     child: PopularItem(
                       product: product,
                     ),
@@ -113,10 +113,11 @@ class PopularItem extends StatelessWidget {
         Material(
           color: const Color(0xFFFFFFFF),
           child: ListTile(
-            shape: Border.all(
-              color: const Color(0xFF2000B1),
-              width: 1,
-            ),
+            contentPadding: const EdgeInsets.symmetric(horizontal: 10),
+            shape: RoundedRectangleBorder( //<-- SEE HERE
+              side: const BorderSide(color: Color(0xFFD5CCFF),width: 1),
+              borderRadius: BorderRadius.circular(20),
+              ),
             onTap: (){
               context.push('/productdetail/${product.id}');
             },
@@ -125,6 +126,13 @@ class PopularItem extends StatelessWidget {
               height: 100,
               width: 100,
               fit: BoxFit.contain,
+              errorBuilder: (context, error, stackTrace) {
+                return const SizedBox(
+                  height: 100,
+                  width: 100,
+                  child: Icon(Icons.broken_image, color: Colors.grey,),
+                );
+              },
             ),
             title: Text(
               product.name,
@@ -183,109 +191,3 @@ class PopularItem extends StatelessWidget {
     );
 }
 }
-
-
-
-
-
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Container(
-//       padding: const EdgeInsets.all(12),
-//       margin: const EdgeInsets.symmetric(vertical: 8),
-//       decoration: BoxDecoration(
-//         color: Colors.white,
-//         borderRadius: BorderRadius.circular(8),
-//         border: Border.all(
-//           color: Colors.grey[300]!,
-//           width: 1,
-//         ),
-//         boxShadow: [
-//           BoxShadow(
-//             color: Colors.grey.withOpacity(0.2),
-//             spreadRadius: 4,
-//             blurRadius: 4,
-//             offset: const Offset(0, 2),
-//           ),
-//         ],
-//       ),
-//       child: Row(
-//         children: [
-//           Container(
-//             width: 70,
-//             height: 70,
-//             decoration: BoxDecoration(
-//               color: Colors.grey[100],
-//               borderRadius: BorderRadius.circular(8),
-//             ),
-//             child: ClipRRect(
-//               borderRadius: BorderRadius.circular(8),
-//               child: Image.network(
-//                 imageUrl,
-//                 fit: BoxFit.cover,
-//                 errorBuilder: (context, error, stackTrace) {
-//                   return SvgPicture.asset(
-//                     defaultImageUrl,
-//                     fit: BoxFit.cover,
-//                   );
-//                 },
-//               ),
-//             ),
-//           ),
-//           const SizedBox(width: 16),
-//           Expanded(
-//             child: Column(
-//               crossAxisAlignment: CrossAxisAlignment.start,
-//               children: [
-//                 Text(
-//                   name,
-//                   style: const TextStyle(
-//                     fontFamily: 'Montserrat',
-//                     fontWeight: FontWeight.w600,
-//                     fontSize: 14,
-//                   ),
-//                 ),
-//                 const SizedBox(height: 4),
-//                 Text(
-//                   '\$$price',
-//                   style: TextStyle(
-//                     fontFamily: 'Montserrat',
-//                     color: Colors.grey[600],
-//                     fontSize: 16,
-//                   ),
-//                 ),
-//               ],
-//             ),
-//           ),
-//           const SizedBox(width: 16),
-//           SizedBox(
-//             height: 36,
-//             child: OutlinedButton(
-//               onPressed: () {
-//                 // Add your onPressed logic here
-//               },
-//               style: OutlinedButton.styleFrom(
-//                 backgroundColor: Colors.white,
-//                 side: const BorderSide(color: Color(0xFF2000B1)),
-//                 shape: RoundedRectangleBorder(
-//                   borderRadius: BorderRadius.circular(8),
-//                 ),
-//                 padding: const EdgeInsets.symmetric(horizontal: 16),
-//               ),
-//               child: const Text(
-//                 'Agregar',
-//                 style: TextStyle(
-//                   fontFamily: 'Montserrat',
-//                   color: Color(0xFF2000B1),
-//                   fontSize: 14,
-//                   fontWeight: FontWeight.w400,
-//                 ),
-//               ),
-//             ),
-//           ),
-//         ],
-//       ),
-//     );
-//   }
-// }
