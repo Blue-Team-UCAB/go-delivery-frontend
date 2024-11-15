@@ -5,8 +5,40 @@ import 'package:go_delivery_frontend/application/BLoc/product/product_many/produ
 import 'package:go_delivery_frontend/application/BLoc/product/product_many/product_many_state.dart';
 import 'package:go_delivery_frontend/application/BLoc/product/product_many/product_many_event.dart';
 
-class PopularSection extends StatelessWidget {
+class PopularSection extends StatefulWidget {
   const PopularSection({super.key});
+
+  @override
+  // ignore: library_private_types_in_public_api
+  _PopularSectionState createState() => _PopularSectionState();
+}
+
+class _PopularSectionState extends State<PopularSection> {
+  final ScrollController _scrollController = ScrollController();
+  bool _isLoading = false;
+  bool _hasMore = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController.addListener(_scrollListener);
+  }
+
+  void _scrollListener() {
+    if (_scrollController.position.pixels ==
+        _scrollController.position.maxScrollExtent) {
+      if (!_isLoading && _hasMore) {
+        context.read<ProductListBloc>().add(
+              LoadProductList(
+                  page: (context.read<ProductListBloc>().state
+                              as ProductListLoaded)
+                          .page +
+                      1,
+                  take: 4),
+            );
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -25,20 +57,32 @@ class PopularSection extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 16),
-        // BlocBuilder para escuchar los cambios en el estado
         BlocBuilder<ProductListBloc, ProductListState>(
           builder: (context, state) {
-            if (state is ProductListLoading) {
-              // Mostrar un indicador de carga mientras se traen los productos
+            if (state is ProductListLoading && _isLoading) {
               return const Center(child: CircularProgressIndicator());
             } else if (state is ProductListLoaded) {
-              // Pasar los productos cargados al ListView.builder
+              _isLoading = false;
+              _hasMore = state.products.length > state.page * 4;
+
               return ListView.builder(
+                controller: _scrollController,
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
-                itemCount: state.products
-                    .length, // Aquí usamos la longitud de los productos cargados
+                itemCount: state.products.length + (_hasMore ? 1 : 0),
                 itemBuilder: (context, index) {
+                  if (index == state.products.length) {
+                    return _hasMore
+                        ? const Padding(
+                            padding: EdgeInsets.symmetric(vertical: 16),
+                            child: Center(child: CircularProgressIndicator()),
+                          )
+                        : const Padding(
+                            padding: EdgeInsets.symmetric(vertical: 16),
+                            child: Center(child: Text("¡Llegaste al final!")),
+                          );
+                  }
+
                   final product = state.products[index];
                   return Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -51,13 +95,11 @@ class PopularSection extends StatelessWidget {
                 },
               );
             } else if (state is ProductListFailed) {
-              // Mostrar error si la carga falla
               return Center(child: Text('Error: ${state.result}'));
             } else {
-              // Si no hay estado cargado, disparar la carga inicial de productos
-              context.read<ProductListBloc>().add(
-                    const LoadProductList(page: 1, take: 10),
-                  );
+              context
+                  .read<ProductListBloc>()
+                  .add(const LoadProductList(page: 1, take: 4));
               return const Center(child: CircularProgressIndicator());
             }
           },
@@ -65,27 +107,33 @@ class PopularSection extends StatelessWidget {
       ],
     );
   }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
 }
 
 class PopularItem extends StatelessWidget {
   final String name;
   final String price;
   final String imageUrl;
-  final String defaultImageUrl; // For the default image
+  final String defaultImageUrl;
 
   const PopularItem({
     super.key,
     required this.name,
     required this.price,
     required this.imageUrl,
-    this.defaultImageUrl = 'assets/not-found-image.svg', // Default value
+    this.defaultImageUrl = 'assets/not-found-image.svg',
   });
 
   @override
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(12),
-      margin: const EdgeInsets.symmetric(vertical: 8), // Add some margin
+      margin: const EdgeInsets.symmetric(vertical: 8),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(8),
@@ -150,7 +198,7 @@ class PopularItem extends StatelessWidget {
               ],
             ),
           ),
-          const SizedBox(width: 16), // Add some spacing
+          const SizedBox(width: 16),
           SizedBox(
             height: 36,
             child: OutlinedButton(

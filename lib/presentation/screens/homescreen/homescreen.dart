@@ -8,6 +8,10 @@ import '../../widgets/navbar.dart';
 import '../../widgets/sidebar.dart';
 import 'homescreen_locationbar.dart';
 import 'homescreen_popular_section.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_delivery_frontend/application/BLoc/product/product_many/product_many_bloc.dart';
+import 'package:go_delivery_frontend/application/BLoc/product/product_many/product_many_state.dart';
+import 'package:go_delivery_frontend/application/BLoc/product/product_many/product_many_event.dart';
 
 class HomeScreenChildView extends StatelessWidget {
   static const name = 'home-screen';
@@ -32,6 +36,9 @@ class HomeScreen extends StatefulWidget {
 
 class HomeScreenState extends State<HomeScreen> {
   int _counter = 0;
+  final ScrollController _scrollController = ScrollController();
+  final bool _isLoading = false;
+  final bool _hasMore = true;
 
   void _onNavItemTapped(int valueIndex) {
     setState(() {
@@ -43,6 +50,23 @@ class HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     _counter = widget.initialCounterNavbar;
+    _scrollController.addListener(_scrollListener);
+  }
+
+  void _scrollListener() {
+    if (_scrollController.position.pixels ==
+        _scrollController.position.maxScrollExtent) {
+      if (!_isLoading && _hasMore) {
+        context.read<ProductListBloc>().add(
+              LoadProductList(
+                  page: (context.read<ProductListBloc>().state
+                              as ProductListLoaded)
+                          .page +
+                      1,
+                  take: 4),
+            );
+      }
+    }
   }
 
   void showLogoutDialog(BuildContext context) {
@@ -176,15 +200,16 @@ class HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildContent() {
-    return const SingleChildScrollView(
-      child: Padding(
+    return SingleChildScrollView(
+      controller: _scrollController, // Aquí agregamos el ScrollController
+      child: const Padding(
         padding: EdgeInsets.only(top: 10),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             CategoryTabs(),
             ComboSection(),
-            PopularSection(),
+            PopularSection(), // Este widget sigue siendo el mismo
           ],
         ),
       ),

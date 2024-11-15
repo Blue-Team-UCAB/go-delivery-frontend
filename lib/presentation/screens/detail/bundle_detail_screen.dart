@@ -17,7 +17,6 @@ class BundleDetailScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final bundleDetailBloc = context.read<BundleDetailBloc>();
-    // Disparamos el evento para cargar los detalles del bundle
     bundleDetailBloc.add(LoadBundleDetail(bundleId: bundleId));
 
     return Scaffold(
@@ -140,8 +139,7 @@ class BundleDetailScreen extends StatelessWidget {
                               SizedBox(
                                 width: 200,
                                 height: 255,
-                                child: BundleCard(
-                                    bundle: bundle), // Utilizamos BundleCard
+                                child: BundleCard(bundle: bundle),
                               ),
                               const SizedBox(width: 20),
                               SizedBox(

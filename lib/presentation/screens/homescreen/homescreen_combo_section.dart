@@ -17,7 +17,6 @@ class _ComboSectionState extends State<ComboSection> {
   @override
   void initState() {
     super.initState();
-    // Llamar al evento para cargar los bundles cuando el widget se monta
     context.read<BundleListBloc>().add(const LoadBundleList(page: 1, take: 2));
   }
 
