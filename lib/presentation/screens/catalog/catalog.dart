@@ -28,6 +28,7 @@ class CatalogScreenState extends State<CatalogScreen> with AutomaticKeepAliveCli
   bool _hasLoadedAllProducts = false;
   int _currentPage = 1;
   final _gridKey = const PageStorageKey('catalog_grid');
+  String _searchQuery = '';
 
   @override
   bool get wantKeepAlive => true;
@@ -58,10 +59,23 @@ class CatalogScreenState extends State<CatalogScreen> with AutomaticKeepAliveCli
         });
         _currentPage++;
         BlocProvider.of<ProductListBloc>(context).add(
-          LoadProductList(page: _currentPage, take: 6),
+          _searchQuery.isEmpty
+              ? LoadProductList(page: _currentPage, take: 6)
+              : SearchProductList(search: _searchQuery, page: _currentPage, take: 6),
         );
       }
     }
+  }
+
+  void _handleSearch(String query) {
+    setState(() {
+      _searchQuery = query;
+      _currentPage = 1;
+      _hasLoadedAllProducts = false;
+    });
+    BlocProvider.of<ProductListBloc>(context).add(
+      SearchProductList(search: query, page: _currentPage, take: 6),
+    );
   }
 
   void _onNavItemTapped(int valueIndex) {
@@ -189,14 +203,23 @@ class CatalogScreenState extends State<CatalogScreen> with AutomaticKeepAliveCli
                     icon: const Icon(Icons.search, color: Colors.grey),
                     onPressed: () {},
                   ),
-                  const Expanded(
+                  Expanded(
                     child: TextField(
                       decoration: InputDecoration(
                         hintText: 'Buscar un producto',
                         hintStyle: TextStyle(color: Colors.grey),
                         border: InputBorder.none,
+                        suffixIcon: _searchQuery.isNotEmpty
+                            ? IconButton(
+                          icon: Icon(Icons.clear),
+                          onPressed: () {
+                            _handleSearch('');
+                          },
+                        )
+                            : null,
                       ),
                       style: TextStyle(color: Colors.grey),
+                      onChanged: _handleSearch,
                     ),
                   ),
                   IconButton(
@@ -233,10 +256,10 @@ class CatalogScreenState extends State<CatalogScreen> with AutomaticKeepAliveCli
                         cacheExtent: 1000,
                         gridDelegate:
                         const SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 2,
-                          crossAxisSpacing: 20.0,
-                          mainAxisSpacing: 20.0,
-                          childAspectRatio: 0.66,
+                            crossAxisCount: 2,
+                            crossAxisSpacing: 20.0,
+                            mainAxisSpacing: 20.0,
+                            childAspectRatio: 0.66,
                         ),
                         itemCount: state.products.length +
                             (_hasLoadedAllProducts ? 1 : 0),
