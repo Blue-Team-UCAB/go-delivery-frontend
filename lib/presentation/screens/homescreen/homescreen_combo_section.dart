@@ -2,11 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
 
-import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class ComboSection extends StatelessWidget {
-  const ComboSection({Key? key}) : super(key: key);
+  const ComboSection({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -15,11 +14,11 @@ class ComboSection extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
+          const Padding(
+            padding: EdgeInsets.symmetric(horizontal: 16),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: const [
+              children: [
                 Text(
                   'Combos ofertados',
                   style: TextStyle(
@@ -81,13 +80,13 @@ class ComboCard extends StatelessWidget {
   final String defaultImageUrl;
 
   const ComboCard({
-    Key? key,
+    super.key,
     required this.title,
     required this.price,
     required this.description,
     required this.imageUrl,
     this.defaultImageUrl = 'assets/not-found-image.svg',
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

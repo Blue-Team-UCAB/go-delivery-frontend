@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -20,7 +19,7 @@ class NotificationScreenState extends State<NotificationScreen> {
 
     return Scaffold(
       backgroundColor: isDarkMode ? Colors.black26 : const Color(0xFF02066F), // Decimal value for #2000B1
-      body: SafeArea(
+      body: const SafeArea(
         child: Center(
           child: Column(
 

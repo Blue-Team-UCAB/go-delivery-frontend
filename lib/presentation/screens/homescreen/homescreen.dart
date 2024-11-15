@@ -3,7 +3,6 @@ import 'package:go_delivery_frontend/presentation/screens/homescreen/category_ta
 import 'package:go_delivery_frontend/presentation/screens/homescreen/homescreen_combo_section.dart';
 import 'package:go_router/go_router.dart';
 
-
 import '../../../infrastructure/datasources/localstorage/localstorage_impl.dart';
 import '../../widgets/dialog_darken_window.dart';
 import '../../widgets/navbar.dart';
@@ -11,36 +10,28 @@ import '../../widgets/sidebar.dart';
 import 'homescreen_locationbar.dart';
 import 'homescreen_popular_section.dart';
 
-
 class HomeScreenChildView extends StatelessWidget {
-
   static const name = 'home-screen';
   final Widget childView;
-  const HomeScreenChildView({
-    super.key,
-    required this.childView
-  });
+  const HomeScreenChildView({super.key, required this.childView});
 
   @override
   Widget build(BuildContext context) {
     return childView;
   }
-
 }
 
 class HomeScreen extends StatefulWidget {
   final int initialCounterNavbar;
 
-  const HomeScreen({super.key,required this.initialCounterNavbar});
+  const HomeScreen({super.key, required this.initialCounterNavbar});
 
   @override
   HomeScreenState createState() => HomeScreenState();
-
 }
 
 class HomeScreenState extends State<HomeScreen> {
   int _counter = 0;
-  bool _showLogoutDialog = false;
 
   void _onNavItemTapped(int valueIndex) {
     setState(() {
@@ -58,7 +49,8 @@ class HomeScreenState extends State<HomeScreen> {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return AnimatedSuccessDialog( // Assuming you have this custom dialog
+        return AnimatedSuccessDialog(
+          // Assuming you have this custom dialog
           title: 'Salir Sesion',
           message: 'Estas seguro de salir de tu Sesion?',
           buttonText: 'Salir',
@@ -103,16 +95,18 @@ class HomeScreenState extends State<HomeScreen> {
               top: _getLocationBarPosition(context),
               left: 16,
               right: 16,
-              child: LocationBar(), // Assuming you have this widget
+              child: const LocationBar(), // Assuming you have this widget
             ),
           ],
         ),
       ),
-      bottomNavigationBar: CustomNavBar( // Assuming you have this widget
+      bottomNavigationBar: CustomNavBar(
+        // Assuming you have this widget
         selectedIndex: _counter,
         onItemTapped: _onNavItemTapped,
       ),
-      endDrawer: Sidebar( // Assuming you have this widget
+      endDrawer: Sidebar(
+        // Assuming you have this widget
         userName: 'User Name',
         userEmail: 'user@example.com',
         onLogout: () {
@@ -129,7 +123,7 @@ class HomeScreenState extends State<HomeScreen> {
 
   Widget _buildHeader() {
     return Container(
-      color: Color(0xFF2000B1),
+      color: const Color(0xFF2000B1),
       padding: const EdgeInsets.fromLTRB(16, 16, 16, 50),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -159,7 +153,8 @@ class HomeScreenState extends State<HomeScreen> {
           Row(
             children: [
               IconButton(
-                icon: const Icon(Icons.notifications_outlined, color: Colors.white),
+                icon: const Icon(Icons.notifications_outlined,
+                    color: Colors.white),
                 onPressed: () {
                   print('Notification button pressed');
                 },
