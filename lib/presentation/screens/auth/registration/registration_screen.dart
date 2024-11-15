@@ -11,7 +11,7 @@ import '../../../widgets/dialog_darken_window.dart';
 import 'inputDecorationRegister.dart';
 
 class RegisterScreen extends StatefulWidget {
-  const RegisterScreen({super.key});
+  const RegisterScreen({Key? key}) : super(key: key);
 
   @override
   State<RegisterScreen> createState() => _RegisterScreenState();
@@ -28,7 +28,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 }
 
 class RegisterForm extends StatefulWidget {
-  const RegisterForm({super.key});
+  const RegisterForm({Key? key}) : super(key: key);
 
   @override
   RegisterFormState createState() => RegisterFormState();
@@ -41,6 +41,7 @@ class RegisterFormState  extends State<RegisterForm> {
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
   final _phoneController = TextEditingController();
+  final _countryCodeController = TextEditingController();
   bool _obscurePassword = true;
   bool _obscureConfirmPassword = true;
   bool _isLoading = false;
@@ -117,7 +118,11 @@ class RegisterFormState  extends State<RegisterForm> {
               barrierDismissible: false,
               barrierColor: Colors.transparent,
               builder: (BuildContext context) {
-                return const AnimatedSuccessDialog();
+                return AnimatedSuccessDialog(
+                  onButtonPressed: () {
+                    context.go('/login');
+                  },
+                );
               },
             );
 
@@ -200,19 +205,47 @@ class RegisterFormState  extends State<RegisterForm> {
                                     'Correo electrónico'),
                               ),
                               const SizedBox(height: 14),
-                              TextFormField(
-                                onChanged: context.read<RegisterBloc>().phoneChanged,
-                                controller: _phoneController,
-                                validator: (value) {
-                                  final result = registrationValidator.phoneValidator.validate(value);
-                                  return result.isSuccessful() ? null : result.getError().message;
-                                },
-                                keyboardType: TextInputType.phone,
-                                decoration: inputDecorationBuilderRegister.buildInputDecorationRegister
-                                  ('Número de teléfono'),
-                                inputFormatters: [
-                                  FilteringTextInputFormatter.digitsOnly,
-                                  LengthLimitingTextInputFormatter(12),
+                              Row(
+                                children: [
+                                  SizedBox(
+                                    width: 70,
+                                    child: TextFormField(
+                                      controller: _countryCodeController,
+                                      decoration: inputDecorationBuilderRegister.buildInputDecorationRegister('+58'),
+                                      keyboardType: TextInputType.number,
+                                      inputFormatters: [
+                                        FilteringTextInputFormatter.digitsOnly,
+                                        LengthLimitingTextInputFormatter(3),
+                                      ],
+                                      textAlign: TextAlign.center,
+                                      onChanged: (countryCode) {
+                                        // Combine both values and send to bloc
+                                        final completePhone = '$countryCode${_phoneController.text}';
+                                        context.read<RegisterBloc>().phoneChanged(completePhone);
+                                      },
+                                    ),
+                                  ),
+                                  const SizedBox(width: 8),
+                                  Expanded(
+                                    child: TextFormField(
+                                      controller: _phoneController,
+                                      validator: (value) {
+                                        final result = registrationValidator.phoneValidator.validate(value);
+                                        return result.isSuccessful() ? null : result.getError().message;
+                                      },
+                                      keyboardType: TextInputType.phone,
+                                      decoration: inputDecorationBuilderRegister.buildInputDecorationRegister('Número de teléfono'),
+                                      inputFormatters: [
+                                        FilteringTextInputFormatter.digitsOnly,
+                                        LengthLimitingTextInputFormatter(10),
+                                      ],
+                                      onChanged: (phone) {
+                                        // Combine both values and send to bloc
+                                        final completePhone = '${_countryCodeController.text}$phone';
+                                        context.read<RegisterBloc>().phoneChanged(completePhone);
+                                      },
+                                    ),
+                                  ),
                                 ],
                               ),
                               const SizedBox(height: 14),
@@ -332,6 +365,7 @@ class RegisterFormState  extends State<RegisterForm> {
     _passwordController.dispose();
     _confirmPasswordController.dispose();
     _phoneController.dispose();
+    _countryCodeController.dispose();
     super.dispose();
   }
 
