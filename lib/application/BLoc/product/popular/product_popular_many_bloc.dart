@@ -27,6 +27,7 @@ class ProductPopularListBloc extends Bloc<ProductListEvent, ProductListState> {
 
         final result = await _getProductsUseCase.execute(
           GetProductsUseCaseInput(
+            search: '',
             page: event.page,
             take: event.take,
           ),

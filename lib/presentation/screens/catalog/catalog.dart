@@ -205,6 +205,7 @@ class CatalogScreenState extends State<CatalogScreen> with AutomaticKeepAliveCli
                   ),
                   Expanded(
                     child: TextField(
+                      onSubmitted: _handleSearch,
                       decoration: InputDecoration(
                         hintText: 'Buscar un producto',
                         hintStyle: TextStyle(color: Colors.grey),
@@ -215,11 +216,12 @@ class CatalogScreenState extends State<CatalogScreen> with AutomaticKeepAliveCli
                           onPressed: () {
                             _handleSearch('');
                           },
+                          
                         )
                             : null,
                       ),
                       style: TextStyle(color: Colors.grey),
-                      onChanged: _handleSearch,
+                      
                     ),
                   ),
                   IconButton(
