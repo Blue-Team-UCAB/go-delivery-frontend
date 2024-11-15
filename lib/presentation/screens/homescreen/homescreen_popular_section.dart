@@ -70,7 +70,7 @@ class _PopularSectionState extends State<PopularSection> {
 
                   final product = state.products[index];
                   return Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    padding: const EdgeInsets.symmetric(horizontal: 6),
                     child: PopularItem(
                       product: product,
                     ),
@@ -108,26 +108,78 @@ class PopularItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListTile(
-      onTap: (){
-        context.push('/productdetail/${product.id}');
-      },
-      leading: Image.network(
-        product.imageUrl,
-        height: 100,
-        width: 100,
-        fit: BoxFit.cover,
-      ),
-      title: Text(product.name),
-      
-      subtitle: Text('${product.price}'),
-      trailing: OutlinedButton(
-        onPressed: (){
-          context.read<CartBloc>().addCartItem(
-            CartItemMapper.fromProduct(product)
-            .toCartItemEntity());
-        }, 
-        child: const Text('Añadir')),
+    return Column(
+      children: [
+        Material(
+          color: const Color(0xFFFFFFFF),
+          child: ListTile(
+            shape: Border.all(
+              color: const Color(0xFF2000B1),
+              width: 1,
+            ),
+            onTap: (){
+              context.push('/productdetail/${product.id}');
+            },
+            leading: Image.network(
+              product.imageUrl,
+              height: 100,
+              width: 100,
+              fit: BoxFit.contain,
+            ),
+            title: Text(
+              product.name,
+              maxLines: 2,
+              style: const TextStyle(
+                fontFamily: 'Inter',
+                fontSize: 14.0,
+                fontWeight: FontWeight.w800,
+                color: Color(0xFF000000)
+              ),
+            ),
+          
+            subtitle: Text(
+              '\$${product.price.toStringAsFixed(2)}',
+              maxLines: 1,
+              style: const TextStyle(
+                fontFamily: 'Inter',
+                fontSize: 14.0,
+                fontWeight: FontWeight.w400,
+                color: Color(0xFF000000)
+              ),),
+            trailing: OutlinedButton(
+              style: ButtonStyle(
+                alignment: Alignment.center,
+                side: const WidgetStatePropertyAll(
+                    BorderSide(color: Color(0xFF2000B1))),
+                shape: WidgetStatePropertyAll(RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12))),
+              ), 
+              onPressed: (){
+                context.read<CartBloc>().addCartItem(
+                  CartItemMapper.fromProduct(product)
+                  .toCartItemEntity());
+                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                    duration: Duration(seconds: 1),
+                    behavior: SnackBarBehavior.floating,
+                    margin:
+                        EdgeInsets.only(bottom: 25, right: 20, left: 20),
+                    backgroundColor: Color(0xfc009e4f),
+                    content: Text('Agregado Satisfactoriamente')));
+              },
+              child: const Text(
+                'Añadir',
+                style: TextStyle(
+                  fontFamily: 'Inter',
+                  fontSize: 13,
+                  fontWeight: FontWeight.w600,
+                  color: Color(0xFF2000B1),
+                )
+              ),
+            ),
+          ),
+        ),
+        const SizedBox(height: 15,)
+      ],
     );
 }
 }
