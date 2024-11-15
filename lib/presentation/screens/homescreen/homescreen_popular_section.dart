@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_delivery_frontend/application/BLoc/cart/cart_bloc.dart';
 import 'package:go_delivery_frontend/application/BLoc/product/popular/product_popular_many_bloc.dart';
 import 'package:go_delivery_frontend/application/BLoc/product/product_many/product_many_state.dart';
 import 'package:go_delivery_frontend/application/BLoc/product/product_many/product_many_event.dart';
+import 'package:go_delivery_frontend/domain/entities/product/product.dart';
+import 'package:go_delivery_frontend/infrastructure/mappers/cart/cart_item_mapper.dart';
+import 'package:go_router/go_router.dart';
 
 class PopularSection extends StatefulWidget {
   const PopularSection({super.key});
@@ -38,7 +42,7 @@ class _PopularSectionState extends State<PopularSection> {
             ),
           ),
         ),
-        const SizedBox(height: 16),
+        const SizedBox(height: 8),
         BlocBuilder<ProductPopularListBloc, ProductListState>(
           builder: (context, state) {
             if (state is ProductListLoading && _isLoading) {
@@ -68,9 +72,7 @@ class _PopularSectionState extends State<PopularSection> {
                   return Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16),
                     child: PopularItem(
-                      name: product.name,
-                      price: product.price.toString(),
-                      imageUrl: product.imageUrl,
+                      product: product,
                     ),
                   );
                 },
@@ -96,116 +98,142 @@ class _PopularSectionState extends State<PopularSection> {
 }
 
 class PopularItem extends StatelessWidget {
-  final String name;
-  final String price;
-  final String imageUrl;
-  final String defaultImageUrl;
+  final Product product;
 
   const PopularItem({
     super.key,
-    required this.name,
-    required this.price,
-    required this.imageUrl,
-    this.defaultImageUrl = 'assets/not-found-image.svg',
+    required this.product,
+    defaultImageUrl = 'assets/not-found-image.svg',
   });
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(12),
-      margin: const EdgeInsets.symmetric(vertical: 8),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(
-          color: Colors.grey[300]!,
-          width: 1,
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.2),
-            spreadRadius: 4,
-            blurRadius: 4,
-            offset: const Offset(0, 2),
-          ),
-        ],
+    return ListTile(
+      onTap: (){
+        context.push('/productdetail/${product.id}');
+      },
+      leading: Image.network(
+        product.imageUrl,
+        height: 100,
+        width: 100,
+        fit: BoxFit.cover,
       ),
-      child: Row(
-        children: [
-          Container(
-            width: 70,
-            height: 70,
-            decoration: BoxDecoration(
-              color: Colors.grey[100],
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(8),
-              child: Image.network(
-                imageUrl,
-                fit: BoxFit.cover,
-                errorBuilder: (context, error, stackTrace) {
-                  return SvgPicture.asset(
-                    defaultImageUrl,
-                    fit: BoxFit.cover,
-                  );
-                },
-              ),
-            ),
-          ),
-          const SizedBox(width: 16),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  name,
-                  style: const TextStyle(
-                    fontFamily: 'Montserrat',
-                    fontWeight: FontWeight.w600,
-                    fontSize: 14,
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  '\$$price',
-                  style: TextStyle(
-                    fontFamily: 'Montserrat',
-                    color: Colors.grey[600],
-                    fontSize: 16,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(width: 16),
-          SizedBox(
-            height: 36,
-            child: OutlinedButton(
-              onPressed: () {
-                // Add your onPressed logic here
-              },
-              style: OutlinedButton.styleFrom(
-                backgroundColor: Colors.white,
-                side: const BorderSide(color: Color(0xFF2000B1)),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-              ),
-              child: const Text(
-                'Agregar',
-                style: TextStyle(
-                  fontFamily: 'Montserrat',
-                  color: Color(0xFF2000B1),
-                  fontSize: 14,
-                  fontWeight: FontWeight.w400,
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
+      title: Text(product.name),
+      
+      subtitle: Text('${product.price}'),
+      trailing: OutlinedButton(
+        onPressed: (){
+          context.read<CartBloc>().addCartItem(
+            CartItemMapper.fromProduct(product)
+            .toCartItemEntity());
+        }, 
+        child: const Text('Añadir')),
     );
-  }
 }
+}
+
+
+
+
+
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Container(
+//       padding: const EdgeInsets.all(12),
+//       margin: const EdgeInsets.symmetric(vertical: 8),
+//       decoration: BoxDecoration(
+//         color: Colors.white,
+//         borderRadius: BorderRadius.circular(8),
+//         border: Border.all(
+//           color: Colors.grey[300]!,
+//           width: 1,
+//         ),
+//         boxShadow: [
+//           BoxShadow(
+//             color: Colors.grey.withOpacity(0.2),
+//             spreadRadius: 4,
+//             blurRadius: 4,
+//             offset: const Offset(0, 2),
+//           ),
+//         ],
+//       ),
+//       child: Row(
+//         children: [
+//           Container(
+//             width: 70,
+//             height: 70,
+//             decoration: BoxDecoration(
+//               color: Colors.grey[100],
+//               borderRadius: BorderRadius.circular(8),
+//             ),
+//             child: ClipRRect(
+//               borderRadius: BorderRadius.circular(8),
+//               child: Image.network(
+//                 imageUrl,
+//                 fit: BoxFit.cover,
+//                 errorBuilder: (context, error, stackTrace) {
+//                   return SvgPicture.asset(
+//                     defaultImageUrl,
+//                     fit: BoxFit.cover,
+//                   );
+//                 },
+//               ),
+//             ),
+//           ),
+//           const SizedBox(width: 16),
+//           Expanded(
+//             child: Column(
+//               crossAxisAlignment: CrossAxisAlignment.start,
+//               children: [
+//                 Text(
+//                   name,
+//                   style: const TextStyle(
+//                     fontFamily: 'Montserrat',
+//                     fontWeight: FontWeight.w600,
+//                     fontSize: 14,
+//                   ),
+//                 ),
+//                 const SizedBox(height: 4),
+//                 Text(
+//                   '\$$price',
+//                   style: TextStyle(
+//                     fontFamily: 'Montserrat',
+//                     color: Colors.grey[600],
+//                     fontSize: 16,
+//                   ),
+//                 ),
+//               ],
+//             ),
+//           ),
+//           const SizedBox(width: 16),
+//           SizedBox(
+//             height: 36,
+//             child: OutlinedButton(
+//               onPressed: () {
+//                 // Add your onPressed logic here
+//               },
+//               style: OutlinedButton.styleFrom(
+//                 backgroundColor: Colors.white,
+//                 side: const BorderSide(color: Color(0xFF2000B1)),
+//                 shape: RoundedRectangleBorder(
+//                   borderRadius: BorderRadius.circular(8),
+//                 ),
+//                 padding: const EdgeInsets.symmetric(horizontal: 16),
+//               ),
+//               child: const Text(
+//                 'Agregar',
+//                 style: TextStyle(
+//                   fontFamily: 'Montserrat',
+//                   color: Color(0xFF2000B1),
+//                   fontSize: 14,
+//                   fontWeight: FontWeight.w400,
+//                 ),
+//               ),
+//             ),
+//           ),
+//         ],
+//       ),
+//     );
+//   }
+// }

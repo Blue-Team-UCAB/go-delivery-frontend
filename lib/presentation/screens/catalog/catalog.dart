@@ -21,13 +21,16 @@ class CatalogScreen extends StatefulWidget {
   CatalogScreenState createState() => CatalogScreenState();
 }
 
-class CatalogScreenState extends State<CatalogScreen> {
-
+class CatalogScreenState extends State<CatalogScreen> with AutomaticKeepAliveClientMixin {
   int _counter = 0;
   final ScrollController _scrollController = ScrollController();
   bool _isLoadingMore = false;
   bool _hasLoadedAllProducts = false;
   int _currentPage = 1;
+  final _gridKey = const PageStorageKey('catalog_grid');
+
+  @override
+  bool get wantKeepAlive => true;
 
   @override
   void initState() {
@@ -71,14 +74,14 @@ class CatalogScreenState extends State<CatalogScreen> {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return AnimatedSuccessDialog( // Assuming you have this custom dialog
+        return AnimatedSuccessDialog(
           title: 'Salir Sesion',
           message: 'Estas seguro de salir de tu Sesion?',
           buttonText: 'Salir',
           rejectButtonText: 'Cancelar',
           onButtonPressed: () {
             Navigator.of(context).pop();
-            LocalStorageService().removeKey('appToken'); // Your logic
+            LocalStorageService().removeKey('appToken');
             context.go('/login');
           },
           onRejectPressed: () {
@@ -93,6 +96,8 @@ class CatalogScreenState extends State<CatalogScreen> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
+
     return Scaffold(
       backgroundColor: const Color(0xFFEBEAED),
       appBar: AppBar(
@@ -122,7 +127,7 @@ class CatalogScreenState extends State<CatalogScreen> {
           ),
         ],
       ),
-      endDrawer: Sidebar( // Assuming you have this widget
+      endDrawer: Sidebar(
         userName: 'User Name',
         userEmail: 'user@example.com',
         onLogout: () {
@@ -194,7 +199,6 @@ class CatalogScreenState extends State<CatalogScreen> {
                       style: TextStyle(color: Colors.grey),
                     ),
                   ),
-
                   IconButton(
                     icon: const Icon(Icons.filter_list, color: Colors.grey),
                     onPressed: () {
@@ -219,27 +223,34 @@ class CatalogScreenState extends State<CatalogScreen> {
 
                   return Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                    child: GridView.builder(
-                      controller: _scrollController,
-                      gridDelegate:
-                          const SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2,
-                        crossAxisSpacing: 20.0,
-                        mainAxisSpacing: 20.0,
-                        childAspectRatio: 0.66,
+                    child: ScrollConfiguration(
+                      behavior: ScrollConfiguration.of(context).copyWith(
+                        physics: const ClampingScrollPhysics(),
                       ),
-                      itemCount: state.products.length +
-                          (_hasLoadedAllProducts ? 1 : 0),
-                      itemBuilder: (context, index) {
-                        if (index < state.products.length) {
-                          return ProductCard(product: state.products[index]);
-                        } else if (_hasLoadedAllProducts) {
-                          return const Center(
-                              child: Text('No hay más productos.'));
-                        } else {
-                          return const SizedBox.shrink();
-                        }
-                      },
+                      child: GridView.builder(
+                        key: _gridKey,
+                        controller: _scrollController,
+                        cacheExtent: 1000,
+                        gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                          crossAxisSpacing: 20.0,
+                          mainAxisSpacing: 20.0,
+                          childAspectRatio: 0.66,
+                        ),
+                        itemCount: state.products.length +
+                            (_hasLoadedAllProducts ? 1 : 0),
+                        itemBuilder: (context, index) {
+                          if (index < state.products.length) {
+                            return ProductCard(product: state.products[index]);
+                          } else if (_hasLoadedAllProducts) {
+                            return const Center(
+                                child: Text('No hay más productos.'));
+                          } else {
+                            return const SizedBox.shrink();
+                          }
+                        },
+                      ),
                     ),
                   );
                 } else if (state is ProductListFailed) {

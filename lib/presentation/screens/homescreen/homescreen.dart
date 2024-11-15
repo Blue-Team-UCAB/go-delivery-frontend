@@ -208,6 +208,7 @@ class HomeScreenState extends State<HomeScreen> {
           children: [
             CategoryTabs(),
             ComboSection(),
+            SizedBox(height: 14),
             PopularSection(), // Este widget sigue siendo el mismo
           ],
         ),
