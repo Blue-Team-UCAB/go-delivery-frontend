@@ -49,7 +49,6 @@ class ProductRepositoryImpl extends ProductRepository {
     }
   }
 
-  // Implementación del método getProductById
   @override
   Future<Result<Product>> getProductById(String productId) async {
     await _addAuthorizationHeader();

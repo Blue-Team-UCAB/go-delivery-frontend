@@ -5,7 +5,6 @@ import 'package:go_delivery_frontend/application/BLoc/bundle/bundle_many/bundle_
 import 'package:go_delivery_frontend/application/BLoc/bundle/bundle_many/bundle_many_state.dart';
 import 'package:go_delivery_frontend/application/use_cases/bundle/get_many_bundle.dart';
 
-// BLoC para la lista de bundles
 class BundleListBloc extends Bloc<BundleListEvent, BundleListState> {
   final GetBundlesUseCase _getBundlesUseCase;
 
