@@ -8,10 +8,10 @@ import 'package:go_delivery_frontend/application/BLoc/product/product_many/produ
 import 'package:go_delivery_frontend/application/BLoc/product/product_many/product_many_event.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../domain/entities/product/product.dart';
 import '../../../infrastructure/datasources/localstorage/localstorage_impl.dart';
 import '../../widgets/dialog_darken_window.dart';
 
-// ignore: use_key_in_widget_constructors
 class CatalogScreen extends StatefulWidget {
   final int initialCounterNavbar;
 
@@ -42,6 +42,14 @@ class CatalogScreenState extends State<CatalogScreen> with AutomaticKeepAliveCli
       LoadProductList(page: _currentPage, take: 6),
     );
     _scrollController.addListener(_onScroll);
+
+    BlocProvider.of<ProductListBloc>(context).stream.listen((state) {
+      if (state is ProductListLoaded) {
+        setState(() {
+          _isLoadingMore = false;
+        });
+      }
+    });
   }
 
   @override
@@ -51,13 +59,14 @@ class CatalogScreenState extends State<CatalogScreen> with AutomaticKeepAliveCli
   }
 
   void _onScroll() {
-    if (_scrollController.position.pixels ==
-        _scrollController.position.maxScrollExtent) {
-      if (!_isLoadingMore && !_hasLoadedAllProducts) {
+    if (_scrollController.position.pixels >=
+        _scrollController.position.maxScrollExtent - 300) {
+      final state = BlocProvider.of<ProductListBloc>(context).state;
+      if (state is ProductListLoaded && !state.hasReachedMax && !_isLoadingMore) {
         setState(() {
           _isLoadingMore = true;
         });
-        _currentPage++;
+        _currentPage = state.page + 1;
         BlocProvider.of<ProductListBloc>(context).add(
           _searchQuery.isEmpty
               ? LoadProductList(page: _currentPage, take: 6)
@@ -240,50 +249,17 @@ class CatalogScreenState extends State<CatalogScreen> with AutomaticKeepAliveCli
           Expanded(
             child: BlocBuilder<ProductListBloc, ProductListState>(
               builder: (context, state) {
-                if (state is ProductListLoading && state.products.isEmpty) {
+                if (state is ProductListInitial) {
                   return const Center(child: CircularProgressIndicator());
+                } else if (state is ProductListLoading) {
+                  return _buildProductGrid(state.products, isLoading: true);
                 } else if (state is ProductListLoaded) {
-                  _hasLoadedAllProducts = state.hasReachedMax;
-                  _isLoadingMore = false;
-
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                    child: ScrollConfiguration(
-                      behavior: ScrollConfiguration.of(context).copyWith(
-                        physics: const ClampingScrollPhysics(),
-                      ),
-                      child: GridView.builder(
-                        key: _gridKey,
-                        controller: _scrollController,
-                        cacheExtent: 1000,
-                        gridDelegate:
-                        const SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 2,
-                            crossAxisSpacing: 20.0,
-                            mainAxisSpacing: 20.0,
-                            childAspectRatio: 0.66,
-                        ),
-                        itemCount: state.products.length +
-                            (_hasLoadedAllProducts ? 1 : 0),
-                        itemBuilder: (context, index) {
-                          if (index < state.products.length) {
-                            return ProductCard(product: state.products[index]);
-                          } else if (_hasLoadedAllProducts) {
-                            return const Center(
-                                child: Text('No hay más productos.'));
-                          } else {
-                            return const SizedBox.shrink();
-                          }
-                        },
-                      ),
-                    ),
-                  );
+                  return _buildProductGrid(state.products, hasReachedMax: state.hasReachedMax);
                 } else if (state is ProductListFailed) {
-                  return Center(
-                    child: Text('Error: ${state.result.getError().message}'),
-                  );
+                  return Center(child: Text('Error: ${state.result.error}'));
+                } else {
+                  return const Center(child: Text('Estado desconocido'));
                 }
-                return const Center(child: SizedBox.shrink());
               },
             ),
           ),
@@ -295,4 +271,38 @@ class CatalogScreenState extends State<CatalogScreen> with AutomaticKeepAliveCli
       ),
     );
   }
+
+  Widget _buildProductGrid(List<Product> products, {bool isLoading = false, bool hasReachedMax = false}) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20.0),
+      child: ScrollConfiguration(
+        behavior: ScrollConfiguration.of(context).copyWith(
+          physics: const ClampingScrollPhysics(),
+        ),
+        child: GridView.builder(
+          key: _gridKey,
+          controller: _scrollController,
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 2,
+            crossAxisSpacing: 20.0,
+            mainAxisSpacing: 20.0,
+            childAspectRatio: 0.66,
+          ),
+          itemCount: products.length + (isLoading || !hasReachedMax ? 1 : 0),
+          itemBuilder: (context, index) {
+            if (index < products.length) {
+              return ProductCard(product: products[index]);
+            } else if (isLoading) {
+              return const Center(child: CircularProgressIndicator());
+            } else if (!hasReachedMax) {
+              return const Center(child: CircularProgressIndicator());
+            } else {
+              return const SizedBox.shrink();
+            }
+          },
+        ),
+      ),
+    );
+  }
+
 }

@@ -105,6 +105,7 @@ class RoutesManager {
       ),
     ],
     redirect: (context, state) async {
+
       final isGoingTo = state.matchedLocation;
       final isAdmin =
           await LocalStorageService().getValue<bool>('isAdmin') != null;
@@ -119,8 +120,7 @@ class RoutesManager {
         if (isGoingTo == '/register' ||
             isGoingTo == '/password/reset' ||
             isGoingTo == '/password/create' ||
-            isGoingTo == '/password/verify' ||
-            isGoingTo == '/password/changed') return null;
+            isGoingTo == '/password/verify') return null;
         if (isGoingTo == '/welcome' && !hasSeenWelcome) return null;
         return '/login';
       }
