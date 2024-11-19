@@ -3,6 +3,9 @@ import 'package:go_router/go_router.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_delivery_frontend/presentation/widgets/card.dart';
 import 'package:go_delivery_frontend/presentation/widgets/cart/add_product_carrito_button.dart';
+import 'package:go_delivery_frontend/application/BLoc/product/product_many/product_many_bloc.dart';
+import 'package:go_delivery_frontend/application/BLoc/product/product_many/product_many_state.dart';
+import 'package:go_delivery_frontend/application/BLoc/product/product_many/product_many_event.dart';
 import 'package:go_delivery_frontend/application/BLoc/product/product_detail/product_detail_bloc.dart';
 import 'package:go_delivery_frontend/application/BLoc/product/product_detail/product_detail_event.dart';
 import 'package:go_delivery_frontend/application/BLoc/product/product_detail/product_detail_state.dart';
@@ -137,40 +140,7 @@ class ProductDetailScreen extends StatelessWidget {
                               : const [Text('Sin categorías')],
                         ),
                         const SizedBox(height: 10),
-                        const Text(
-                          'Productos Relacionados:',
-                          style: TextStyle(
-                            fontFamily: 'Inter',
-                            fontWeight: FontWeight.w700,
-                            fontSize: 16,
-                          ),
-                        ),
-                        const SizedBox(height: 10),
-                        SingleChildScrollView(
-                          scrollDirection: Axis.horizontal,
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              SizedBox(
-                                width: 200,
-                                height: 255,
-                                child: ProductCard(product: product),
-                              ),
-                              const SizedBox(width: 20),
-                              SizedBox(
-                                width: 200,
-                                height: 255,
-                                child: ProductCard(product: product),
-                              ),
-                              const SizedBox(width: 20),
-                              SizedBox(
-                                width: 200,
-                                height: 255,
-                                child: ProductCard(product: product),
-                              ),
-                            ],
-                          ),
-                        ),
+                        RelatedProductsSection(productId: productId),
                       ],
                     ),
                   ],
@@ -204,6 +174,75 @@ class ProductDetailScreen extends StatelessWidget {
           },
         ),
       ),
+    );
+  }
+}
+
+class RelatedProductsSection extends StatelessWidget {
+  final String productId;
+
+  const RelatedProductsSection({super.key, required this.productId});
+
+  @override
+  Widget build(BuildContext context) {
+    final productListBloc = context.read<ProductListBloc>();
+    productListBloc.add(const LoadProductList(page: 1, take: 4));
+    return BlocBuilder<ProductListBloc, ProductListState>(
+      builder: (context, state) {
+        if (state is ProductListLoading) {
+          return const Center(child: CircularProgressIndicator());
+        }
+
+        if (state is ProductListLoaded) {
+          final products = state.products;
+
+          if (products.isEmpty) {
+            return const Center(child: Text('No hay productos relacionados.'));
+          }
+
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                'Productos Relacionados:',
+                style: TextStyle(
+                  fontFamily: 'Inter',
+                  fontWeight: FontWeight.w700,
+                  fontSize: 16,
+                ),
+              ),
+              const SizedBox(height: 10),
+              SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: products.map((product) {
+                    return Padding(
+                      padding: const EdgeInsets.only(right: 20.0),
+                      child: SizedBox(
+                        width: 200,
+                        height: 255,
+                        child: ProductCard(product: product),
+                      ),
+                    );
+                  }).toList(),
+                ),
+              ),
+            ],
+          );
+        }
+
+        if (state is ProductListFailed) {
+          return Center(
+            child: Text(
+              'Error: ${state.result}',
+              style: const TextStyle(color: Colors.red),
+            ),
+          );
+        }
+
+        return const Center(child: Text('Estado desconocido'));
+      },
     );
   }
 }
