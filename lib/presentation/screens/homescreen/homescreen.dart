@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:go_delivery_frontend/presentation/screens/homescreen/category_tab.dart';
 import 'package:go_delivery_frontend/presentation/screens/homescreen/homescreen_combo_section.dart';
+import 'package:go_delivery_frontend/presentation/widgets/random_products/random_popular_section.dart';
 import 'package:go_router/go_router.dart';
 import '../../../infrastructure/datasources/localstorage/localstorage_impl.dart';
 import '../../widgets/dialog_darken_window.dart';
 import '../../widgets/navbar.dart';
 import '../../widgets/sidebar.dart';
 import 'homescreen_locationbar.dart';
-import 'homescreen_popular_section.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_delivery_frontend/application/BLoc/product/product_many/product_many_bloc.dart';
 import 'package:go_delivery_frontend/application/BLoc/product/product_many/product_many_state.dart';
@@ -210,7 +210,7 @@ class HomeScreenState extends State<HomeScreen> {
             CategoryTabs(),
             ComboSection(),
             SizedBox(height: 14),
-            PopularSection(), // Este widget sigue siendo el mismo
+            RandomSection(), // Este widget sigue siendo el mismo
           ],
         ),
       ),

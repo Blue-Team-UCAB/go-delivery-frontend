@@ -7,10 +7,9 @@ class CodeVerificationScreen extends StatefulWidget {
   _CodeVerificationScreenState createState() => _CodeVerificationScreenState();
 }
 
-// TODO BLoc? //2024-11-13
 
 class _CodeVerificationScreenState extends State<CodeVerificationScreen> {
-  List<String> code = ["", "", "", ""]; // Store input for 4 digits
+  List<String> code = ["", "", "", "", "", ""]; // Store input for 4 digits
 
   // Method to update the code input
   void _updateCode(String value) {

@@ -23,7 +23,6 @@ class ProductDetailScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final productDetailBloc = context.read<ProductDetailBloc>();
     productDetailBloc.add(LoadProductDetail(productId: productId));
-
     return Scaffold(
       appBar: AppBar(
         backgroundColor: const Color(0xFFFFFFFF),

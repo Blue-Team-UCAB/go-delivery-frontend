@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 
-// from login screen
+import '../login/inputDecorationLogin.dart';
+import '../login/login_validators.dart';
+
 class ForgotPasswordScreen extends StatefulWidget {
   final void Function()? onPressRegister;
 
@@ -14,6 +16,14 @@ class ForgotPasswordScreen extends StatefulWidget {
 
 class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
   final _emailController = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
+
+  void _pressSubmit() {
+    if (_formKey.currentState!.validate()) {
+        context.go('/login');
+    }
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -49,11 +59,12 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                         'Ingrese su correo electrónico registrado',
                         style: TextStyle(
                           fontFamily: 'Montserrat',
-                          fontSize: 25,
-                          fontWeight: FontWeight.bold,
+                          fontSize: 24,
+                          fontWeight: FontWeight.w800,
                           color: Colors.black,
                         ),
                       ),
+                      const SizedBox(height: 10),
                       const Align(
                         alignment: Alignment.centerLeft,
                         child: Text(
@@ -61,100 +72,87 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                           style: TextStyle(
                             fontFamily: 'Montserrat',
                             fontWeight: FontWeight.w500,
-                            fontSize: 10,
+                            fontSize: 16,
                             color: Colors.grey,
                           ),
                         ),
                       ),
                       const SizedBox(height: 24),
-                      TextField(
-                        controller: _emailController,
-                        keyboardType: TextInputType.emailAddress,
-                        style: const TextStyle(fontFamily: 'Montserrat'),
-                        decoration: _buildInputDecoration('Correo electrónico'),
-                      ),
-                      const SizedBox(height: 24),
-                      ElevatedButton(
-                        onPressed: () {},
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFF02066F),
-                          padding: const EdgeInsets.symmetric(vertical: 16),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                        ),
-                        child: const Text(
-                          'Enviar código',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontFamily: 'Montserrat',
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          const Text(
-                            '¿No eres miembro?',
-                            style: TextStyle(
-                              fontFamily: 'Montserrat',
-                              fontSize: 12,
-                            ),
-                          ),
-                          TextButton(
-                            onPressed: () {
-                              context.push('/register');
-                            },
-                            style: TextButton.styleFrom(
-                              foregroundColor: const Color(0xFF02066F),
-                            ),
-                            child: const Text(
-                              'Regístrate ahora',
-                              style: TextStyle(
-                                fontFamily: 'Montserrat',
-                                fontWeight: FontWeight.w600,
-                                fontSize: 12,
+                      Form(
+                        key: _formKey,
+                        child: SingleChildScrollView(
+                          padding: const EdgeInsets.all(20),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              TextFormField(
+                                controller: _emailController,
+                                validator: (value) {
+                                  final result = loginValidator.emailValidator
+                                      .validate(value);
+                                  return result.isSuccessful()
+                                      ? null
+                                      : result.getError().message;
+                                },
+                                keyboardType: TextInputType.emailAddress,
+                                style:
+                                const TextStyle(fontFamily: 'Montserrat'),
+                                decoration: inputDecorationBuilderLogin
+                                    .buildInputDecorationLogin(
+                                    'Correo electrónico'),
                               ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      const Text(
-                        'O continúa con',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontFamily: 'Montserrat',
-                          color: Colors.grey,
-                        ),
-                      ),
-                      const SizedBox(height: 16),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          for (final icon in [
-                            'google',
-                            'apple',
-                            'facebook'
-                          ]) ...[
-                            if (icon != 'google') const SizedBox(width: 16),
-                            CircleAvatar(
-                              radius: 24,
-                              backgroundColor: {
-                                'google': const Color(0xFFEA4335),
-                                'apple': Colors.black,
-                                'facebook': const Color(0xFF1877F2),
-                              }[icon],
-                              child: SvgPicture.asset(
-                                //'assets/icons/icon/$icon.svg',
-                                'assets/icon/$icon.svg',
-                                colorFilter: const ColorFilter.mode(
-                                    Colors.white, BlendMode.srcIn),
-                                height: 24,
+                              const SizedBox(height: 24),
+                              ElevatedButton(
+                                onPressed: () {
+                                  _pressSubmit();
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: const Color(0xFF02066F),
+                                  padding: const EdgeInsets.symmetric(vertical: 16),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                ),
+                                child: const Text(
+                                  'Enviar código',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontFamily: 'Montserrat',
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
                               ),
-                            ),
-                          ],
-                        ],
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  const Text(
+                                    '¿Volver Intentar Iniciar sesion?',
+                                    style: TextStyle(
+                                      fontFamily: 'Montserrat',
+                                      fontSize: 12,
+                                    ),
+                                  ),
+                                  TextButton(
+                                    onPressed: () {
+                                      context.push('/login');
+                                    },
+                                    style: TextButton.styleFrom(
+                                      foregroundColor: const Color(0xFF02066F),
+                                    ),
+                                    child: const Text(
+                                      'Volver',
+                                      style: TextStyle(
+                                        fontFamily: 'Montserrat',
+                                        fontWeight: FontWeight.w600,
+                                        fontSize: 12,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
                       ),
                     ],
                   ),

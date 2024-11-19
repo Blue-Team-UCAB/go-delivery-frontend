@@ -1,29 +1,38 @@
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_delivery_frontend/application/BLoc/cart/cart_bloc.dart';
-import 'package:go_delivery_frontend/application/BLoc/product/popular/product_popular_many_bloc.dart';
-import 'package:go_delivery_frontend/application/BLoc/product/product_many/product_many_state.dart';
-import 'package:go_delivery_frontend/application/BLoc/product/product_many/product_many_event.dart';
-import 'package:go_delivery_frontend/domain/entities/product/product.dart';
-import 'package:go_delivery_frontend/infrastructure/mappers/cart/cart_item_mapper.dart';
-import 'package:go_delivery_frontend/presentation/core/common/image-loader.dart';
 import 'package:go_router/go_router.dart';
+import '../../../application/BLoc/cart/cart_bloc.dart';
+import '../../../application/BLoc/product/popular/random/product_random_many_bloc.dart';
+import '../../../application/BLoc/product/product_many/product_many_event.dart';
+import '../../../application/BLoc/product/product_many/product_many_state.dart';
+import '../../../domain/entities/product/product.dart';
+import '../../../infrastructure/mappers/cart/cart_item_mapper.dart';
+import '../../core/common/image-loader.dart';
 
-class PopularSection extends StatefulWidget {
-  const PopularSection({super.key});
+class RandomSection extends StatefulWidget {
+  const RandomSection({Key? key}) : super(key: key);
 
   @override
-  // ignore: library_private_types_in_public_api
-  _PopularSectionState createState() => _PopularSectionState();
+  _RandomSectionState createState() => _RandomSectionState();
 }
 
-class _PopularSectionState extends State<PopularSection> {
-  bool _isLoading = false;
-  bool _hasMore = true;
+class _RandomSectionState extends State<RandomSection> {
+  bool _mounted = true;
 
   @override
   void initState() {
     super.initState();
+    _loadRandomProducts();
+  }
+
+  void _loadRandomProducts() {
+    if (!_mounted) return;
+    final random = Random();
+    final randomPage = random.nextInt(7) + 1;
+    context
+        .read<ProductRandomListBloc>()
+        .add(LoadProductList(page: randomPage, take: 8, category: ''));
   }
 
   @override
@@ -34,7 +43,7 @@ class _PopularSectionState extends State<PopularSection> {
         const Padding(
           padding: EdgeInsets.symmetric(horizontal: 16),
           child: Text(
-            'Populares',
+            'Productos Populares',
             style: TextStyle(
               fontFamily: 'Montserrat',
               fontSize: 18,
@@ -43,46 +52,30 @@ class _PopularSectionState extends State<PopularSection> {
           ),
         ),
         const SizedBox(height: 8),
-        BlocBuilder<ProductPopularListBloc, ProductListState>(
+        BlocBuilder<ProductRandomListBloc, ProductListState>(
           builder: (context, state) {
-            if (state is ProductListLoading && _isLoading) {
+            if (state is ProductListLoading) {
               return const Center(child: CircularProgressIndicator());
             } else if (state is ProductListLoaded) {
-              _isLoading = false;
-              _hasMore = state.products.length > state.page * 10;
-
               return ListView.builder(
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
-                itemCount: state.products.length + (_hasMore ? 1 : 0),
+                itemCount: state.products.length,
                 itemBuilder: (context, index) {
-                  if (index == state.products.length) {
-                    return _hasMore
-                        ? const Padding(
-                            padding: EdgeInsets.symmetric(vertical: 16),
-                            child: Center(child: CircularProgressIndicator()),
-                          )
-                        : const Padding(
-                            padding: EdgeInsets.symmetric(vertical: 16),
-                            child: Center(child: Text("¡Llegaste al final!")),
-                          );
-                  }
-
                   final product = state.products[index];
                   return Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: PopularItem(
+                    child: RandomItem(
                       product: product,
                     ),
                   );
                 },
               );
             } else if (state is ProductListFailed) {
-              return Center(child: Text('Error: ${state.result}'));
+              return Center(child: Text('Error: ${state.result.toString()}'));
             } else {
-              context
-                  .read<ProductPopularListBloc>()
-                  .add(const LoadProductList(page: 1, take: 4, category: ''));
+              // Use Future.microtask to avoid calling setState during build
+              Future.microtask(() => _loadRandomProducts());
               return const Center(child: CircularProgressIndicator());
             }
           },
@@ -93,14 +86,15 @@ class _PopularSectionState extends State<PopularSection> {
 
   @override
   void dispose() {
+    _mounted = false;
     super.dispose();
   }
 }
 
-class PopularItem extends StatelessWidget {
+class RandomItem extends StatelessWidget {
   final Product product;
 
-  const PopularItem({
+  const RandomItem({
     super.key,
     required this.product,
     defaultImageUrl = 'assets/not-found-image.svg',
@@ -115,7 +109,6 @@ class PopularItem extends StatelessWidget {
           child: ListTile(
             contentPadding: const EdgeInsets.symmetric(horizontal: 10),
             shape: RoundedRectangleBorder(
-              //<-- SEE HERE
               side: const BorderSide(color: Color(0xFFD5CCFF), width: 1),
               borderRadius: BorderRadius.circular(20),
             ),
