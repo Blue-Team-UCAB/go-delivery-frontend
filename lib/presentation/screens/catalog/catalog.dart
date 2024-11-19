@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_delivery_frontend/presentation/widgets/navbar.dart';
@@ -11,6 +13,7 @@ import 'package:go_router/go_router.dart';
 import '../../../domain/entities/product/product.dart';
 import '../../../infrastructure/datasources/localstorage/localstorage_impl.dart';
 import '../../widgets/dialog_darken_window.dart';
+import 'logout_from_catalog.dart';
 
 class CatalogScreen extends StatefulWidget {
   final int initialCounterNavbar;
@@ -29,6 +32,7 @@ class CatalogScreenState extends State<CatalogScreen> with AutomaticKeepAliveCli
   int _currentPage = 1;
   final _gridKey = const PageStorageKey('catalog_grid');
   String _searchQuery = '';
+  late StreamSubscription<ProductListState> _productListSubscription;
 
   @override
   bool get wantKeepAlive => true;
@@ -43,18 +47,22 @@ class CatalogScreenState extends State<CatalogScreen> with AutomaticKeepAliveCli
     );
     _scrollController.addListener(_onScroll);
 
-    BlocProvider.of<ProductListBloc>(context).stream.listen((state) {
+    _productListSubscription = BlocProvider.of<ProductListBloc>(context).stream.listen((state) {
       if (state is ProductListLoaded) {
-        setState(() {
-          _isLoadingMore = false;
-        });
+        if (mounted) {
+          setState(() {
+            _isLoadingMore = false;
+          });
+        }
       }
     });
   }
 
   @override
   void dispose() {
+    _scrollController.removeListener(_onScroll);
     _scrollController.dispose();
+    _productListSubscription.cancel();
     super.dispose();
   }
 
@@ -63,9 +71,11 @@ class CatalogScreenState extends State<CatalogScreen> with AutomaticKeepAliveCli
         _scrollController.position.maxScrollExtent - 300) {
       final state = BlocProvider.of<ProductListBloc>(context).state;
       if (state is ProductListLoaded && !state.hasReachedMax && !_isLoadingMore) {
-        setState(() {
-          _isLoadingMore = true;
-        });
+        if (mounted) {
+          setState(() {
+            _isLoadingMore = true;
+          });
+        }
         _currentPage = state.page + 1;
         BlocProvider.of<ProductListBloc>(context).add(
           _searchQuery.isEmpty
@@ -93,29 +103,6 @@ class CatalogScreenState extends State<CatalogScreen> with AutomaticKeepAliveCli
     });
   }
 
-  void showLogoutDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AnimatedSuccessDialog(
-          title: 'Salir Sesion',
-          message: 'Estas seguro de salir de tu Sesion?',
-          buttonText: 'Salir',
-          rejectButtonText: 'Cancelar',
-          onButtonPressed: () {
-            Navigator.of(context).pop();
-            LocalStorageService().removeKey('appToken');
-            context.go('/login');
-          },
-          onRejectPressed: () {
-            Navigator.of(context).pop();
-            context.push('/Catalog');
-          },
-          icon: Icons.warning,
-        );
-      },
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -291,7 +278,10 @@ class CatalogScreenState extends State<CatalogScreen> with AutomaticKeepAliveCli
           itemCount: products.length + (isLoading || !hasReachedMax ? 1 : 0),
           itemBuilder: (context, index) {
             if (index < products.length) {
-              return ProductCard(product: products[index]);
+              return ProductCard(
+                key: ValueKey('product_card_${products[index].id}'),
+                product: products[index],
+              );
             } else if (isLoading) {
               return const Center(child: CircularProgressIndicator());
             } else if (!hasReachedMax) {

@@ -4,6 +4,7 @@ import 'package:get_it/get_it.dart';
 import 'package:go_delivery_frontend/application/BLoc/bundle/bundle_detail/bundle_detail_bloc.dart';
 import 'package:go_delivery_frontend/application/BLoc/bundle/bundle_many/bundle_many_bloc.dart';
 import 'package:go_delivery_frontend/application/BLoc/product/popular/product_popular_many_bloc.dart';
+import 'package:go_delivery_frontend/application/BLoc/product/popular/random/product_random_many_bloc.dart';
 import 'package:go_delivery_frontend/application/BLoc/product/product_detail/product_detail_bloc.dart';
 import 'package:go_delivery_frontend/injector.dart';
 import 'package:go_delivery_frontend/presentation/core/app.dart';
@@ -31,7 +32,8 @@ void main() async {
         BlocProvider(create: (_) => getIt<ProductDetailBloc>()),
         BlocProvider(create: (_) => getIt<BundleListBloc>()),
         BlocProvider(create: (_) => getIt<BundleDetailBloc>()),
-        BlocProvider(create: (_) => getIt<ProductPopularListBloc>())
+        BlocProvider(create: (_) => getIt<ProductPopularListBloc>()),
+        BlocProvider(create: (_) => getIt<ProductRandomListBloc>())
       ],
       child: const GoDelyApp(),
     ),

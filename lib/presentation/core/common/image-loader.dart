@@ -15,7 +15,7 @@ class FastLoadingImage extends StatefulWidget {
     this.width = 100,
     this.height = 100,
     this.fit = BoxFit.cover,
-    this.placeholderColor = const Color(0xFFEEEEEE), // Light grey placeholder
+    this.placeholderColor = const Color(0xFFEEEEEE),
   }) : super(key: key);
 
   @override
@@ -31,42 +31,63 @@ class _FastLoadingImageState extends State<FastLoadingImage> {
     _imageFuture = _loadImage();
   }
 
+  @override
+  void didUpdateWidget(FastLoadingImage oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.imageUrl != widget.imageUrl) {
+      setState(() {
+        _imageFuture = _loadImage();
+      });
+    }
+  }
+
   Future<Uint8List> _loadImage() async {
-    final response = await http.get(Uri.parse(widget.imageUrl));
-    if (response.statusCode == 200) {
-      return compute(decodeImage, response.bodyBytes);
-    } else {
-      throw Exception('Failed to load image');
+    try {
+      final response = await http.get(Uri.parse(widget.imageUrl));
+      if (response.statusCode == 200) {
+        return compute(decodeImage, response.bodyBytes);
+      } else {
+        throw Exception('Failed to load image');
+      }
+    } catch (e) {
+      throw Exception('Failed to load image: $e');
     }
   }
 
   static Uint8List decodeImage(Uint8List bytes) {
-    // You could add more complex decoding logic here if needed
     return bytes;
   }
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<Uint8List>(
-      future: _imageFuture,
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting || snapshot.hasError) {
-          return Container(
-            width: widget.width,
-            height: widget.height,
-            color: widget.placeholderColor,
-          );
-        } else if (snapshot.hasData) {
-          return Image.memory(
-            snapshot.data!,
-            width: widget.width,
-            height: widget.height,
-            fit: widget.fit,
-          );
-        } else {
-          return Container(); // This should never happen
-        }
-      },
+    return KeyedSubtree(
+      key: ValueKey(widget.imageUrl),
+      child: FutureBuilder<Uint8List>(
+        future: _imageFuture,
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            return Image.memory(
+              snapshot.data!,
+              width: widget.width,
+              height: widget.height,
+              fit: widget.fit,
+              errorBuilder: (context, error, stackTrace) {
+                return Container(
+                  width: widget.width,
+                  height: widget.height,
+                  color: widget.placeholderColor,
+                );
+              },
+            );
+          } else {
+            return Container(
+              width: widget.width,
+              height: widget.height,
+              color: widget.placeholderColor,
+            );
+          }
+        },
+      ),
     );
   }
 }

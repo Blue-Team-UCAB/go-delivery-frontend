@@ -14,7 +14,6 @@ class ProductCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print('URL de la imagen: ${product.imageUrl}');
     return GestureDetector(
       onTap: () {
         context.push('/productdetail/${product.id}');

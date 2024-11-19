@@ -7,6 +7,7 @@ import 'package:go_delivery_frontend/application/BLoc/product/product_many/produ
 import 'package:go_delivery_frontend/application/BLoc/product/product_many/product_many_event.dart';
 import 'package:go_delivery_frontend/domain/entities/product/product.dart';
 import 'package:go_delivery_frontend/infrastructure/mappers/cart/cart_item_mapper.dart';
+import 'package:go_delivery_frontend/presentation/core/common/image-loader.dart';
 import 'package:go_router/go_router.dart';
 
 class PopularSection extends StatefulWidget {
@@ -121,18 +122,11 @@ class PopularItem extends StatelessWidget {
             onTap: (){
               context.push('/productdetail/${product.id}');
             },
-            leading: Image.network(
-              product.imageUrl,
+            leading: FastLoadingImage(
+              imageUrl: product.imageUrl,
               height: 100,
               width: 100,
               fit: BoxFit.contain,
-              errorBuilder: (context, error, stackTrace) {
-                return const SizedBox(
-                  height: 100,
-                  width: 100,
-                  child: Icon(Icons.broken_image, color: Colors.grey,),
-                );
-              },
             ),
             title: Text(
               product.name,
