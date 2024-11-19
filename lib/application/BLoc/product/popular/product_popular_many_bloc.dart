@@ -8,7 +8,8 @@ import 'package:go_delivery_frontend/application/BLoc/product/product_many/produ
 class ProductPopularListBloc extends Bloc<ProductListEvent, ProductListState> {
   final GetProductsUseCase _getProductsUseCase;
 
-  ProductPopularListBloc(this._getProductsUseCase) : super(ProductListInitial()) {
+  ProductPopularListBloc(this._getProductsUseCase)
+      : super(ProductListInitial()) {
     on<LoadProductList>(_onLoadProductList);
   }
 
@@ -21,7 +22,7 @@ class ProductPopularListBloc extends Bloc<ProductListEvent, ProductListState> {
         final currentState = state is ProductListLoaded
             ? state
             : const ProductListLoaded(
-                products: [], hasReachedMax: false, page: 1);
+                products: [], hasReachedMax: false, page: 1, category: '');
 
         emit(ProductListLoading(currentState.products));
 
@@ -41,6 +42,7 @@ class ProductPopularListBloc extends Bloc<ProductListEvent, ProductListState> {
             products: [...newProducts],
             hasReachedMax: hasReachedMax,
             page: event.page,
+            category: '',
           ));
         } else {
           emit(ProductListFailed(result));

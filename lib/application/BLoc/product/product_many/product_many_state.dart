@@ -20,11 +20,13 @@ class ProductListLoading extends ProductListState {
 class ProductListLoaded extends ProductListState {
   final bool hasReachedMax;
   final int page;
+  final String category;
 
   const ProductListLoaded({
     required super.products,
     required this.hasReachedMax,
     required this.page,
+    required this.category,
   });
 
   ProductListLoaded copyWith({
@@ -33,14 +35,14 @@ class ProductListLoaded extends ProductListState {
     int? page,
   }) {
     return ProductListLoaded(
-      products: products ?? this.products,
-      hasReachedMax: hasReachedMax ?? this.hasReachedMax,
-      page: page ?? this.page,
-    );
+        products: products ?? this.products,
+        hasReachedMax: hasReachedMax ?? this.hasReachedMax,
+        page: page ?? this.page,
+        category: category);
   }
 
   @override
-  List<Object?> get props => [products, hasReachedMax, page];
+  List<Object?> get props => [products, hasReachedMax, page, category];
 }
 
 class ProductListFailed extends ProductListState {

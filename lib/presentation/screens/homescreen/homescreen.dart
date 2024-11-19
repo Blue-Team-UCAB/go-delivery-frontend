@@ -62,7 +62,8 @@ class HomeScreenState extends State<HomeScreen> {
                               as ProductListLoaded)
                           .page +
                       1,
-                  take: 4),
+                  take: 4,
+                  category: ''),
             );
       }
     }

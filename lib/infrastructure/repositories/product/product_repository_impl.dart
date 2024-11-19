@@ -41,8 +41,8 @@ class ProductRepositoryImpl extends ProductRepository {
         queryParameters['search'] = search;
       }
 
-      if (category != null && category.isNotEmpty) {
-        queryParameters['category'] = category;
+      if (category?.isNotEmpty ?? false) {
+        queryParameters['category'] = category!;
       }
 
       final response = await _apiRequestManager.request(

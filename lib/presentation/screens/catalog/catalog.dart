@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_delivery_frontend/presentation/widgets/navbar.dart';
@@ -21,7 +23,8 @@ class CatalogScreen extends StatefulWidget {
   CatalogScreenState createState() => CatalogScreenState();
 }
 
-class CatalogScreenState extends State<CatalogScreen> with AutomaticKeepAliveClientMixin {
+class CatalogScreenState extends State<CatalogScreen>
+    with AutomaticKeepAliveClientMixin {
   int _counter = 0;
   final ScrollController _scrollController = ScrollController();
   bool _isLoadingMore = false;
@@ -29,6 +32,7 @@ class CatalogScreenState extends State<CatalogScreen> with AutomaticKeepAliveCli
   int _currentPage = 1;
   final _gridKey = const PageStorageKey('catalog_grid');
   String _searchQuery = '';
+  late StreamSubscription<ProductListState> _productListSubscription;
 
   @override
   bool get wantKeepAlive => true;
@@ -39,29 +43,50 @@ class CatalogScreenState extends State<CatalogScreen> with AutomaticKeepAliveCli
     _counter = widget.initialCounterNavbar;
 
     BlocProvider.of<ProductListBloc>(context).add(
-      LoadProductList(page: _currentPage, take: 6),
+      LoadProductList(page: _currentPage, take: 6, category: ''),
     );
     _scrollController.addListener(_onScroll);
+
+    _productListSubscription =
+        BlocProvider.of<ProductListBloc>(context).stream.listen((state) {
+      if (state is ProductListLoaded) {
+        if (mounted) {
+          setState(() {
+            _isLoadingMore = false;
+          });
+        }
+      }
+    });
   }
 
   @override
   void dispose() {
     _scrollController.dispose();
+    _productListSubscription.cancel();
     super.dispose();
   }
 
   void _onScroll() {
-    if (_scrollController.position.pixels ==
-        _scrollController.position.maxScrollExtent) {
-      if (!_isLoadingMore && !_hasLoadedAllProducts) {
-        setState(() {
-          _isLoadingMore = true;
-        });
-        _currentPage++;
+    if (_scrollController.position.pixels >=
+        _scrollController.position.maxScrollExtent - 300) {
+      final state = BlocProvider.of<ProductListBloc>(context).state;
+      if (state is ProductListLoaded &&
+          !state.hasReachedMax &&
+          !_isLoadingMore) {
+        if (mounted) {
+          setState(() {
+            _isLoadingMore = true;
+          });
+        }
+        _currentPage = state.page + 1;
         BlocProvider.of<ProductListBloc>(context).add(
           _searchQuery.isEmpty
-              ? LoadProductList(page: _currentPage, take: 6)
-              : SearchProductList(search: _searchQuery, page: _currentPage, take: 6),
+              ? LoadProductList(page: _currentPage, take: 6, category: '')
+              : SearchProductList(
+                  search: _searchQuery,
+                  page: _currentPage,
+                  take: 6,
+                  category: ''),
         );
       }
     }
@@ -74,7 +99,8 @@ class CatalogScreenState extends State<CatalogScreen> with AutomaticKeepAliveCli
       _hasLoadedAllProducts = false;
     });
     BlocProvider.of<ProductListBloc>(context).add(
-      SearchProductList(search: query, page: _currentPage, take: 6),
+      SearchProductList(
+          search: query, page: _currentPage, take: 6, category: ''),
     );
   }
 
@@ -212,16 +238,14 @@ class CatalogScreenState extends State<CatalogScreen> with AutomaticKeepAliveCli
                         border: InputBorder.none,
                         suffixIcon: _searchQuery.isNotEmpty
                             ? IconButton(
-                          icon: Icon(Icons.clear),
-                          onPressed: () {
-                            _handleSearch('');
-                          },
-                          
-                        )
+                                icon: Icon(Icons.clear),
+                                onPressed: () {
+                                  _handleSearch('');
+                                },
+                              )
                             : null,
                       ),
                       style: TextStyle(color: Colors.grey),
-                      
                     ),
                   ),
                   IconButton(
@@ -257,11 +281,11 @@ class CatalogScreenState extends State<CatalogScreen> with AutomaticKeepAliveCli
                         controller: _scrollController,
                         cacheExtent: 1000,
                         gridDelegate:
-                        const SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 2,
-                            crossAxisSpacing: 20.0,
-                            mainAxisSpacing: 20.0,
-                            childAspectRatio: 0.66,
+                            const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                          crossAxisSpacing: 20.0,
+                          mainAxisSpacing: 20.0,
+                          childAspectRatio: 0.66,
                         ),
                         itemCount: state.products.length +
                             (_hasLoadedAllProducts ? 1 : 0),
