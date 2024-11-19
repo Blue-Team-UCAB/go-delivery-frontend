@@ -1,4 +1,4 @@
-import 'package:go_delivery_frontend/domain/entities/category/category.dart';
+//import 'package:go_delivery_frontend/domain/entities/category/category.dart';
 
 class Product {
   final String id;
@@ -6,7 +6,7 @@ class Product {
   final double price;
   final double weight;
   final String description;
-  final Category category;
+  final List<String> categories;
   String imageUrl;
   final String currency;
   final int stock;
@@ -17,7 +17,7 @@ class Product {
     required this.price,
     required this.weight,
     required this.description,
-    required this.category,
+    required this.categories,
     required this.imageUrl,
     required this.currency,
     required this.stock,

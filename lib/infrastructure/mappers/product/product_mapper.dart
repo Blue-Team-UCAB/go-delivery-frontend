@@ -1,13 +1,15 @@
 import 'package:go_delivery_frontend/domain/entities/product/product.dart';
-import 'package:go_delivery_frontend/domain/entities/category/category.dart';
-import 'package:go_delivery_frontend/infrastructure/mappers/category/category_mapper.dart';
+//import 'package:go_delivery_frontend/domain/entities/category/category.dart';
+//import 'package:go_delivery_frontend/infrastructure/mappers/category/category_mapper.dart';
 
 class ProductMapper {
   static Product fromJson(Map<String, dynamic> json) {
     try {
-      final category = json['category'] != null
-          ? CategoryMapper.fromJson(json['category'])
-          : Category(id: '', name: 'Sin categoría', icon: '');
+      final categories = json['categories'] is List
+          ? (json['categories'] as List)
+              .map((category) => category.toString())
+              .toList()
+          : [];
 
       final String imageUrl = json['imageUrl'] as String? ?? '';
 
@@ -20,7 +22,7 @@ class ProductMapper {
         price: (json['price'] as num?)?.toDouble() ?? 0.0,
         weight: (json['weight'] as num?)?.toDouble() ?? 0.0,
         stock: json['stock'] as int? ?? 0,
-        category: category,
+        categories: List<String>.from(categories),
         imageUrl: imageUrl,
       );
     } catch (e) {
@@ -38,7 +40,7 @@ class ProductMapper {
       'price': product.price,
       'weight': product.weight,
       'stock': product.stock,
-      'category': product.category.name,
+      'categories': product.categories,
       'imageUrl': product.imageUrl,
     };
   }

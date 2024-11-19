@@ -25,6 +25,7 @@ class ProductRepositoryImpl extends ProductRepository {
   @override
   Future<Result<List<Product>>> getProducts({
     String? search,
+    String? category,
     required int page,
     required int take,
   }) async {
@@ -40,11 +41,15 @@ class ProductRepositoryImpl extends ProductRepository {
         queryParameters['search'] = search;
       }
 
+      if (category != null && category.isNotEmpty) {
+        queryParameters['category'] = category;
+      }
+
       final response = await _apiRequestManager.request(
         '/product',
         'GET',
         queryParameters: queryParameters,
-            (data) {
+        (data) {
           List<Product> products = (data['products'] as List)
               .map((productData) => ProductMapper.fromJson(productData))
               .toList();

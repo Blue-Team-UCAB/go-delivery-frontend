@@ -118,8 +118,23 @@ class ProductDetailScreen extends StatelessWidget {
                           ),
                         ),
                         const SizedBox(height: 8),
-                        const Row(
-                          children: [Text('CHUCHERIAS'), Text('  BOTANA')],
+                        Row(
+                          children: product.categories.isNotEmpty
+                              ? product.categories
+                                  .map((category) => Padding(
+                                        padding:
+                                            const EdgeInsets.only(right: 8.0),
+                                        child: Text(
+                                          category,
+                                          style: const TextStyle(
+                                            fontFamily: 'Inter',
+                                            fontWeight: FontWeight.w400,
+                                            fontSize: 16,
+                                          ),
+                                        ),
+                                      ))
+                                  .toList()
+                              : const [Text('Sin categorías')],
                         ),
                         const SizedBox(height: 10),
                         const Text(
