@@ -3,6 +3,11 @@ abstract class Failure {
   const Failure(this.message);
 }
 
+class CustomFailure extends Failure {
+  const CustomFailure({String message = '<CUSTOM FAILURE ARROJADO>'})
+      : super(message);
+}
+
 class NoSessionFailure extends Failure {
   const NoSessionFailure({String message = 'No existe una sesión iniciada'})
       : super(message);
@@ -15,8 +20,18 @@ class ServerFailure extends Failure {
       : super(message);
 }
 
+class BadReponseFailure extends Failure {
+  BadReponseFailure(
+      {String message =
+      'Fallo en la Respuesta del Servidor dado datos por el Cliente'})
+      : super(message);
+}
+
 class NoAuthorizeFailure extends Failure {
-  const NoAuthorizeFailure({required String message}) : super(message);
+  const NoAuthorizeFailure(
+      {String message =
+      'Autenticación No Autorizada'})
+      : super(message);
 }
 
 class NoInternetFailure extends Failure {
@@ -25,7 +40,7 @@ class NoInternetFailure extends Failure {
 }
 
 class UnnableToCheckLocationFailure extends Failure {
-  const UnnableToCheckLocationFailure({required String message})
+  const UnnableToCheckLocationFailure({String message = 'Problemas en Localizar la Ubicación'})
       : super(message);
 }
 

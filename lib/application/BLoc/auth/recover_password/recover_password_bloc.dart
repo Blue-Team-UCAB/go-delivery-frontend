@@ -2,17 +2,16 @@ import 'dart:async';
 
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
-import '../../../../domain/repositories/user/user_repository.dart';
+import '../../../use_cases/auth/recover_password/recovery_usecase_input.dart';
 
 part 'recover_password_event.dart';
 part 'recover_password_state.dart';
 
 class RecoverPasswordBloc
     extends Bloc<RecoverPasswordEvent, RecoverPasswordState> {
-  final UserRepository userRespository;
+  final RecoveryUseCase recoveryUseCase;
 
-  RecoverPasswordBloc({required this.userRespository})
+  RecoverPasswordBloc({required this.recoveryUseCase})
       : super(const RecoverPasswordState()) {
     on<EmailChanged>(_onEmailChanged);
     on<PasswordChanged>(_onPasswordChanged);
@@ -103,18 +102,19 @@ class RecoverPasswordBloc
 
   Future<void> sendCode({bool resend = false}) async {
     add(RecoverPasswordCodeRequested());
-    if (state.email == '') {
+    if (state.email.isEmpty) {
       add(ErrorOccurred(errorMessage: 'You must enter your email'));
       return;
     }
-    final sendRecoveryCodeResult =
-        await userRespository.sendRecoveryCode(state.email);
+
+    final input = SendRecoveryCodeInput(email: state.email);
+    final sendRecoveryCodeResult = await recoveryUseCase.sendCode(input);
 
     if (sendRecoveryCodeResult.isSuccessful()) {
-        add(resend ? RecoverPasswordCodeResent() : RecoverPasswordCodeSent());
-    }else{
+      add(resend ? RecoverPasswordCodeResent() : RecoverPasswordCodeSent());
+    } else {
       add(ErrorOccurred(
-          errorMessage: sendRecoveryCodeResult.getError().toString()));
+          errorMessage: sendRecoveryCodeResult.getError().message));
     }
   }
 
@@ -125,38 +125,53 @@ class RecoverPasswordBloc
       return;
     }
 
-    if (state.code.length < 4) {
+    if (state.code.length < 6) {
       add(ErrorOccurred(
           errorMessage:
-              'You must enter all of the code\'s digits (entered code ${state.code})'));
+          'You must enter all of the code\'s digits (entered code ${state.code})'));
       return;
     }
 
-    final codeValidationResult =
-        await userRespository.validateRecoveryCode(state.email, state.code);
+    final input = ValidateRecoveryCodeInput(
+      email: state.email,
+      code: state.code,
+    );
+    final codeValidationResult = await recoveryUseCase.validateCode(input);
 
     if (codeValidationResult.isSuccessful()) {
       add(RecoverPasswordCodeValidated());
     } else {
       add(ErrorOccurred(
-          errorMessage: codeValidationResult.getError().toString()));
+          errorMessage: codeValidationResult.getError().message));
     }
   }
 
   Future<void> submitPasswordChange() async {
     add(RecoverPasswordFormSubmitted());
-    if (state.password == '') {
+    if (state.password.isEmpty) {
       add(ErrorOccurred(errorMessage: 'You must enter a password'));
       return;
     }
-    final passwordChangeResult = await userRespository.changePassword(
-        state.email, state.code, state.password);
+
+    // Add password validation rules as needed
+    if (state.password.length < 8) {
+      add(ErrorOccurred(errorMessage: 'Password must be at least 8 characters long'));
+      return;
+    }
+
+    final input = ChangePasswordInput(
+      email: state.email,
+      code: state.code,
+      password: state.password,
+    );
+    final passwordChangeResult = await recoveryUseCase.changePassword(input);
 
     if (passwordChangeResult.isSuccessful()) {
       add(RecoverPasswordCompleted());
     } else {
       add(ErrorOccurred(
-          errorMessage: passwordChangeResult.getError().toString()));
+          errorMessage: passwordChangeResult.getError().message));
     }
   }
+
 }

@@ -15,7 +15,7 @@ class FastLoadingImage extends StatefulWidget {
     this.width = 100,
     this.height = 100,
     this.fit = BoxFit.cover,
-    this.placeholderColor = const Color(0xFFEEEEEE),
+    this.placeholderColor = Colors.white,
   }) : super(key: key);
 
   @override

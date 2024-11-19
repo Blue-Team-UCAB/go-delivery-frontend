@@ -67,7 +67,6 @@ class LoginFormState extends State<LoginForm> {
   @override
   Widget build(BuildContext context) {
     bool isDarkMode = context.watch<ThemesBloc>().isDarkMode;
-
     return BlocConsumer<LoginBloc, LoginState>(
         listenWhen: (previous, current) =>
             previous.formStatus != current.formStatus,
@@ -78,7 +77,7 @@ class LoginFormState extends State<LoginForm> {
               state.errorMessage.isNotEmpty) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
-                  duration: const Duration(milliseconds: 1000),
+                  duration: const Duration(seconds: 2),
                   content: Text(state.errorMessage)),
             );
           }

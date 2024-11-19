@@ -1,9 +1,6 @@
-import 'package:go_delivery_frontend/presentation/screens/detail/bundle_detail_screen.dart';
 import 'package:go_delivery_frontend/presentation/screens/screens.dart';
 import 'package:go_router/go_router.dart';
-
 import '../../../infrastructure/datasources/localstorage/localstorage_impl.dart';
-import '../../screens/notification/notification_screen.dart';
 import '../transition/transitions.dart';
 
 class RoutesManager {
@@ -81,6 +78,13 @@ class RoutesManager {
           pageBuilder: (context, state) => CustomTransitions.slideRight(
             key: state.pageKey,
             child: const ForgotPasswordScreen(),
+          )
+      ),
+      GoRoute(
+          path: '/password/verify',
+          pageBuilder: (context, state) => CustomTransitions.slideRight(
+            key: state.pageKey,
+            child: const CodeVerificationScreen(),
           )
       ),
       GoRoute(

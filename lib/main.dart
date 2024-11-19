@@ -33,7 +33,7 @@ void main() async {
         BlocProvider(create: (_) => getIt<BundleListBloc>()),
         BlocProvider(create: (_) => getIt<BundleDetailBloc>()),
         BlocProvider(create: (_) => getIt<ProductPopularListBloc>()),
-        BlocProvider(create: (_) => getIt<ProductRandomListBloc>())
+        BlocProvider(create: (_) => getIt<ProductRandomListBloc>()) //THIS IS A PLACEHOLDER. Pronto estará el Popular list definitivo despues de tener casi listo la app
       ],
       child: const GoDelyApp(),
     ),

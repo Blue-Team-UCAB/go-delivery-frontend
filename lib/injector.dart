@@ -7,6 +7,7 @@ import 'package:go_delivery_frontend/application/BLoc/product/popular/product_po
 import 'package:go_delivery_frontend/application/BLoc/product/popular/random/product_random_many_bloc.dart';
 import 'package:go_delivery_frontend/application/BLoc/product/product_detail/product_detail_bloc.dart';
 import 'package:go_delivery_frontend/application/BLoc/product/product_many/product_many_bloc.dart';
+import 'package:go_delivery_frontend/application/use_cases/auth/recover_password/recovery_usecase_input.dart';
 import 'package:go_delivery_frontend/application/use_cases/auth/register/register_usecase_input.dart';
 import 'package:go_delivery_frontend/application/use_cases/bundle/get_many_bundle.dart';
 import 'package:go_delivery_frontend/application/use_cases/bundle/get_one_bundle.dart';
@@ -50,18 +51,18 @@ class InjectManager {
     //caso de uso
     final loginUseCase = LoginUseCase(userRepository: userRepository);
     final registerUseCase = RegisterUseCase(userRepository: userRepository);
+    final recoveryUseCase = RecoveryUseCase(userRepository: userRepository);
 
     // Registrar
     getIt.registerFactory(() => LoginBloc(loginUseCase: loginUseCase));
     getIt.registerFactory(() => RegisterBloc(userRepository.register));
-    getIt.registerSingleton(
-        RecoverPasswordBloc(userRespository: userRepository));
+    getIt.registerSingleton(RecoverPasswordBloc(recoveryUseCase: recoveryUseCase));
 
-    //final recoveryUseCase
 
     //registrar caso de uso
     getIt.registerSingleton<LoginUseCase>(loginUseCase);
     getIt.registerSingleton<RegisterUseCase>(registerUseCase);
+    getIt.registerSingleton<RecoveryUseCase>(recoveryUseCase);
     // ======================================================================= //
 
     // ============================= CART ==================================== //
@@ -112,6 +113,7 @@ class InjectManager {
     getIt.registerSingleton(ProductPopularListBloc(getProductsUseCase));
 
     // Random List
+    //THIS IS A PLACEHOLDER. Pronto estará el Popular list definitivo despues de tener casi listo la app
     getIt.registerSingleton(ProductRandomListBloc(getProductsUseCase));
 
     // ============================= BUNDLES ============================= //
