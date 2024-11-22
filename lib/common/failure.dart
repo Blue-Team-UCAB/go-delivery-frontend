@@ -30,7 +30,7 @@ class BadReponseFailure extends Failure {
 class NoAuthorizeFailure extends Failure {
   const NoAuthorizeFailure(
       {String message =
-      'Autenticación No Autorizada'})
+      'Autenticación No Autorizada o Vencida'})
       : super(message);
 }
 

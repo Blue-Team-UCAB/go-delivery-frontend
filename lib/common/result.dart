@@ -3,7 +3,7 @@ import '../../../common/failure.dart';
 class Result<T> {
   final T? value;
   final Failure? error; // Cambiar de Exception a Failure
-  final bool isSuccess;
+  late final bool isSuccess;
 
   Result._({this.value, this.error, required this.isSuccess})
       : assert(value != null || error != null,

@@ -66,7 +66,6 @@ class LoginBloc extends SafeBloc<LoginEvent, LoginState> {
       ),
     );
 
-    print(isLoggedResult.isSuccess);
 
     if (isLoggedResult.isSuccessful()) {
       final isLogged = isLoggedResult.getValue();

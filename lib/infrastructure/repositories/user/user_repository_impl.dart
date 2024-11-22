@@ -5,6 +5,7 @@ import '../../../application/api/api_request.dart';
 import 'package:go_delivery_frontend/application/key_value_storage/key_value.dart';
 import '../../../common/result.dart';
 import '../../../domain/repositories/user/user_repository.dart';
+import '../../models/user_model.dart';
 
 enum UserType { CLIENT, ADMIN }
 
@@ -17,6 +18,11 @@ class UserRepositoryImpl implements UserRepository {
     required LocalStorage localStorage,
   })  : _apiRequestManager = apiRequestManager,
         _localStorage = localStorage;
+
+  Future<void> _addAuthorizationHeader() async {
+    final token = await _localStorage.getAuthorizationToken();
+    _apiRequestManager.setHeaders('Authorization', 'Bearer $token');
+  }
 
   @override
   Future<Result<bool>> login(String email, String password) async {
@@ -153,5 +159,23 @@ class UserRepositoryImpl implements UserRepository {
       }
   }
 
+  @override
+  Future<Result<User>> getCurrent() async {
+      var message;
+      await _addAuthorizationHeader();
+      final response = await _apiRequestManager.request(
+        '/auth/current',
+        'GET',
+            (data) {
+                User user = data.map((User) => UserMapper.fromJson(User));
+            return user;
+        },
+      );
+      if(response.value == true) {
+        return response;
+      } else {
+        return Result.fail(NoAuthorizeFailure(message: message));
+      }
+  }
 
 }
