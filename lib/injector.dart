@@ -1,5 +1,6 @@
 import 'package:get_it/get_it.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:go_delivery_frontend/application/BLoc/auth/current/current_user_bloc.dart';
 import 'package:go_delivery_frontend/application/BLoc/blocs.dart';
 import 'package:go_delivery_frontend/application/BLoc/bundle/bundle_detail/bundle_detail_bloc.dart';
 import 'package:go_delivery_frontend/application/BLoc/bundle/bundle_many/bundle_many_bloc.dart';
@@ -7,6 +8,7 @@ import 'package:go_delivery_frontend/application/BLoc/product/popular/product_po
 import 'package:go_delivery_frontend/application/BLoc/product/popular/random/product_random_many_bloc.dart';
 import 'package:go_delivery_frontend/application/BLoc/product/product_detail/product_detail_bloc.dart';
 import 'package:go_delivery_frontend/application/BLoc/product/product_many/product_many_bloc.dart';
+import 'package:go_delivery_frontend/application/use_cases/auth/current/current_user_usecase_input.dart';
 import 'package:go_delivery_frontend/application/use_cases/auth/recover_password/recovery_usecase_input.dart';
 import 'package:go_delivery_frontend/application/use_cases/auth/register/register_usecase_input.dart';
 import 'package:go_delivery_frontend/application/use_cases/bundle/get_many_bundle.dart';
@@ -52,17 +54,19 @@ class InjectManager {
     final loginUseCase = LoginUseCase(userRepository: userRepository);
     final registerUseCase = RegisterUseCase(userRepository: userRepository);
     final recoveryUseCase = RecoveryUseCase(userRepository: userRepository);
+    final getCurrentUseCase = CurrentUserUseCase(userRepository: userRepository);
 
     // Registrar
     getIt.registerFactory(() => LoginBloc(loginUseCase: loginUseCase));
     getIt.registerFactory(() => RegisterBloc(userRepository.register));
     getIt.registerSingleton(RecoverPasswordBloc(recoveryUseCase: recoveryUseCase));
-
+    getIt.registerSingleton(CurrentUserBloc(currentUserUseCase: getCurrentUseCase));
 
     //registrar caso de uso
     getIt.registerSingleton<LoginUseCase>(loginUseCase);
     getIt.registerSingleton<RegisterUseCase>(registerUseCase);
     getIt.registerSingleton<RecoveryUseCase>(recoveryUseCase);
+    getIt.registerSingleton<CurrentUserUseCase>(getCurrentUseCase);
     // ======================================================================= //
 
     // ============================= CART ==================================== //

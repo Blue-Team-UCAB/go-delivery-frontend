@@ -178,7 +178,7 @@ class LoginFormState extends State<LoginForm> {
                                   alignment: Alignment.centerLeft,
                                   child: TextButton(
                                     onPressed: () {
-                                      context.push('/password/reset');
+                                      context.push('/password/forgot');
                                     },
                                     style: TextButton.styleFrom(
                                       foregroundColor: const Color(0xFF02066F),

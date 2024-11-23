@@ -9,9 +9,8 @@ import '../login/inputDecorationLogin.dart';
 import '../login/login_validators.dart';
 
 class ForgotPasswordScreen extends StatefulWidget {
-  final void Function()? onPressRegister;
 
-  const ForgotPasswordScreen({super.key, this.onPressRegister});
+  const ForgotPasswordScreen({super.key});
 
   @override
   State<ForgotPasswordScreen> createState() => _ForgotPasswordScreenState();
@@ -27,7 +26,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
     return BlocConsumer<RecoverPasswordBloc, RecoverPasswordState>(
       listener: (context, state) {
         if (state.formStatus == RecoverPasswordFormStatus.sent) {
-          context.go('/password/verify', extra: state.email);
+          context.go('/password/renew', extra: state.email);
         }
 
         if (state.errorMessage.isNotEmpty) {

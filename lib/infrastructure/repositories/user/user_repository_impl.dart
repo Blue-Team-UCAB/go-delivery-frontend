@@ -120,14 +120,13 @@ class UserRepositoryImpl implements UserRepository {
         '/auth/code/validate',
         'POST',
           (data) {
-            if (data['errorCode'] != 200) {
-              message = data["message"];
-              return false;
-            } else
+            print(data);
             return true;
           },
         body: {'email': email, 'code': code},
       );
+    print(response.value);
+
     if(response.value == true) {
       return response;
     } else {
@@ -139,43 +138,39 @@ class UserRepositoryImpl implements UserRepository {
   @override
   Future<Result<bool>> changePassword(
       String email, String code, String password) async {
-      var message;
+      print(email);
+      print(code);
+      print(password);
+
       final response = await _apiRequestManager.request<bool>(
         '/auth/change/password',
-        'PUT',
+        'POST',
             (data) {
-              if (data['errorCode'] != 200) {
-                message = data["message"];
-                return false;
-              } else
                 return true;
           },
-        body: {'email': email, 'code': code, 'password': password},
+        body: {
+          'email': email,
+          'code': code,
+          'password': password
+        },
       );
-      if(response.value == true) {
-        return response;
-      } else {
-        return Result.fail(CustomFailure(message: message));
-      }
+
+      print(response.value);
+
+      return response;
   }
 
   @override
   Future<Result<User>> getCurrent() async {
-      var message;
       await _addAuthorizationHeader();
       final response = await _apiRequestManager.request(
         '/auth/current',
         'GET',
             (data) {
-                User user = data.map((User) => UserMapper.fromJson(User));
-            return user;
-        },
+                return UserMapper.fromJson(data);
+            }
       );
-      if(response.value == true) {
-        return response;
-      } else {
-        return Result.fail(NoAuthorizeFailure(message: message));
-      }
+      return response;
   }
 
 }

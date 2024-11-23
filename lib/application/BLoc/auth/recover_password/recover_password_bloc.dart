@@ -153,7 +153,6 @@ class RecoverPasswordBloc
       return;
     }
 
-    // Add password validation rules as needed
     if (state.password.length < 8) {
       add(ErrorOccurred(errorMessage: 'Password must be at least 8 characters long'));
       return;

@@ -49,7 +49,7 @@ class _CodeVerificationScreenState extends State<CodeVerificationScreen> {
         listener: (context, state) {
           switch (state.formStatus) {
             case RecoverPasswordFormStatus.validated:
-              context.go('/password/create');
+              context.go('/login');
               break;
             case RecoverPasswordFormStatus.invalid:
               ScaffoldMessenger.of(context).showSnackBar(

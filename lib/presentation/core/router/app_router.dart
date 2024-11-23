@@ -1,6 +1,7 @@
 import 'package:go_delivery_frontend/presentation/screens/screens.dart';
 import 'package:go_router/go_router.dart';
 import '../../../infrastructure/datasources/localstorage/localstorage_impl.dart';
+import '../../screens/auth/password_recovery/reset_pass_screen.dart';
 import '../transition/transitions.dart';
 
 class RoutesManager {
@@ -74,7 +75,7 @@ class RoutesManager {
           )
       ),
       GoRoute(
-          path: '/password/reset',
+          path: '/password/forgot',
           pageBuilder: (context, state) => CustomTransitions.slideRight(
             key: state.pageKey,
             child: const ForgotPasswordScreen(),
@@ -85,6 +86,13 @@ class RoutesManager {
           pageBuilder: (context, state) => CustomTransitions.slideRight(
             key: state.pageKey,
             child: const CodeVerificationScreen(),
+          )
+      ),
+      GoRoute(
+          path: '/password/renew',
+          pageBuilder: (context, state) => CustomTransitions.slideRight(
+            key: state.pageKey,
+            child: PasswordRenewScreen(email: state.extra as String),
           )
       ),
       GoRoute(
@@ -122,9 +130,9 @@ class RoutesManager {
 
       if (!isAutorized) {
         if (isGoingTo == '/register' ||
-            isGoingTo == '/password/reset' ||
-            isGoingTo == '/password/create' ||
-            isGoingTo == '/password/verify') return null;
+            isGoingTo == '/password/forgot' ||
+            isGoingTo == '/password/verify' ||
+            isGoingTo == '/password/renew') return null;
         if (isGoingTo == '/welcome' && !hasSeenWelcome) return null;
         return '/login';
       }
