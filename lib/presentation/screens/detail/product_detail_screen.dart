@@ -201,9 +201,12 @@ class RelatedProductsSection extends StatefulWidget {
 }
 
 class _RelatedProductsSectionState extends State<RelatedProductsSection> {
+  late String _currentCategory;
+
   @override
   void initState() {
     super.initState();
+    _currentCategory = widget.category;
     _loadProducts();
   }
 
@@ -211,57 +214,58 @@ class _RelatedProductsSectionState extends State<RelatedProductsSection> {
   void didUpdateWidget(covariant RelatedProductsSection oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.category != widget.category) {
+      _currentCategory = widget.category;
       _loadProducts();
     }
   }
 
   void _loadProducts() {
+    BlocProvider.of<ProductListBloc>(context).add(ClearProductList());
     BlocProvider.of<ProductListBloc>(context).add(
-      LoadProductList(page: 1, take: 4, category: widget.category),
+      LoadProductList(page: 1, take: 4, category: _currentCategory),
     );
   }
 
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<ProductListBloc, ProductListState>(
-      builder: (context, state) {
-        if (state is ProductListLoading && state.products.isEmpty) {
-          return const Center(child: CircularProgressIndicator());
-        }
+        builder: (context, state) {
+      if (state is ProductListLoading && state.products.isEmpty) {
+        return const Center(child: CircularProgressIndicator());
+      }
 
-        if (state is ProductListLoaded) {
-          final products = state.products;
+      if (state is ProductListLoaded) {
+        final products = List.from(state.products)..shuffle();
 
-          return SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: Row(
-              children: products.isEmpty
-                  ? [const Text('No hay productos relacionados')]
-                  : products.map((product) {
-                      return Padding(
-                        padding: const EdgeInsets.only(right: 16.0),
-                        child: SizedBox(
-                          width: 200,
-                          height: 255,
-                          child: ProductCard(product: product),
-                        ),
-                      );
-                    }).toList(),
-            ),
-          );
-        }
+        return SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: Row(
+            children: products.isEmpty
+                ? [const Text('No hay productos relacionados')]
+                : products.map((product) {
+                    return Padding(
+                      padding: const EdgeInsets.only(right: 16.0),
+                      child: SizedBox(
+                        width: 200,
+                        height: 255,
+                        child: ProductCard(product: product),
+                      ),
+                    );
+                  }).toList(),
+          ),
+        );
+      }
 
-        if (state is ProductListFailed) {
-          return Center(
-            child: Text(
-              'Error: ${state.result}',
-              style: const TextStyle(color: Colors.red),
-            ),
-          );
-        }
+      if (state is ProductListFailed) {
+        return Center(
+          child: Text(
+            'Error: ${state.result}',
+            style: const TextStyle(color: Colors.red),
+          ),
+        );
+      }
 
-        return const Center(child: Text('Estado desconocido'));
-      },
-    );
+      return const Center(child: Text('Estado desconocido'));
+    });
   }
 }

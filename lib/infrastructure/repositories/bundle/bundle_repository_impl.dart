@@ -64,9 +64,9 @@ class BundleRepositoryImpl extends BundleRepository {
 
           // Imprimir la data de los productos del bundle
           print('Productos del bundle recibido de la API:');
-          bundle.products.forEach((product) {
+          for (var product in bundle.products) {
             print('Producto: ${product.name}, URL imagen: ${product.imageUrl}');
-          });
+          }
 
           return bundle;
         },

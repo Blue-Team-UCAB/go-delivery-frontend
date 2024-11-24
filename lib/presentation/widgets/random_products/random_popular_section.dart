@@ -11,7 +11,7 @@ import '../../../infrastructure/mappers/cart/cart_item_mapper.dart';
 import '../../core/common/image-loader.dart';
 
 class RandomSection extends StatefulWidget {
-  const RandomSection({Key? key}) : super(key: key);
+  const RandomSection({super.key});
 
   @override
   _RandomSectionState createState() => _RandomSectionState();

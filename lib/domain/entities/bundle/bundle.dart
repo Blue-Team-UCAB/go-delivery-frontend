@@ -1,4 +1,3 @@
-import 'package:go_delivery_frontend/domain/entities/product/product.dart';
 
 class Bundle {
   String id;

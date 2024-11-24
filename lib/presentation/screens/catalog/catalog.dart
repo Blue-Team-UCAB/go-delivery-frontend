@@ -29,6 +29,7 @@ class CatalogScreenState extends State<CatalogScreen>
   final _gridKey = const PageStorageKey('catalog_grid');
   String _searchQuery = '';
   late StreamSubscription<ProductListState> _productListSubscription;
+  final List<Product> _products = [];
 
   @override
   bool get wantKeepAlive => true;
@@ -37,10 +38,8 @@ class CatalogScreenState extends State<CatalogScreen>
   void initState() {
     super.initState();
     _counter = widget.initialCounterNavbar;
+    _loadProducts();
 
-    BlocProvider.of<ProductListBloc>(context).add(
-      LoadProductList(page: _currentPage, take: 6, category: ''),
-    );
     _scrollController.addListener(_onScroll);
 
     _productListSubscription =
@@ -49,6 +48,7 @@ class CatalogScreenState extends State<CatalogScreen>
         if (mounted) {
           setState(() {
             _isLoadingMore = false;
+            _addUniqueProducts(state.products);
           });
         }
       }
@@ -61,6 +61,12 @@ class CatalogScreenState extends State<CatalogScreen>
     _scrollController.dispose();
     _productListSubscription.cancel();
     super.dispose();
+  }
+
+  void _loadProducts() {
+    BlocProvider.of<ProductListBloc>(context).add(
+      LoadProductList(page: _currentPage, take: 6, category: ''),
+    );
   }
 
   void _onScroll() {
@@ -93,6 +99,7 @@ class CatalogScreenState extends State<CatalogScreen>
     setState(() {
       _searchQuery = query;
       _currentPage = 1;
+      _products.clear();
     });
     BlocProvider.of<ProductListBloc>(context).add(
       SearchProductList(
@@ -104,6 +111,14 @@ class CatalogScreenState extends State<CatalogScreen>
     setState(() {
       _counter = valueIndex;
     });
+  }
+
+  void _addUniqueProducts(List<Product> newProducts) {
+    for (var product in newProducts) {
+      if (!_products.any((p) => p.id == product.id)) {
+        _products.add(product);
+      }
+    }
   }
 
   @override
@@ -206,18 +221,18 @@ class CatalogScreenState extends State<CatalogScreen>
                       onSubmitted: _handleSearch,
                       decoration: InputDecoration(
                         hintText: 'Buscar un producto',
-                        hintStyle: TextStyle(color: Colors.grey),
+                        hintStyle: const TextStyle(color: Colors.grey),
                         border: InputBorder.none,
                         suffixIcon: _searchQuery.isNotEmpty
                             ? IconButton(
-                                icon: Icon(Icons.clear),
+                                icon: const Icon(Icons.clear),
                                 onPressed: () {
                                   _handleSearch('');
                                 },
                               )
                             : null,
                       ),
-                      style: TextStyle(color: Colors.grey),
+                      style: const TextStyle(color: Colors.grey),
                     ),
                   ),
                   IconButton(
@@ -236,12 +251,12 @@ class CatalogScreenState extends State<CatalogScreen>
           Expanded(
             child: BlocBuilder<ProductListBloc, ProductListState>(
               builder: (context, state) {
-                if (state is ProductListInitial) {
+                if (state is ProductListInitial && _products.isEmpty) {
                   return const Center(child: CircularProgressIndicator());
                 } else if (state is ProductListLoading) {
-                  return _buildProductGrid(state.products, isLoading: true);
+                  return _productGrid(state.products, isLoading: true);
                 } else if (state is ProductListLoaded) {
-                  return _buildProductGrid(state.products,
+                  return _productGrid(state.products,
                       hasReachedMax: state.hasReachedMax);
                 } else if (state is ProductListFailed) {
                   return Center(child: Text('Error: ${state.result.error}'));
@@ -260,7 +275,7 @@ class CatalogScreenState extends State<CatalogScreen>
     );
   }
 
-  Widget _buildProductGrid(List<Product> products,
+  Widget _productGrid(List<Product> products,
       {bool isLoading = false, bool hasReachedMax = false}) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20.0),
@@ -273,24 +288,17 @@ class CatalogScreenState extends State<CatalogScreen>
           controller: _scrollController,
           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 2,
-            crossAxisSpacing: 20.0,
-            mainAxisSpacing: 20.0,
-            childAspectRatio: 0.66,
+            childAspectRatio: 0.65,
+            crossAxisSpacing: 8.0,
+            mainAxisSpacing: 8.0,
           ),
-          itemCount: products.length + (isLoading || !hasReachedMax ? 1 : 0),
+          itemCount: _products.length + (isLoading ? 1 : 0),
           itemBuilder: (context, index) {
-            if (index < products.length) {
-              return ProductCard(
-                key: ValueKey('product_card_${products[index].id}'),
-                product: products[index],
-              );
-            } else if (isLoading) {
+            if (index >= _products.length) {
               return const Center(child: CircularProgressIndicator());
-            } else if (!hasReachedMax) {
-              return const Center(child: CircularProgressIndicator());
-            } else {
-              return const SizedBox.shrink();
             }
+            final product = _products[index];
+            return ProductCard(product: product);
           },
         ),
       ),

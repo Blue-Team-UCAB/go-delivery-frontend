@@ -22,7 +22,7 @@ class ProductRandomListBloc extends Bloc<ProductListEvent, ProductListState> {
     Emitter<ProductListState> emit,
   ) async {
     try {
-      emit(ProductListLoading([]));
+      emit(const ProductListLoading([]));
 
       final result = await _getProductsUseCase.execute(
         GetProductsUseCaseInput(

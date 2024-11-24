@@ -24,6 +24,9 @@ class _PopularSectionState extends State<PopularSection> {
   @override
   void initState() {
     super.initState();
+    context
+        .read<ProductPopularListBloc>()
+        .add(const LoadProductList(page: 1, take: 4, category: ''));
   }
 
   @override

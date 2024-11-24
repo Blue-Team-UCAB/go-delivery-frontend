@@ -11,16 +11,16 @@ class ProductListBloc extends Bloc<ProductListEvent, ProductListState> {
   ProductListBloc(this._getProductsUseCase) : super(ProductListInitial()) {
     on<LoadProductList>(_onLoadProductList);
     on<SearchProductList>(_onSearchProductList);
+    on<ClearProductList>(_onClearProductList);
   }
 
   Future<void> _onLoadProductList(
     LoadProductList event,
     Emitter<ProductListState> emit,
   ) async {
-    // Se pasa la categoría obtenida del evento a la función _loadProducts
     await _loadProducts(
       '',
-      event.category, // Pasando la categoría
+      event.category,
       event.page,
       event.take,
       emit,
@@ -40,6 +40,13 @@ class ProductListBloc extends Bloc<ProductListEvent, ProductListState> {
     );
   }
 
+  Future<void> _onClearProductList(
+    ClearProductList event,
+    Emitter<ProductListState> emit,
+  ) async {
+    emit(const ProductListLoading([]));
+  }
+
   Future<void> _loadProducts(
     String? search,
     String? category,
@@ -52,8 +59,10 @@ class ProductListBloc extends Bloc<ProductListEvent, ProductListState> {
           ? state as ProductListLoaded
           : const ProductListLoaded(
               products: [], hasReachedMax: false, page: 1, category: '');
+      if (currentState.category != category) {
+        emit(const ProductListLoading([]));
+      }
 
-      emit(ProductListLoading(currentState.products));
       final result = await _getProductsUseCase.execute(
         GetProductsUseCaseInput(
           page: page,

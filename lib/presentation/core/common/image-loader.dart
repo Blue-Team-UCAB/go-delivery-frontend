@@ -10,13 +10,13 @@ class FastLoadingImage extends StatefulWidget {
   final Color placeholderColor;
 
   const FastLoadingImage({
-    Key? key,
+    super.key,
     required this.imageUrl,
     this.width = 100,
     this.height = 100,
     this.fit = BoxFit.cover,
     this.placeholderColor = const Color(0xFFEEEEEE),
-  }) : super(key: key);
+  });
 
   @override
   _FastLoadingImageState createState() => _FastLoadingImageState();

@@ -35,3 +35,8 @@ class SearchProductList extends ProductListEvent {
   @override
   List<Object?> get props => [search, page, take, category];
 }
+
+class ClearProductList extends ProductListEvent {
+  @override
+  List<Object?> get props => [];
+}
