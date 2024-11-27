@@ -5,6 +5,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../application/BLoc/auth/recover_password/recover_password_bloc.dart';
+import '../../../widgets/dialog_darken_window.dart';
 import '../login/inputDecorationLogin.dart';
 import '../login/login_validators.dart';
 
@@ -53,6 +54,23 @@ class _PasswordRenewScreenState extends State<PasswordRenewScreen> {
     }
   }
 
+  String maskEmail(String email) {
+    if (email.isEmpty || !email.contains('@')) return email;
+
+    final parts = email.split('@');
+    if (parts.length != 2) return email;
+
+    String maskPart(String part) {
+      if (part.length <= 2) return part;
+      return '${part[0]}${('*' * (part.length - 2))}${part[part.length - 1]}';
+    }
+
+    final maskedLocal = maskPart(parts[0]);
+    final maskedDomain = maskPart(parts[1]);
+
+    return '$maskedLocal@$maskedDomain';
+  }
+
   bool _validateCode() {
     if (code.every((digit) => digit.isEmpty)) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -94,7 +112,23 @@ class _PasswordRenewScreenState extends State<PasswordRenewScreen> {
               );
               break;
             case RecoverPasswordFormStatus.finished:
-              context.go('/login');
+              showDialog(
+                context: context,
+                barrierDismissible: false,
+                builder: (BuildContext context) {
+                  return AnimatedSuccessDialog(
+                    title: '¡Contraseña Actualizada!',
+                    message: 'Tu contraseña ha sido actualizada exitosamente.',
+                    buttonText: 'Ir al login',
+                    onButtonPressed: () {
+                      context.go('/login');
+                    },
+                    icon: Icons.check_circle,
+                    iconColor: const Color(0xFF02066F),
+                    buttonColor: const Color(0xFF02066F),
+                  );
+                },
+              );
               break;
             case RecoverPasswordFormStatus.invalid:
               ScaffoldMessenger.of(context).showSnackBar(
@@ -148,7 +182,7 @@ class _PasswordRenewScreenState extends State<PasswordRenewScreen> {
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
                           Text(
-                            'Ingrese el Código enviado a: $currentEmailHandler y su contraseña nueva!',
+                            'Ingrese el Código enviado a: ${maskEmail(currentEmailHandler)} y su contraseña nueva!',
                             style: const TextStyle(
                               fontFamily: 'Montserrat',
                               fontSize: 20,
