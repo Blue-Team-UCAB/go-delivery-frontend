@@ -14,9 +14,6 @@ import '../../widgets/sidebar.dart';
 import 'homescreen_locationbar.dart';
 import 'homescreen_popular_section.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_delivery_frontend/application/BLoc/product/product_many/product_many_bloc.dart';
-import 'package:go_delivery_frontend/application/BLoc/product/product_many/product_many_state.dart';
-import 'package:go_delivery_frontend/application/BLoc/product/product_many/product_many_event.dart';
 
 class HomeScreenChildView extends StatelessWidget {
   static const name = 'home-screen';

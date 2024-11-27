@@ -1,3 +1,4 @@
+import 'package:go_delivery_frontend/presentation/screens/order/orders_screen.dart';
 import 'package:go_delivery_frontend/presentation/screens/screens.dart';
 import 'package:go_router/go_router.dart';
 import '../../../infrastructure/datasources/localstorage/localstorage_impl.dart';
@@ -8,6 +9,13 @@ class RoutesManager {
   static GoRouter appRouter = GoRouter(
     initialLocation: '/splash',
     routes: [
+      GoRoute(
+          path: '/',
+          pageBuilder: (context, state) => CustomTransitions.slideRight(
+            key: state.pageKey,
+            child: const HomeScreen(initialCounterNavbar: 0),
+          )
+      ),
       GoRoute(
           path: '/splash',
           pageBuilder: (context, state) => CustomTransitions.fadeIn(
@@ -68,13 +76,6 @@ class RoutesManager {
           )
       ),
       GoRoute(
-          path: '/',
-          pageBuilder: (context, state) => CustomTransitions.slideRight(
-            key: state.pageKey,
-            child: const HomeScreen(initialCounterNavbar: 0),
-          )
-      ),
-      GoRoute(
           path: '/password/forgot',
           pageBuilder: (context, state) => CustomTransitions.slideRight(
             key: state.pageKey,
@@ -96,7 +97,13 @@ class RoutesManager {
           )
       ),
       GoRoute(
-        
+          path: '/order',
+          pageBuilder: (context, state) => CustomTransitions.slideRight(
+            key: state.pageKey,
+            child: OrdersPage(initialCounterNavbar: 2),
+          )
+      ),
+      GoRoute(
         path: '/productdetail/:name',
         pageBuilder: (context, state) {
           final productName = state.pathParameters['name'] ?? 'no-name'; 

@@ -16,6 +16,8 @@ class CustomNavBar extends StatelessWidget {
     return GestureDetector(
       onTap: ()
       {
+        print(direccion);
+
         onItemTapped(index);
         if(direccion.isNotEmpty) {
           context.go(direccion);
@@ -70,9 +72,9 @@ class CustomNavBar extends StatelessWidget {
                     const SizedBox(width: 10),
                     _buildNavItem(Icons.search, "Buscar", 1, context, '/Catalog'),
                     const SizedBox(width: 60), // Space for the center button
-                    _buildNavItem(Icons.receipt, "Ordenes", 3, context, ''),
+                    _buildNavItem(Icons.receipt, "Ordenes", 2, context, '/order'),
                     const SizedBox(width: 10),
-                    _buildNavItem(Icons.person, "Perfil", 4, context, ''),
+                    _buildNavItem(Icons.person, "Perfil", 3, context, ''),
                   ],
                 ),
               ),
