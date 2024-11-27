@@ -150,8 +150,8 @@ class UserRepositoryImpl implements UserRepository {
           },
         body: {
           'email': email,
-          'code': code,
-          'password': password
+          'password': password,
+          'code': code
         },
       );
 
