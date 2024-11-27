@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_delivery_frontend/application/BLoc/bundle/bundle_detail/bundle_detail_bloc.dart';
 import 'package:go_delivery_frontend/application/BLoc/bundle/bundle_detail/bundle_detail_state.dart';
 import 'package:go_delivery_frontend/application/BLoc/bundle/bundle_detail/bundle_detail_event.dart';
-import 'package:go_delivery_frontend/domain/entities/bundle/bundle.dart';
-import 'package:go_delivery_frontend/presentation/widgets/bundle_card.dart';
+import 'package:go_delivery_frontend/presentation/widgets/card.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_delivery_frontend/presentation/widgets/cart/add_bundle_carrito_button.dart';
@@ -13,20 +12,7 @@ class BundleDetailScreen extends StatelessWidget {
 
   final String bundleId;
 
-  final Bundle bundleTest = Bundle(
-    id: '057259f8-c42b-4c3f-ac5a-d27b809d764d', 
-    name: "combo fiestero", 
-    description: "Llevate 3 doritos con 2 pepsi", 
-    currency: 'USD', 
-    price: 12, 
-    stock: 2, 
-    weight: 2.45, 
-    imageUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRwTPyzqVBSXWNlO05RXeRe0K-xp1mXNsbXsg&s', 
-    caducityDate: DateTime(1), 
-    products: []
-  );
-
-  BundleDetailScreen({super.key, required this.bundleId});
+  const BundleDetailScreen({super.key, required this.bundleId});
 
   @override
   Widget build(BuildContext context) {
@@ -54,9 +40,11 @@ class BundleDetailScreen extends StatelessWidget {
             if (state is BundleDetailLoading) {
               return const Center(child: CircularProgressIndicator());
             }
-
             if (state is BundleDetailLoaded) {
               final bundle = state.bundle;
+              String imageUrl = (bundle?.imageUrl.isNotEmpty ?? false)
+                  ? bundle!.imageUrl
+                  : 'https://via.placeholder.com/150';
 
               return SingleChildScrollView(
                 padding:
@@ -66,16 +54,28 @@ class BundleDetailScreen extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Image.network(
-                      bundle!.imageUrl,
+                      imageUrl,
                       fit: BoxFit.fill,
                       alignment: Alignment.center,
                       height: 400,
+                      loadingBuilder: (context, child, loadingProgress) {
+                        if (loadingProgress == null) {
+                          return child;
+                        } else {
+                          return const Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        }
+                      },
+                      errorBuilder: (context, error, stackTrace) {
+                        return Image.network('https://via.placeholder.com/150');
+                      },
                     ),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          bundle.name,
+                          bundle?.name ?? 'Nombre no disponible',
                           style: const TextStyle(
                             fontFamily: 'Inter',
                             fontWeight: FontWeight.w800,
@@ -84,7 +84,7 @@ class BundleDetailScreen extends StatelessWidget {
                         ),
                         const SizedBox(height: 6),
                         Text(
-                          '\$${bundle.price}',
+                          '\$${bundle?.price ?? 0.0}',
                           style: const TextStyle(
                             fontFamily: 'Inter',
                             fontWeight: FontWeight.w500,
@@ -93,7 +93,7 @@ class BundleDetailScreen extends StatelessWidget {
                         ),
                         const SizedBox(height: 24),
                         Text(
-                          bundle.description,
+                          bundle?.description ?? 'Descripción no disponible',
                           maxLines: 2,
                           style: const TextStyle(
                             fontFamily: 'Inter',
@@ -113,7 +113,7 @@ class BundleDetailScreen extends StatelessWidget {
                               ),
                             ),
                             Text(
-                              '${bundle.weight}',
+                              '${bundle?.weight ?? 0.0}',
                               style: const TextStyle(
                                 fontFamily: 'Inter',
                                 fontWeight: FontWeight.w400,
@@ -137,7 +137,7 @@ class BundleDetailScreen extends StatelessWidget {
                         ),
                         const SizedBox(height: 10),
                         const Text(
-                          'Productos Relacionados:',
+                          'Productos del combo:',
                           style: TextStyle(
                             fontFamily: 'Inter',
                             fontWeight: FontWeight.w700,
@@ -150,23 +150,17 @@ class BundleDetailScreen extends StatelessWidget {
                           child: Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              SizedBox(
-                                width: 200,
-                                height: 255,
-                                child: BundleCard(bundle:bundleTest),
-                              ),
-                              const SizedBox(width: 20),
-                              SizedBox(
-                                width: 200,
-                                height: 255,
-                                child: BundleCard(bundle:bundleTest),
-                              ),
-                              const SizedBox(width: 20),
-                              SizedBox(
-                                width: 200,
-                                height: 255,
-                                child: BundleCard(bundle:bundleTest),
-                              ),
+                              if (bundle?.products != null)
+                                ...bundle!.products.map((product) {
+                                  return Padding(
+                                    padding: const EdgeInsets.only(right: 20.0),
+                                    child: SizedBox(
+                                      width: 200,
+                                      height: 255,
+                                      child: ProductCard(product: product),
+                                    ),
+                                  );
+                                }),
                             ],
                           ),
                         ),
@@ -197,7 +191,7 @@ class BundleDetailScreen extends StatelessWidget {
           builder: (context, state) {
             if (state is BundleDetailLoaded) {
               final bundle = state.bundle;
-              return AddBundleCarritoButton(bundle:bundle);
+              return AddBundleCarritoButton(bundle: bundle);
             }
             return const SizedBox();
           },

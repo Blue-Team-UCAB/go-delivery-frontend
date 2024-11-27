@@ -3,6 +3,7 @@ import 'package:go_delivery_frontend/domain/entities/product/product.dart';
 
 abstract class ProductRepository {
   Future<Result<List<Product>>> getProducts({
+    String search,
     required int page,
     required int take,
   });

@@ -1,18 +1,24 @@
 import 'package:flutter/material.dart';
+import 'package:go_delivery_frontend/application/BLoc/auth/current/current_user_bloc.dart';
+import 'package:go_delivery_frontend/application/BLoc/auth/current/current_user_state.dart';
 import 'package:go_delivery_frontend/presentation/screens/homescreen/category_tab.dart';
 import 'package:go_delivery_frontend/presentation/screens/homescreen/homescreen_combo_section.dart';
+import 'package:go_delivery_frontend/presentation/widgets/random_products/random_popular_section.dart';
 import 'package:go_router/go_router.dart';
-
+import '../../../application/BLoc/auth/current/current_user_event.dart';
 import '../../../infrastructure/datasources/localstorage/localstorage_impl.dart';
+import '../../widgets/current_user_view.dart';
 import '../../widgets/dialog_darken_window.dart';
 import '../../widgets/navbar.dart';
 import '../../widgets/sidebar.dart';
 import 'homescreen_locationbar.dart';
 import 'homescreen_popular_section.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class HomeScreenChildView extends StatelessWidget {
   static const name = 'home-screen';
   final Widget childView;
+
   const HomeScreenChildView({super.key, required this.childView});
 
   @override
@@ -32,6 +38,7 @@ class HomeScreen extends StatefulWidget {
 
 class HomeScreenState extends State<HomeScreen> {
   int _counter = 0;
+  final ScrollController _scrollController = ScrollController();
 
   void _onNavItemTapped(int valueIndex) {
     setState(() {
@@ -46,28 +53,27 @@ class HomeScreenState extends State<HomeScreen> {
   }
 
   void showLogoutDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AnimatedSuccessDialog(
-          // Assuming you have this custom dialog
-          title: 'Salir Sesion',
-          message: 'Estas seguro de salir de tu Sesion?',
-          buttonText: 'Salir',
-          rejectButtonText: 'Cancelar',
-          onButtonPressed: () {
-            Navigator.of(context).pop();
-            LocalStorageService().removeKey('appToken'); // Your logic
-            context.go('/login');
-          },
-          onRejectPressed: () {
-            Navigator.of(context).pop();
-            context.push('/');
-          },
-          icon: Icons.warning,
-        );
-      },
-    );
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AnimatedSuccessDialog(
+            title: 'Salir Sesion',
+            message: '¿Estás seguro de salir de tu sesión?',
+            buttonText: 'Salir',
+            rejectButtonText: 'Cancelar',
+            onButtonPressed: () {
+              Navigator.of(context).pop();
+              LocalStorageService().removeKey('appToken');
+              context.go('/login');
+            },
+            onRejectPressed: () {
+              Navigator.of(context).pop();
+              context.push('/');
+            },
+            icon: Icons.warning,
+          );
+        },
+      );
   }
 
   @override
@@ -95,18 +101,16 @@ class HomeScreenState extends State<HomeScreen> {
               top: _getLocationBarPosition(context),
               left: 16,
               right: 16,
-              child: const LocationBar(), // Assuming you have this widget
+              child: const LocationBar(),
             ),
           ],
         ),
       ),
       bottomNavigationBar: CustomNavBar(
-        // Assuming you have this widget
         selectedIndex: _counter,
         onItemTapped: _onNavItemTapped,
       ),
       endDrawer: Sidebar(
-        // Assuming you have this widget
         userName: 'User Name',
         userEmail: 'user@example.com',
         onLogout: () {
@@ -153,8 +157,7 @@ class HomeScreenState extends State<HomeScreen> {
           Row(
             children: [
               IconButton(
-                icon: const Icon(Icons.notifications_outlined,
-                    color: Colors.white),
+                icon: const Icon(Icons.notifications_outlined, color: Colors.white),
                 onPressed: () {
                   print('Notification button pressed');
                 },
@@ -165,7 +168,16 @@ class HomeScreenState extends State<HomeScreen> {
                   return IconButton(
                     icon: const Icon(Icons.menu),
                     onPressed: () {
+                      context.read<CurrentUserBloc>().add(FetchCurrentUser());
+
                       Scaffold.of(innerContext).openEndDrawer();
+
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return const TokenLoginStateChecker();
+                        },
+                      );
                     },
                     color: Colors.white,
                   );
@@ -179,15 +191,17 @@ class HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildContent() {
-    return const SingleChildScrollView(
-      child: Padding(
+    return SingleChildScrollView(
+      controller: _scrollController, // Aquí agregamos el ScrollController
+      child: const Padding(
         padding: EdgeInsets.only(top: 10),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             CategoryTabs(),
-            ComboSection(), // Add spacing here
-            PopularSection(),
+            ComboSection(),
+            SizedBox(height: 14),
+            RandomSection(), // Este widget sigue siendo el mismo
           ],
         ),
       ),

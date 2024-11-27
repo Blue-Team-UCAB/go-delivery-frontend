@@ -16,3 +16,18 @@ class LoadProductList extends ProductListEvent {
   @override
   List<Object?> get props => [page, take];
 }
+
+class SearchProductList extends ProductListEvent {
+  final int page;
+  final int take;
+  final String search;
+
+  const SearchProductList({
+    required this.search,
+    required this.page,
+    required this.take,
+  });
+
+  @override
+  List<Object?> get props => [search, page, take];
+}

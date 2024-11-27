@@ -10,7 +10,7 @@ class Bundle {
   double weight;
   String imageUrl;
   DateTime caducityDate;
-  List<Product> products;
+  List<dynamic> products;
 
   Bundle({
     required this.id,

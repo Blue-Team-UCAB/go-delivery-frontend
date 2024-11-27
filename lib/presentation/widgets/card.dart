@@ -5,6 +5,7 @@ import 'package:go_delivery_frontend/domain/entities/product/product.dart';
 import 'package:go_router/go_router.dart';
 import '../../application/BLoc/cart/cart_bloc.dart';
 import '../../infrastructure/mappers/cart/cart_item_mapper.dart';
+import '../core/common/image-loader.dart';
 
 class ProductCard extends StatelessWidget {
   final Product product;
@@ -31,8 +32,8 @@ class ProductCard extends StatelessWidget {
                 topLeft: Radius.circular(12.0),
                 topRight: Radius.circular(12.0),
               ),
-              child: Image.network(
-                product.imageUrl,
+              child: FastLoadingImage(
+                imageUrl: product.imageUrl,
                 height: 100,
                 width: 100,
                 fit: BoxFit.cover,

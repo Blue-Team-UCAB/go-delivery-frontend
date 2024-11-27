@@ -57,7 +57,17 @@ class BundleRepositoryImpl extends BundleRepository {
         '/bundle/$bundleId',
         'GET',
         (data) {
+          // Imprimir los datos recibidos de la API
+          print('Respuesta de la API para el bundle: $data');
+
           final bundle = BundleMapper.fromJson(data);
+
+          // Imprimir la data de los productos del bundle
+          print('Productos del bundle recibido de la API:');
+          bundle.products.forEach((product) {
+            print('Producto: ${product.name}, URL imagen: ${product.imageUrl}');
+          });
+
           return bundle;
         },
       );

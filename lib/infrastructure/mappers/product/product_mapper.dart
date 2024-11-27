@@ -1,21 +1,25 @@
 import 'package:go_delivery_frontend/domain/entities/product/product.dart';
+import 'package:go_delivery_frontend/domain/entities/category/category.dart';
 import 'package:go_delivery_frontend/infrastructure/mappers/category/category_mapper.dart';
 
 class ProductMapper {
   static Product fromJson(Map<String, dynamic> json) {
     try {
-      final category = CategoryMapper.fromJson(json);
+      final category = json['category'] != null
+          ? CategoryMapper.fromJson(json['category'])
+          : Category(id: '', name: 'Sin categoría', icon: '');
 
-      final String imageUrl = json['imagenUrl'] as String;
+      final String imageUrl = json['imageUrl'] as String? ?? '';
 
       return Product(
-        id: json['id'] as String,
-        name: json['name'] as String,
-        description: json['description'] as String,
-        currency: json['currency'] as String,
-        price: (json['price'] as num).toDouble(),
-        weight: (json['weight'] as num).toDouble(),
-        stock: json['stock'] as int,
+        id: json['id'] as String? ?? '',
+        name: json['name'] as String? ?? 'Sin nombre',
+        description:
+            json['description'] as String? ?? 'Descripción no disponible',
+        currency: json['currency'] as String? ?? 'USD',
+        price: (json['price'] as num?)?.toDouble() ?? 0.0,
+        weight: (json['weight'] as num?)?.toDouble() ?? 0.0,
+        stock: json['stock'] as int? ?? 0,
         category: category,
         imageUrl: imageUrl,
       );

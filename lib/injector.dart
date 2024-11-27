@@ -1,10 +1,15 @@
 import 'package:get_it/get_it.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:go_delivery_frontend/application/BLoc/auth/current/current_user_bloc.dart';
 import 'package:go_delivery_frontend/application/BLoc/blocs.dart';
 import 'package:go_delivery_frontend/application/BLoc/bundle/bundle_detail/bundle_detail_bloc.dart';
 import 'package:go_delivery_frontend/application/BLoc/bundle/bundle_many/bundle_many_bloc.dart';
+import 'package:go_delivery_frontend/application/BLoc/product/popular/product_popular_many_bloc.dart';
+import 'package:go_delivery_frontend/application/BLoc/product/popular/random/product_random_many_bloc.dart';
 import 'package:go_delivery_frontend/application/BLoc/product/product_detail/product_detail_bloc.dart';
 import 'package:go_delivery_frontend/application/BLoc/product/product_many/product_many_bloc.dart';
+import 'package:go_delivery_frontend/application/use_cases/auth/current/current_user_usecase_input.dart';
+import 'package:go_delivery_frontend/application/use_cases/auth/recover_password/recovery_usecase_input.dart';
 import 'package:go_delivery_frontend/application/use_cases/auth/register/register_usecase_input.dart';
 import 'package:go_delivery_frontend/application/use_cases/bundle/get_many_bundle.dart';
 import 'package:go_delivery_frontend/application/use_cases/bundle/get_one_bundle.dart';
@@ -48,18 +53,20 @@ class InjectManager {
     //caso de uso
     final loginUseCase = LoginUseCase(userRepository: userRepository);
     final registerUseCase = RegisterUseCase(userRepository: userRepository);
+    final recoveryUseCase = RecoveryUseCase(userRepository: userRepository);
+    final getCurrentUseCase = CurrentUserUseCase(userRepository: userRepository);
 
     // Registrar
     getIt.registerFactory(() => LoginBloc(loginUseCase: loginUseCase));
     getIt.registerFactory(() => RegisterBloc(userRepository.register));
-    getIt.registerSingleton(
-        RecoverPasswordBloc(userRespository: userRepository));
-
-    //final recoveryUseCase
+    getIt.registerSingleton(RecoverPasswordBloc(recoveryUseCase: recoveryUseCase));
+    getIt.registerSingleton(CurrentUserBloc(currentUserUseCase: getCurrentUseCase));
 
     //registrar caso de uso
     getIt.registerSingleton<LoginUseCase>(loginUseCase);
     getIt.registerSingleton<RegisterUseCase>(registerUseCase);
+    getIt.registerSingleton<RecoveryUseCase>(recoveryUseCase);
+    getIt.registerSingleton<CurrentUserUseCase>(getCurrentUseCase);
     // ======================================================================= //
 
     // ============================= CART ==================================== //
@@ -106,8 +113,14 @@ class InjectManager {
     getIt.registerSingleton(ProductListBloc(getProductsUseCase));
     getIt.registerSingleton(ProductDetailBloc(getOneProductUseCase));
 
+    // Popular List
+    getIt.registerSingleton(ProductPopularListBloc(getProductsUseCase));
 
-        // ============================= BUNDLES ============================= //
+    // Random List
+    //THIS IS A PLACEHOLDER. Pronto estará el Popular list definitivo despues de tener casi listo la app
+    getIt.registerSingleton(ProductRandomListBloc(getProductsUseCase));
+
+    // ============================= BUNDLES ============================= //
     // Repositorio
     final bundleRepository = BundleRepositoryImpl(
       apiRequestManager: apiRequestManagerImpl,
@@ -131,6 +144,7 @@ class InjectManager {
     // BLOC del Carrito
     getIt.registerSingleton(BundleListBloc(getBundlesUseCase));
     getIt.registerSingleton(BundleDetailBloc(getOneBundleUseCase));
+
 
   }
 }

@@ -66,12 +66,13 @@ class LoginBloc extends SafeBloc<LoginEvent, LoginState> {
       ),
     );
 
+
     if (isLoggedResult.isSuccessful()) {
       final isLogged = isLoggedResult.getValue();
 
       add(LoginCompleted(isLogged));
       return;
     }
-    add(ErrorOccurred(errorMessage: isLoggedResult.getError().toString()));
+    add(ErrorOccurred(errorMessage: isLoggedResult.getError().message));
   }
 }

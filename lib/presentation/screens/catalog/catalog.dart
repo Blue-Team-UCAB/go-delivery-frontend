@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_delivery_frontend/presentation/widgets/navbar.dart';
@@ -8,10 +10,11 @@ import 'package:go_delivery_frontend/application/BLoc/product/product_many/produ
 import 'package:go_delivery_frontend/application/BLoc/product/product_many/product_many_event.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../domain/entities/product/product.dart';
 import '../../../infrastructure/datasources/localstorage/localstorage_impl.dart';
 import '../../widgets/dialog_darken_window.dart';
+import 'logout_from_catalog.dart';
 
-// ignore: use_key_in_widget_constructors
 class CatalogScreen extends StatefulWidget {
   final int initialCounterNavbar;
 
@@ -21,13 +24,18 @@ class CatalogScreen extends StatefulWidget {
   CatalogScreenState createState() => CatalogScreenState();
 }
 
-class CatalogScreenState extends State<CatalogScreen> {
-
+class CatalogScreenState extends State<CatalogScreen> with AutomaticKeepAliveClientMixin {
   int _counter = 0;
   final ScrollController _scrollController = ScrollController();
   bool _isLoadingMore = false;
   bool _hasLoadedAllProducts = false;
   int _currentPage = 1;
+  final _gridKey = const PageStorageKey('catalog_grid');
+  String _searchQuery = '';
+  late StreamSubscription<ProductListState> _productListSubscription;
+
+  @override
+  bool get wantKeepAlive => true;
 
   @override
   void initState() {
@@ -38,27 +46,55 @@ class CatalogScreenState extends State<CatalogScreen> {
       LoadProductList(page: _currentPage, take: 6),
     );
     _scrollController.addListener(_onScroll);
+
+    _productListSubscription = BlocProvider.of<ProductListBloc>(context).stream.listen((state) {
+      if (state is ProductListLoaded) {
+        if (mounted) {
+          setState(() {
+            _isLoadingMore = false;
+          });
+        }
+      }
+    });
   }
 
   @override
   void dispose() {
+    _scrollController.removeListener(_onScroll);
     _scrollController.dispose();
+    _productListSubscription.cancel();
     super.dispose();
   }
 
   void _onScroll() {
-    if (_scrollController.position.pixels ==
-        _scrollController.position.maxScrollExtent) {
-      if (!_isLoadingMore && !_hasLoadedAllProducts) {
-        setState(() {
-          _isLoadingMore = true;
-        });
-        _currentPage++;
+    if (_scrollController.position.pixels >=
+        _scrollController.position.maxScrollExtent - 300) {
+      final state = BlocProvider.of<ProductListBloc>(context).state;
+      if (state is ProductListLoaded && !state.hasReachedMax && !_isLoadingMore) {
+        if (mounted) {
+          setState(() {
+            _isLoadingMore = true;
+          });
+        }
+        _currentPage = state.page + 1;
         BlocProvider.of<ProductListBloc>(context).add(
-          LoadProductList(page: _currentPage, take: 6),
+          _searchQuery.isEmpty
+              ? LoadProductList(page: _currentPage, take: 6)
+              : SearchProductList(search: _searchQuery, page: _currentPage, take: 6),
         );
       }
     }
+  }
+
+  void _handleSearch(String query) {
+    setState(() {
+      _searchQuery = query;
+      _currentPage = 1;
+      _hasLoadedAllProducts = false;
+    });
+    BlocProvider.of<ProductListBloc>(context).add(
+      SearchProductList(search: query, page: _currentPage, take: 6),
+    );
   }
 
   void _onNavItemTapped(int valueIndex) {
@@ -67,32 +103,11 @@ class CatalogScreenState extends State<CatalogScreen> {
     });
   }
 
-  void showLogoutDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AnimatedSuccessDialog( // Assuming you have this custom dialog
-          title: 'Salir Sesion',
-          message: 'Estas seguro de salir de tu Sesion?',
-          buttonText: 'Salir',
-          rejectButtonText: 'Cancelar',
-          onButtonPressed: () {
-            Navigator.of(context).pop();
-            LocalStorageService().removeKey('appToken'); // Your logic
-            context.go('/login');
-          },
-          onRejectPressed: () {
-            Navigator.of(context).pop();
-            context.push('/Catalog');
-          },
-          icon: Icons.warning,
-        );
-      },
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
+
     return Scaffold(
       backgroundColor: const Color(0xFFEBEAED),
       appBar: AppBar(
@@ -122,7 +137,7 @@ class CatalogScreenState extends State<CatalogScreen> {
           ),
         ],
       ),
-      endDrawer: Sidebar( // Assuming you have this widget
+      endDrawer: Sidebar(
         userName: 'User Name',
         userEmail: 'user@example.com',
         onLogout: () {
@@ -184,17 +199,27 @@ class CatalogScreenState extends State<CatalogScreen> {
                     icon: const Icon(Icons.search, color: Colors.grey),
                     onPressed: () {},
                   ),
-                  const Expanded(
+                  Expanded(
                     child: TextField(
+                      onSubmitted: _handleSearch,
                       decoration: InputDecoration(
                         hintText: 'Buscar un producto',
                         hintStyle: TextStyle(color: Colors.grey),
                         border: InputBorder.none,
+                        suffixIcon: _searchQuery.isNotEmpty
+                            ? IconButton(
+                          icon: Icon(Icons.clear),
+                          onPressed: () {
+                            _handleSearch('');
+                          },
+                          
+                        )
+                            : null,
                       ),
                       style: TextStyle(color: Colors.grey),
+                      
                     ),
                   ),
-
                   IconButton(
                     icon: const Icon(Icons.filter_list, color: Colors.grey),
                     onPressed: () {
@@ -211,43 +236,17 @@ class CatalogScreenState extends State<CatalogScreen> {
           Expanded(
             child: BlocBuilder<ProductListBloc, ProductListState>(
               builder: (context, state) {
-                if (state is ProductListLoading && state.products.isEmpty) {
+                if (state is ProductListInitial) {
                   return const Center(child: CircularProgressIndicator());
+                } else if (state is ProductListLoading) {
+                  return _buildProductGrid(state.products, isLoading: true);
                 } else if (state is ProductListLoaded) {
-                  _hasLoadedAllProducts = state.hasReachedMax;
-                  _isLoadingMore = false;
-
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                    child: GridView.builder(
-                      controller: _scrollController,
-                      gridDelegate:
-                          const SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2,
-                        crossAxisSpacing: 20.0,
-                        mainAxisSpacing: 20.0,
-                        childAspectRatio: 0.66,
-                      ),
-                      itemCount: state.products.length +
-                          (_hasLoadedAllProducts ? 1 : 0),
-                      itemBuilder: (context, index) {
-                        if (index < state.products.length) {
-                          return ProductCard(product: state.products[index]);
-                        } else if (_hasLoadedAllProducts) {
-                          return const Center(
-                              child: Text('No hay más productos.'));
-                        } else {
-                          return const SizedBox.shrink();
-                        }
-                      },
-                    ),
-                  );
+                  return _buildProductGrid(state.products, hasReachedMax: state.hasReachedMax);
                 } else if (state is ProductListFailed) {
-                  return Center(
-                    child: Text('Error: ${state.result.getError().message}'),
-                  );
+                  return Center(child: Text('Error: ${state.result.error}'));
+                } else {
+                  return const Center(child: Text('Estado desconocido'));
                 }
-                return const Center(child: SizedBox.shrink());
               },
             ),
           ),
@@ -259,4 +258,41 @@ class CatalogScreenState extends State<CatalogScreen> {
       ),
     );
   }
+
+  Widget _buildProductGrid(List<Product> products, {bool isLoading = false, bool hasReachedMax = false}) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20.0),
+      child: ScrollConfiguration(
+        behavior: ScrollConfiguration.of(context).copyWith(
+          physics: const ClampingScrollPhysics(),
+        ),
+        child: GridView.builder(
+          key: _gridKey,
+          controller: _scrollController,
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 2,
+            crossAxisSpacing: 20.0,
+            mainAxisSpacing: 20.0,
+            childAspectRatio: 0.66,
+          ),
+          itemCount: products.length + (isLoading || !hasReachedMax ? 1 : 0),
+          itemBuilder: (context, index) {
+            if (index < products.length) {
+              return ProductCard(
+                key: ValueKey('product_card_${products[index].id}'),
+                product: products[index],
+              );
+            } else if (isLoading) {
+              return const Center(child: CircularProgressIndicator());
+            } else if (!hasReachedMax) {
+              return const Center(child: CircularProgressIndicator());
+            } else {
+              return const SizedBox.shrink();
+            }
+          },
+        ),
+      ),
+    );
+  }
+
 }
