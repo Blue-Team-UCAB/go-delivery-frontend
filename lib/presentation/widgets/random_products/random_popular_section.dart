@@ -10,6 +10,11 @@ import '../../../domain/entities/product/product.dart';
 import '../../../infrastructure/mappers/cart/cart_item_mapper.dart';
 import '../../core/common/image-loader.dart';
 
+//THIS IS A PLACEHOLDER. Pronto estará el Popular list definitivo despues de tener casi listo la app
+//THIS IS A PLACEHOLDER. Pronto estará el Popular list definitivo despues de tener casi listo la app
+//THIS IS A PLACEHOLDER. Pronto estará el Popular list definitivo despues de tener casi listo la app
+//THIS IS A PLACEHOLDER. Pronto estará el Popular list definitivo despues de tener casi listo la app
+
 class RandomSection extends StatefulWidget {
   const RandomSection({super.key});
 

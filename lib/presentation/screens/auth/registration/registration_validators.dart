@@ -7,8 +7,8 @@ class registrationValidator {
       failure: ValidationFailure('La contraseña es requerida'),
     ),
     Validator.minLength(
-      6,
-      failure: ValidationFailure('La contraseña debe tener al menos 6 caracteres'),
+      8,
+      failure: ValidationFailure('La contraseña debe tener al menos 8 caracteres'),
     ),
     Validator.regex(
       r'^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&/#_.,:;()\-+])[A-Za-z\d@$!%*?&/#_.,:;()\-+]+$',

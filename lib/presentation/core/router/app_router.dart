@@ -1,15 +1,21 @@
-import 'package:go_delivery_frontend/presentation/screens/detail/bundle_detail_screen.dart';
+import 'package:go_delivery_frontend/presentation/screens/order/orders_screen.dart';
 import 'package:go_delivery_frontend/presentation/screens/screens.dart';
 import 'package:go_router/go_router.dart';
-
 import '../../../infrastructure/datasources/localstorage/localstorage_impl.dart';
-import '../../screens/notification/notification_screen.dart';
+import '../../screens/auth/password_recovery/reset_pass_screen.dart';
 import '../transition/transitions.dart';
 
 class RoutesManager {
   static GoRouter appRouter = GoRouter(
     initialLocation: '/splash',
     routes: [
+      GoRoute(
+          path: '/',
+          pageBuilder: (context, state) => CustomTransitions.slideRight(
+            key: state.pageKey,
+            child: const HomeScreen(initialCounterNavbar: 0),
+          )
+      ),
       GoRoute(
           path: '/splash',
           pageBuilder: (context, state) => CustomTransitions.fadeIn(
@@ -70,21 +76,34 @@ class RoutesManager {
           )
       ),
       GoRoute(
-          path: '/',
-          pageBuilder: (context, state) => CustomTransitions.slideRight(
-            key: state.pageKey,
-            child: const HomeScreen(initialCounterNavbar: 0),
-          )
-      ),
-      GoRoute(
-          path: '/password/reset',
+          path: '/password/forgot',
           pageBuilder: (context, state) => CustomTransitions.slideRight(
             key: state.pageKey,
             child: const ForgotPasswordScreen(),
           )
       ),
       GoRoute(
-        
+          path: '/password/verify',
+          pageBuilder: (context, state) => CustomTransitions.slideRight(
+            key: state.pageKey,
+            child: const CodeVerificationScreen(),
+          )
+      ),
+      GoRoute(
+          path: '/password/renew',
+          pageBuilder: (context, state) => CustomTransitions.slideRight(
+            key: state.pageKey,
+            child: PasswordRenewScreen(email: state.extra as String),
+          )
+      ),
+      GoRoute(
+          path: '/order',
+          pageBuilder: (context, state) => CustomTransitions.slideRight(
+            key: state.pageKey,
+            child: OrdersPage(initialCounterNavbar: 2),
+          )
+      ),
+      GoRoute(
         path: '/productdetail/:name',
         pageBuilder: (context, state) {
           final productName = state.pathParameters['name'] ?? 'no-name'; 
@@ -118,9 +137,9 @@ class RoutesManager {
 
       if (!isAutorized) {
         if (isGoingTo == '/register' ||
-            isGoingTo == '/password/reset' ||
-            isGoingTo == '/password/create' ||
-            isGoingTo == '/password/verify') return null;
+            isGoingTo == '/password/forgot' ||
+            isGoingTo == '/password/verify' ||
+            isGoingTo == '/password/renew') return null;
         if (isGoingTo == '/welcome' && !hasSeenWelcome) return null;
         return '/login';
       }

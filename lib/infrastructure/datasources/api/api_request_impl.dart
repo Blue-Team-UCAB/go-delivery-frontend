@@ -28,6 +28,7 @@ class ApiRequestManagerImpl extends IApiRequestManager {
       return Result.success(mapper(response.data));
     } on DioException catch (e) {
       print('DioError in request: $e');
+      print(e.error);
       return Result.fail(handleException(e));
     } catch (e) {
       print('Error in request: $e');
@@ -35,7 +36,7 @@ class ApiRequestManagerImpl extends IApiRequestManager {
     }
   }
 
-  // Método para manejar las excepciones de Dio
+  // Metodo para manejar las excepciones de Dio
   Failure handleException(DioException e) {
     print('Handling DioError: $e');
     switch (e.type) {
@@ -45,8 +46,8 @@ class ApiRequestManagerImpl extends IApiRequestManager {
         return const NoInternetFailure();
       case DioExceptionType.badResponse:
         if (e.response?.data['message'] is String) {
-          print("Error en autorización");
-          return NoAuthorizeFailure(message: e.response?.data['message']);
+          print("BadResponse!");
+          return BadReponseFailure();
         } else {
           return const NoAuthorizeFailure(message: 'Error desconocido');
         }

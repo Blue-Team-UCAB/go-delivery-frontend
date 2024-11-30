@@ -1,4 +1,5 @@
 import '../../../common/result.dart';
+import '../../../infrastructure/models/user_model.dart';
 
 abstract class UserRepository {
   Future<Result<bool>> register(
@@ -11,4 +12,5 @@ abstract class UserRepository {
   Future<Result<bool>> validateRecoveryCode(String email, String code);
   Future<Result<bool>> changePassword(
       String email, String code, String password);
+  Future<Result<User>> getCurrent();
 }
