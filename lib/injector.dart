@@ -138,7 +138,5 @@ class InjectManager {
     // BLOC del Carrito
     getIt.registerSingleton(BundleListBloc(getBundlesUseCase));
     getIt.registerSingleton(BundleDetailBloc(getOneBundleUseCase));
-
-
   }
 }

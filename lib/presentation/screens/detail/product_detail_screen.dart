@@ -1,13 +1,10 @@
 // ignore_for_file: library_private_types_in_public_api
 
 import 'package:flutter/material.dart';
-import 'package:go_delivery_frontend/application/BLoc/product/product_many/product_many_event.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_delivery_frontend/presentation/widgets/card.dart';
+import 'package:go_delivery_frontend/presentation/widgets/related_products.dart';
 import 'package:go_delivery_frontend/presentation/widgets/cart/add_product_carrito_button.dart';
-import 'package:go_delivery_frontend/application/BLoc/product/product_many/product_many_bloc.dart';
-import 'package:go_delivery_frontend/application/BLoc/product/product_many/product_many_state.dart';
 import 'package:go_delivery_frontend/application/BLoc/product/product_detail/product_detail_bloc.dart';
 import 'package:go_delivery_frontend/application/BLoc/product/product_detail/product_detail_event.dart';
 import 'package:go_delivery_frontend/application/BLoc/product/product_detail/product_detail_state.dart';
@@ -23,6 +20,7 @@ class ProductDetailScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final productDetailBloc = context.read<ProductDetailBloc>();
     productDetailBloc.add(LoadProductDetail(productId: productId));
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: const Color(0xFFFFFFFF),
@@ -188,84 +186,5 @@ class ProductDetailScreen extends StatelessWidget {
         ),
       ),
     );
-  }
-}
-
-class RelatedProductsSection extends StatefulWidget {
-  final String category;
-
-  const RelatedProductsSection({super.key, required this.category});
-
-  @override
-  _RelatedProductsSectionState createState() => _RelatedProductsSectionState();
-}
-
-class _RelatedProductsSectionState extends State<RelatedProductsSection> {
-  late String _currentCategory;
-
-  @override
-  void initState() {
-    super.initState();
-    _currentCategory = widget.category;
-    _loadProducts();
-  }
-
-  @override
-  void didUpdateWidget(covariant RelatedProductsSection oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (oldWidget.category != widget.category) {
-      _currentCategory = widget.category;
-      _loadProducts();
-    }
-  }
-
-  void _loadProducts() {
-    BlocProvider.of<ProductListBloc>(context).add(ClearProductList());
-    BlocProvider.of<ProductListBloc>(context).add(
-      LoadProductList(page: 1, take: 4, category: _currentCategory),
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return BlocBuilder<ProductListBloc, ProductListState>(
-        builder: (context, state) {
-      if (state is ProductListLoading && state.products.isEmpty) {
-        return const Center(child: CircularProgressIndicator());
-      }
-
-      if (state is ProductListLoaded) {
-        final products = List.from(state.products)..shuffle();
-
-        return SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          child: Row(
-            children: products.isEmpty
-                ? [const Text('No hay productos relacionados')]
-                : products.map((product) {
-                    return Padding(
-                      padding: const EdgeInsets.only(right: 16.0),
-                      child: SizedBox(
-                        width: 200,
-                        height: 255,
-                        child: ProductCard(product: product),
-                      ),
-                    );
-                  }).toList(),
-          ),
-        );
-      }
-
-      if (state is ProductListFailed) {
-        return Center(
-          child: Text(
-            'Error: ${state.result}',
-            style: const TextStyle(color: Colors.red),
-          ),
-        );
-      }
-
-      return const Center(child: Text('Estado desconocido'));
-    });
   }
 }

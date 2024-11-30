@@ -63,12 +63,14 @@ class CatalogScreenState extends State<CatalogScreen>
     super.dispose();
   }
 
+  // Función para cargar productos
   void _loadProducts() {
     BlocProvider.of<ProductListBloc>(context).add(
       LoadProductList(page: _currentPage, take: 6, category: ''),
     );
   }
 
+  // Función llamada en el listener de scroll
   void _onScroll() {
     if (_scrollController.position.pixels >=
         _scrollController.position.maxScrollExtent - 300) {
@@ -95,6 +97,7 @@ class CatalogScreenState extends State<CatalogScreen>
     }
   }
 
+  // Función de búsqueda
   void _handleSearch(String query) {
     setState(() {
       _searchQuery = query;
@@ -107,12 +110,14 @@ class CatalogScreenState extends State<CatalogScreen>
     );
   }
 
+  // Función para manejar el cambio de tab
   void _onNavItemTapped(int valueIndex) {
     setState(() {
       _counter = valueIndex;
     });
   }
 
+  // Función para evitar productos duplicados en la lista
   void _addUniqueProducts(List<Product> newProducts) {
     for (var product in newProducts) {
       if (!_products.any((p) => p.id == product.id)) {
