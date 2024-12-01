@@ -11,10 +11,13 @@ import 'package:go_delivery_frontend/application/use_cases/bundle/get_many_bundl
 import 'package:go_delivery_frontend/application/use_cases/bundle/get_one_bundle.dart';
 import 'package:go_delivery_frontend/application/use_cases/product/get_one_product.dart';
 import 'package:go_delivery_frontend/domain/repositories/bundle/bundle_repository.dart';
+import 'package:go_delivery_frontend/domain/repositories/cart/cart_local_storage_repository.dart';
 import 'package:go_delivery_frontend/infrastructure/datasources/api/api_request_impl.dart';
+import 'package:go_delivery_frontend/infrastructure/datasources/cart/cart_isar_local_storage_datasource.dart';
 import 'package:go_delivery_frontend/infrastructure/datasources/localstorage/localstorage_impl.dart';
 import 'package:go_delivery_frontend/domain/repositories/product/product_repository.dart';
 import 'package:go_delivery_frontend/infrastructure/repositories/bundle/bundle_repository_impl.dart';
+import 'package:go_delivery_frontend/infrastructure/repositories/cart/cart_local_storage_repository_impl.dart';
 import 'package:go_delivery_frontend/infrastructure/repositories/product/product_repository_impl.dart';
 import 'package:go_delivery_frontend/application/use_cases/product/get_many_product.dart';
 
@@ -64,7 +67,8 @@ class InjectManager {
     // ======================================================================= //
 
     // ============================= CART ==================================== //
-    getIt.registerSingleton(CartBloc());
+    final cartLocalStorageRepo = CartLocalStorageRepositoryImpl(CartIsarLocalStorageDatasource());
+    getIt.registerSingleton(CartBloc(cartLocalStorageRepo));
     // ======================================================================= //
 
     // ============================= NOTIFICATIONS =========================== //
