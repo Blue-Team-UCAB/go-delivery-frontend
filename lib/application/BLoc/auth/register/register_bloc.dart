@@ -64,11 +64,13 @@ class RegisterBloc extends SafeBloc<RegisterEvent, RegisterState> {
         name: state.fullname,
         phone: state.phone
       );
+
     if (result.isSuccess) {
       add(OnRegisterFormStatusChanged(
           registerFormStatus: RegisterFormStatus.valid));
     } else {
-      final error = result.getError();
+      final error = result.getError().message;
+
       add(FailRegister(
           errorMessage: error.toString().replaceAll('Exception: ', '')));
       add(OnRegisterFormStatusChanged(

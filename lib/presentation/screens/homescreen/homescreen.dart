@@ -1,17 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:go_delivery_frontend/application/BLoc/auth/current/current_user_bloc.dart';
+import 'package:go_delivery_frontend/application/BLoc/auth/current/current_user_state.dart';
 import 'package:go_delivery_frontend/presentation/screens/homescreen/category_tab.dart';
 import 'package:go_delivery_frontend/presentation/screens/homescreen/homescreen_combo_section.dart';
+import 'package:go_delivery_frontend/presentation/widgets/random_products/random_popular_section.dart';
 import 'package:go_router/go_router.dart';
+import '../../../application/BLoc/auth/current/current_user_event.dart';
 import '../../../infrastructure/datasources/localstorage/localstorage_impl.dart';
+import '../../widgets/current_user_view.dart';
 import '../../widgets/dialog_darken_window.dart';
 import '../../widgets/navbar.dart';
 import '../../widgets/sidebar.dart';
 import 'homescreen_locationbar.dart';
 import 'homescreen_popular_section.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_delivery_frontend/application/BLoc/product/product_many/product_many_bloc.dart';
-import 'package:go_delivery_frontend/application/BLoc/product/product_many/product_many_state.dart';
-import 'package:go_delivery_frontend/application/BLoc/product/product_many/product_many_event.dart';
 
 class HomeScreenChildView extends StatelessWidget {
   static const name = 'home-screen';
@@ -37,8 +39,6 @@ class HomeScreen extends StatefulWidget {
 class HomeScreenState extends State<HomeScreen> {
   int _counter = 0;
   final ScrollController _scrollController = ScrollController();
-  final bool _isLoading = false;
-  final bool _hasMore = true;
 
   void _onNavItemTapped(int valueIndex) {
     setState(() {
@@ -52,44 +52,28 @@ class HomeScreenState extends State<HomeScreen> {
     _counter = widget.initialCounterNavbar;
   }
 
-  void _scrollListener() {
-    if (_scrollController.position.pixels ==
-        _scrollController.position.maxScrollExtent) {
-      if (!_isLoading && _hasMore) {
-        context.read<ProductListBloc>().add(
-              LoadProductList(
-                  page: (context.read<ProductListBloc>().state
-                              as ProductListLoaded)
-                          .page +
-                      1,
-                  take: 4),
-            );
-      }
-    }
-  }
-
   void showLogoutDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AnimatedSuccessDialog(
-          title: 'Salir Sesion',
-          message: '¿Estás seguro de salir de tu sesión?',
-          buttonText: 'Salir',
-          rejectButtonText: 'Cancelar',
-          onButtonPressed: () {
-            Navigator.of(context).pop();
-            LocalStorageService().removeKey('appToken');
-            context.go('/login');
-          },
-          onRejectPressed: () {
-            Navigator.of(context).pop();
-            context.push('/');
-          },
-          icon: Icons.warning,
-        );
-      },
-    );
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AnimatedSuccessDialog(
+            title: 'Salir Sesion',
+            message: '¿Estás seguro de salir de tu sesión?',
+            buttonText: 'Salir',
+            rejectButtonText: 'Cancelar',
+            onButtonPressed: () {
+              Navigator.of(context).pop();
+              LocalStorageService().removeKey('appToken');
+              context.go('/login');
+            },
+            onRejectPressed: () {
+              Navigator.of(context).pop();
+              context.push('/');
+            },
+            icon: Icons.warning,
+          );
+        },
+      );
   }
 
   @override
@@ -173,8 +157,7 @@ class HomeScreenState extends State<HomeScreen> {
           Row(
             children: [
               IconButton(
-                icon: const Icon(Icons.notifications_outlined,
-                    color: Colors.white),
+                icon: const Icon(Icons.notifications_outlined, color: Colors.white),
                 onPressed: () {
                   print('Notification button pressed');
                 },
@@ -185,7 +168,16 @@ class HomeScreenState extends State<HomeScreen> {
                   return IconButton(
                     icon: const Icon(Icons.menu),
                     onPressed: () {
+                      context.read<CurrentUserBloc>().add(FetchCurrentUser());
+
                       Scaffold.of(innerContext).openEndDrawer();
+
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return const TokenLoginStateChecker();
+                        },
+                      );
                     },
                     color: Colors.white,
                   );
@@ -209,7 +201,7 @@ class HomeScreenState extends State<HomeScreen> {
             CategoryTabs(),
             ComboSection(),
             SizedBox(height: 14),
-            PopularSection(), // Este widget sigue siendo el mismo
+            RandomSection(), // Este widget sigue siendo el mismo
           ],
         ),
       ),

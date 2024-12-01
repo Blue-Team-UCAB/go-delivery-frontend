@@ -8,3 +8,6 @@ export 'checkout/checkout_screen.dart';
 export 'splash/splash_screen.dart';
 export 'welcome/welcome_screen.dart';
 export 'detail/product_detail_screen.dart';
+export 'auth/verify/code_verification_screen.dart';
+export 'notification/notification_screen.dart';
+export 'detail/bundle_detail_screen.dart';
