@@ -21,6 +21,8 @@ class CurrentUserBloc extends SafeBloc<CurrentUserEvent, CurrentUserState> {
 
       final userResult = await currentUserUseCase.execute();
 
+      print(userResult.value!.email);
+
       if (userResult.isSuccessful()) {
         final user = userResult.getValue();
 

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../widgets/dialog_darken_window.dart';
 
@@ -33,75 +34,80 @@ class _OrderCardState extends State<OrderCard> {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      margin: EdgeInsets.all(8),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(8),
-        side: BorderSide(color: Colors.grey[300]!, width: 1),
-      ),
-      child: Padding(
-        padding: EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  'Orden #${widget.orderNumber}',
-                  style: TextStyle(
-                    fontFamily: 'Inter',
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black,
+    return GestureDetector(
+      onDoubleTap: () {
+        context.push('/orderdetail/${widget.orderNumber}');
+      },
+      child: Card(
+        margin: EdgeInsets.all(8),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(8),
+          side: BorderSide(color: Colors.grey[300]!, width: 1),
+        ),
+        child: Padding(
+          padding: EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Orden #${widget.orderNumber}',
+                    style: TextStyle(
+                      fontFamily: 'Inter',
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
+                    ),
                   ),
+                  IconButton(
+                    icon: Icon(Icons.more_vert),
+                    onPressed: () => _showOptionsMenu(context),
+                  ),
+                ],
+              ),
+              SizedBox(height: 4),
+              Text(
+                widget.date,
+                style: TextStyle(
+                  fontFamily: 'Inter',
+                  fontSize: 12,
+                  color: Colors.grey[600],
                 ),
-                IconButton(
-                  icon: Icon(Icons.more_vert),
-                  onPressed: () => _showOptionsMenu(context),
+              ),
+              SizedBox(height: 8),
+              Text(
+                widget.items,
+                style: TextStyle(
+                  fontFamily: 'Inter',
+                  fontSize: 14,
                 ),
-              ],
-            ),
-            SizedBox(height: 4),
-            Text(
-              widget.date,
-              style: TextStyle(
-                fontFamily: 'Inter',
-                fontSize: 12,
-                color: Colors.grey[600],
               ),
-            ),
-            SizedBox(height: 8),
-            Text(
-              widget.items,
-              style: TextStyle(
-                fontFamily: 'Inter',
-                fontSize: 14,
+              SizedBox(height: 8),
+              Text(
+                widget.price,
+                style: TextStyle(
+                  fontFamily: 'Inter',
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black,
+                ),
               ),
-            ),
-            SizedBox(height: 8),
-            Text(
-              widget.price,
-              style: TextStyle(
-                fontFamily: 'Inter',
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-                color: Colors.black,
+              SizedBox(height: 8),
+              Text(
+                status,
+                style: TextStyle(
+                  fontFamily: 'Inter',
+                  fontSize: 14,
+                  fontWeight: FontWeight.bold,
+                  color: status == 'Cancelada' ? Colors.grey[400] : Color(0xFF2000B1),
+                ),
               ),
-            ),
-            SizedBox(height: 8),
-            Text(
-              status,
-              style: TextStyle(
-                fontFamily: 'Inter',
-                fontSize: 14,
-                fontWeight: FontWeight.bold,
-                color: status == 'Cancelada' ? Colors.grey[400] : Color(0xFF2000B1),
-              ),
-            ),
-            SizedBox(height: 16),
-            _buildButtons(),
-          ],
+              SizedBox(height: 16),
+              _buildButtons(),
+            ],
+          ),
         ),
       ),
     );
@@ -115,7 +121,7 @@ class _OrderCardState extends State<OrderCard> {
         return AnimatedSuccessDialog(
           title: 'Opciones de Orden',
           message: 'Seleccione una acción para la orden #${widget.orderNumber}',
-          buttonText: 'Cerrar',
+          buttonText: 'Ir a Detalles',
           icon: Icons.more_vert,
           iconColor: Color(0xFF2000B1),
           buttonColor: Color(0xFF2000B1),

@@ -4,6 +4,7 @@ import 'package:go_delivery_frontend/application/BLoc/auth/current/current_user_
 import 'package:go_delivery_frontend/application/BLoc/blocs.dart';
 import 'package:go_delivery_frontend/application/BLoc/bundle/bundle_detail/bundle_detail_bloc.dart';
 import 'package:go_delivery_frontend/application/BLoc/bundle/bundle_many/bundle_many_bloc.dart';
+import 'package:go_delivery_frontend/application/BLoc/order/order_detailed/order_detailed_bloc.dart';
 import 'package:go_delivery_frontend/application/BLoc/product/popular/product_popular_many_bloc.dart';
 import 'package:go_delivery_frontend/application/BLoc/product/popular/random/product_random_many_bloc.dart';
 import 'package:go_delivery_frontend/application/BLoc/product/product_detail/product_detail_bloc.dart';
@@ -15,10 +16,12 @@ import 'package:go_delivery_frontend/application/use_cases/bundle/get_many_bundl
 import 'package:go_delivery_frontend/application/use_cases/bundle/get_one_bundle.dart';
 import 'package:go_delivery_frontend/application/use_cases/product/get_one_product.dart';
 import 'package:go_delivery_frontend/domain/repositories/bundle/bundle_repository.dart';
+import 'package:go_delivery_frontend/domain/repositories/order/order_repository.dart';
 import 'package:go_delivery_frontend/infrastructure/datasources/api/api_request_impl.dart';
 import 'package:go_delivery_frontend/infrastructure/datasources/localstorage/localstorage_impl.dart';
 import 'package:go_delivery_frontend/domain/repositories/product/product_repository.dart';
 import 'package:go_delivery_frontend/infrastructure/repositories/bundle/bundle_repository_impl.dart';
+import 'package:go_delivery_frontend/infrastructure/repositories/order/order_repository_impl.dart';
 import 'package:go_delivery_frontend/infrastructure/repositories/product/product_repository_impl.dart';
 import 'package:go_delivery_frontend/application/use_cases/product/get_many_product.dart';
 
@@ -28,6 +31,7 @@ import 'application/BLoc/auth/register/register_bloc.dart';
 import 'application/BLoc/cart/cart_bloc.dart';
 import 'application/BLoc/themes/themes_bloc.dart';
 import 'application/use_cases/auth/login/login_usecase_input.dart';
+import 'application/use_cases/order/get_one_order.dart';
 import 'infrastructure/repositories/user/user_repository_impl.dart';
 
 final getIt = GetIt.instance;
@@ -145,6 +149,23 @@ class InjectManager {
     getIt.registerSingleton(BundleListBloc(getBundlesUseCase));
     getIt.registerSingleton(BundleDetailBloc(getOneBundleUseCase));
 
+    // ============================= ORDER =================================== //
+    //Repositorio
+    final orderRepository = OrderRepositoryImpl(
+        apiRequestManager: apiRequestManagerImpl,
+        localStorage: localStorageService
+    );
 
+    // Registrar el repositorio de ordenes
+    getIt.registerSingleton<OrderRepository>(orderRepository);
+
+    //casos de uso
+    final getOneOrderUseCase =
+        GetOneOrderUseCase(orderRepository: orderRepository);
+
+    getIt.registerSingleton<GetOneOrderUseCase>(getOneOrderUseCase);
+    // ======================================================================= //
+
+    getIt.registerSingleton(OrderDetailBloc(getOneOrderUseCase: getOneOrderUseCase));
   }
 }
