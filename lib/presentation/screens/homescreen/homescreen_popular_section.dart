@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_delivery_frontend/application/BLoc/cart/cart_bloc.dart';
 import 'package:go_delivery_frontend/application/BLoc/product/popular/product_popular_many_bloc.dart';
@@ -25,6 +24,9 @@ class _PopularSectionState extends State<PopularSection> {
   @override
   void initState() {
     super.initState();
+    context
+        .read<ProductPopularListBloc>()
+        .add(const LoadProductList(page: 1, perpage: 4, category: ''));
   }
 
   @override
@@ -81,9 +83,8 @@ class _PopularSectionState extends State<PopularSection> {
             } else if (state is ProductListFailed) {
               return Center(child: Text('Error: ${state.result}'));
             } else {
-              context
-                  .read<ProductPopularListBloc>()
-                  .add(const LoadProductList(page: 1, perpage: 4));
+              context.read<ProductPopularListBloc>().add(
+                  const LoadProductList(page: 1, perpage: 4, category: ''));
               return const Center(child: CircularProgressIndicator());
             }
           },
@@ -115,11 +116,12 @@ class PopularItem extends StatelessWidget {
           color: const Color(0xFFFFFFFF),
           child: ListTile(
             contentPadding: const EdgeInsets.symmetric(horizontal: 10),
-            shape: RoundedRectangleBorder( //<-- SEE HERE
-              side: const BorderSide(color: Color(0xFFD5CCFF),width: 1),
+            shape: RoundedRectangleBorder(
+              //<-- SEE HERE
+              side: const BorderSide(color: Color(0xFFD5CCFF), width: 1),
               borderRadius: BorderRadius.circular(20),
-              ),
-            onTap: (){
+            ),
+            onTap: () {
               context.push('/productdetail/${product.id}');
             },
             leading: FastLoadingImage(
@@ -132,22 +134,20 @@ class PopularItem extends StatelessWidget {
               product.name,
               maxLines: 2,
               style: const TextStyle(
-                fontFamily: 'Inter',
-                fontSize: 14.0,
-                fontWeight: FontWeight.w800,
-                color: Color(0xFF000000)
-              ),
+                  fontFamily: 'Inter',
+                  fontSize: 14.0,
+                  fontWeight: FontWeight.w800,
+                  color: Color(0xFF000000)),
             ),
-          
             subtitle: Text(
               '\$${product.price.toStringAsFixed(2)}',
               maxLines: 1,
               style: const TextStyle(
-                fontFamily: 'Inter',
-                fontSize: 14.0,
-                fontWeight: FontWeight.w400,
-                color: Color(0xFF000000)
-              ),),
+                  fontFamily: 'Inter',
+                  fontSize: 14.0,
+                  fontWeight: FontWeight.w400,
+                  color: Color(0xFF000000)),
+            ),
             trailing: OutlinedButton(
               style: ButtonStyle(
                 alignment: Alignment.center,
@@ -155,33 +155,31 @@ class PopularItem extends StatelessWidget {
                     BorderSide(color: Color(0xFF2000B1))),
                 shape: WidgetStatePropertyAll(RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12))),
-              ), 
-              onPressed: (){
+              ),
+              onPressed: () {
                 context.read<CartBloc>().addCartItem(
-                  CartItemMapper.fromProduct(product)
-                  .toCartItemEntity());
-                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                    CartItemMapper.fromProduct(product).toCartItemEntity());
+                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                     duration: Duration(seconds: 1),
                     behavior: SnackBarBehavior.floating,
-                    margin:
-                        EdgeInsets.only(bottom: 25, right: 20, left: 20),
+                    margin: EdgeInsets.only(bottom: 25, right: 20, left: 20),
                     backgroundColor: Color(0xfc009e4f),
                     content: Text('Agregado Satisfactoriamente')));
               },
-              child: const Text(
-                'Añadir',
-                style: TextStyle(
-                  fontFamily: 'Inter',
-                  fontSize: 13,
-                  fontWeight: FontWeight.w600,
-                  color: Color(0xFF2000B1),
-                )
-              ),
+              child: const Text('Añadir',
+                  style: TextStyle(
+                    fontFamily: 'Inter',
+                    fontSize: 13,
+                    fontWeight: FontWeight.w600,
+                    color: Color(0xFF2000B1),
+                  )),
             ),
           ),
         ),
-        const SizedBox(height: 15,)
+        const SizedBox(
+          height: 15,
+        )
       ],
     );
-}
+  }
 }

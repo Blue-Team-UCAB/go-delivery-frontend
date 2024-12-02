@@ -13,9 +13,9 @@ class PasswordRenewScreen extends StatefulWidget {
   final String email;
 
   const PasswordRenewScreen({
-    Key? key,
+    super.key,
     required this.email,
-  }) : super(key: key);
+  });
 
   @override
   State<PasswordRenewScreen> createState() => _PasswordRenewScreenState();
@@ -100,7 +100,8 @@ class _PasswordRenewScreenState extends State<PasswordRenewScreen> {
     return Scaffold(
       backgroundColor: const Color(0xFF02066F),
       body: BlocListener<RecoverPasswordBloc, RecoverPasswordState>(
-        listenWhen: (previous, current) => previous.formStatus != current.formStatus,
+        listenWhen: (previous, current) =>
+            previous.formStatus != current.formStatus,
         listener: (context, state) {
           switch (state.formStatus) {
             case RecoverPasswordFormStatus.validated:
@@ -197,40 +198,38 @@ class _PasswordRenewScreenState extends State<PasswordRenewScreen> {
                                 .changePassword(value),
                             controller: _passwordController,
                             validator: (value) {
-                              final result = loginValidator
-                                  .passwordValidator
+                              final result = loginValidator.passwordValidator
                                   .validate(value);
                               return result.isSuccessful()
                                   ? null
                                   : result.getError().message;
                             },
                             obscureText: _obscurePassword,
-                            style:
-                            const TextStyle(fontFamily: 'Montserrat'),
+                            style: const TextStyle(fontFamily: 'Montserrat'),
                             decoration: inputDecorationBuilderLogin
                                 .buildInputDecorationLogin('Contraseña Nueva')
                                 .copyWith(
-                              suffixIcon: IconButton(
-                                icon: Icon(
-                                  _obscurePassword
-                                      ? Icons.visibility_off
-                                      : Icons.visibility,
-                                  color: Colors.grey,
+                                  suffixIcon: IconButton(
+                                    icon: Icon(
+                                      _obscurePassword
+                                          ? Icons.visibility_off
+                                          : Icons.visibility,
+                                      color: Colors.grey,
+                                    ),
+                                    onPressed: () => setState(() =>
+                                        _obscurePassword = !_obscurePassword),
+                                  ),
                                 ),
-                                onPressed: () => setState(() =>
-                                _obscurePassword =
-                                !_obscurePassword),
-                              ),
-                            ),
                           ),
                           const SizedBox(height: 18),
-                          BlocBuilder<RecoverPasswordBloc, RecoverPasswordState>(
+                          BlocBuilder<RecoverPasswordBloc,
+                              RecoverPasswordState>(
                             buildWhen: (previous, current) =>
-                            previous.formStatus != current.formStatus ||
+                                previous.formStatus != current.formStatus ||
                                 previous.code != current.code,
                             builder: (context, state) {
                               final isLoading = state.formStatus ==
-                                  RecoverPasswordFormStatus.posting ||
+                                      RecoverPasswordFormStatus.posting ||
                                   state.formStatus ==
                                       RecoverPasswordFormStatus.validating;
                               return Stack(
@@ -249,29 +248,31 @@ class _PasswordRenewScreenState extends State<PasswordRenewScreen> {
                                             color: code[index].isEmpty
                                                 ? Colors.grey
                                                 : isLoading
-                                                ? Colors.blue
-                                                : Colors.blue,
+                                                    ? Colors.blue
+                                                    : Colors.blue,
                                             width: 1,
                                           ),
-                                          borderRadius: BorderRadius.circular(8),
+                                          borderRadius:
+                                              BorderRadius.circular(8),
                                         ),
                                         alignment: Alignment.center,
                                         child: isLoading &&
-                                            index == code.indexOf("")
+                                                index == code.indexOf("")
                                             ? const SizedBox(
-                                          width: 20,
-                                          height: 20,
-                                          child: CircularProgressIndicator(
-                                            strokeWidth: 2,
-                                          ),
-                                        )
+                                                width: 20,
+                                                height: 20,
+                                                child:
+                                                    CircularProgressIndicator(
+                                                  strokeWidth: 2,
+                                                ),
+                                              )
                                             : Text(
-                                          code[index],
-                                          style: const TextStyle(
-                                            fontSize: 24,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
+                                                code[index],
+                                                style: const TextStyle(
+                                                  fontSize: 24,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
                                       );
                                     }),
                                   ),

@@ -9,34 +9,35 @@ import 'current_user_state.dart';
 class CurrentUserBloc extends SafeBloc<CurrentUserEvent, CurrentUserState> {
   final CurrentUserUseCase currentUserUseCase;
 
-  CurrentUserBloc({required this.currentUserUseCase}) : super(CurrentUserInitial()) {
+  CurrentUserBloc({required this.currentUserUseCase})
+      : super(CurrentUserInitial()) {
     on<FetchCurrentUser>(_onFetchCurrentUser);
   }
 
   Future<void> _onFetchCurrentUser(
-      FetchCurrentUser event,
-      Emitter<CurrentUserState> emit,
-      ) async {
-      emit(CurrentUserLoading());
+    FetchCurrentUser event,
+    Emitter<CurrentUserState> emit,
+  ) async {
+    emit(CurrentUserLoading());
 
-      final userResult = await currentUserUseCase.execute();
+    final userResult = await currentUserUseCase.execute();
 
-      print(userResult.value!.email);
+    print(userResult.value!.email);
 
-      if (userResult.isSuccessful()) {
-        final user = userResult.getValue();
+    if (userResult.isSuccessful()) {
+      final user = userResult.getValue();
 
-        emit(CurrentUserLoaded(
-          id: user.id,
-          email: user.email,
-          name: user.name,
-          phone: user.phone,
-          image: user.image ?? '',
-          type: User.userTypeToString(user.type),
-        ));
-      } else {
-        final error = userResult.getError();
-        emit(CurrentUserError(error?.message ?? 'Unknown error occurred'));
-      }
+      emit(CurrentUserLoaded(
+        id: user.id,
+        email: user.email,
+        name: user.name,
+        phone: user.phone,
+        image: user.image ?? '',
+        type: User.userTypeToString(user.type),
+      ));
+    } else {
+      final error = userResult.getError();
+      emit(CurrentUserError(error?.message ?? 'Unknown error occurred'));
+    }
   }
 }

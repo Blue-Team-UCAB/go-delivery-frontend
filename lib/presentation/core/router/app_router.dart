@@ -1,3 +1,5 @@
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_delivery_frontend/application/BLoc/cart/cart_bloc.dart';
 import 'package:go_delivery_frontend/presentation/screens/order/orders_screen.dart';
 import 'package:go_delivery_frontend/presentation/screens/screens.dart';
 import 'package:go_router/go_router.dart';
@@ -13,97 +15,85 @@ class RoutesManager {
       GoRoute(
           path: '/',
           pageBuilder: (context, state) => CustomTransitions.slideRight(
-            key: state.pageKey,
-            child: const HomeScreen(initialCounterNavbar: 0),
-          )
-      ),
+                key: state.pageKey,
+                child: const HomeScreen(initialCounterNavbar: 0),
+              )),
       GoRoute(
-          path: '/splash',
-          pageBuilder: (context, state) => CustomTransitions.fadeIn(
+        path: '/splash',
+        pageBuilder: (context, state) => CustomTransitions.fadeIn(
             key: state.pageKey,
             child: SplashScreen(
                 splashScreenDurationSeconds: 3,
-                onSplashScreenFade: () => context.go('/welcome')
-            )
-        ),
+                onSplashScreenFade: () => context.go('/welcome'))),
       ),
       GoRoute(
           path: '/welcome',
           pageBuilder: (context, state) => CustomTransitions.slideRight(
-            key: state.pageKey,
-            child: const WelcomeScreen()
-          )
-      ),
+              key: state.pageKey, child: const WelcomeScreen())),
       GoRoute(
           path: '/login',
           pageBuilder: (context, state) => CustomTransitions.slideRight(
-            key: state.pageKey,
-            child: const LoginScreen()
-          )
-      ),
+              key: state.pageKey, child: const LoginScreen())),
       GoRoute(
           path: '/register',
           pageBuilder: (context, state) => CustomTransitions.slideRight(
-            key: state.pageKey,
-            child: const RegisterScreen(),
-          )
-      ),
+                key: state.pageKey,
+                child: const RegisterScreen(),
+              )),
       GoRoute(
           path: '/catalog',
           pageBuilder: (context, state) => CustomTransitions.slideRight(
-            key: state.pageKey,
-            child: const CatalogScreen(initialCounterNavbar: 1),
-          )
-      ),
+                key: state.pageKey,
+                child: const CatalogScreen(initialCounterNavbar: 1),
+              )),
       GoRoute(
-          path: '/checkout',
-          pageBuilder: (context, state) => CustomTransitions.slideRight(
+        path: '/checkout',
+        pageBuilder: (context, state) {
+          final cartBloc = context.watch<CartBloc>();
+          final double total = cartBloc.state.totalPrice;
+
+          return CustomTransitions.slideRight(
             key: state.pageKey,
-            child: CheckoutScreen(),
-          )
+            child: CheckoutOrderScreen(total: total),
+          );
+        },
       ),
       GoRoute(
           path: '/Cart',
           pageBuilder: (context, state) => CustomTransitions.slideRight(
-            key: state.pageKey,
-            child: const CartScreen(),
-          )
-      ),
+                key: state.pageKey,
+                child: const CartScreen(),
+              )),
       GoRoute(
           path: '/notification',
           pageBuilder: (context, state) => CustomTransitions.slideRight(
-            key: state.pageKey,
-            child: const NotificationScreen(),
-          )
-      ),
+                key: state.pageKey,
+                child: const NotificationScreen(),
+              )),
       GoRoute(
           path: '/password/forgot',
           pageBuilder: (context, state) => CustomTransitions.slideRight(
-            key: state.pageKey,
-            child: const ForgotPasswordScreen(),
-          )
-      ),
+                key: state.pageKey,
+                child: const ForgotPasswordScreen(),
+              )),
       GoRoute(
           path: '/password/verify',
           pageBuilder: (context, state) => CustomTransitions.slideRight(
-            key: state.pageKey,
-            child: const CodeVerificationScreen(),
-          )
-      ),
+                key: state.pageKey,
+                child: const CodeVerificationScreen(),
+              )),
       GoRoute(
           path: '/password/renew',
           pageBuilder: (context, state) => CustomTransitions.slideRight(
-            key: state.pageKey,
-            child: PasswordRenewScreen(email: state.extra as String),
-          )
-      ),
+                key: state.pageKey,
+                child: PasswordRenewScreen(email: state.extra as String),
+              )),
       GoRoute(
           path: '/order',
           pageBuilder: (context, state) => CustomTransitions.slideRight(
-            key: state.pageKey,
-            child: OrdersPage(initialCounterNavbar: 2),
-          )
-      ),
+                key: state.pageKey,
+                child: const OrdersPage(initialCounterNavbar: 2),
+              )),
       GoRoute(
           path: '/orderdetail/:id',
           pageBuilder: (context, state) {
@@ -119,24 +109,23 @@ class RoutesManager {
       GoRoute(
         path: '/productdetail/:name',
         pageBuilder: (context, state) {
-          final productName = state.pathParameters['name'] ?? 'no-name'; 
+          final productName = state.pathParameters['name'] ?? 'no-name';
           return CustomTransitions.slideRight(
-            key: state.pageKey,
-            child: ProductDetailScreen(productId: productName)
-        );}, 
+              key: state.pageKey,
+              child: ProductDetailScreen(productId: productName));
+        },
       ),
       GoRoute(
         path: '/bundledetail/:name',
         pageBuilder: (context, state) {
-          final bundleName = state.pathParameters['name'] ?? 'no-name'; 
+          final bundleName = state.pathParameters['name'] ?? 'no-name';
           return CustomTransitions.slideRight(
-            key: state.pageKey,
-            child: BundleDetailScreen(bundleId: bundleName)
-        );}, 
+              key: state.pageKey,
+              child: BundleDetailScreen(bundleId: bundleName));
+        },
       ),
     ],
     redirect: (context, state) async {
-
       final isGoingTo = state.matchedLocation;
       final isAdmin =
           await LocalStorageService().getValue<bool>('isAdmin') != null;

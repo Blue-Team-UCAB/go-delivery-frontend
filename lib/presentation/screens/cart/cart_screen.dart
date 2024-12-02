@@ -57,8 +57,6 @@ class _CartView extends StatelessWidget {
                       final cartItem = cartBloc.state.items[index];
                       return CartItemWidget(item: cartItem);
                     })),
-
-            /// caja de texto
             const CartFooterBox()
           ],
         ),

@@ -1,7 +1,9 @@
+// ignore_for_file: library_private_types_in_public_api
+
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_delivery_frontend/presentation/widgets/card.dart';
+import 'package:go_delivery_frontend/presentation/widgets/related_products.dart';
 import 'package:go_delivery_frontend/presentation/widgets/cart/add_product_carrito_button.dart';
 import 'package:go_delivery_frontend/application/BLoc/product/product_detail/product_detail_bloc.dart';
 import 'package:go_delivery_frontend/application/BLoc/product/product_detail/product_detail_event.dart';
@@ -118,8 +120,23 @@ class ProductDetailScreen extends StatelessWidget {
                           ),
                         ),
                         const SizedBox(height: 8),
-                        const Row(
-                          children: [Text('CHUCHERIAS'), Text('  BOTANA')],
+                        Row(
+                          children: product.categories.isNotEmpty
+                              ? product.categories
+                                  .map((category) => Padding(
+                                        padding:
+                                            const EdgeInsets.only(right: 8.0),
+                                        child: Text(
+                                          category,
+                                          style: const TextStyle(
+                                            fontFamily: 'Inter',
+                                            fontWeight: FontWeight.w400,
+                                            fontSize: 16,
+                                          ),
+                                        ),
+                                      ))
+                                  .toList()
+                              : const [Text('Sin categorías')],
                         ),
                         const SizedBox(height: 10),
                         const Text(
@@ -131,30 +148,10 @@ class ProductDetailScreen extends StatelessWidget {
                           ),
                         ),
                         const SizedBox(height: 10),
-                        SingleChildScrollView(
-                          scrollDirection: Axis.horizontal,
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              SizedBox(
-                                width: 200,
-                                height: 255,
-                                child: ProductCard(product: product),
-                              ),
-                              const SizedBox(width: 20),
-                              SizedBox(
-                                width: 200,
-                                height: 255,
-                                child: ProductCard(product: product),
-                              ),
-                              const SizedBox(width: 20),
-                              SizedBox(
-                                width: 200,
-                                height: 255,
-                                child: ProductCard(product: product),
-                              ),
-                            ],
-                          ),
+                        RelatedProductsSection(
+                          category: product.categories.isNotEmpty
+                              ? product.categories.first
+                              : '',
                         ),
                       ],
                     ),
@@ -171,7 +168,6 @@ class ProductDetailScreen extends StatelessWidget {
                 ),
               );
             }
-
             return const Center(child: Text('Estado desconocido'));
           },
         ),

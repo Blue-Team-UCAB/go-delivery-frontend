@@ -61,13 +61,16 @@ class InjectManager {
     final loginUseCase = LoginUseCase(userRepository: userRepository);
     final registerUseCase = RegisterUseCase(userRepository: userRepository);
     final recoveryUseCase = RecoveryUseCase(userRepository: userRepository);
-    final getCurrentUseCase = CurrentUserUseCase(userRepository: userRepository);
+    final getCurrentUseCase =
+        CurrentUserUseCase(userRepository: userRepository);
 
     // Registrar
     getIt.registerFactory(() => LoginBloc(loginUseCase: loginUseCase));
     getIt.registerFactory(() => RegisterBloc(userRepository.register));
-    getIt.registerSingleton(RecoverPasswordBloc(recoveryUseCase: recoveryUseCase));
-    getIt.registerSingleton(CurrentUserBloc(currentUserUseCase: getCurrentUseCase));
+    getIt.registerSingleton(
+        RecoverPasswordBloc(recoveryUseCase: recoveryUseCase));
+    getIt.registerSingleton(
+        CurrentUserBloc(currentUserUseCase: getCurrentUseCase));
 
     //registrar caso de uso
     getIt.registerSingleton<LoginUseCase>(loginUseCase);
@@ -77,7 +80,8 @@ class InjectManager {
     // ======================================================================= //
 
     // ============================= CART ==================================== //
-    final cartLocalStorageRepo = CartLocalStorageRepositoryImpl(CartIsarLocalStorageDatasource());
+    final cartLocalStorageRepo =
+        CartLocalStorageRepositoryImpl(CartIsarLocalStorageDatasource());
     getIt.registerSingleton(CartBloc(cartLocalStorageRepo));
     // ======================================================================= //
 
@@ -157,8 +161,7 @@ class InjectManager {
     //Repositorio
     final orderRepository = OrderRepositoryImpl(
         apiRequestManager: apiRequestManagerImpl,
-        localStorage: localStorageService
-    );
+        localStorage: localStorageService);
 
     // Registrar el repositorio de ordenes
     getIt.registerSingleton<OrderRepository>(orderRepository);
@@ -170,6 +173,7 @@ class InjectManager {
     getIt.registerSingleton<GetOneOrderUseCase>(getOneOrderUseCase);
     // ======================================================================= //
 
-    getIt.registerSingleton(OrderDetailBloc(getOneOrderUseCase: getOneOrderUseCase));
+    getIt.registerSingleton(
+        OrderDetailBloc(getOneOrderUseCase: getOneOrderUseCase));
   }
 }

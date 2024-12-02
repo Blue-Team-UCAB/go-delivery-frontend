@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
-import '../../../application/BLoc/cart/cart_bloc.dart';
+import 'package:go_delivery_frontend/application/BLoc/cart/cart_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 class CartFooterBox extends StatelessWidget {
   const CartFooterBox({super.key});
@@ -43,7 +43,9 @@ class CartFooterBox extends StatelessWidget {
                   ),
                 ),
               ),
-              onPressed: () {},
+              onPressed: () {
+                context.push('/checkout', extra: total);
+              },
               child: const Text('Comprar',
                   style: TextStyle(
                       fontFamily: 'Inter',
