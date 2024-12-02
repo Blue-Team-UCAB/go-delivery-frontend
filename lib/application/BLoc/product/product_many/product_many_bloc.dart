@@ -17,25 +17,25 @@ class ProductListBloc extends Bloc<ProductListEvent, ProductListState> {
       LoadProductList event,
       Emitter<ProductListState> emit,
       ) async {
-    await _loadProducts('', event.page, event.take, emit);
+    await _loadProducts('', event.page, event.perpage, emit);
   }
 
   Future<void> _onSearchProductList(
       SearchProductList event,
       Emitter<ProductListState> emit,
       ) async {
-    await _loadProducts(event.search,event.page, event.take, emit);
+    await _loadProducts(event.search,event.page, event.perpage, emit);
   }
 
   Future<void> _loadProducts(
       String? search,
       int page,
-      int take,
+      int perpage,
       Emitter<ProductListState> emit,
       ) async {
     try {
       print('Debug: Entering _loadProducts method');
-      print('Debug: search: $search, page: $page, take: $take');
+      print('Debug: search: $search, page: $page, take: $perpage');
 
       final currentState = state is ProductListLoaded
           ? state as ProductListLoaded
@@ -48,7 +48,7 @@ class ProductListBloc extends Bloc<ProductListEvent, ProductListState> {
       final result = await _getProductsUseCase.execute(
         GetProductsUseCaseInput(
           page: page,
-          take: take,
+          perpage: perpage,
           search: search,
         ),
       );

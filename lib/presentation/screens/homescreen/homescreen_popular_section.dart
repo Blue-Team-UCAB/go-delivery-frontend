@@ -83,7 +83,7 @@ class _PopularSectionState extends State<PopularSection> {
             } else {
               context
                   .read<ProductPopularListBloc>()
-                  .add(const LoadProductList(page: 1, take: 4));
+                  .add(const LoadProductList(page: 1, perpage: 4));
               return const Center(child: CircularProgressIndicator());
             }
           },

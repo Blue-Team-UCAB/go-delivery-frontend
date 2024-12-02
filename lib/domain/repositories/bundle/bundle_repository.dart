@@ -4,7 +4,7 @@ import 'package:go_delivery_frontend/domain/entities/bundle/bundle.dart';
 abstract class BundleRepository {
   Future<Result<List<Bundle>>> getBundles({
     required int page,
-    required int take,
+    required int perpage,
   });
 
   Future<Result<Bundle>> getBundleById(String bundleId);

@@ -40,7 +40,7 @@ class _RandomSectionState extends State<RandomSection> {
     if (!_mounted) return;
     final random = Random();
     final randomPage = random.nextInt(7) + 1;
-    context.read<ProductRandomListBloc>().add(LoadProductList(page: randomPage, take: 8));
+    context.read<ProductRandomListBloc>().add(LoadProductList(page: randomPage, perpage: 8));
   }
 
   @override
