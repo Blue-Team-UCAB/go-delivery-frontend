@@ -24,7 +24,7 @@ class BundleRepositoryImpl extends BundleRepository {
   @override
   Future<Result<List<Bundle>>> getBundles({
     required int page,
-    required int take,
+    required int perpage,
   }) async {
     await _addAuthorizationHeader();
     try {
@@ -33,7 +33,7 @@ class BundleRepositoryImpl extends BundleRepository {
         'GET',
         queryParameters: {
           'page': page.toString(),
-          'take': take.toString(),
+          'perpage': perpage.toString(),
         },
         (data) {
           List<Bundle> bundles = (data['bundles'] as List)

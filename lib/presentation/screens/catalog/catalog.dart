@@ -43,7 +43,7 @@ class CatalogScreenState extends State<CatalogScreen> with AutomaticKeepAliveCli
     _counter = widget.initialCounterNavbar;
 
     BlocProvider.of<ProductListBloc>(context).add(
-      LoadProductList(page: _currentPage, take: 6),
+      LoadProductList(page: _currentPage, perpage: 6),
     );
     _scrollController.addListener(_onScroll);
 
@@ -79,8 +79,8 @@ class CatalogScreenState extends State<CatalogScreen> with AutomaticKeepAliveCli
         _currentPage = state.page + 1;
         BlocProvider.of<ProductListBloc>(context).add(
           _searchQuery.isEmpty
-              ? LoadProductList(page: _currentPage, take: 6)
-              : SearchProductList(search: _searchQuery, page: _currentPage, take: 6),
+              ? LoadProductList(page: _currentPage, perpage: 6)
+              : SearchProductList(search: _searchQuery, page: _currentPage, perpage: 6),
         );
       }
     }
@@ -93,7 +93,7 @@ class CatalogScreenState extends State<CatalogScreen> with AutomaticKeepAliveCli
       _hasLoadedAllProducts = false;
     });
     BlocProvider.of<ProductListBloc>(context).add(
-      SearchProductList(search: query, page: _currentPage, take: 6),
+      SearchProductList(search: query, page: _currentPage, perpage: 6),
     );
   }
 

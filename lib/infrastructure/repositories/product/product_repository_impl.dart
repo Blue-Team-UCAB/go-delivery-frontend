@@ -26,14 +26,14 @@ class ProductRepositoryImpl extends ProductRepository {
   Future<Result<List<Product>>> getProducts({
     String? search,
     required int page,
-    required int take,
+    required int perpage,
   }) async {
     await _addAuthorizationHeader();
 
     try {
       Map<String, String> queryParameters = {
         'page': page.toString(),
-        'take': take.toString(),
+        'perpage': perpage.toString(),
       };
 
       if (search != null && search.isNotEmpty) {

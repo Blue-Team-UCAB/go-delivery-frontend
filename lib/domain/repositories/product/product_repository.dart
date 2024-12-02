@@ -5,7 +5,7 @@ abstract class ProductRepository {
   Future<Result<List<Product>>> getProducts({
     String search,
     required int page,
-    required int take,
+    required int perpage,
   });
 
   Future<Result<Product>> getProductById(String productId);
