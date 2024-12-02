@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:go_delivery_frontend/application/BLoc/auth/current/current_user_bloc.dart';
-import 'package:go_delivery_frontend/application/BLoc/auth/current/current_user_state.dart';
 import 'package:go_delivery_frontend/presentation/screens/homescreen/category_tab.dart';
 import 'package:go_delivery_frontend/presentation/screens/homescreen/homescreen_combo_section.dart';
 import 'package:go_delivery_frontend/presentation/widgets/random_products/random_popular_section.dart';

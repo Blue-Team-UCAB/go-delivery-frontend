@@ -62,7 +62,7 @@ class _RelatedProductsSectionState extends State<RelatedProductsSection> {
     productListBloc.add(
       LoadProductList(
         page: 1,
-        take: 4,
+        perpage: 4,
         category: _currentCategory,
       ),
     );

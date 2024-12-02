@@ -5,7 +5,7 @@ import 'package:go_delivery_frontend/domain/repositories/product/product_reposit
 
 class GetProductsUseCaseInput extends IUseCaseInput {
   final int page;
-  final int take;
+  final int perpage;
   final String? category;
   final String? search;
 
@@ -13,7 +13,7 @@ class GetProductsUseCaseInput extends IUseCaseInput {
     this.search,
     this.category,
     required this.page,
-    required this.take,
+    required this.perpage,
   });
 }
 
@@ -28,7 +28,7 @@ class GetProductsUseCase {
       search: input.search!,
       category: input.category,
       page: input.page,
-      take: input.take,
+      perpage: input.perpage,
     );
   }
 }

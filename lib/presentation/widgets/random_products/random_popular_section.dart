@@ -37,7 +37,7 @@ class _RandomSectionState extends State<RandomSection> {
     final randomPage = random.nextInt(7) + 1;
     context
         .read<ProductRandomListBloc>()
-        .add(LoadProductList(page: randomPage, take: 8, category: ''));
+        .add(LoadProductList(page: randomPage, perpage: 8, category: ''));
   }
 
   @override

@@ -10,13 +10,13 @@ class OrderCard extends StatefulWidget {
   final String initialStatus;
 
   const OrderCard({
-    Key? key,
+    super.key,
     required this.orderNumber,
     required this.date,
     required this.items,
     required this.price,
     required this.initialStatus,
-  }) : super(key: key);
+  });
 
   @override
   _OrderCardState createState() => _OrderCardState();
@@ -34,13 +34,13 @@ class _OrderCardState extends State<OrderCard> {
   @override
   Widget build(BuildContext context) {
     return Card(
-      margin: EdgeInsets.all(8),
+      margin: const EdgeInsets.all(8),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(8),
         side: BorderSide(color: Colors.grey[300]!, width: 1),
       ),
       child: Padding(
-        padding: EdgeInsets.all(16),
+        padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -49,7 +49,7 @@ class _OrderCardState extends State<OrderCard> {
               children: [
                 Text(
                   'Orden #${widget.orderNumber}',
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontFamily: 'Inter',
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
@@ -57,12 +57,12 @@ class _OrderCardState extends State<OrderCard> {
                   ),
                 ),
                 IconButton(
-                  icon: Icon(Icons.more_vert),
+                  icon: const Icon(Icons.more_vert),
                   onPressed: () => _showOptionsMenu(context),
                 ),
               ],
             ),
-            SizedBox(height: 4),
+            const SizedBox(height: 4),
             Text(
               widget.date,
               style: TextStyle(
@@ -71,42 +71,43 @@ class _OrderCardState extends State<OrderCard> {
                 color: Colors.grey[600],
               ),
             ),
-            SizedBox(height: 8),
+            const SizedBox(height: 8),
             Text(
               widget.items,
-              style: TextStyle(
+              style: const TextStyle(
                 fontFamily: 'Inter',
                 fontSize: 14,
               ),
             ),
-            SizedBox(height: 8),
+            const SizedBox(height: 8),
             Text(
               widget.price,
-              style: TextStyle(
+              style: const TextStyle(
                 fontFamily: 'Inter',
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
                 color: Colors.black,
               ),
             ),
-            SizedBox(height: 8),
+            const SizedBox(height: 8),
             Text(
               status,
               style: TextStyle(
                 fontFamily: 'Inter',
                 fontSize: 14,
                 fontWeight: FontWeight.bold,
-                color: status == 'Cancelada' ? Colors.grey[400] : Color(0xFF2000B1),
+                color: status == 'Cancelada'
+                    ? Colors.grey[400]
+                    : const Color(0xFF2000B1),
               ),
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             _buildButtons(),
           ],
         ),
       ),
     );
   }
-
 
   void _showOptionsMenu(BuildContext context) {
     showDialog(
@@ -117,8 +118,8 @@ class _OrderCardState extends State<OrderCard> {
           message: 'Seleccione una acción para la orden #${widget.orderNumber}',
           buttonText: 'Cerrar',
           icon: Icons.more_vert,
-          iconColor: Color(0xFF2000B1),
-          buttonColor: Color(0xFF2000B1),
+          iconColor: const Color(0xFF2000B1),
+          buttonColor: const Color(0xFF2000B1),
           onButtonPressed: () {
             Navigator.of(context).pop();
           },
@@ -138,15 +139,16 @@ class _OrderCardState extends State<OrderCard> {
       case 'Cancelada':
         return ElevatedButton(
           onPressed: () {},
-          child: Text('Reportar un problema', style: TextStyle(
-            color: Colors.white,
-            fontFamily: 'Inter',
-            fontSize: 14,
-            fontWeight: FontWeight.bold,
-          )),
           style: ElevatedButton.styleFrom(
-            backgroundColor: Color(0xFF2000B1),
+            backgroundColor: const Color(0xFF2000B1),
           ),
+          child: Text('Reportar un problema',
+              style: TextStyle(
+                color: Colors.white,
+                fontFamily: 'Inter',
+                fontSize: 14,
+                fontWeight: FontWeight.bold,
+              )),
         );
       case 'Entregada':
         return Row(
@@ -154,29 +156,31 @@ class _OrderCardState extends State<OrderCard> {
             Expanded(
               child: OutlinedButton(
                 onPressed: () {},
-                child: Text('Reseña', style: TextStyle(
-                  fontFamily: 'Inter',
-                  fontSize: 14,
-                  fontWeight: FontWeight.bold,
-                )),
                 style: OutlinedButton.styleFrom(
-                  foregroundColor: Color(0xFF2000B1),
+                  foregroundColor: const Color(0xFF2000B1),
                 ),
+                child: Text('Reseña',
+                    style: TextStyle(
+                      fontFamily: 'Inter',
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                    )),
               ),
             ),
-            SizedBox(width: 8),
+            const SizedBox(width: 8),
             Expanded(
               child: ElevatedButton(
                 onPressed: () {},
-                child: Text('Reordenar', style: TextStyle(
-                  color: Colors.white,
-                  fontFamily: 'Inter',
-                  fontSize: 14,
-                  fontWeight: FontWeight.bold,
-                )),
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Color(0xFF2000B1),
+                  backgroundColor: const Color(0xFF2000B1),
                 ),
+                child: Text('Reordenar',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontFamily: 'Inter',
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                    )),
               ),
             ),
           ],
@@ -187,35 +191,37 @@ class _OrderCardState extends State<OrderCard> {
             Expanded(
               child: OutlinedButton(
                 onPressed: () {},
-                child: Text('Cancelar', style: TextStyle(
-                  fontFamily: 'Inter',
-                  fontSize: 14,
-                  fontWeight: FontWeight.bold,
-                )),
                 style: OutlinedButton.styleFrom(
                   foregroundColor: Colors.grey,
                 ),
+                child: Text('Cancelar',
+                    style: TextStyle(
+                      fontFamily: 'Inter',
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                    )),
               ),
             ),
-            SizedBox(width: 8),
+            const SizedBox(width: 8),
             Expanded(
               child: ElevatedButton(
                 onPressed: () {},
-                child: Text('Ver', style: TextStyle(
-                  color: Colors.white,
-                  fontFamily: 'Inter',
-                  fontSize: 14,
-                  fontWeight: FontWeight.bold,
-                )),
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Color(0xFF2000B1),
+                  backgroundColor: const Color(0xFF2000B1),
                 ),
+                child: Text('Ver',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontFamily: 'Inter',
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                    )),
               ),
             ),
           ],
         );
       default:
-        return SizedBox.shrink();
+        return const SizedBox.shrink();
     }
   }
 }

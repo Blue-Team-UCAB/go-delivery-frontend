@@ -11,47 +11,27 @@ class ProductListBloc extends Bloc<ProductListEvent, ProductListState> {
   ProductListBloc(this._getProductsUseCase) : super(ProductListInitial()) {
     on<LoadProductList>(_onLoadProductList);
     on<SearchProductList>(_onSearchProductList);
-    on<ClearProductList>(_onClearProductList);
   }
 
   Future<void> _onLoadProductList(
     LoadProductList event,
     Emitter<ProductListState> emit,
   ) async {
-    await _loadProducts(
-      '',
-      event.category,
-      event.page,
-      event.take,
-      emit,
-    );
+    await _loadProducts('', '', event.page, event.perpage, emit);
   }
 
   Future<void> _onSearchProductList(
     SearchProductList event,
     Emitter<ProductListState> emit,
   ) async {
-    await _loadProducts(
-      event.search,
-      event.category,
-      event.page,
-      event.take,
-      emit,
-    );
-  }
-
-  Future<void> _onClearProductList(
-    ClearProductList event,
-    Emitter<ProductListState> emit,
-  ) async {
-    emit(const ProductListLoading([]));
+    await _loadProducts(event.search, '', event.page, event.perpage, emit);
   }
 
   Future<void> _loadProducts(
     String? search,
     String? category,
     int page,
-    int take,
+    int perpage,
     Emitter<ProductListState> emit,
   ) async {
     try {
@@ -66,7 +46,7 @@ class ProductListBloc extends Bloc<ProductListEvent, ProductListState> {
       final result = await _getProductsUseCase.execute(
         GetProductsUseCaseInput(
           page: page,
-          take: take,
+          perpage: perpage,
           category: category,
           search: search,
         ),

@@ -6,7 +6,7 @@ import 'package:go_router/go_router.dart';
 import '../../../../application/BLoc/auth/recover_password/recover_password_bloc.dart';
 
 class CodeVerificationScreen extends StatefulWidget {
-  const CodeVerificationScreen({Key? key}) : super(key: key);
+  const CodeVerificationScreen({super.key});
 
   @override
   State<CodeVerificationScreen> createState() => _CodeVerificationScreenState();
@@ -45,7 +45,8 @@ class _CodeVerificationScreenState extends State<CodeVerificationScreen> {
     return Scaffold(
       backgroundColor: const Color(0xFF02066F),
       body: BlocListener<RecoverPasswordBloc, RecoverPasswordState>(
-        listenWhen: (previous, current) => previous.formStatus != current.formStatus,
+        listenWhen: (previous, current) =>
+            previous.formStatus != current.formStatus,
         listener: (context, state) {
           switch (state.formStatus) {
             case RecoverPasswordFormStatus.validated:
@@ -112,11 +113,13 @@ class _CodeVerificationScreenState extends State<CodeVerificationScreen> {
                         const SizedBox(height: 24),
                         BlocBuilder<RecoverPasswordBloc, RecoverPasswordState>(
                           buildWhen: (previous, current) =>
-                          previous.formStatus != current.formStatus ||
+                              previous.formStatus != current.formStatus ||
                               previous.code != current.code,
                           builder: (context, state) {
-                            final isLoading = state.formStatus == RecoverPasswordFormStatus.posting ||
-                                state.formStatus == RecoverPasswordFormStatus.validating;
+                            final isLoading = state.formStatus ==
+                                    RecoverPasswordFormStatus.posting ||
+                                state.formStatus ==
+                                    RecoverPasswordFormStatus.validating;
                             return Stack(
                               alignment: Alignment.center,
                               children: [
@@ -126,34 +129,36 @@ class _CodeVerificationScreenState extends State<CodeVerificationScreen> {
                                     return Container(
                                       width: 50,
                                       height: 50,
-                                      margin: const EdgeInsets.symmetric(horizontal: 4),
+                                      margin: const EdgeInsets.symmetric(
+                                          horizontal: 4),
                                       decoration: BoxDecoration(
                                         border: Border.all(
                                           color: code[index].isEmpty
                                               ? Colors.grey
                                               : isLoading
-                                              ? Colors.blue
-                                              : Colors.blue,
+                                                  ? Colors.blue
+                                                  : Colors.blue,
                                           width: 1,
                                         ),
                                         borderRadius: BorderRadius.circular(8),
                                       ),
                                       alignment: Alignment.center,
-                                      child: isLoading && index == code.indexOf("")
+                                      child: isLoading &&
+                                              index == code.indexOf("")
                                           ? const SizedBox(
-                                        width: 20,
-                                        height: 20,
-                                        child: CircularProgressIndicator(
-                                          strokeWidth: 2,
-                                        ),
-                                      )
+                                              width: 20,
+                                              height: 20,
+                                              child: CircularProgressIndicator(
+                                                strokeWidth: 2,
+                                              ),
+                                            )
                                           : Text(
-                                        code[index],
-                                        style: const TextStyle(
-                                          fontSize: 24,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
+                                              code[index],
+                                              style: const TextStyle(
+                                                fontSize: 24,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
                                     );
                                   }),
                                 ),
@@ -179,7 +184,9 @@ class _CodeVerificationScreenState extends State<CodeVerificationScreen> {
                         const SizedBox(height: 24),
                         TextButton(
                           onPressed: () {
-                            context.read<RecoverPasswordBloc>().sendCode(resend: true);
+                            context
+                                .read<RecoverPasswordBloc>()
+                                .sendCode(resend: true);
                           },
                           style: TextButton.styleFrom(
                             foregroundColor: const Color(0xFF02066F),

@@ -6,7 +6,7 @@ abstract class ProductRepository {
     String search,
     String? category,
     required int page,
-    required int take,
+    required int perpage,
   });
 
   Future<Result<Product>> getProductById(String productId);

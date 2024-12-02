@@ -6,13 +6,14 @@ import 'order_card.dart';
 class OrdersPage extends StatefulWidget {
   final int initialCounterNavbar;
 
-  const OrdersPage({Key? key, required this.initialCounterNavbar}) : super(key: key);
+  const OrdersPage({super.key, required this.initialCounterNavbar});
 
   @override
   _OrdersPageState createState() => _OrdersPageState();
 }
 
-class _OrdersPageState extends State<OrdersPage> with SingleTickerProviderStateMixin {
+class _OrdersPageState extends State<OrdersPage>
+    with SingleTickerProviderStateMixin {
   late int counterNavbar = 2;
   late TabController _tabController;
 
@@ -20,21 +21,24 @@ class _OrdersPageState extends State<OrdersPage> with SingleTickerProviderStateM
     {
       'orderNumber': '12333',
       'date': 'Viernes, 15 Noviembre, 2024',
-      'items': 'Doritos (2), Pepsi 2Lt (3), Helado (1), Doritos (2), Pepsi 2Lt (3), Helado (4)',
+      'items':
+          'Doritos (2), Pepsi 2Lt (3), Helado (1), Doritos (2), Pepsi 2Lt (3), Helado (4)',
       'price': '117\$',
       'status': 'Por Entregar'
     },
     {
       'orderNumber': '12327',
       'date': 'Miercoles, 6 Noviembre, 2024',
-      'items': 'Doritos (2), Pepsi 2Lt (3), Helado (1), Doritos (2), Pepsi 2Lt (3), Helado (4)',
+      'items':
+          'Doritos (2), Pepsi 2Lt (3), Helado (1), Doritos (2), Pepsi 2Lt (3), Helado (4)',
       'price': '50\$',
       'status': 'Entregada'
     },
     {
       'orderNumber': '12327',
       'date': 'Miercoles, 6 Noviembre, 2024',
-      'items': 'Doritos (2), Pepsi 2Lt (3), Helado (1), Doritos (2), Pepsi 2Lt (3), Helado (4)',
+      'items':
+          'Doritos (2), Pepsi 2Lt (3), Helado (1), Doritos (2), Pepsi 2Lt (3), Helado (4)',
       'price': '50\$',
       'status': 'Cancelada'
     },
@@ -42,14 +46,17 @@ class _OrdersPageState extends State<OrdersPage> with SingleTickerProviderStateM
 
   // Method to get active orders
   List<Map<String, String>> get activeOrders {
-    return allOrders.where((order) =>
-    order['status'] == 'Por Entregar').toList();
+    return allOrders
+        .where((order) => order['status'] == 'Por Entregar')
+        .toList();
   }
 
   // Method to get past orders
   List<Map<String, String>> get pastOrders {
-    return allOrders.where((order) =>
-    order['status'] == 'Entregada' || order['status'] == 'Cancelada').toList();
+    return allOrders
+        .where((order) =>
+            order['status'] == 'Entregada' || order['status'] == 'Cancelada')
+        .toList();
   }
 
   @override
@@ -75,7 +82,7 @@ class _OrdersPageState extends State<OrdersPage> with SingleTickerProviderStateM
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
+        title: const Text(
           'Ordenes',
           style: TextStyle(
             fontSize: 24,
@@ -85,18 +92,18 @@ class _OrdersPageState extends State<OrdersPage> with SingleTickerProviderStateM
         ),
         actions: [
           IconButton(
-            icon: Icon(Icons.notifications_none),
+            icon: const Icon(Icons.notifications_none),
             onPressed: () {},
           ),
           IconButton(
-            icon: Icon(Icons.menu),
+            icon: const Icon(Icons.menu),
             onPressed: () {},
           ),
         ],
         bottom: PreferredSize(
-          preferredSize: Size.fromHeight(kToolbarHeight),
+          preferredSize: const Size.fromHeight(kToolbarHeight),
           child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             child: Container(
               decoration: BoxDecoration(
                 color: Colors.white,
@@ -107,24 +114,24 @@ class _OrdersPageState extends State<OrdersPage> with SingleTickerProviderStateM
                 borderRadius: BorderRadius.circular(12),
                 child: TabBar(
                   controller: _tabController,
-                  tabs: [
+                  tabs: const [
                     Tab(text: 'Activas'),
                     Tab(text: 'Ordenes Pasadas'),
                   ],
-                  labelStyle: TextStyle(
+                  labelStyle: const TextStyle(
                     fontFamily: 'Inter',
                     fontWeight: FontWeight.bold,
                     fontSize: 14,
                   ),
-                  unselectedLabelStyle: TextStyle(
+                  unselectedLabelStyle: const TextStyle(
                     fontFamily: 'Inter',
                     fontWeight: FontWeight.normal,
                     fontSize: 14,
                   ),
-                  labelColor: Color(0xFF2000B1),
+                  labelColor: const Color(0xFF2000B1),
                   unselectedLabelColor: Colors.grey[600],
                   indicator: BoxDecoration(
-                    border: Border(
+                    border: const Border(
                       bottom: BorderSide(
                         color: Color(0xFF2000B1),
                         width: 3,
@@ -133,10 +140,10 @@ class _OrdersPageState extends State<OrdersPage> with SingleTickerProviderStateM
                     color: Colors.purpleAccent.withOpacity(0.13),
                   ),
                   indicatorSize: TabBarIndicatorSize.tab,
-                  labelPadding: EdgeInsets.symmetric(horizontal: 16),
-                  overlayColor: MaterialStateProperty.resolveWith<Color?>(
-                        (Set<MaterialState> states) {
-                      if (states.contains(MaterialState.pressed)) {
+                  labelPadding: const EdgeInsets.symmetric(horizontal: 16),
+                  overlayColor: WidgetStateProperty.resolveWith<Color?>(
+                    (Set<WidgetState> states) {
+                      if (states.contains(WidgetState.pressed)) {
                         return Colors.purpleAccent.withOpacity(0.1);
                       }
                       return null;

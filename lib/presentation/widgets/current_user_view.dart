@@ -7,7 +7,7 @@ import '../../application/BLoc/auth/current/current_user_state.dart';
 import 'dialog_darken_window.dart';
 
 class TokenLoginStateChecker extends StatefulWidget {
-  const TokenLoginStateChecker({Key? key}) : super(key: key);
+  const TokenLoginStateChecker({super.key});
 
   @override
   _TokenLoginStateCheckerState createState() => _TokenLoginStateCheckerState();

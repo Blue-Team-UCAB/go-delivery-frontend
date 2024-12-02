@@ -40,6 +40,9 @@ class CatalogScreenState extends State<CatalogScreen>
     _counter = widget.initialCounterNavbar;
     _loadProducts();
 
+    BlocProvider.of<ProductListBloc>(context).add(
+      LoadProductList(page: _currentPage, perpage: 6, category: ''),
+    );
     _scrollController.addListener(_onScroll);
 
     _productListSubscription =
@@ -66,7 +69,7 @@ class CatalogScreenState extends State<CatalogScreen>
   // Función para cargar productos
   void _loadProducts() {
     BlocProvider.of<ProductListBloc>(context).add(
-      LoadProductList(page: _currentPage, take: 6, category: ''),
+      LoadProductList(page: _currentPage, perpage: 6, category: ''),
     );
   }
 
@@ -86,11 +89,11 @@ class CatalogScreenState extends State<CatalogScreen>
         _currentPage = state.page + 1;
         BlocProvider.of<ProductListBloc>(context).add(
           _searchQuery.isEmpty
-              ? LoadProductList(page: _currentPage, take: 6, category: '')
+              ? LoadProductList(page: _currentPage, perpage: 6, category: '')
               : SearchProductList(
                   search: _searchQuery,
                   page: _currentPage,
-                  take: 6,
+                  perpage: 6,
                   category: ''),
         );
       }
@@ -106,7 +109,7 @@ class CatalogScreenState extends State<CatalogScreen>
     });
     BlocProvider.of<ProductListBloc>(context).add(
       SearchProductList(
-          search: query, page: _currentPage, take: 6, category: ''),
+          search: query, page: _currentPage, perpage: 6, category: ''),
     );
   }
 

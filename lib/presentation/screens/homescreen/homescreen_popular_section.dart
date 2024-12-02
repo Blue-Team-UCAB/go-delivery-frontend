@@ -26,7 +26,7 @@ class _PopularSectionState extends State<PopularSection> {
     super.initState();
     context
         .read<ProductPopularListBloc>()
-        .add(const LoadProductList(page: 1, take: 4, category: ''));
+        .add(const LoadProductList(page: 1, perpage: 4, category: ''));
   }
 
   @override
@@ -83,9 +83,8 @@ class _PopularSectionState extends State<PopularSection> {
             } else if (state is ProductListFailed) {
               return Center(child: Text('Error: ${state.result}'));
             } else {
-              context
-                  .read<ProductPopularListBloc>()
-                  .add(const LoadProductList(page: 1, take: 4, category: ''));
+              context.read<ProductPopularListBloc>().add(
+                  const LoadProductList(page: 1, perpage: 4, category: ''));
               return const Center(child: CircularProgressIndicator());
             }
           },

@@ -26,34 +26,34 @@ class UserRepositoryImpl implements UserRepository {
 
   @override
   Future<Result<bool>> login(String email, String password) async {
-      var message;
-      final response = await _apiRequestManager.request<bool>(
-        '/auth/login',
-        'POST',
-        (data) {
-          if (data['errorCode'] != 200) {
-            message = data["message"];
+    var message;
+    final response = await _apiRequestManager.request<bool>(
+      '/auth/login',
+      'POST',
+      (data) {
+        if (data['errorCode'] != 200) {
+          message = data["message"];
 
-            return false;
-          } else {
-            final userData = data['value'] as Map<String, dynamic>;
-            var user = UserMapper.fromJson(userData);
+          return false;
+        } else {
+          final userData = data['value'] as Map<String, dynamic>;
+          var user = UserMapper.fromJson(userData);
 
-            _apiRequestManager.setHeaders(
-                'Authorization', 'Bearer ${user.token}');
+          _apiRequestManager.setHeaders(
+              'Authorization', 'Bearer ${user.token}');
 
-            _localStorage.setKeyValue<bool>('isAdmin', true);
-            _localStorage.setKeyValue<String>('appToken', user.token);
-          }
-          return true;
-        },
-        body: {"email": email, "password": password},
-      );
-      if(response.value == true) {
-        return response;
-      } else {
-          return Result.fail(CustomFailure(message: message));
-      }
+          _localStorage.setKeyValue<bool>('isAdmin', true);
+          _localStorage.setKeyValue<String>('appToken', user.token);
+        }
+        return true;
+      },
+      body: {"email": email, "password": password},
+    );
+    if (response.value == true) {
+      return response;
+    } else {
+      return Result.fail(CustomFailure(message: message));
+    }
   }
 
   @override
@@ -65,51 +65,52 @@ class UserRepositoryImpl implements UserRepository {
   }) async {
     var message;
     final response = await _apiRequestManager.request<bool>(
-        '/auth/register',
-        'POST',
-        (data) {
-          if (data['errorCode'] != 200) {
-            message = data["message"];
-            return false;
-          } else {
-            return true;
-          }
-        },
-        body: {
-          'email': email,
-          'name': name,
-          'password': password,
-          'phone': phone,
-        },
-      );
+      '/auth/register',
+      'POST',
+      (data) {
+        if (data['errorCode'] != 200) {
+          message = data["message"];
+          return false;
+        } else {
+          return true;
+        }
+      },
+      body: {
+        'email': email,
+        'name': name,
+        'password': password,
+        'phone': phone,
+      },
+    );
 
-      if(response.value == true) {
-        return response;
-      } else {
-        return Result.fail(CustomFailure(message: message));
-      }
+    if (response.value == true) {
+      return response;
+    } else {
+      return Result.fail(CustomFailure(message: message));
+    }
   }
 
   @override
   Future<Result<bool>> sendRecoveryCode(String email) async {
-      var message;
-      final response = await _apiRequestManager.request<bool>(
-        '/auth/forgot/password',
-        'POST',
-            (data) {
-              if (data['errorCode'] != 200) {
-                message = data["message"];
-                return false;
-              } else
-              return true;
-            },
-        body: {'email': email},
-      );
-      if(response.value == true) {
-        return response;
-      } else {
-        return Result.fail(CustomFailure(message: message));
-      }
+    var message;
+    final response = await _apiRequestManager.request<bool>(
+      '/auth/forgot/password',
+      'POST',
+      (data) {
+        if (data['errorCode'] != 200) {
+          message = data["message"];
+          return false;
+        } else {
+          return true;
+        }
+      },
+      body: {'email': email},
+    );
+    if (response.value == true) {
+      return response;
+    } else {
+      return Result.fail(CustomFailure(message: message));
+    }
   }
 
   @override
@@ -117,60 +118,51 @@ class UserRepositoryImpl implements UserRepository {
     var message;
 
     final response = await _apiRequestManager.request<bool>(
-        '/auth/code/validate',
-        'POST',
-          (data) {
-            print(data);
-            return true;
-          },
-        body: {'email': email, 'code': code},
-      );
+      '/auth/code/validate',
+      'POST',
+      (data) {
+        print(data);
+        return true;
+      },
+      body: {'email': email, 'code': code},
+    );
     print(response.value);
 
-    if(response.value == true) {
+    if (response.value == true) {
       return response;
     } else {
       return Result.fail(CustomFailure(message: message));
     }
-
   }
 
   @override
   Future<Result<bool>> changePassword(
       String email, String code, String password) async {
-      print(email);
-      print(code);
-      print(password);
+    print(email);
+    print(code);
+    print(password);
 
-      final response = await _apiRequestManager.request<bool>(
-        '/auth/change/password',
-        'POST',
-            (data) {
-                return true;
-          },
-        body: {
-          'email': email,
-          'password': password,
-          'code': code
-        },
-      );
+    final response = await _apiRequestManager.request<bool>(
+      '/auth/change/password',
+      'POST',
+      (data) {
+        return true;
+      },
+      body: {'email': email, 'password': password, 'code': code},
+    );
 
-      print(response.value);
+    print(response.value);
 
-      return response;
+    return response;
   }
 
   @override
   Future<Result<User>> getCurrent() async {
-      await _addAuthorizationHeader();
-      final response = await _apiRequestManager.request(
-        '/auth/current',
-        'GET',
-            (data) {
-                return UserMapper.fromJson(data);
-            }
-      );
-      return response;
+    await _addAuthorizationHeader();
+    final response =
+        await _apiRequestManager.request('/auth/current', 'GET', (data) {
+      return UserMapper.fromJson(data);
+    });
+    return response;
   }
-
 }

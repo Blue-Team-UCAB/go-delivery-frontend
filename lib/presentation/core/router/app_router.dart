@@ -5,6 +5,7 @@ import 'package:go_delivery_frontend/presentation/screens/screens.dart';
 import 'package:go_router/go_router.dart';
 import '../../../infrastructure/datasources/localstorage/localstorage_impl.dart';
 import '../../screens/auth/password_recovery/reset_pass_screen.dart';
+import '../../screens/detail/order/order_detailed_screen.dart';
 import '../transition/transitions.dart';
 
 class RoutesManager {
@@ -93,6 +94,18 @@ class RoutesManager {
                 key: state.pageKey,
                 child: const OrdersPage(initialCounterNavbar: 2),
               )),
+      GoRoute(
+          path: '/orderdetail/:id',
+          pageBuilder: (context, state) {
+            final orderId = state.pathParameters['id'] ?? 'no-id';
+            return CustomTransitions.slideRight(
+              key: state.pageKey,
+              child: OrderDetailScreen(
+                orderNumber: orderId,
+              ),
+            );
+          }
+      ),
       GoRoute(
         path: '/productdetail/:name',
         pageBuilder: (context, state) {
