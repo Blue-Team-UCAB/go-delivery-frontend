@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:go_delivery_frontend/application/BLoc/auth/current/current_user_bloc.dart';
 import 'package:go_delivery_frontend/presentation/screens/homescreen/category_tab.dart';
 import 'package:go_delivery_frontend/presentation/screens/homescreen/homescreen_combo_section.dart';
@@ -77,7 +78,11 @@ class HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      appBar: AppBar(
+        toolbarHeight: 0,
+        systemOverlayStyle: SystemUiOverlayStyle(statusBarColor: Color(0xFF2000B1)),
+      ),
+      backgroundColor: Color(0xFFEBEAED),
       body: SafeArea(
         child: Stack(
           children: [
@@ -88,7 +93,7 @@ class HomeScreenState extends State<HomeScreen> {
                   child: Container(
                     margin: const EdgeInsets.only(top: 30),
                     decoration: const BoxDecoration(
-                      color: Colors.white,
+                      color: Color(0xFFEBEAED),
                     ),
                     child: _buildContent(),
                   ),
@@ -120,7 +125,7 @@ class HomeScreenState extends State<HomeScreen> {
   }
 
   double _getLocationBarPosition(BuildContext context) {
-    return MediaQuery.of(context).size.height * 0.11;
+    return MediaQuery.of(context).size.height * 0.085;
   }
 
   Widget _buildHeader() {
@@ -167,16 +172,17 @@ class HomeScreenState extends State<HomeScreen> {
                   return IconButton(
                     icon: const Icon(Icons.menu),
                     onPressed: () {
-                      context.read<CurrentUserBloc>().add(FetchCurrentUser());
+                      // TODO: esto crashea la app
+                      // context.read<CurrentUserBloc>().add(FetchCurrentUser());
 
                       Scaffold.of(innerContext).openEndDrawer();
 
-                      showDialog(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return const TokenLoginStateChecker();
-                        },
-                      );
+                      // showDialog(
+                      //   context: context,
+                      //   builder: (BuildContext context) {
+                      //     return const TokenLoginStateChecker();
+                      //   },
+                      // );
                     },
                     color: Colors.white,
                   );

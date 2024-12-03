@@ -22,11 +22,11 @@ class _LocationBarState extends State<LocationBar> {
       color: Colors.transparent,
       child: DecoratedBox(
         decoration: BoxDecoration(
-          color: Colors.grey[200],
+          color: Color(0xFFFFFFFF),
           borderRadius: BorderRadius.circular(8),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.2),
+              color: Colors.black.withOpacity(0.1),
               blurRadius: 15,
               spreadRadius: 10,
               offset: const Offset(0, 10),
