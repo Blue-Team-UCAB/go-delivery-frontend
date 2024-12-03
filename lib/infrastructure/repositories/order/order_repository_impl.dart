@@ -36,7 +36,7 @@ class OrderRepositoryImpl extends OrderRepository {
           'page': page.toString(),
           'take': take.toString(),
         },
-            (data) {
+        (data) {
           List<Order> orders = (data['orders'] as List)
               .map((orderData) => OrderMapper.fromJson(orderData))
               .toList();
@@ -57,13 +57,13 @@ class OrderRepositoryImpl extends OrderRepository {
       final response = await _apiRequestManager.request(
         '/orders/$orderId',
         'GET',
-            (data) {
+        (data) {
           print('API response for order: $data');
           final order = OrderMapper.fromJson(data);
           print('Products in the order:');
-          order.products.forEach((product) {
+          for (var product in order.products) {
             print('Product: ${product.name}, Price: ${product.price}');
-          });
+          }
           return order;
         },
       );
@@ -87,19 +87,24 @@ class OrderRepositoryImpl extends OrderRepository {
   }
 
   @override
-  Future<Result<List<Order>>> getOrderHistory({int page = 1, int limit = 10, String? status}) {
+  Future<Result<List<Order>>> getOrderHistory(
+      {int page = 1, int limit = 10, String? status}) {
     // TODO: implement getOrderHistory
     throw UnimplementedError();
   }
 
   @override
-  Future<Result<Order>> modifyOrderQuantity({required String orderId, required String productId, required int newQuantity}) {
+  Future<Result<Order>> modifyOrderQuantity(
+      {required String orderId,
+      required String productId,
+      required int newQuantity}) {
     // TODO: implement modifyOrderQuantity
     throw UnimplementedError();
   }
 
   @override
-  Future<Result<bool>> rateOrder({required String orderId, required int rating, String? review}) {
+  Future<Result<bool>> rateOrder(
+      {required String orderId, required int rating, String? review}) {
     // TODO: implement rateOrder
     throw UnimplementedError();
   }
@@ -117,7 +122,8 @@ class OrderRepositoryImpl extends OrderRepository {
   }
 
   @override
-  Future<Result<Order>> updateOrderStatus({required String orderId, required String newStatus}) {
+  Future<Result<Order>> updateOrderStatus(
+      {required String orderId, required String newStatus}) {
     // TODO: implement updateOrderStatus
     throw UnimplementedError();
   }

@@ -5,6 +5,7 @@ class Product {
   final String name;
   final double price;
   final double weight;
+  final String measurement;
   final String description;
   final List<String> categories;
   String imageUrl;
@@ -16,6 +17,7 @@ class Product {
     required this.name,
     required this.price,
     required this.weight,
+    required this.measurement,
     required this.description,
     required this.categories,
     required this.imageUrl,

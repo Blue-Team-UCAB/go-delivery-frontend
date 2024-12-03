@@ -13,23 +13,24 @@ import 'order_detailed_screen_inactive.dart';
 class OrderDetailScreen extends StatelessWidget {
   final String orderNumber;
 
-  const OrderDetailScreen({Key? key, required this.orderNumber}) : super(key: key);
+  const OrderDetailScreen({super.key, required this.orderNumber});
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => getIt<OrderDetailBloc>()..add(LoadOrderDetailEvent(orderNumber)),
+      create: (context) =>
+          getIt<OrderDetailBloc>()..add(LoadOrderDetailEvent(orderNumber)),
       child: Scaffold(
         backgroundColor: Colors.white,
         appBar: AppBar(
           backgroundColor: Colors.white,
           elevation: 0,
           leading: IconButton(
-            icon: Icon(Icons.arrow_back_ios, color: Colors.black),
+            icon: const Icon(Icons.arrow_back_ios, color: Colors.black),
             onPressed: () => context.pop(),
           ),
           title: FadeIn(
-            child: Text(
+            child: const Text(
               'Detalle de Orden',
               style: TextStyle(
                 color: Colors.black,
@@ -42,7 +43,7 @@ class OrderDetailScreen extends StatelessWidget {
         body: BlocBuilder<OrderDetailBloc, OrderDetailState>(
           builder: (context, state) {
             if (state is OrderDetailLoadingState) {
-              return Center(child: CircularProgressIndicator());
+              return const Center(child: CircularProgressIndicator());
             }
 
             if (state is OrderDetailErrorState) {
@@ -54,9 +55,11 @@ class OrderDetailScreen extends StatelessWidget {
                       Text(state.error),
                       ElevatedButton(
                         onPressed: () {
-                          context.read<OrderDetailBloc>().add(LoadOrderDetailEvent(orderNumber));
+                          context
+                              .read<OrderDetailBloc>()
+                              .add(LoadOrderDetailEvent(orderNumber));
                         },
-                        child: Text('Reintentar'),
+                        child: const Text('Reintentar'),
                       )
                     ],
                   ),
@@ -70,7 +73,7 @@ class OrderDetailScreen extends StatelessWidget {
                   : InactiveOrderDetails(state: state);
             }
 
-            return SizedBox.shrink();
+            return const SizedBox.shrink();
           },
         ),
       ),

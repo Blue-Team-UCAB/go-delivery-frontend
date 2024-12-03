@@ -16,7 +16,6 @@ import 'package:go_delivery_frontend/application/use_cases/bundle/get_many_bundl
 import 'package:go_delivery_frontend/application/use_cases/bundle/get_one_bundle.dart';
 import 'package:go_delivery_frontend/application/use_cases/product/get_one_product.dart';
 import 'package:go_delivery_frontend/domain/repositories/bundle/bundle_repository.dart';
-import 'package:go_delivery_frontend/domain/repositories/cart/cart_local_storage_repository.dart';
 import 'package:go_delivery_frontend/domain/repositories/order/order_repository.dart';
 import 'package:go_delivery_frontend/infrastructure/datasources/api/api_request_impl.dart';
 import 'package:go_delivery_frontend/infrastructure/datasources/cart/cart_isar_local_storage_datasource.dart';

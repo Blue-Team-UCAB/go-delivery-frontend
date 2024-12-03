@@ -34,8 +34,6 @@ class _RelatedProductsSectionState extends State<RelatedProductsSection> {
   void didUpdateWidget(covariant RelatedProductsSection oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.category != widget.category) {
-      print(
-          "AAAAAAAAAAAAAAA didUpdateWidget: category changed to ${widget.category}");
       _resetAndLoadProducts();
     }
   }
@@ -54,7 +52,6 @@ class _RelatedProductsSectionState extends State<RelatedProductsSection> {
 
   void _loadProducts() {
     if (_isRequestInProgress) return;
-    print("EEEEEEEEEEEEEEEEE Loading products for category: $_currentCategory");
 
     _isRequestInProgress = true;
 
@@ -68,7 +65,7 @@ class _RelatedProductsSectionState extends State<RelatedProductsSection> {
     );
 
     _blocSubscription = productListBloc.stream.listen((state) {
-      if (!mounted) return; // Verifica si el widget sigue montado.
+      if (!mounted) return;
       if (state is ProductListLoaded || state is ProductListFailed) {
         _isRequestInProgress = false;
       }
@@ -89,9 +86,6 @@ class _RelatedProductsSectionState extends State<RelatedProductsSection> {
 
   @override
   Widget build(BuildContext context) {
-    print(
-        "OOOOOOOOOOOOOOOOOO Building RelatedProductsSection for category: ${widget.category}");
-
     return BlocSelector<ProductListBloc, ProductListState, List<Product>>(
       selector: (state) {
         if (state is ProductListLoaded) {

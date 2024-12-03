@@ -1,6 +1,4 @@
 import 'package:go_delivery_frontend/domain/entities/product/product.dart';
-//import 'package:go_delivery_frontend/domain/entities/category/category.dart';
-//import 'package:go_delivery_frontend/infrastructure/mappers/category/category_mapper.dart';
 
 class ProductMapper {
   static Product fromJson(Map<String, dynamic> json) {
@@ -20,6 +18,7 @@ class ProductMapper {
             json['description'] as String? ?? 'Descripción no disponible',
         currency: json['currency'] as String? ?? 'USD',
         price: (json['price'] as num?)?.toDouble() ?? 0.0,
+        measurement: json['measurement'] as String? ?? '',
         weight: (json['weight'] as num?)?.toDouble() ?? 0.0,
         stock: json['stock'] as int? ?? 0,
         categories: List<String>.from(categories),
@@ -39,6 +38,7 @@ class ProductMapper {
       'currency': product.currency,
       'price': product.price,
       'weight': product.weight,
+      'measurement': product.measurement,
       'stock': product.stock,
       'categories': product.categories,
       'imageUrl': product.imageUrl,

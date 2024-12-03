@@ -37,7 +37,7 @@ class CurrentUserBloc extends SafeBloc<CurrentUserEvent, CurrentUserState> {
       ));
     } else {
       final error = userResult.getError();
-      emit(CurrentUserError(error?.message ?? 'Unknown error occurred'));
+      emit(CurrentUserError(error.message ?? 'Unknown error occurred'));
     }
   }
 }
