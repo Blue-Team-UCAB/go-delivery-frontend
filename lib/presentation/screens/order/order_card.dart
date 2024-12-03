@@ -142,7 +142,7 @@ class _OrderCardState extends State<OrderCard> {
           style: ElevatedButton.styleFrom(
             backgroundColor: const Color(0xFF2000B1),
           ),
-          child: Text('Reportar un problema',
+          child: const Text('Reportar un problema',
               style: TextStyle(
                 color: Colors.white,
                 fontFamily: 'Inter',
@@ -159,7 +159,7 @@ class _OrderCardState extends State<OrderCard> {
                 style: OutlinedButton.styleFrom(
                   foregroundColor: const Color(0xFF2000B1),
                 ),
-                child: Text('Reseña',
+                child: const Text('Reseña',
                     style: TextStyle(
                       fontFamily: 'Inter',
                       fontSize: 14,
@@ -174,7 +174,7 @@ class _OrderCardState extends State<OrderCard> {
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFF2000B1),
                 ),
-                child: Text('Reordenar',
+                child: const Text('Reordenar',
                     style: TextStyle(
                       color: Colors.white,
                       fontFamily: 'Inter',
@@ -194,7 +194,7 @@ class _OrderCardState extends State<OrderCard> {
                 style: OutlinedButton.styleFrom(
                   foregroundColor: Colors.grey,
                 ),
-                child: Text('Cancelar',
+                child: const Text('Cancelar',
                     style: TextStyle(
                       fontFamily: 'Inter',
                       fontSize: 14,
@@ -209,7 +209,7 @@ class _OrderCardState extends State<OrderCard> {
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFF2000B1),
                 ),
-                child: Text('Ver',
+                child: const Text('Ver',
                     style: TextStyle(
                       color: Colors.white,
                       fontFamily: 'Inter',

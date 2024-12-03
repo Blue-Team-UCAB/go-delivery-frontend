@@ -17,7 +17,7 @@ class ProductListBloc extends Bloc<ProductListEvent, ProductListState> {
     LoadProductList event,
     Emitter<ProductListState> emit,
   ) async {
-    await _loadProducts('', '', event.page, event.perpage, emit);
+    await _loadProducts('', event.category, event.page, event.perpage, emit);
   }
 
   Future<void> _onSearchProductList(
@@ -40,7 +40,12 @@ class ProductListBloc extends Bloc<ProductListEvent, ProductListState> {
           : const ProductListLoaded(
               products: [], hasReachedMax: false, page: 1, category: '');
       if (currentState.category != category) {
-        emit(const ProductListLoading([]));
+        emit(ProductListLoaded(
+          products: const [],
+          hasReachedMax: false,
+          page: 1,
+          category: category ?? '',
+        ));
       }
 
       final result = await _getProductsUseCase.execute(

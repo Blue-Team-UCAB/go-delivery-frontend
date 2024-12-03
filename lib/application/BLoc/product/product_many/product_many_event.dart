@@ -7,7 +7,7 @@ abstract class ProductListEvent extends Equatable {
 class LoadProductList extends ProductListEvent {
   final int page;
   final int perpage;
-  final String category;
+  final String? category;
 
   const LoadProductList({
     required this.page,
@@ -23,7 +23,7 @@ class SearchProductList extends ProductListEvent {
   final int page;
   final int perpage;
   final String search;
-  final String category;
+  final String? category;
 
   const SearchProductList({
     required this.search,

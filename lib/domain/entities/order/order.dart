@@ -1,6 +1,6 @@
 import '../product/product.dart';
 
-class Order{
+class Order {
   final String orderNumber;
   final String date;
   final String items;
@@ -10,14 +10,13 @@ class Order{
   final String location;
   final List<Product> products;
 
-  Order({
-    required this.orderNumber,
-    required this.date,
-    required this.items,
-    required this.price,
-    required this.status,
-    required this.time,
-    required this.location,
-    required List<Product> this.products
-  });
+  Order(
+      {required this.orderNumber,
+      required this.date,
+      required this.items,
+      required this.price,
+      required this.status,
+      required this.time,
+      required this.location,
+      required this.products});
 }

@@ -36,6 +36,7 @@ class GetOneOrderUseCase {
           currency: 'USD',
           price: 999.99,
           weight: 0.24,
+          measurement: 'kg',
           stock: 50,
           categories: [
             // Cambiado para aceptar lista de cadenas
@@ -50,6 +51,7 @@ class GetOneOrderUseCase {
           currency: 'USD',
           price: 999.00,
           weight: 1.29,
+          measurement: 'kg',
           stock: 30,
           categories: ['Laptops'],
           imageUrl: 'https://example.com/macbookair.jpg',
