@@ -1,10 +1,7 @@
 import 'dart:math';
-
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-
 import '../../../application/BLoc/cart/cart_bloc.dart';
 import '../../../application/BLoc/product/popular/random/product_random_many_bloc.dart';
 import '../../../application/BLoc/product/product_many/product_many_event.dart';
@@ -13,21 +10,19 @@ import '../../../domain/entities/product/product.dart';
 import '../../../infrastructure/mappers/cart/cart_item_mapper.dart';
 import '../../core/common/image-loader.dart';
 
-
 //THIS IS A PLACEHOLDER. Pronto estará el Popular list definitivo despues de tener casi listo la app
 //THIS IS A PLACEHOLDER. Pronto estará el Popular list definitivo despues de tener casi listo la app
 //THIS IS A PLACEHOLDER. Pronto estará el Popular list definitivo despues de tener casi listo la app
 //THIS IS A PLACEHOLDER. Pronto estará el Popular list definitivo despues de tener casi listo la app
 
 class RandomSection extends StatefulWidget {
-  const RandomSection({Key? key}) : super(key: key);
+  const RandomSection({super.key});
 
   @override
   _RandomSectionState createState() => _RandomSectionState();
 }
 
 class _RandomSectionState extends State<RandomSection> {
-  final int _itemsToShow = 10;
   bool _mounted = true;
 
   @override
@@ -40,7 +35,9 @@ class _RandomSectionState extends State<RandomSection> {
     if (!_mounted) return;
     final random = Random();
     final randomPage = random.nextInt(7) + 1;
-    context.read<ProductRandomListBloc>().add(LoadProductList(page: randomPage, perpage: 8));
+    context
+        .read<ProductRandomListBloc>()
+        .add(LoadProductList(page: randomPage, perpage: 8, category: ''));
   }
 
   @override
@@ -99,7 +96,6 @@ class _RandomSectionState extends State<RandomSection> {
   }
 }
 
-
 class RandomItem extends StatelessWidget {
   final Product product;
 
@@ -137,8 +133,7 @@ class RandomItem extends StatelessWidget {
                   fontFamily: 'Inter',
                   fontSize: 14.0,
                   fontWeight: FontWeight.w800,
-                  color: Color(0xFF000000)
-              ),
+                  color: Color(0xFF000000)),
             ),
             subtitle: Text(
               '\$${product.price.toStringAsFixed(2)}',
@@ -147,8 +142,7 @@ class RandomItem extends StatelessWidget {
                   fontFamily: 'Inter',
                   fontSize: 14.0,
                   fontWeight: FontWeight.w400,
-                  color: Color(0xFF000000)
-              ),
+                  color: Color(0xFF000000)),
             ),
             trailing: OutlinedButton(
               style: ButtonStyle(
@@ -160,29 +154,27 @@ class RandomItem extends StatelessWidget {
               ),
               onPressed: () {
                 context.read<CartBloc>().addCartItem(
-                    CartItemMapper.fromProduct(product).toCartItemEntity()
-                );
+                    CartItemMapper.fromProduct(product).toCartItemEntity());
                 ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                     duration: Duration(seconds: 1),
                     behavior: SnackBarBehavior.floating,
                     margin: EdgeInsets.only(bottom: 25, right: 20, left: 20),
                     backgroundColor: Color(0xfc009e4f),
-                    content: Text('Agregado Satisfactoriamente')
-                ));
+                    content: Text('Agregado Satisfactoriamente')));
               },
-              child: const Text(
-                  'Añadir',
+              child: const Text('Añadir',
                   style: TextStyle(
                     fontFamily: 'Inter',
                     fontSize: 13,
                     fontWeight: FontWeight.w600,
                     color: Color(0xFF2000B1),
-                  )
-              ),
+                  )),
             ),
           ),
         ),
-        const SizedBox(height: 15,)
+        const SizedBox(
+          height: 15,
+        )
       ],
     );
   }

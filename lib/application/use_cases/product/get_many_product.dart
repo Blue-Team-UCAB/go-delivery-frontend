@@ -6,10 +6,12 @@ import 'package:go_delivery_frontend/domain/repositories/product/product_reposit
 class GetProductsUseCaseInput extends IUseCaseInput {
   final int page;
   final int perpage;
+  final String? category;
   final String? search;
 
   GetProductsUseCaseInput({
     this.search,
+    this.category,
     required this.page,
     required this.perpage,
   });
@@ -24,6 +26,7 @@ class GetProductsUseCase {
   Future<Result<List<Product>>> execute(GetProductsUseCaseInput input) {
     return _productRepository.getProducts(
       search: input.search!,
+      category: input.category,
       page: input.page,
       perpage: input.perpage,
     );

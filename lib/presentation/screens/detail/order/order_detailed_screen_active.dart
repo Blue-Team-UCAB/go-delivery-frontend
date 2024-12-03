@@ -10,7 +10,7 @@ import 'driver_card.dart';
 class ActiveOrderDetails extends StatelessWidget {
   final OrderDetailLoadedState state;
 
-  const ActiveOrderDetails({Key? key, required this.state}) : super(key: key);
+  const ActiveOrderDetails({super.key, required this.state});
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +18,7 @@ class ActiveOrderDetails extends StatelessWidget {
       child: Column(
         children: [
           FadeInDown(
-            duration: Duration(milliseconds: 50),
+            duration: const Duration(milliseconds: 50),
             child: OrderHeaderInfo(
               time: state.time,
               location: state.location,
@@ -26,7 +26,7 @@ class ActiveOrderDetails extends StatelessWidget {
             ),
           ),
           FadeInDown(
-            delay: Duration(milliseconds: 50),
+            delay: const Duration(milliseconds: 50),
             child: DriverCard(
               driverName: "Juancho",
               driverImage: "",
@@ -34,7 +34,7 @@ class ActiveOrderDetails extends StatelessWidget {
             ),
           ),
           FadeInDown(
-            delay: Duration(milliseconds: 50),
+            delay: const Duration(milliseconds: 50),
             child: OrderSummary(
               orderNumber: state.orderNumber,
               amount: state.price,
@@ -42,7 +42,7 @@ class ActiveOrderDetails extends StatelessWidget {
             ),
           ),
           FadeInDown(
-            delay: Duration(milliseconds: 50),
+            delay: const Duration(milliseconds: 50),
             child: OrderProgress(state: state),
           ),
         ],
@@ -61,10 +61,10 @@ class ActiveOrderDetails extends StatelessWidget {
     showDialog(
       context: context,
       builder: (_) => FadeIn(
-        duration: Duration(milliseconds: 100),
+        duration: const Duration(milliseconds: 100),
         child: AlertDialog(
-          title: Text('Agregar instrucciones'),
-          content: TextField(
+          title: const Text('Agregar instrucciones'),
+          content: const TextField(
             maxLines: 3,
             decoration: InputDecoration(
               hintText: 'Escribe las instrucciones para el conductor...',
@@ -74,31 +74,29 @@ class ActiveOrderDetails extends StatelessWidget {
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
-              child: Text('Cancelar'),
+              child: const Text('Cancelar'),
             ),
             ElevatedButton(
               onPressed: () {
-              //  context.read<OrderDetailBloc>().add(
-              //     UpdateInstructionsEvent(state.orderNumber, 'instructions'),
-              //  );
+                //  context.read<OrderDetailBloc>().add(
+                //     UpdateInstructionsEvent(state.orderNumber, 'instructions'),
+                //  );
                 Navigator.pop(context);
               },
-              child: Text('Guardar'),
+              child: const Text('Guardar'),
             ),
           ],
         ),
       ),
     );
   }
-
-
 }
 
 Widget _buildTimelineItem(
-    String title,
-    String subtitle, {
-      bool isCompleted = false,
-    }) {
+  String title,
+  String subtitle, {
+  bool isCompleted = false,
+}) {
   return Row(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
@@ -116,7 +114,7 @@ Widget _buildTimelineItem(
               ),
             ),
             child: isCompleted
-                ? Icon(Icons.check, color: Colors.white, size: 16)
+                ? const Icon(Icons.check, color: Colors.white, size: 16)
                 : null,
           ),
           Container(
@@ -126,14 +124,14 @@ Widget _buildTimelineItem(
           ),
         ],
       ),
-      SizedBox(width: 12),
+      const SizedBox(width: 12),
       Expanded(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
               title,
-              style: TextStyle(
+              style: const TextStyle(
                 fontWeight: FontWeight.bold,
                 fontSize: 16,
               ),
@@ -145,7 +143,7 @@ Widget _buildTimelineItem(
                 fontSize: 14,
               ),
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
           ],
         ),
       ),
@@ -153,17 +151,16 @@ Widget _buildTimelineItem(
   );
 }
 
-
 // Error boundary widget
 class ErrorBoundary extends StatelessWidget {
   final Widget child;
   final Widget Function(Object error, StackTrace? stackTrace) fallback;
 
   const ErrorBoundary({
-    Key? key,
+    super.key,
     required this.child,
     required this.fallback,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -179,16 +176,15 @@ class ErrorBoundary extends StatelessWidget {
   }
 }
 
-
 class OrderProgress extends StatelessWidget {
   final OrderDetailLoadedState state;
 
-  const OrderProgress({Key? key, required this.state}) : super(key: key);
+  const OrderProgress({super.key, required this.state});
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.all(16),
+      padding: const EdgeInsets.all(16),
       child: Column(
         children: [
           _buildTimelineItem(
@@ -221,11 +217,11 @@ class OrderProgress extends StatelessWidget {
             Container(
               width: 24,
               height: 24,
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 shape: BoxShape.circle,
                 color: Colors.indigo,
               ),
-              child: Icon(Icons.check, color: Colors.white, size: 16),
+              child: const Icon(Icons.check, color: Colors.white, size: 16),
             ),
             Container(
               width: 2,
@@ -234,20 +230,20 @@ class OrderProgress extends StatelessWidget {
             ),
           ],
         ),
-        SizedBox(width: 12),
+        const SizedBox(width: 12),
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
+              const Text(
                 'Entregando',
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),
-              Text('Tu conductor va en camino'),
-              SizedBox(height: 8),
+              const Text('Tu conductor va en camino'),
+              const SizedBox(height: 8),
               ClipRRect(
                 borderRadius: BorderRadius.circular(8),
-                child: SizedBox(
+                child: const SizedBox(
                   height: 200,
                   child: DeliveryMap(
                     driverLocation: LatLng(23, 33),
@@ -263,51 +259,49 @@ class OrderProgress extends StatelessWidget {
   }
 }
 
-
 class DeliveryMap extends StatelessWidget {
   final LatLng driverLocation;
   final LatLng destinationLocation;
 
   const DeliveryMap({
-    Key? key,
+    super.key,
     required this.driverLocation,
     required this.destinationLocation,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
     return GoogleMap(
-        initialCameraPosition: CameraPosition(
+      initialCameraPosition: CameraPosition(
         target: driverLocation,
         zoom: 15,
-    ),
-    markers: {
-      Marker(
-          markerId: MarkerId('driver'),
+      ),
+      markers: {
+        Marker(
+          markerId: const MarkerId('driver'),
           position: driverLocation,
           icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue),
-          ),
-      Marker(
-          markerId: MarkerId('destination'),
+        ),
+        Marker(
+          markerId: const MarkerId('destination'),
           position: destinationLocation,
           icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
-          ),
+        ),
       },
-          polylines: {
-      Polyline(
-          polylineId: PolylineId('route'),
+      polylines: {
+        Polyline(
+          polylineId: const PolylineId('route'),
           points: [driverLocation, destinationLocation],
-            color: Colors.blue,
-            width: 3,
-          ),
+          color: Colors.blue,
+          width: 3,
+        ),
       },
-        myLocationEnabled: true,
-        zoomControlsEnabled: true,
-        mapToolbarEnabled: false,
-      );
+      myLocationEnabled: true,
+      zoomControlsEnabled: true,
+      mapToolbarEnabled: false,
+    );
   }
 }
-
 
 class OrderHeaderInfo extends StatelessWidget {
   final String time;
@@ -315,45 +309,47 @@ class OrderHeaderInfo extends StatelessWidget {
   final VoidCallback onAddInstructions;
 
   const OrderHeaderInfo({
-    Key? key,
+    super.key,
     required this.time,
     required this.location,
     required this.onAddInstructions,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.all(16),
+      padding: const EdgeInsets.all(16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
-              Icon(Icons.access_time_outlined, size: 16, color: Colors.grey),
-              SizedBox(width: 4),
+              const Icon(Icons.access_time_outlined,
+                  size: 16, color: Colors.grey),
+              const SizedBox(width: 4),
               Text(
                 'Ordenada a las $time',
-                style: TextStyle(color: Colors.grey, fontSize: 14),
+                style: const TextStyle(color: Colors.grey, fontSize: 14),
               ),
             ],
           ),
-          SizedBox(height: 8),
+          const SizedBox(height: 8),
           Row(
             children: [
-              Icon(Icons.location_on_outlined, size: 16, color: Colors.grey),
-              SizedBox(width: 4),
+              const Icon(Icons.location_on_outlined,
+                  size: 16, color: Colors.grey),
+              const SizedBox(width: 4),
               Expanded(
                 child: Text(
                   location,
-                  style: TextStyle(color: Colors.grey, fontSize: 14),
+                  style: const TextStyle(color: Colors.grey, fontSize: 14),
                 ),
               ),
             ],
           ),
           TextButton(
             onPressed: onAddInstructions,
-            child: Text(
+            child: const Text(
               'Agregar instrucciones',
               style: TextStyle(
                 color: Colors.indigo,
@@ -373,27 +369,27 @@ class OrderSummary extends StatelessWidget {
   final String estimatedTime;
 
   const OrderSummary({
-    Key? key,
+    super.key,
     required this.orderNumber,
     required this.amount,
     required this.estimatedTime,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.all(16),
+      padding: const EdgeInsets.all(16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             'Orden #$orderNumber',
-            style: TextStyle(
+            style: const TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.bold,
             ),
           ),
-          SizedBox(height: 4),
+          const SizedBox(height: 4),
           Text(
             'Monto $amount',
             style: TextStyle(
@@ -401,10 +397,10 @@ class OrderSummary extends StatelessWidget {
               fontSize: 16,
             ),
           ),
-          SizedBox(height: 16),
+          const SizedBox(height: 16),
           Text(
             'Estimado: $estimatedTime minutos',
-            style: TextStyle(
+            style: const TextStyle(
               fontWeight: FontWeight.bold,
               fontSize: 16,
             ),
@@ -414,4 +410,3 @@ class OrderSummary extends StatelessWidget {
     );
   }
 }
-

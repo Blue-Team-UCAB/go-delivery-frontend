@@ -18,9 +18,11 @@ import 'package:go_delivery_frontend/application/use_cases/product/get_one_produ
 import 'package:go_delivery_frontend/domain/repositories/bundle/bundle_repository.dart';
 import 'package:go_delivery_frontend/domain/repositories/order/order_repository.dart';
 import 'package:go_delivery_frontend/infrastructure/datasources/api/api_request_impl.dart';
+import 'package:go_delivery_frontend/infrastructure/datasources/cart/cart_isar_local_storage_datasource.dart';
 import 'package:go_delivery_frontend/infrastructure/datasources/localstorage/localstorage_impl.dart';
 import 'package:go_delivery_frontend/domain/repositories/product/product_repository.dart';
 import 'package:go_delivery_frontend/infrastructure/repositories/bundle/bundle_repository_impl.dart';
+import 'package:go_delivery_frontend/infrastructure/repositories/cart/cart_local_storage_repository_impl.dart';
 import 'package:go_delivery_frontend/infrastructure/repositories/order/order_repository_impl.dart';
 import 'package:go_delivery_frontend/infrastructure/repositories/product/product_repository_impl.dart';
 import 'package:go_delivery_frontend/application/use_cases/product/get_many_product.dart';
@@ -58,13 +60,16 @@ class InjectManager {
     final loginUseCase = LoginUseCase(userRepository: userRepository);
     final registerUseCase = RegisterUseCase(userRepository: userRepository);
     final recoveryUseCase = RecoveryUseCase(userRepository: userRepository);
-    final getCurrentUseCase = CurrentUserUseCase(userRepository: userRepository);
+    final getCurrentUseCase =
+        CurrentUserUseCase(userRepository: userRepository);
 
     // Registrar
     getIt.registerFactory(() => LoginBloc(loginUseCase: loginUseCase));
     getIt.registerFactory(() => RegisterBloc(userRepository.register));
-    getIt.registerSingleton(RecoverPasswordBloc(recoveryUseCase: recoveryUseCase));
-    getIt.registerSingleton(CurrentUserBloc(currentUserUseCase: getCurrentUseCase));
+    getIt.registerSingleton(
+        RecoverPasswordBloc(recoveryUseCase: recoveryUseCase));
+    getIt.registerSingleton(
+        CurrentUserBloc(currentUserUseCase: getCurrentUseCase));
 
     //registrar caso de uso
     getIt.registerSingleton<LoginUseCase>(loginUseCase);
@@ -74,7 +79,9 @@ class InjectManager {
     // ======================================================================= //
 
     // ============================= CART ==================================== //
-    getIt.registerSingleton(CartBloc());
+    final cartLocalStorageRepo =
+        CartLocalStorageRepositoryImpl(CartIsarLocalStorageDatasource());
+    getIt.registerSingleton(CartBloc(cartLocalStorageRepo));
     // ======================================================================= //
 
     // ============================= NOTIFICATIONS =========================== //
@@ -153,8 +160,7 @@ class InjectManager {
     //Repositorio
     final orderRepository = OrderRepositoryImpl(
         apiRequestManager: apiRequestManagerImpl,
-        localStorage: localStorageService
-    );
+        localStorage: localStorageService);
 
     // Registrar el repositorio de ordenes
     getIt.registerSingleton<OrderRepository>(orderRepository);
@@ -166,6 +172,7 @@ class InjectManager {
     getIt.registerSingleton<GetOneOrderUseCase>(getOneOrderUseCase);
     // ======================================================================= //
 
-    getIt.registerSingleton(OrderDetailBloc(getOneOrderUseCase: getOneOrderUseCase));
+    getIt.registerSingleton(
+        OrderDetailBloc(getOneOrderUseCase: getOneOrderUseCase));
   }
 }

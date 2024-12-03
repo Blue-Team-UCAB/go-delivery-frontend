@@ -1,12 +1,6 @@
-
-
 import '../../domain/entities/product/product.dart';
 
-class OrderMany {
-
-
-
-}
+class OrderMany {}
 
 class Order {
   final String orderNumber;
@@ -18,15 +12,13 @@ class Order {
   final String location;
   final List<Product> products;
 
-  Order({
-    required this.orderNumber,
-    required this.date,
-    required this.items,
-    required this.price,
-    required this.status,
-    required this.time,
-    required this.location,
-    required this.products
-  });
+  Order(
+      {required this.orderNumber,
+      required this.date,
+      required this.items,
+      required this.price,
+      required this.status,
+      required this.time,
+      required this.location,
+      required this.products});
 }
-

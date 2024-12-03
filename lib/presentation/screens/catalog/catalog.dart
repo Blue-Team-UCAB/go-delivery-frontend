@@ -8,11 +8,7 @@ import 'package:go_delivery_frontend/presentation/widgets/sidebar.dart';
 import 'package:go_delivery_frontend/application/BLoc/product/product_many/product_many_bloc.dart';
 import 'package:go_delivery_frontend/application/BLoc/product/product_many/product_many_state.dart';
 import 'package:go_delivery_frontend/application/BLoc/product/product_many/product_many_event.dart';
-import 'package:go_router/go_router.dart';
-
 import '../../../domain/entities/product/product.dart';
-import '../../../infrastructure/datasources/localstorage/localstorage_impl.dart';
-import '../../widgets/dialog_darken_window.dart';
 import 'logout_from_catalog.dart';
 
 class CatalogScreen extends StatefulWidget {
@@ -24,15 +20,16 @@ class CatalogScreen extends StatefulWidget {
   CatalogScreenState createState() => CatalogScreenState();
 }
 
-class CatalogScreenState extends State<CatalogScreen> with AutomaticKeepAliveClientMixin {
+class CatalogScreenState extends State<CatalogScreen>
+    with AutomaticKeepAliveClientMixin {
   int _counter = 0;
   final ScrollController _scrollController = ScrollController();
   bool _isLoadingMore = false;
-  bool _hasLoadedAllProducts = false;
   int _currentPage = 1;
   final _gridKey = const PageStorageKey('catalog_grid');
   String _searchQuery = '';
   late StreamSubscription<ProductListState> _productListSubscription;
+  final List<Product> _products = [];
 
   @override
   bool get wantKeepAlive => true;
@@ -41,17 +38,20 @@ class CatalogScreenState extends State<CatalogScreen> with AutomaticKeepAliveCli
   void initState() {
     super.initState();
     _counter = widget.initialCounterNavbar;
+    _loadProducts();
 
     BlocProvider.of<ProductListBloc>(context).add(
-      LoadProductList(page: _currentPage, perpage: 6),
+      LoadProductList(page: _currentPage, perpage: 6, category: ''),
     );
     _scrollController.addListener(_onScroll);
 
-    _productListSubscription = BlocProvider.of<ProductListBloc>(context).stream.listen((state) {
+    _productListSubscription =
+        BlocProvider.of<ProductListBloc>(context).stream.listen((state) {
       if (state is ProductListLoaded) {
         if (mounted) {
           setState(() {
             _isLoadingMore = false;
+            _addUniqueProducts(state.products);
           });
         }
       }
@@ -66,11 +66,21 @@ class CatalogScreenState extends State<CatalogScreen> with AutomaticKeepAliveCli
     super.dispose();
   }
 
+  // Función para cargar productos
+  void _loadProducts() {
+    BlocProvider.of<ProductListBloc>(context).add(
+      LoadProductList(page: _currentPage, perpage: 6, category: ''),
+    );
+  }
+
+  // Función llamada en el listener de scroll
   void _onScroll() {
     if (_scrollController.position.pixels >=
         _scrollController.position.maxScrollExtent - 300) {
       final state = BlocProvider.of<ProductListBloc>(context).state;
-      if (state is ProductListLoaded && !state.hasReachedMax && !_isLoadingMore) {
+      if (state is ProductListLoaded &&
+          !state.hasReachedMax &&
+          !_isLoadingMore) {
         if (mounted) {
           setState(() {
             _isLoadingMore = true;
@@ -79,30 +89,45 @@ class CatalogScreenState extends State<CatalogScreen> with AutomaticKeepAliveCli
         _currentPage = state.page + 1;
         BlocProvider.of<ProductListBloc>(context).add(
           _searchQuery.isEmpty
-              ? LoadProductList(page: _currentPage, perpage: 6)
-              : SearchProductList(search: _searchQuery, page: _currentPage, perpage: 6),
+              ? LoadProductList(page: _currentPage, perpage: 6, category: '')
+              : SearchProductList(
+                  search: _searchQuery,
+                  page: _currentPage,
+                  perpage: 6,
+                  category: ''),
         );
       }
     }
   }
 
+  // Función de búsqueda
   void _handleSearch(String query) {
     setState(() {
       _searchQuery = query;
       _currentPage = 1;
-      _hasLoadedAllProducts = false;
+      _products.clear();
     });
     BlocProvider.of<ProductListBloc>(context).add(
-      SearchProductList(search: query, page: _currentPage, perpage: 6),
+      SearchProductList(
+          search: query, page: _currentPage, perpage: 6, category: ''),
     );
   }
 
+  // Función para manejar el cambio de tab
   void _onNavItemTapped(int valueIndex) {
     setState(() {
       _counter = valueIndex;
     });
   }
 
+  // Función para evitar productos duplicados en la lista
+  void _addUniqueProducts(List<Product> newProducts) {
+    for (var product in newProducts) {
+      if (!_products.any((p) => p.id == product.id)) {
+        _products.add(product);
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -204,20 +229,18 @@ class CatalogScreenState extends State<CatalogScreen> with AutomaticKeepAliveCli
                       onSubmitted: _handleSearch,
                       decoration: InputDecoration(
                         hintText: 'Buscar un producto',
-                        hintStyle: TextStyle(color: Colors.grey),
+                        hintStyle: const TextStyle(color: Colors.grey),
                         border: InputBorder.none,
                         suffixIcon: _searchQuery.isNotEmpty
                             ? IconButton(
-                          icon: Icon(Icons.clear),
-                          onPressed: () {
-                            _handleSearch('');
-                          },
-                          
-                        )
+                                icon: const Icon(Icons.clear),
+                                onPressed: () {
+                                  _handleSearch('');
+                                },
+                              )
                             : null,
                       ),
-                      style: TextStyle(color: Colors.grey),
-                      
+                      style: const TextStyle(color: Colors.grey),
                     ),
                   ),
                   IconButton(
@@ -236,12 +259,13 @@ class CatalogScreenState extends State<CatalogScreen> with AutomaticKeepAliveCli
           Expanded(
             child: BlocBuilder<ProductListBloc, ProductListState>(
               builder: (context, state) {
-                if (state is ProductListInitial) {
+                if (state is ProductListInitial && _products.isEmpty) {
                   return const Center(child: CircularProgressIndicator());
                 } else if (state is ProductListLoading) {
-                  return _buildProductGrid(state.products, isLoading: true);
+                  return _productGrid(state.products, isLoading: true);
                 } else if (state is ProductListLoaded) {
-                  return _buildProductGrid(state.products, hasReachedMax: state.hasReachedMax);
+                  return _productGrid(state.products,
+                      hasReachedMax: state.hasReachedMax);
                 } else if (state is ProductListFailed) {
                   return Center(child: Text('Error: ${state.result.error}'));
                 } else {
@@ -259,7 +283,8 @@ class CatalogScreenState extends State<CatalogScreen> with AutomaticKeepAliveCli
     );
   }
 
-  Widget _buildProductGrid(List<Product> products, {bool isLoading = false, bool hasReachedMax = false}) {
+  Widget _productGrid(List<Product> products,
+      {bool isLoading = false, bool hasReachedMax = false}) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20.0),
       child: ScrollConfiguration(
@@ -271,28 +296,20 @@ class CatalogScreenState extends State<CatalogScreen> with AutomaticKeepAliveCli
           controller: _scrollController,
           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 2,
-            crossAxisSpacing: 20.0,
-            mainAxisSpacing: 20.0,
-            childAspectRatio: 0.66,
+            childAspectRatio: 0.65,
+            crossAxisSpacing: 8.0,
+            mainAxisSpacing: 8.0,
           ),
-          itemCount: products.length + (isLoading || !hasReachedMax ? 1 : 0),
+          itemCount: _products.length + (isLoading ? 1 : 0),
           itemBuilder: (context, index) {
-            if (index < products.length) {
-              return ProductCard(
-                key: ValueKey('product_card_${products[index].id}'),
-                product: products[index],
-              );
-            } else if (isLoading) {
+            if (index >= _products.length) {
               return const Center(child: CircularProgressIndicator());
-            } else if (!hasReachedMax) {
-              return const Center(child: CircularProgressIndicator());
-            } else {
-              return const SizedBox.shrink();
             }
+            final product = _products[index];
+            return ProductCard(product: product);
           },
         ),
       ),
     );
   }
-
 }

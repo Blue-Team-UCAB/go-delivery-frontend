@@ -8,7 +8,7 @@ import '../../../widgets/product_stacked_card.dart';
 class InactiveOrderDetails extends StatelessWidget {
   final OrderDetailLoadedState state;
 
-  const InactiveOrderDetails({Key? key, required this.state}) : super(key: key);
+  const InactiveOrderDetails({super.key, required this.state});
 
   @override
   Widget build(BuildContext context) {
@@ -29,16 +29,16 @@ class InactiveOrderDetails extends StatelessWidget {
             ),
             Text(
               state.date,
-              style: TextStyle(
+              style: const TextStyle(
                 fontFamily: 'Inter',
                 color: Colors.black87,
                 fontSize: 14,
               ),
             ),
-            SizedBox(height: 24),
+            const SizedBox(height: 24),
             _buildStatusBadge(context),
-            SizedBox(height: 24),
-            Text(
+            const SizedBox(height: 24),
+            const Text(
               'Items',
               style: TextStyle(
                 fontFamily: 'Montserrat',
@@ -46,23 +46,24 @@ class InactiveOrderDetails extends StatelessWidget {
                 fontWeight: FontWeight.w600,
               ),
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             ListView.builder(
               shrinkWrap: true,
-              physics: NeverScrollableScrollPhysics(),
+              physics: const NeverScrollableScrollPhysics(),
               itemCount: state.products.length,
               itemBuilder: (context, index) {
                 return ProductStackedCard(productId: state.products[index].id);
               },
             ),
-            SizedBox(height: 24),
+            const SizedBox(height: 24),
             Row(
               children: [
-                Icon(Icons.access_time_outlined, size: 24, color: Color(0xFF2000B1)),
-                SizedBox(width: 8),
+                const Icon(Icons.access_time_outlined,
+                    size: 24, color: Color(0xFF2000B1)),
+                const SizedBox(width: 8),
                 Text(
                   'Efectuada a las ${state.time}',
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontFamily: 'Inter',
                     color: Colors.grey,
                     fontSize: 14,
@@ -70,15 +71,16 @@ class InactiveOrderDetails extends StatelessWidget {
                 ),
               ],
             ),
-            SizedBox(height: 12),
+            const SizedBox(height: 12),
             Row(
               children: [
-                Icon(Icons.location_on_outlined, size: 24, color: Color(0xFF2000B1)),
-                SizedBox(width: 8),
+                const Icon(Icons.location_on_outlined,
+                    size: 24, color: Color(0xFF2000B1)),
+                const SizedBox(width: 8),
                 Expanded(
                   child: Text(
                     state.location,
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontFamily: 'Inter',
                       color: Colors.grey,
                       fontSize: 14,
@@ -87,11 +89,11 @@ class InactiveOrderDetails extends StatelessWidget {
                 ),
               ],
             ),
-            SizedBox(height: 24),
+            const SizedBox(height: 24),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
+                const Text(
                   'Total',
                   style: TextStyle(
                     fontFamily: 'Montserrat',
@@ -101,7 +103,7 @@ class InactiveOrderDetails extends StatelessWidget {
                 ),
                 Text(
                   state.price,
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontFamily: 'Montserrat',
                     fontSize: 16,
                     fontWeight: FontWeight.w600,
@@ -109,12 +111,19 @@ class InactiveOrderDetails extends StatelessWidget {
                 ),
               ],
             ),
-            SizedBox(height: 24),
+            const SizedBox(height: 24),
             if (state.status == 'Entregada')
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
                   onPressed: () => _handleReorder(context),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.indigo[900],
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
                   child: Text(
                     'Pídelo de nuevo',
                     style: TextStyle(
@@ -122,13 +131,6 @@ class InactiveOrderDetails extends StatelessWidget {
                       fontFamily: 'Inter',
                       fontSize: 16,
                       fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.indigo[900],
-                    padding: EdgeInsets.symmetric(vertical: 16),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
                     ),
                   ),
                 ),
@@ -158,7 +160,7 @@ class InactiveOrderDetails extends StatelessWidget {
     }
 
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       decoration: BoxDecoration(
         color: badgeColor.withOpacity(0.1),
         borderRadius: BorderRadius.circular(20),
@@ -167,7 +169,7 @@ class InactiveOrderDetails extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           Icon(badgeIcon, color: badgeColor, size: 18),
-          SizedBox(width: 8),
+          const SizedBox(width: 8),
           Text(
             state.status,
             style: TextStyle(
@@ -191,13 +193,13 @@ class InactiveOrderDetails extends StatelessWidget {
         buttonText: 'Sí, reordenar',
         rejectButtonText: 'Cancelar',
         icon: Icons.shopping_cart,
-        iconColor: Color(0xFF2000B1),
-        buttonColor: Color(0xFF2000B1),
+        iconColor: const Color(0xFF2000B1),
+        buttonColor: const Color(0xFF2000B1),
         onButtonPressed: () {
           Navigator.of(context).pop();
           // Implement reorder logic here
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Reorden iniciada')),
+            const SnackBar(content: Text('Reorden iniciada')),
           );
         },
         onRejectPressed: () => Navigator.of(context).pop(),

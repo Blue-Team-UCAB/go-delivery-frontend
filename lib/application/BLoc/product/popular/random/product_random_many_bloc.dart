@@ -12,16 +12,17 @@ import '../../product_many/product_many_state.dart';
 class ProductRandomListBloc extends Bloc<ProductListEvent, ProductListState> {
   final GetProductsUseCase _getProductsUseCase;
 
-  ProductRandomListBloc(this._getProductsUseCase) : super(ProductListInitial()) {
+  ProductRandomListBloc(this._getProductsUseCase)
+      : super(ProductListInitial()) {
     on<LoadProductList>(_onLoadProductList);
   }
 
   Future<void> _onLoadProductList(
-      LoadProductList event,
-      Emitter<ProductListState> emit,
-      ) async {
+    LoadProductList event,
+    Emitter<ProductListState> emit,
+  ) async {
     try {
-      emit(ProductListLoading([]));
+      emit(const ProductListLoading([]));
 
       final result = await _getProductsUseCase.execute(
         GetProductsUseCaseInput(
@@ -39,6 +40,7 @@ class ProductRandomListBloc extends Bloc<ProductListEvent, ProductListState> {
           products: randomProducts,
           hasReachedMax: true,
           page: event.page,
+          category: '',
         ));
       } else {
         emit(ProductListFailed(result));

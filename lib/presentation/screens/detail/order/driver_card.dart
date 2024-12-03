@@ -9,22 +9,22 @@ class DriverCard extends StatelessWidget {
   final VoidCallback onCallPressed;
 
   const DriverCard({
-    Key? key,
+    super.key,
     required this.driverName,
     required this.driverImage,
     required this.onCallPressed,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
     return Card(
-      margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
       ),
       elevation: 0,
       child: Padding(
-        padding: EdgeInsets.all(16),
+        padding: const EdgeInsets.all(16),
         child: Row(
           children: [
             Container(
@@ -38,14 +38,14 @@ class DriverCard extends StatelessWidget {
                 ),
               ),
             ),
-            SizedBox(width: 12),
+            const SizedBox(width: 12),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
                     driverName,
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontWeight: FontWeight.w600,
                       fontSize: 16,
                     ),
@@ -66,12 +66,12 @@ class DriverCard extends StatelessWidget {
                 onTap: onCallPressed,
                 borderRadius: BorderRadius.circular(50),
                 child: Container(
-                  padding: EdgeInsets.all(8),
+                  padding: const EdgeInsets.all(8),
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     color: Colors.indigo.withOpacity(0.1),
                   ),
-                  child: Icon(
+                  child: const Icon(
                     Icons.phone,
                     color: Colors.indigo,
                     size: 24,
@@ -93,16 +93,16 @@ extension DriverCardErrorHandler on DriverCard {
       child: this,
       fallback: (error, stackTrace) {
         return Card(
-          margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
           child: Padding(
-            padding: EdgeInsets.all(16),
+            padding: const EdgeInsets.all(16),
             child: Row(
               children: [
                 CircleAvatar(
                   backgroundColor: Colors.grey[300],
                   child: Icon(Icons.person, color: Colors.grey[600]),
                 ),
-                SizedBox(width: 12),
+                const SizedBox(width: 12),
                 Expanded(
                   child: Text(
                     'Error loading driver information',
