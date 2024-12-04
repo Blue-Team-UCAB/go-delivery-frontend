@@ -60,7 +60,7 @@ class BundleRepositoryImpl extends BundleRepository {
           // Imprimir los datos recibidos de la API
           print('Respuesta de la API para el bundle: $data');
 
-          final bundle = BundleMapper.fromJson(data);
+          final bundle = BundleMapper.fromJson(data['value']);
 
           // Imprimir la data de los productos del bundle
           print('Productos del bundle recibido de la API:');
