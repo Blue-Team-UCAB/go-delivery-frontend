@@ -124,7 +124,7 @@ class InactiveOrderDetails extends StatelessWidget {
                       borderRadius: BorderRadius.circular(8),
                     ),
                   ),
-                  child: Text(
+                  child: const Text(
                     'Pídelo de nuevo',
                     style: TextStyle(
                       color: Colors.white,

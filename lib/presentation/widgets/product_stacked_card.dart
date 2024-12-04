@@ -1,12 +1,9 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_delivery_frontend/application/BLoc/product/product_detail/product_detail_bloc.dart';
 import 'package:go_delivery_frontend/application/BLoc/product/product_detail/product_detail_event.dart';
 import 'package:go_delivery_frontend/application/BLoc/product/product_detail/product_detail_state.dart';
 import 'package:go_delivery_frontend/presentation/core/common/image-loader.dart';
-
-import '../../domain/repositories/product/product_repository.dart';
 
 class ProductStackedCard extends StatelessWidget {
   final String productId;
