@@ -1,4 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_delivery_frontend/application/BLoc/payment/pago_movil/pago_movil_bloc.dart';
+import 'package:go_delivery_frontend/application/BLoc/payment/pago_movil/pago_movil_event.dart';
+import 'package:go_delivery_frontend/application/BLoc/payment/pago_movil/pago_movil_state.dart';
+import 'package:go_delivery_frontend/application/use_cases/payment/post_pago_movil.dart';
 
 class PaymentMethodSection extends StatefulWidget {
   const PaymentMethodSection({super.key});
@@ -271,193 +276,216 @@ class _PaymentMethodSectionState extends State<PaymentMethodSection> {
       context: context,
       isScrollControlled: true,
       builder: (context) {
-        return WillPopScope(
-          onWillPop: () async {
-            final shouldExit = await _showExitConfirmation(context);
-            return shouldExit ?? false;
-          },
-          child: StatefulBuilder(
-            builder: (context, setState) {
-              // Función para manejar la validación y confirmar
-              void validateAndConfirm() {
-                if (_integerPartController.text.isEmpty ||
-                    referenceController.text.isEmpty ||
-                    idController.text.isEmpty ||
-                    phoneController.text.isEmpty ||
-                    _selectedBank == null ||
-                    selectedDate == null) {
-                  setState(() {
-                    showError =
-                        true; // Mostrar error si los campos están vacíos
-                  });
-                } else {
-                  setState(() {
-                    _referenceNumber = referenceController.text;
-                  });
-                  Navigator.pop(
-                      context); // Cerrar el formulario después de confirmar
+        final paymentBloc =
+            PaymentBloc(context.read<ProcessPagoMovilUseCase>());
+        return BlocProvider.value(
+          value: paymentBloc,
+          child: WillPopScope(
+            onWillPop: () async {
+              final shouldExit = await _showExitConfirmation(context);
+              return shouldExit ?? false;
+            },
+            child: BlocListener<PaymentBloc, PaymentState>(
+              listener: (context, state) {
+                if (state is PaymentLoading) {
+                  // Mostrar loading
+                } else if (state is PaymentSuccess) {
+                  Navigator.pop(context);
+                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                    content: Text("Pago exitoso."),
+                    backgroundColor: Colors.green,
+                  ));
+                } else if (state is PaymentFailure) {
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                    content: Text(state.message),
+                    backgroundColor: Colors.red,
+                  ));
                 }
-              }
+              },
+              child: StatefulBuilder(
+                builder: (context, setState) {
+                  // Función para manejar la validación y confirmar
+                  void validateAndConfirm() {
+                    if (_integerPartController.text.isEmpty ||
+                        referenceController.text.isEmpty ||
+                        idController.text.isEmpty ||
+                        phoneController.text.isEmpty ||
+                        _selectedBank == null ||
+                        selectedDate == null) {
+                      setState(() {
+                        showError = true;
+                      });
+                    } else {
+                      setState(() {
+                        _referenceNumber = referenceController.text;
+                      });
+                      context.read<PaymentBloc>().add(SubmitPayment(
+                            phoneNumber: phoneController.text,
+                            idNumber: idController.text,
+                            bank: _selectedBank!,
+                            amount:
+                                double.tryParse(_integerPartController.text) ??
+                                    0.0,
+                            paymentDate: selectedDate!,
+                            referenceNumber: _referenceNumber ?? '',
+                          ));
+                    }
+                  }
 
-              return Padding(
-                padding: EdgeInsets.only(
-                  bottom: MediaQuery.of(context).viewInsets.bottom,
-                ),
-                child: SingleChildScrollView(
-                  child: Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Column(
-                      children: [
-                        // Mostrar el mensaje de error solo si hay algún campo vacío
-                        if (showError)
-                          const Text(
-                            'Debes completar todos los campos.',
-                            style: TextStyle(
-                              color: Colors.red,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        const SizedBox(height: 8),
-                        TextField(
-                          controller: referenceController,
-                          keyboardType: TextInputType.number,
-                          maxLength: 6,
-                          decoration: const InputDecoration(
-                            labelText: 'Nro. Referencia',
-                          ),
-                        ),
-                        // Monto completo (parte entera + parte decimal)
-                        TextField(
-                          controller: _integerPartController,
-                          keyboardType: const TextInputType.numberWithOptions(
-                              decimal: true),
-                          decoration: const InputDecoration(
-                            labelText: 'Monto',
-                            hintText: 'Ej. 1200,00',
-                          ),
-                          onChanged: (text) {
-                            setState(() {
-                              // Solo permitir el cambio durante la escritura,
-                              // no aplicar formateo aún
-                            });
-                          },
-                          onEditingComplete: () {
-                            // Aplicar el formateo cuando se termine de escribir
-                            setState(() {
-                              _addDecimalIfNeeded();
-                            });
-                          },
-                        ),
-                        const SizedBox(height: 16),
-                        TextField(
-                          controller: idController,
-                          keyboardType: TextInputType.number,
-                          maxLength: 8,
-                          decoration: const InputDecoration(
-                            labelText: 'Cédula',
-                          ),
-                        ),
-                        Row(
+                  return Padding(
+                    padding: EdgeInsets.only(
+                      bottom: MediaQuery.of(context).viewInsets.bottom,
+                    ),
+                    child: SingleChildScrollView(
+                      child: Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Column(
                           children: [
-                            const Text('+58'),
-                            const SizedBox(width: 8.0),
-                            Expanded(
-                              child: TextField(
-                                controller: phoneController,
-                                keyboardType: TextInputType.number,
-                                maxLength: 10,
-                                decoration: const InputDecoration(
-                                  labelText: 'Teléfono',
+                            if (showError)
+                              const Text(
+                                'Debes completar todos los campos.',
+                                style: TextStyle(
+                                  color: Colors.red,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            const SizedBox(height: 8),
+                            TextField(
+                              controller: referenceController,
+                              keyboardType: TextInputType.number,
+                              maxLength: 6,
+                              decoration: const InputDecoration(
+                                labelText: 'Nro. Referencia',
+                              ),
+                            ),
+                            TextField(
+                              controller: _integerPartController,
+                              keyboardType:
+                                  const TextInputType.numberWithOptions(
+                                      decimal: true),
+                              decoration: const InputDecoration(
+                                labelText: 'Monto',
+                                hintText: 'Ej. 1200,00',
+                              ),
+                              onEditingComplete: () {
+                                setState(() {
+                                  _addDecimalIfNeeded();
+                                });
+                              },
+                            ),
+                            const SizedBox(height: 16),
+                            TextField(
+                              controller: idController,
+                              keyboardType: TextInputType.number,
+                              maxLength: 8,
+                              decoration: const InputDecoration(
+                                labelText: 'Cédula',
+                              ),
+                            ),
+                            Row(
+                              children: [
+                                const Text('+58'),
+                                const SizedBox(width: 8.0),
+                                Expanded(
+                                  child: TextField(
+                                    controller: phoneController,
+                                    keyboardType: TextInputType.number,
+                                    maxLength: 10,
+                                    decoration: const InputDecoration(
+                                      labelText: 'Teléfono',
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            DropdownButtonFormField<String>(
+                              value: _selectedBank,
+                              items: [
+                                '0105 - Mercantil',
+                                '0102 - Banco de Venezuela',
+                                '0134 - Banesco',
+                              ].map((bank) {
+                                return DropdownMenuItem(
+                                  value: bank,
+                                  child: Text(bank),
+                                );
+                              }).toList(),
+                              onChanged: (value) {
+                                setState(() {
+                                  _selectedBank = value;
+                                });
+                              },
+                              decoration: const InputDecoration(
+                                labelText: 'Banco',
+                              ),
+                            ),
+                            const SizedBox(height: 6),
+                            GestureDetector(
+                              onTap: () async {
+                                DateTime? pickedDate = await showDatePicker(
+                                  context: context,
+                                  initialDate: DateTime.now(),
+                                  firstDate: DateTime(2000),
+                                  lastDate: DateTime(2100),
+                                );
+                                if (pickedDate != null) {
+                                  setState(() {
+                                    selectedDate = pickedDate;
+                                  });
+                                }
+                              },
+                              child: Container(
+                                padding: const EdgeInsets.all(12.0),
+                                decoration: BoxDecoration(
+                                  color: Colors.grey[200],
+                                  borderRadius: BorderRadius.circular(8.0),
+                                ),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      selectedDate == null
+                                          ? 'Fecha Estimada de Pago'
+                                          : '${selectedDate?.toLocal()}'
+                                              .split(' ')[0],
+                                    ),
+                                    const Icon(Icons.calendar_today),
+                                  ],
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: 16),
+                            GestureDetector(
+                              onTap: validateAndConfirm,
+                              child: Container(
+                                alignment: Alignment.center,
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 12.0,
+                                  horizontal: 24.0,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: const Color(0xFF2000B1),
+                                  borderRadius: BorderRadius.circular(8.0),
+                                ),
+                                child: const Text(
+                                  'Confirmar',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                  ),
                                 ),
                               ),
                             ),
                           ],
                         ),
-                        DropdownButtonFormField<String>(
-                          value: _selectedBank,
-                          items: [
-                            '0105 - Mercantil',
-                            '0102 - Banco de Venezuela',
-                            '0134 - Banesco',
-                          ].map((bank) {
-                            return DropdownMenuItem(
-                              value: bank,
-                              child: Text(bank),
-                            );
-                          }).toList(),
-                          onChanged: (value) {
-                            setState(() {
-                              _selectedBank = value;
-                            });
-                          },
-                          decoration: const InputDecoration(
-                            labelText: 'Banco',
-                          ),
-                        ),
-                        const SizedBox(height: 6),
-                        GestureDetector(
-                          onTap: () async {
-                            DateTime? pickedDate = await showDatePicker(
-                              context: context,
-                              initialDate: DateTime.now(),
-                              firstDate: DateTime(2000),
-                              lastDate: DateTime(2100),
-                            );
-                            if (pickedDate != null) {
-                              setState(() {
-                                selectedDate = pickedDate;
-                              });
-                            }
-                          },
-                          child: Container(
-                            padding: const EdgeInsets.all(12.0),
-                            decoration: BoxDecoration(
-                              color: Colors.grey[200],
-                              borderRadius: BorderRadius.circular(8.0),
-                            ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  selectedDate == null
-                                      ? 'Fecha Estimada de Pago'
-                                      : '${selectedDate?.toLocal()}'
-                                          .split(' ')[0],
-                                ),
-                                const Icon(Icons.calendar_today),
-                              ],
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: 16),
-                        GestureDetector(
-                          onTap: validateAndConfirm,
-                          child: Container(
-                            alignment: Alignment.center,
-                            padding: const EdgeInsets.symmetric(
-                              vertical: 12.0,
-                              horizontal: 24.0,
-                            ),
-                            decoration: BoxDecoration(
-                              color: const Color(0xFF2000B1),
-                              borderRadius: BorderRadius.circular(8.0),
-                            ),
-                            child: const Text(
-                              'Confirmar',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
+                      ),
                     ),
-                  ),
-                ),
-              );
-            },
+                  );
+                },
+              ),
+            ),
           ),
         );
       },

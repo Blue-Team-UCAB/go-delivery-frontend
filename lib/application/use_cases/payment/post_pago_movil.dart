@@ -19,13 +19,12 @@ class ProcessPagoMovilInput extends IUseCaseInput {
   });
 }
 
-class ProcessPagoMovilUseCase implements IUseCase<ProcessPagoMovilInput, void> {
+class ProcessPagoMovilUseCase {
   final PaymentRepository _paymentRepository;
 
   ProcessPagoMovilUseCase({required PaymentRepository paymentRepository})
       : _paymentRepository = paymentRepository;
 
-  @override
   Future<Result<void>> execute(ProcessPagoMovilInput input) {
     final pagoMovil = PagoMovil(
       amount: input.amount,
