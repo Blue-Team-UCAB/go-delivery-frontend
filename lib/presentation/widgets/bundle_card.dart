@@ -33,7 +33,7 @@ class BundleCard extends StatelessWidget {
               child: Image.network(
                 bundle.imageUrl,
                 height: 100,
-                width: 100,
+                width: double.infinity,
                 fit: BoxFit.cover,
               ),
             ),

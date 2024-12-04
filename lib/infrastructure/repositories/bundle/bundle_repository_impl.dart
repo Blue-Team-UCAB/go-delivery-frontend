@@ -36,7 +36,7 @@ class BundleRepositoryImpl extends BundleRepository {
           'perpage': perpage.toString(),
         },
         (data) {
-          List<Bundle> bundles = (data['bundles'] as List)
+          List<Bundle> bundles = (data['value']['bundles'] as List)
               .map((bundleData) => BundleMapper.fromJson(bundleData))
               .toList();
           return bundles;
