@@ -13,6 +13,13 @@ import '../../widgets/sidebar.dart';
 import 'homescreen_locationbar.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+// Future<String?> getFCMToken() async {
+//   FirebaseMessaging messaging = FirebaseMessaging.instance;
+//   String? token = await messaging.getToken();
+//   print('FCM Token: $token');
+//   return token;
+// }
+
 class HomeScreenChildView extends StatelessWidget {
   static const name = 'home-screen';
   final Widget childView;
@@ -158,7 +165,7 @@ class HomeScreenState extends State<HomeScreen> {
                 icon: const Icon(Icons.notifications_outlined,
                     color: Colors.white),
                 onPressed: () {
-                  print('Notification button pressed');
+                  context.push('/notification');
                 },
               ),
               const SizedBox(width: 16),

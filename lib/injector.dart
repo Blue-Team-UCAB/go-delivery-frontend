@@ -5,6 +5,8 @@ import 'package:go_delivery_frontend/application/BLoc/blocs.dart';
 import 'package:go_delivery_frontend/application/BLoc/bundle/bundle_detail/bundle_detail_bloc.dart';
 import 'package:go_delivery_frontend/application/BLoc/bundle/bundle_many/bundle_many_bloc.dart';
 import 'package:go_delivery_frontend/application/BLoc/order/order_detailed/order_detailed_bloc.dart';
+import 'package:go_delivery_frontend/application/BLoc/notifications/bloc/notifications_bloc.dart';
+import 'package:go_delivery_frontend/application/BLoc/notifications/notification-list/notification_list_bloc.dart';
 import 'package:go_delivery_frontend/application/BLoc/product/popular/product_popular_many_bloc.dart';
 import 'package:go_delivery_frontend/application/BLoc/product/popular/random/product_random_many_bloc.dart';
 import 'package:go_delivery_frontend/application/BLoc/product/product_detail/product_detail_bloc.dart';
@@ -24,6 +26,7 @@ import 'package:go_delivery_frontend/domain/repositories/product/product_reposit
 import 'package:go_delivery_frontend/infrastructure/repositories/bundle/bundle_repository_impl.dart';
 import 'package:go_delivery_frontend/infrastructure/repositories/cart/cart_local_storage_repository_impl.dart';
 import 'package:go_delivery_frontend/infrastructure/repositories/order/order_repository_impl.dart';
+import 'package:go_delivery_frontend/infrastructure/repositories/notifications/notifications_repository_impl.dart';
 import 'package:go_delivery_frontend/infrastructure/repositories/product/product_repository_impl.dart';
 import 'package:go_delivery_frontend/application/use_cases/product/get_many_product.dart';
 
@@ -85,18 +88,18 @@ class InjectManager {
     // ======================================================================= //
 
     // ============================= NOTIFICATIONS =========================== //
-    /*
-    final notificationsRepositoryImpl = NotificationRespositoryImpl(
-            notificationsDatasource:
-            NotificationsDatasourceImpl(localStorageService));
+    getIt.registerSingleton(NotificationsBloc());
+    // final notificationsRepositoryImpl = NotificationsRepositoryImpl(
+    //   apiRequestManager: apiRequestManagerImpl,
+    //   NotificationsDatasourceImpl(localStorageService));
+    //   // localStorage: localStorageService,
+    // );
+    // getIt.registerFactory(() => NotificationListBloc(
+    //     notificationsRepository: notificationsRepositoryImpl));
 
-    getIt.registerFactory(() =>
-        NotificationListBloc(notificationsRepository: notificationsRepositoryImpl));
-
-    getIt.registerSingleton(NotificationsBloc(
-        FirebaseNotificationsManager(LocalNotifications()),
-        notificationsRepositoryImpl.saveToken));
-     */
+    // getIt.registerSingleton(NotificationsBloc(
+    //     FirebaseNotificationsManager(LocalNotifications()),
+    //     notificationsRepositoryImpl.saveToken));
     // ======================================================================= //
 
     // ============================= PRODUCTS ============================= //

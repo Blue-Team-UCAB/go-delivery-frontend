@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:go_delivery_frontend/presentation/screens/notification/notification_screen.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../widgets/navbar.dart';
 import 'order_card.dart';
@@ -93,7 +95,9 @@ class _OrdersPageState extends State<OrdersPage>
         actions: [
           IconButton(
             icon: const Icon(Icons.notifications_none),
-            onPressed: () {},
+            onPressed: () {
+              context.push('/notification');
+            },
           ),
           IconButton(
             icon: const Icon(Icons.menu),

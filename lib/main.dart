@@ -1,3 +1,5 @@
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_delivery_frontend/application/BLoc/auth/current/current_user_bloc.dart';
@@ -7,9 +9,11 @@ import 'package:go_delivery_frontend/application/BLoc/order/order_detailed/order
 import 'package:go_delivery_frontend/application/BLoc/product/popular/product_popular_many_bloc.dart';
 import 'package:go_delivery_frontend/application/BLoc/product/popular/random/product_random_many_bloc.dart';
 import 'package:go_delivery_frontend/application/BLoc/product/product_detail/product_detail_bloc.dart';
+import 'package:go_delivery_frontend/firebase_options.dart';
 import 'package:go_delivery_frontend/injector.dart';
 import 'package:go_delivery_frontend/presentation/core/app.dart';
 import 'package:go_delivery_frontend/application/BLoc/product/product_many/product_many_bloc.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'application/BLoc/auth/login/login_bloc.dart';
 import 'application/BLoc/auth/recover_password/recover_password_bloc.dart';
 import 'application/BLoc/cart/cart_bloc.dart';
@@ -19,8 +23,10 @@ import 'infrastructure/mappers/local_notifications.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await NotificationsBloc.initializeFirebaseNotifications();
   await LocalNotifications().initializeLocalNotifications();
   await InjectManager.setUpInjections();
+  FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
   runApp(
     MultiBlocProvider(
       providers: [
