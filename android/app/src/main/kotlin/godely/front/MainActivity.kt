@@ -1,4 +1,4 @@
-package com.example.go_delivery_frontend
+package godely.front
 
 import io.flutter.embedding.android.FlutterActivity
 
