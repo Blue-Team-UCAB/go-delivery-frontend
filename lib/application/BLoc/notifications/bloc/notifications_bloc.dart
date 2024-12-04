@@ -1,82 +1,93 @@
-import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
-import '../../../../common/result.dart';
-import '../notifications_manager.dart';
+import 'package:equatable/equatable.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:go_delivery_frontend/application/BLoc/notifications/notification-list/notification_list_bloc.dart';
+import 'package:go_delivery_frontend/domain/entities/notifications/notification.dart';
+import 'package:go_delivery_frontend/firebase_options.dart';
+import 'package:go_delivery_frontend/infrastructure/mappers/push_message_model.dart';
 
 part 'notifications_event.dart';
 part 'notifications_state.dart';
 
-typedef SaveTokenCallBack = Future<Result<bool>> Function(String token);
+@pragma('vm:entry-point')
+Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  await Firebase.initializeApp();
+  print("Handling a background message: ${message.messageId}");
+}
 
 class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState> {
-  final NotificationsManager notifications;
-  final SaveTokenCallBack saveTokenCallBack;
+  FirebaseMessaging messaging = FirebaseMessaging.instance;
+  NotificationsBloc() : super(const NotificationsState()) {
+    on<NotificationsStatusChanged>(_notificationStatusChanged);
+    on<NotificationsReceived>(_onPushMessageReceived);
 
-  NotificationsBloc(this.notifications, this.saveTokenCallBack)
-      : super(const NotificationsState()) {
-    on<NotificationStatusChanged>(_notificationStatusChanged);
-    on<RecoveryNotification>(_onRecoveryNotification);
-    on<ResetRecoveredNotification>(_onResetRecoveredNotification);
-
-    // Verify the current status of the notifications
-    initialStatusCheck();
-
-    // Listen for messages when the app is in the foreground
+    //notification status check
+    _initialStatusCheck();
+    //foreground notificacion listener (always active)
     _onForegroundMessage();
   }
 
-  void _onResetRecoveredNotification(
-      ResetRecoveredNotification event, Emitter<NotificationsState> emit) {
-    emit(state.copyWith(recoveryCode: ''));
-  }
-
-  void _onRecoveryNotification(RecoveryNotification event, Emitter<NotificationsState> emit) {
-    emit(state.copyWith(recoveryCode: event.recoveryCode));
-  }
-
-  void _onForegroundMessage() {
-    notifications.onForegroundMessage(_handleRemoteMessage);
-  }
-
-  Future<String?> _getToken() async {
-    final token = await notifications.getToken();
-    return token;
-  }
-
-  void requestPermission() async {
-    final authorizationStatus = await notifications.requestPermission();
-    final token = await _saveToken(authorizationStatus);
-    add(NotificationStatusChanged(authorizationStatus, token));
-  }
-
-  void initialStatusCheck() async {
-    final authorizationStatus = await notifications.checkAuthorizationStatus();
-    final token = await _saveToken(authorizationStatus);
-    add(NotificationStatusChanged(authorizationStatus, token));
-  }
-
-  Future<String> _saveToken(bool authorizationStatus) async {
-    if (authorizationStatus) {
-      final token = await _getToken();
-      if (token != null) {
-        await saveTokenCallBack(token);
-        return token;
-      }
-    }
-    return '';
+  static Future<void> initializeFirebaseNotifications() async {
+    await Firebase.initializeApp(
+        options: DefaultFirebaseOptions.currentPlatform);
   }
 
   void _notificationStatusChanged(
-      NotificationStatusChanged event, Emitter<NotificationsState> emit) {
-    emit(state.copyWith(status: event.status, token: event.token));
+      NotificationsStatusChanged event, Emitter<NotificationsState> emit) {
+    emit(state.copyWith(status: event.status));
+    _getFCMToken();
   }
 
-  void _handleRemoteMessage(String code) {
-    add(RecoveryNotification(code));
+  void _onPushMessageReceived(
+      NotificationsReceived event, Emitter<NotificationsState> emit) {
+    emit(state
+        .copyWith(notifications: [event.pushMessage, ...state.notifications]));
+    _getFCMToken();
   }
 
-  void resetRecoveryCode() {
-    add(ResetRecoveredNotification());
+  void _initialStatusCheck() async {
+    final settings = await messaging.getNotificationSettings();
+    add(NotificationsStatusChanged(settings.authorizationStatus));
+  }
+
+  void _getFCMToken() async {
+    //TODO este token al backend con un listener si es que ha cambiado
+    if (state.status != AuthorizationStatus.authorized) return;
+    final token = await messaging.getToken();
+    print('FCM token:${token}');
+  }
+
+  void _handleRemoteMessage(RemoteMessage message) {
+    if (message.notification == null) return;
+    final notification = PushMessageModel(
+        messageId:
+            message.messageId?.replaceAll(':', '').replaceAll('%', '') ?? '',
+        title: message.notification!.title ?? '',
+        body: message.notification!.body ?? '',
+        sentDate: message.sentTime ?? DateTime.now(),
+        data: message.data,
+        imageUrl: message.notification!.android?.imageUrl);
+    print(notification);
+    add(NotificationsReceived(notification));
+  }
+
+  void _onForegroundMessage() {
+    final listener = FirebaseMessaging.onMessage.listen(_handleRemoteMessage);
+    // listener.cancel();
+  }
+
+  void requestPermission() async {
+    NotificationSettings settings = await messaging.requestPermission(
+      alert: true,
+      announcement: false,
+      badge: true,
+      carPlay: false,
+      criticalAlert: true,
+      provisional: false,
+      sound: true,
+    );
+    add(NotificationsStatusChanged(settings.authorizationStatus));
+    settings.authorizationStatus;
   }
 }

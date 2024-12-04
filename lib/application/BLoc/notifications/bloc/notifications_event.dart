@@ -1,19 +1,16 @@
 part of 'notifications_bloc.dart';
 
-sealed class NotificationsEvent {
+abstract class NotificationsEvent {
   const NotificationsEvent();
 }
 
-class NotificationStatusChanged extends NotificationsEvent {
-  final bool status;
-  final String? token;
+class NotificationsStatusChanged extends NotificationsEvent {
+  final AuthorizationStatus status;
 
-  const NotificationStatusChanged(this.status, this.token);
+  NotificationsStatusChanged(this.status);
 }
 
-class RecoveryNotification extends NotificationsEvent {
-  final String recoveryCode;
-  const RecoveryNotification(this.recoveryCode);
+class NotificationsReceived extends NotificationsEvent {
+  final PushMessageModel pushMessage;
+  NotificationsReceived(this.pushMessage);
 }
-
-class ResetRecoveredNotification extends NotificationsEvent {}

@@ -1,28 +1,26 @@
 part of 'notifications_bloc.dart';
 
 class NotificationsState extends Equatable {
-  final bool status;
-  final String token;
-  final String recoveryCode;
+  final AuthorizationStatus status;
+
+  final List<PushMessageModel> notifications;
 
   const NotificationsState({
-    this.token = '',
-    this.status = false,
-    this.recoveryCode = '',
+    this.status = AuthorizationStatus.notDetermined,
+    this.notifications = const [],
   });
 
   NotificationsState copyWith({
-    bool? status,
-    String? token,
-    String? recoveryCode,
-  }) {
-    return NotificationsState(
-      status: status ?? this.status,
-      token: token ?? this.token,
-      recoveryCode: recoveryCode ?? this.recoveryCode,
-    );
-  }
+    AuthorizationStatus? status,
+    List<PushMessageModel>? notifications,
+  }) =>
+      NotificationsState(
+        status: status ?? this.status,
+        notifications: notifications ?? this.notifications,
+      );
 
   @override
-  List<Object> get props => [status, token, recoveryCode];
+  List<Object> get props => [status, notifications];
 }
+
+final class NotificationsInitial extends NotificationsState {}
