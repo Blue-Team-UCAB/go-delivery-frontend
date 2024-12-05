@@ -25,6 +25,8 @@ void main() async {
   runApp(
     MultiBlocProvider(
       providers: [
+        BlocProvider(create: (_) => getIt<ZelleBloc>()),
+        BlocProvider(create: (_) => getIt<PaymentBloc>()),
         BlocProvider(create: (_) => getIt<CartBloc>()),
         BlocProvider(create: (_) => getIt<LoginBloc>()),
         BlocProvider(create: (_) => getIt<CurrentUserBloc>()),

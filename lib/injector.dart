@@ -183,5 +183,37 @@ class InjectManager {
     getIt.registerSingleton(
         ManyOrdersBloc(getManyOrdersUseCase: getManyOrderUseCase));
 
+    // ============================= PAYMENT =================================== //
+
+    //Repositorio
+    final paymentRepository = PaymentRepositoryImpl(
+        apiRequestManager: apiRequestManagerImpl,
+        localStorage: localStorageService);
+
+    // Registrar el repositorio de payment
+    getIt.registerSingleton<PaymentRepository>(paymentRepository);
+
+    // ============================= PAGO MOVIL =================================== //
+
+    //Casos de uso
+    final processPagoMovilUseCase =
+    ProcessPagoMovilUseCase(paymentRepository: paymentRepository);
+
+    getIt.registerSingleton<ProcessPagoMovilUseCase>(processPagoMovilUseCase);
+
+    //Bloc
+    getIt.registerSingleton(PaymentBloc(processPagoMovilUseCase));
+
+    // ============================= ZELLE =================================== //
+
+    //Casos de uso
+    final processZelleUseCase =
+    ProcessZelleUseCase(paymentRepository: paymentRepository);
+
+    getIt.registerSingleton<ProcessZelleUseCase>(processZelleUseCase);
+
+    //Bloc
+    getIt.registerSingleton(ZelleBloc(processZelleUseCase));
+
   }
 }
