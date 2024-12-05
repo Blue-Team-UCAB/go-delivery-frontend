@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../application/BLoc/order/order_detailed/order_detailed_state.dart';
@@ -124,7 +123,7 @@ class InactiveOrderDetails extends StatelessWidget {
                       borderRadius: BorderRadius.circular(8),
                     ),
                   ),
-                  child: Text(
+                  child: const Text(
                     'Pídelo de nuevo',
                     style: TextStyle(
                       color: Colors.white,
