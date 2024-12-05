@@ -92,7 +92,7 @@ class _DeliveryTimeSectionState extends State<DeliveryTimeSection> {
                       onPressed: () => _pickDate(context),
                       style: OutlinedButton.styleFrom(
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8.0),
+                          borderRadius: BorderRadius.circular(12),
                         ),
                         side: const BorderSide(color: Colors.grey),
                       ),

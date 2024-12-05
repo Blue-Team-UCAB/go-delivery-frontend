@@ -58,6 +58,7 @@ flutter:
     - assets/icon/facebook.svg
     - assets/icon/apple.svg
     - assets/not-found-image.svg
+    - assets/coupon/coupon_emptystate.svg
   fonts:
     - family: Montserrat
       fonts:
