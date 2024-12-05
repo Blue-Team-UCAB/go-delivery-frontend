@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
+import 'package:go_router/go_router.dart';
 import 'package:go_delivery_frontend/presentation/screens/catalog/logout_from_catalog.dart';
+
 
 class SidebarScreen extends StatelessWidget {
   final String userName = 'User Name';
@@ -14,10 +15,10 @@ class SidebarScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: Container(padding: EdgeInsets.fromLTRB(12, 12, 0, 32),
+      child: Container(padding: const EdgeInsets.fromLTRB(12, 12, 0, 32),
         height: double.infinity,
         width: 288,
-        color: Color(0xFF02066F),
+        color: const Color(0xFF02066F),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -46,14 +47,14 @@ class SidebarScreen extends StatelessWidget {
                 // Navegar a la pantalla de Catálogo
               },
             ),
-            ListTile(
-              leading: const Icon(Icons.star, color: Colors.white),
-              title: const Text('Productos Top',
-                  style: TextStyle(fontFamily: 'Inter', fontWeight: FontWeight.w600, fontSize: 16 ,color: Color(0xFFFFFFFF))),
-              onTap: () {
-                // Navegar a Productos Top
-              },
-            ),
+            // ListTile(
+            //   leading: const Icon(Icons.star, color: Colors.white),
+            //   title: const Text('Productos Top',
+            //       style: TextStyle(fontFamily: 'Inter', fontWeight: FontWeight.w600, fontSize: 16 ,color: Color(0xFFFFFFFF))),
+            //   onTap: () {
+            //     // Navegar a Productos Top
+            //   },
+            // ),
             ListTile(
               leading: const Icon(Icons.track_changes, color: Colors.white),
               title: const Text('Rastrea tu orden',
@@ -63,17 +64,17 @@ class SidebarScreen extends StatelessWidget {
               },
             ),
             ListTile(
-              leading: const Icon(Icons.card_giftcard, color: Colors.white),
+              leading: const Icon(Icons.local_attraction_sharp, color: Colors.white),
               title:
                   const Text('Cupones', 
                   style: TextStyle(fontFamily: 'Inter', fontWeight: FontWeight.w600, fontSize: 16 ,color: Color(0xFFFFFFFF))),
               onTap: () {
-                // Navegar a Cupones
+                context.push('/coupon');
               },
             ),
             const Spacer(),
             ListTile(
-              leading: const Icon(Icons.exit_to_app, color: Color(0xFFFFFFFF)),
+              leading: const Icon(Icons.logout, color: Color(0xFFFFFFFF)),
               title: const Text('Cerrar sesión',
                   style: TextStyle(fontFamily: 'Inter', fontWeight: FontWeight.w600, fontSize: 16 ,color: Color(0xFFFFFFFF))),
               onTap: (){

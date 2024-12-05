@@ -66,31 +66,6 @@ class HomeScreenState extends State<HomeScreen> {
     _counter = widget.initialCounterNavbar;
   }
 
-  void showLogoutDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AnimatedSuccessDialog(
-          title: 'Salir Sesion',
-          message: '¿Estás seguro de salir de tu sesión?',
-          buttonText: 'Salir',
-          rejectButtonText: 'Cancelar',
-          onButtonPressed: () {
-            Navigator.of(context).pop();
-            LocalStorageService().removeKey('appToken');
-            context.read<CartBloc>().emptyCart();
-            context.go('/login');
-          },
-          onRejectPressed: () {
-            Navigator.of(context).pop();
-            context.push('/');
-          },
-          icon: Icons.warning,
-        );
-      },
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return AnimatedContainer(
@@ -102,7 +77,7 @@ class HomeScreenState extends State<HomeScreen> {
           
           backgroundColor: const Color(0xFFEBEAED),
           body: Container(
-            color: Color(0xFF2000B1),
+            color: const Color(0xFF2000B1),
             child: SafeArea(
               child: Stack(
                 children: [
@@ -139,14 +114,6 @@ class HomeScreenState extends State<HomeScreen> {
           bottomNavigationBar: CustomNavBar(
             selectedIndex: _counter,
             onItemTapped: _onNavItemTapped,
-          ),
-          endDrawer: Sidebar(
-            userName: 'User Name',
-            userEmail: 'user@example.com',
-            onLogout: () {
-              Navigator.pop(context);
-              showLogoutDialog(context);
-            },
           ),
         ),
       ),
