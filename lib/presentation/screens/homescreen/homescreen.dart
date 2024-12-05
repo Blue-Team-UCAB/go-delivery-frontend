@@ -124,7 +124,13 @@ class HomeScreenState extends State<HomeScreen> {
                     top: _getLocationBarPosition(context),
                     left: 16,
                     right: 16,
-                    child: const LocationBar(),
+                    child: Container(
+                      decoration: const BoxDecoration(
+                        color: Color(0xFFFFFFFF),
+                        borderRadius: BorderRadius.all(Radius.circular(12))
+                      ),
+                      child: const LocationBar()
+                      ),
                   ),
                 ],
               ),
@@ -156,7 +162,7 @@ class HomeScreenState extends State<HomeScreen> {
       color: const Color(0xFF2000B1),
       padding: const EdgeInsets.fromLTRB(8, 16, 16, 50),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        mainAxisAlignment: MainAxisAlignment.start,
         children: [
           isDrawerOpen
           ? IconButton(
@@ -183,54 +189,41 @@ class HomeScreenState extends State<HomeScreen> {
               });
             }
           ),
-          
-          const Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Hola',
-                style: TextStyle(
-                  fontFamily: 'Montserrat',
-                  color: Colors.white,
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
+          const SizedBox(width: 5),
+          const Expanded(
+            flex: 1,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Hola',
+                  style: TextStyle(
+                    fontFamily: 'Montserrat',
+                    color: Colors.white,
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
-              ),
-              Text(
-                'Compra tus productos favoritos',
-                style: TextStyle(
-                  fontFamily: 'Montserrat',
-                  color: Colors.white,
-                  fontSize: 14,
-                  fontWeight: FontWeight.w400
+                Text(
+                  'Compra tus productos favoritos',
+                  style: TextStyle(
+                    fontFamily: 'Montserrat',
+                    color: Colors.white,
+                    fontSize: 14,
+                    fontWeight: FontWeight.w400
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
           Row(
             children: [
-              // IconButton(
-              //   icon: const Icon(Icons.notifications_outlined,
-              //       color: Colors.white),
-              //   onPressed: (){},
-              // ),
-              // const SizedBox(width: 16),
               Builder(
                 builder: (BuildContext innerContext) {
                   return IconButton(
-                    icon: const Icon(Icons.menu),
+                    icon: const Icon(Icons.notifications_none),
                     onPressed: () {
-                      // TODO: esto crashea la app
-                      // context.read<CurrentUserBloc>().add(FetchCurrentUser());
-
-                      Scaffold.of(innerContext).openEndDrawer();
-
-                      // showDialog(
-                      //   context: context,
-                      //   builder: (BuildContext context) {
-                      //     return const TokenLoginStateChecker();
-                      //   },
-                      // );
+                      
                     },
                     color: Colors.white,
                   );

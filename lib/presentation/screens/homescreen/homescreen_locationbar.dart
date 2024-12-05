@@ -18,58 +18,35 @@ class _LocationBarState extends State<LocationBar> {
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      color: Colors.transparent,
-      child: DecoratedBox(
-        decoration: BoxDecoration(
-          color: Color(0xFFFFFFFF),
-          borderRadius: BorderRadius.circular(8),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.1),
-              blurRadius: 15,
-              spreadRadius: 10,
-              offset: const Offset(0, 10),
-            ),
-          ],
-        ),
-        child: SizedBox(
-          height: 70,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-            child: Row(
-              children: [
-                const Icon(Icons.location_on_outlined, color: Colors.black, size: 20),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Text(
-                        'Entrega a',
-                        style: TextStyle(fontFamily: 'Montserrat',color: Colors.black54, fontSize: 12),
-                      ),
-                      Text(
-                        location, // Display the current location
-                        style: const TextStyle(fontFamily: 'Montserrat',color: Colors.black, fontSize: 13,fontWeight: FontWeight.w600),
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ],
-                  ),
-                ),
-                InkWell(
-                  onTap: () {
-                    // Example: Show a dialog to update the location
-                    _showLocationDialog(context);
-                  },
-                  child: const Icon(Icons.chevron_right, color: Colors.black),
-                ),
-              ],
-            ),
-          ),
-        ),
+    return ListTile(
+      leading: Container(
+          width: 45,
+          height: 45,
+          decoration: BoxDecoration(
+              color: const Color(0xFF2000B1),
+              borderRadius: BorderRadius.circular(25)),
+          child: const Icon(
+            Icons.location_on_outlined,
+            color: Color(0xffffffff),
+          )),
+      title: const Text(
+        'Entregar a',
+        style: TextStyle(
+            fontFamily: 'Inter',
+            fontWeight: FontWeight.w400,
+            fontSize: 12),
       ),
+      subtitle: Text(
+        location,
+        style: const TextStyle(
+            fontFamily: 'Inter',
+            fontWeight: FontWeight.w500,
+            fontSize: 16),
+      ),
+      trailing: const Icon(Icons.arrow_forward_ios),
+      onTap: () {
+        _showLocationDialog(context);
+      },
     );
   }
 
