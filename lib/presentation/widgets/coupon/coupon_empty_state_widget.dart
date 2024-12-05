@@ -12,6 +12,8 @@ class CouponEmptyStateWidget extends StatelessWidget {
         children: [
           SvgPicture.asset(
             'assets/coupon/coupon_emptystate.svg',
+            width: MediaQuery.of(context).size.width*0.75,
+            height: MediaQuery.of(context).size.width*0.75,
             fit: BoxFit.fill,
             ),
             const SizedBox(height: 30),

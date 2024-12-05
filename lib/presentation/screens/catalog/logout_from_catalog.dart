@@ -20,7 +20,6 @@ void showLogoutDialog(BuildContext context) {
         },
         onRejectPressed: () {
           Navigator.of(context).pop();
-          context.push('/Catalog');
         },
         icon: Icons.warning,
       );

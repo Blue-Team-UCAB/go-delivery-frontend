@@ -23,7 +23,8 @@ class CouponScreen extends StatelessWidget {
           style: TextStyle(fontFamily: 'Montserrat',fontSize: 24,fontWeight: FontWeight.w700,color: Color(0xFF000000)),
         ),
       ),
-      body: const SizedBox(
+      body: Container(
+        padding: EdgeInsets.symmetric(horizontal: 10),
         height: double.infinity,
         child: CouponEmptyStateWidget()
       ),
