@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_delivery_frontend/presentation/widgets/coupon/coupon_empty_state_widget.dart';
 import 'package:go_router/go_router.dart';
 
 
@@ -15,10 +16,23 @@ class CouponScreen extends StatelessWidget {
             context.pop();
           },
           icon : const Icon(Icons.arrow_back_ios),
-          color:const Color(0xFF2000B1),),
-        title: const Text('Cupones'),
+          color:const Color(0xFF2000B1),
+        ),
+        title: const Text(
+          'Cupones',
+          style: TextStyle(fontFamily: 'Montserrat',fontSize: 24,fontWeight: FontWeight.w700,color: Color(0xFF000000)),
+        ),
       ),
-      body: const Placeholder(),
+      body: const SizedBox(
+        height: double.infinity,
+        child: CouponEmptyStateWidget()
+      ),
+      floatingActionButton: FloatingActionButton(
+        heroTag: null,
+        backgroundColor: const Color(0xFFED4B00),
+        onPressed: (){},
+        child: const Icon(Icons.add,color: Color(0xFFFFFFFF),),
+        ),
     );
   }
 }
