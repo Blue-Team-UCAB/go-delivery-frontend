@@ -39,7 +39,7 @@ class _CategoryTabsState extends State<CategoryTabs> {
         margin: const EdgeInsets.only(right: 8),
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         decoration: BoxDecoration(
-          color: isSelected ? const Color(0xFF2000B1) : Colors.grey[200],
+          color: isSelected ? const Color(0xFF2000B1) : Color(0xFFFFFFFF),
           borderRadius: BorderRadius.circular(20),
         ),
         child: Text(
