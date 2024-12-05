@@ -62,8 +62,8 @@ class _PaymentMethodSectionState extends State<PaymentMethodSection> {
   Widget _buildSectionContainer(String title, Widget child) {
     return Container(
       decoration: BoxDecoration(
-        border: Border.all(color: Colors.grey),
-        borderRadius: BorderRadius.circular(8.0),
+        border: Border.all(color: Color(0xFFC5C6CC)),
+        borderRadius: BorderRadius.circular(12),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -146,6 +146,7 @@ class _PaymentMethodSectionState extends State<PaymentMethodSection> {
                     children: [
                       Text(option),
                       Radio<String>(
+                        activeColor: Color(0xFF2000B1),
                         value: option,
                         groupValue: _selectedCardType,
                         onChanged: (value) {
