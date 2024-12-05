@@ -4,15 +4,17 @@ import 'package:go_delivery_frontend/domain/entities/payment/payment_method_pago
 import 'package:go_delivery_frontend/domain/repositories/payment/payment_method_repository.dart';
 
 class ProcessPagoMovilInput extends IUseCaseInput {
+  final String reference;
   final String phone;
-  final String idDocument;
+  final String cedula;
   final String bank;
   final double amount;
   final DateTime date;
 
   ProcessPagoMovilInput({
+    required this.reference,
     required this.phone,
-    required this.idDocument,
+    required this.cedula,
     required this.bank,
     required this.amount,
     required this.date,
@@ -27,10 +29,11 @@ class ProcessPagoMovilUseCase {
 
   Future<Result<void>> execute(ProcessPagoMovilInput input) {
     final pagoMovil = PagoMovil(
+      reference: input.reference,
       amount: input.amount,
       date: input.date,
       phone: input.phone,
-      idDocument: input.idDocument,
+      cedula: input.cedula,
       bank: input.bank,
     );
     return _paymentRepository.processPagoMovil(pagoMovil);

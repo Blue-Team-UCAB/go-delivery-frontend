@@ -6,18 +6,16 @@ class PaymentMethodMapper {
   static Map<String, dynamic> toJson(PaymentMethod paymentMethod) {
     if (paymentMethod is PagoMovil) {
       return {
-        'id': paymentMethod.id,
         'amount': paymentMethod.amount,
-        'date': paymentMethod.date.toIso8601String(),
+        'date': paymentMethod.date!.toIso8601String(),
         'phone': paymentMethod.phone,
-        'idDocument': paymentMethod.idDocument,
+        'cedula': paymentMethod.cedula,
+        'reference': paymentMethod.reference,
         'bank': paymentMethod.bank,
       };
     } else if (paymentMethod is Zelle) {
       return {
-        'id': paymentMethod.id,
         'amount': paymentMethod.amount,
-        'date': paymentMethod.date.toIso8601String(),
         'email': paymentMethod.email,
         'reference': paymentMethod.reference,
       };
@@ -26,24 +24,31 @@ class PaymentMethodMapper {
   }
 
   static PaymentMethod fromJson(Map<String, dynamic> json) {
-    if (json['type'] == 'PagoMovil') {
+    if (json.containsKey('cedula')) {
       return PagoMovil(
-        id: json['id'],
         amount: json['amount'],
         date: DateTime.parse(json['date']),
         phone: json['phone'],
-        idDocument: json['idDocument'],
+        cedula: json['cedula'],
+        reference: json['reference'],
         bank: json['bank'],
       );
     } else if (json['type'] == 'Zelle') {
       return Zelle(
-        id: json['id'],
         amount: json['amount'],
-        date: DateTime.parse(json['date']),
         email: json['email'],
         reference: json['reference'],
       );
     }
     throw Exception('Unsupported PaymentMethod type');
+  }
+
+  static Map<String, dynamic> parseApiResponse(Map<String, dynamic> json) {
+    return {
+      'errorCode': json['errorCode'],
+      'message': json['message'],
+      'value': json['value'],
+      'error': json['error'],
+    };
   }
 }

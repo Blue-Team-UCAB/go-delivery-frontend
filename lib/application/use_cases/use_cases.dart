@@ -7,3 +7,4 @@ export 'package:go_delivery_frontend/application/use_cases/product/get_one_produ
 export 'package:go_delivery_frontend/application/use_cases/product/get_many_product.dart';
 export 'package:go_delivery_frontend/application/use_cases/auth/login/login_usecase_input.dart';
 export 'package:go_delivery_frontend/application/use_cases/payment/post_pago_movil.dart';
+export 'package:go_delivery_frontend/application/use_cases/payment/post_zelle.dart';

@@ -7,7 +7,7 @@ abstract class PaymentEvent extends Equatable {
 class SubmitPayment extends PaymentEvent {
   final String referenceNumber;
   final double amount;
-  final String idNumber;
+  final String cedula;
   final String phoneNumber;
   final String bank;
   final DateTime paymentDate;
@@ -15,7 +15,7 @@ class SubmitPayment extends PaymentEvent {
   const SubmitPayment({
     required this.referenceNumber,
     required this.amount,
-    required this.idNumber,
+    required this.cedula,
     required this.phoneNumber,
     required this.bank,
     required this.paymentDate,
@@ -23,5 +23,5 @@ class SubmitPayment extends PaymentEvent {
 
   @override
   List<Object?> get props =>
-      [referenceNumber, amount, idNumber, phoneNumber, bank, paymentDate];
+      [referenceNumber, amount, cedula, phoneNumber, bank, paymentDate];
 }

@@ -160,6 +160,8 @@ class InjectManager {
     // Registrar el repositorio de payment
     getIt.registerSingleton<PaymentRepository>(paymentRepository);
 
+    // ============================= PAGO MOVIL =================================== //
+
     //Casos de uso
     final processPagoMovilUseCase =
         ProcessPagoMovilUseCase(paymentRepository: paymentRepository);
@@ -168,5 +170,16 @@ class InjectManager {
 
     //Bloc
     getIt.registerSingleton(PaymentBloc(processPagoMovilUseCase));
+
+    // ============================= ZELLE =================================== //
+
+    //Casos de uso
+    final processZelleUseCase =
+        ProcessZelleUseCase(paymentRepository: paymentRepository);
+
+    getIt.registerSingleton<ProcessZelleUseCase>(processZelleUseCase);
+
+    //Bloc
+    getIt.registerSingleton(ZelleBloc(processZelleUseCase));
   }
 }

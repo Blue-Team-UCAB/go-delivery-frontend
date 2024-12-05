@@ -3,7 +3,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_delivery_frontend/application/BLoc/payment/pago_movil/pago_movil_bloc.dart';
 import 'package:go_delivery_frontend/application/BLoc/payment/pago_movil/pago_movil_event.dart';
 import 'package:go_delivery_frontend/application/BLoc/payment/pago_movil/pago_movil_state.dart';
-import 'package:go_delivery_frontend/application/use_cases/payment/post_pago_movil.dart';
+import 'package:go_delivery_frontend/application/BLoc/payment/zelle/zelle_bloc.dart';
+import 'package:go_delivery_frontend/application/BLoc/payment/zelle/zelle_state.dart';
+import 'package:go_delivery_frontend/application/BLoc/payment/zelle/zelle_event.dart';
 
 class PaymentMethodSection extends StatefulWidget {
   const PaymentMethodSection({super.key});
@@ -24,24 +26,8 @@ class _PaymentMethodSectionState extends State<PaymentMethodSection> {
   TextEditingController amountController = TextEditingController();
   TextEditingController idController = TextEditingController();
   TextEditingController phoneController = TextEditingController();
+  TextEditingController emailController = TextEditingController();
   final TextEditingController _integerPartController = TextEditingController();
-
-  void _addDecimalIfNeeded() {
-    String fullAmount = _integerPartController.text;
-
-    if (!fullAmount.contains(',')) {
-      fullAmount += ',00';
-    } else {
-      int decimalIndex = fullAmount.indexOf(',');
-      String decimalPart = fullAmount.substring(decimalIndex + 1);
-      if (decimalPart.length > 2) {
-        fullAmount = fullAmount.substring(0, decimalIndex + 3);
-      }
-    }
-    _integerPartController.text = fullAmount;
-    _integerPartController.selection =
-        TextSelection.collapsed(offset: fullAmount.length);
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -104,6 +90,7 @@ class _PaymentMethodSectionState extends State<PaymentMethodSection> {
                 ),
               ),
               child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
                     title,
@@ -112,6 +99,14 @@ class _PaymentMethodSectionState extends State<PaymentMethodSection> {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
+                  if (title == 'GoDely Points')
+                    Text(
+                      '\$${userPoints.toStringAsFixed(2)}',
+                      style: const TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
                 ],
               ),
             ),
@@ -198,28 +193,7 @@ class _PaymentMethodSectionState extends State<PaymentMethodSection> {
       padding: const EdgeInsets.all(12.0),
       child: Column(
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              const Text(
-                'GoDely Points',
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              Text(
-                '\$${userPoints.toStringAsFixed(2)}',
-                style: const TextStyle(
-                  fontSize: 14,
-                  color: Colors.black,
-                ),
-              ),
-            ],
-          ),
           const SizedBox(height: 16),
-
-          // Opciones de pago
           Row(
             children: ['Pago Móvil', 'Zelle'].map((option) {
               return GestureDetector(
@@ -228,7 +202,11 @@ class _PaymentMethodSectionState extends State<PaymentMethodSection> {
                   setState(() {
                     _selectedGoDelyOption = option;
                   });
-                  _showGoDelyForm(context);
+                  if (option == 'Pago Móvil') {
+                    _showGoDelyForm(context);
+                  } else if (option == 'Zelle') {
+                    _showZelleForm(context);
+                  }
                 },
                 child: Container(
                   margin: const EdgeInsets.only(right: 8.0),
@@ -268,68 +246,72 @@ class _PaymentMethodSectionState extends State<PaymentMethodSection> {
     );
   }
 
-  Future<void> _showGoDelyForm(BuildContext context) async {
-    DateTime? selectedDate;
+  Future<void> _showZelleForm(BuildContext context) async {
     bool showError = false;
+    String? errorMessage;
 
     await showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       builder: (context) {
-        final paymentBloc =
-            PaymentBloc(context.read<ProcessPagoMovilUseCase>());
+        final zelleBloc = context.read<ZelleBloc>(); // Aquí usas ZelleBloc
         return BlocProvider.value(
-          value: paymentBloc,
+          value: zelleBloc,
           child: WillPopScope(
             onWillPop: () async {
               final shouldExit = await _showExitConfirmation(context);
               return shouldExit ?? false;
             },
-            child: BlocListener<PaymentBloc, PaymentState>(
+            child: BlocListener<ZelleBloc, ZelleState>(
               listener: (context, state) {
-                if (state is PaymentLoading) {
-                  // Mostrar loading
-                } else if (state is PaymentSuccess) {
+                if (state is ZelleLoading) {
+                } else if (state is ZelleSuccess) {
                   Navigator.pop(context);
-                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                    content: Text("Pago exitoso."),
-                    backgroundColor: Colors.green,
-                  ));
-                } else if (state is PaymentFailure) {
-                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                    content: Text(state.message),
-                    backgroundColor: Colors.red,
-                  ));
+                  _showPaymentResult(context, "Pago registrado con éxito.");
+                } else if (state is ZelleFailure) {
+                  Navigator.pop(context);
+                  _showPaymentResult(
+                      context, "Pago no ha podido ser procesado.");
                 }
               },
               child: StatefulBuilder(
                 builder: (context, setState) {
-                  // Función para manejar la validación y confirmar
                   void validateAndConfirm() {
-                    if (_integerPartController.text.isEmpty ||
-                        referenceController.text.isEmpty ||
-                        idController.text.isEmpty ||
-                        phoneController.text.isEmpty ||
-                        _selectedBank == null ||
-                        selectedDate == null) {
+                    final referenceRegex = RegExp(r'^[a-zA-Z0-9]{6}$');
+                    if (!referenceRegex.hasMatch(referenceController.text)) {
                       setState(() {
                         showError = true;
+                        errorMessage =
+                            'La referencia debe ser un string de exactamente 6 caracteres alfanuméricos.';
                       });
-                    } else {
-                      setState(() {
-                        _referenceNumber = referenceController.text;
-                      });
-                      context.read<PaymentBloc>().add(SubmitPayment(
-                            phoneNumber: phoneController.text,
-                            idNumber: idController.text,
-                            bank: _selectedBank!,
-                            amount:
-                                double.tryParse(_integerPartController.text) ??
-                                    0.0,
-                            paymentDate: selectedDate!,
-                            referenceNumber: _referenceNumber ?? '',
-                          ));
+                      return;
                     }
+                    if (double.tryParse(amountController.text) == null ||
+                        double.parse(amountController.text) <= 0) {
+                      setState(() {
+                        showError = true;
+                        errorMessage =
+                            'El monto debe ser un número válido mayor a 0.';
+                      });
+                      return;
+                    }
+                    if (!emailController.text.contains('@')) {
+                      setState(() {
+                        showError = true;
+                        errorMessage = 'Por favor ingresa un email válido.';
+                      });
+                      return;
+                    }
+                    setState(() {
+                      showError = false;
+                      errorMessage = null;
+                    });
+
+                    context.read<ZelleBloc>().add(SubmitZellePayment(
+                          reference: referenceController.text,
+                          amount: double.tryParse(amountController.text) ?? 0.0,
+                          email: emailController.text,
+                        ));
                   }
 
                   return Padding(
@@ -342,9 +324,9 @@ class _PaymentMethodSectionState extends State<PaymentMethodSection> {
                         child: Column(
                           children: [
                             if (showError)
-                              const Text(
-                                'Debes completar todos los campos.',
-                                style: TextStyle(
+                              Text(
+                                errorMessage ?? 'Error desconocido.',
+                                style: const TextStyle(
                                   color: Colors.red,
                                   fontWeight: FontWeight.bold,
                                 ),
@@ -352,7 +334,203 @@ class _PaymentMethodSectionState extends State<PaymentMethodSection> {
                             const SizedBox(height: 8),
                             TextField(
                               controller: referenceController,
-                              keyboardType: TextInputType.number,
+                              keyboardType: TextInputType.text,
+                              maxLength: 6,
+                              decoration: const InputDecoration(
+                                labelText: 'Nro. Referencia',
+                              ),
+                            ),
+                            TextField(
+                              controller: amountController,
+                              keyboardType:
+                                  const TextInputType.numberWithOptions(
+                                      decimal: true),
+                              decoration: const InputDecoration(
+                                labelText: 'Monto',
+                                hintText: 'Ej. 1200.00',
+                              ),
+                            ),
+                            TextField(
+                              controller: emailController,
+                              keyboardType: TextInputType.emailAddress,
+                              decoration: const InputDecoration(
+                                labelText: 'Email',
+                                hintText: 'Ej. usuario@dominio.com',
+                              ),
+                            ),
+                            const SizedBox(height: 16),
+                            GestureDetector(
+                              onTap: validateAndConfirm,
+                              child: Container(
+                                alignment: Alignment.center,
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 12.0,
+                                  horizontal: 24.0,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: const Color(0xFF2000B1),
+                                  borderRadius: BorderRadius.circular(8.0),
+                                ),
+                                child: const Text(
+                                  'Confirmar',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> _showGoDelyForm(BuildContext context) async {
+    DateTime? selectedDate;
+    bool showError = false;
+    String? errorMessage;
+
+    await showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      builder: (context) {
+        final paymentBloc = context.read<PaymentBloc>();
+        return BlocProvider.value(
+          value: paymentBloc,
+          child: WillPopScope(
+            onWillPop: () async {
+              final shouldExit = await _showExitConfirmation(context);
+              return shouldExit ?? false;
+            },
+            child: BlocListener<PaymentBloc, PaymentState>(
+              listener: (context, state) {
+                if (state is PaymentLoading) {
+                } else if (state is PaymentSuccess) {
+                  Navigator.pop(context);
+                  _showPaymentResult(context, "Pago registrado con éxito.");
+                } else if (state is PaymentFailure) {
+                  Navigator.pop(context);
+                  _showPaymentResult(
+                      context, "Pago no ha podido ser procesado.");
+                }
+              },
+              child: StatefulBuilder(
+                builder: (context, setState) {
+                  void validateAndConfirm() {
+                    final phoneRegex = RegExp(r'^\d{10}$');
+                    final referenceRegex = RegExp(r'^[a-zA-Z0-9]{6}$');
+
+                    if (!phoneRegex.hasMatch(phoneController.text)) {
+                      setState(() {
+                        showError = true;
+                        errorMessage =
+                            'El número de teléfono debe contener exactamente 10 dígitos.';
+                      });
+                      return;
+                    }
+
+                    if (idController.text.isEmpty) {
+                      setState(() {
+                        showError = true;
+                        errorMessage = 'La cédula no puede estar vacía.';
+                      });
+                      return;
+                    }
+
+                    if (_selectedBank == null || _selectedBank!.isEmpty) {
+                      setState(() {
+                        showError = true;
+                        errorMessage = 'Debes seleccionar un banco.';
+                      });
+                      return;
+                    }
+
+                    if (double.tryParse(_integerPartController.text) == null ||
+                        double.parse(_integerPartController.text) <= 0) {
+                      setState(() {
+                        showError = true;
+                        errorMessage =
+                            'El monto debe ser un número válido mayor a 0.';
+                      });
+                      return;
+                    }
+
+                    if (!referenceRegex.hasMatch(referenceController.text)) {
+                      setState(() {
+                        showError = true;
+                        errorMessage =
+                            'La referencia debe ser un string de exactamente 6 caracteres alfanuméricos.';
+                      });
+                      return;
+                    }
+
+                    if (selectedDate == null) {
+                      setState(() {
+                        showError = true;
+                        errorMessage = 'Debes seleccionar una fecha válida.';
+                      });
+                      return;
+                    }
+
+                    if (selectedDate!.isAfter(DateTime.now())) {
+                      setState(() {
+                        showError = true;
+                        errorMessage =
+                            'La fecha debe ser pasada, no puede ser futura.';
+                      });
+                      return;
+                    }
+
+                    setState(() {
+                      showError = false;
+                      errorMessage = null;
+                    });
+
+                    String fullPhoneNumber = '58${phoneController.text}';
+
+                    context.read<PaymentBloc>().add(SubmitPayment(
+                          phoneNumber: fullPhoneNumber,
+                          cedula: idController.text,
+                          bank: _selectedBank!,
+                          amount:
+                              double.tryParse(_integerPartController.text) ??
+                                  0.0,
+                          paymentDate: selectedDate!,
+                          referenceNumber: referenceController.text,
+                        ));
+                  }
+
+                  return Padding(
+                    padding: EdgeInsets.only(
+                      bottom: MediaQuery.of(context).viewInsets.bottom,
+                    ),
+                    child: SingleChildScrollView(
+                      child: Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Column(
+                          children: [
+                            if (showError)
+                              Text(
+                                errorMessage ?? 'Error desconocido.',
+                                style: const TextStyle(
+                                  color: Colors.red,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            const SizedBox(height: 8),
+                            TextField(
+                              controller: referenceController,
+                              keyboardType: TextInputType.text,
                               maxLength: 6,
                               decoration: const InputDecoration(
                                 labelText: 'Nro. Referencia',
@@ -365,13 +543,8 @@ class _PaymentMethodSectionState extends State<PaymentMethodSection> {
                                       decimal: true),
                               decoration: const InputDecoration(
                                 labelText: 'Monto',
-                                hintText: 'Ej. 1200,00',
+                                hintText: 'Ej. 1200.00',
                               ),
-                              onEditingComplete: () {
-                                setState(() {
-                                  _addDecimalIfNeeded();
-                                });
-                              },
                             ),
                             const SizedBox(height: 16),
                             TextField(
@@ -426,7 +599,7 @@ class _PaymentMethodSectionState extends State<PaymentMethodSection> {
                                   context: context,
                                   initialDate: DateTime.now(),
                                   firstDate: DateTime(2000),
-                                  lastDate: DateTime(2100),
+                                  lastDate: DateTime.now(),
                                 );
                                 if (pickedDate != null) {
                                   setState(() {
@@ -509,6 +682,24 @@ class _PaymentMethodSectionState extends State<PaymentMethodSection> {
           ),
         ],
       ),
+    );
+  }
+
+  void _showPaymentResult(BuildContext context, String message) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Resultado del Pago'),
+          content: Text(message),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('Aceptar'),
+            ),
+          ],
+        );
+      },
     );
   }
 }

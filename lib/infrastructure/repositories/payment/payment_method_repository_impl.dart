@@ -26,17 +26,35 @@ class PaymentRepositoryImpl extends PaymentRepository {
   Future<Result<void>> processPagoMovil(PagoMovil pagoMovil) async {
     await _addAuthorizationHeader();
     try {
+      // Realizamos la solicitud al servidor
       final response = await _apiRequestManager.request(
-        '/payment/method/pagomovil',
+        '/pay/pago-movil',
         'POST',
-        (data) => Result.success(data),
+        (data) => PaymentMethodMapper.parseApiResponse(data),
         body: PaymentMethodMapper.toJson(pagoMovil),
       );
-      return response;
+
+      if (response.isSuccessful()) {
+        final responseData = response.getValue();
+
+        final errorCode = responseData['errorCode'];
+        final message = responseData['message'];
+        if (errorCode == 200 && message == null) {
+          return Result.success(responseData);
+        }
+        if (errorCode == 400 && message == 'Payment failed') {
+          return Result.fail(
+              BadReponseFailure(message: 'Pago fallido: $message'));
+        }
+        return Result.fail(BadReponseFailure(
+            message: 'Pago fallido: Respuesta inesperada del servidor'));
+      } else {
+        return Result.fail(const ServerFailure());
+      }
     } catch (e) {
-      print('Error in PaymentRepositoryImpl.processPagoMovil: $e');
+      print('Error en PaymentRepositoryImpl.processPagoMovil: $e');
       return Result.fail(
-          Exception('Failed to process PagoMovil: $e') as Failure);
+          ServerFailure(message: 'Fallo al procesar PagoMovil: $e'));
     }
   }
 
@@ -45,15 +63,35 @@ class PaymentRepositoryImpl extends PaymentRepository {
     await _addAuthorizationHeader();
     try {
       final response = await _apiRequestManager.request(
-        '/payment/method/zelle',
+        '/pay/zelle',
         'POST',
-        (data) => Result.success(data),
+        (data) => PaymentMethodMapper.parseApiResponse(data),
         body: PaymentMethodMapper.toJson(zelle),
       );
-      return response;
+
+      if (response.isSuccessful()) {
+        final responseData = response.getValue();
+
+        final errorCode = responseData['errorCode'];
+        final message = responseData['message'];
+
+        if (errorCode == 200 && message == null) {
+          return Result.success(responseData);
+        }
+
+        if (errorCode == 400 && message == 'Payment failed') {
+          return Result.fail(
+              BadReponseFailure(message: 'Pago fallido: $message'));
+        }
+
+        return Result.fail(BadReponseFailure(
+            message: 'Pago fallido: Respuesta inesperada del servidor'));
+      } else {
+        return Result.fail(const ServerFailure());
+      }
     } catch (e) {
-      print('Error in PaymentRepositoryImpl.processZelle: $e');
-      return Result.fail(Exception('Failed to process Zelle: $e') as Failure);
+      print('Error en PaymentRepositoryImpl.processZelle: $e');
+      return Result.fail(ServerFailure(message: 'Fallo al procesar Zelle: $e'));
     }
   }
 }

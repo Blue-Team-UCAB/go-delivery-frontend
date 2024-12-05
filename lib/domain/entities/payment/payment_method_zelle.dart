@@ -6,7 +6,7 @@ class Zelle extends PaymentMethod {
   Zelle({
     super.id,
     required super.amount,
-    required super.date,
+    super.date,
     required this.email,
     super.reference,
   }) : super(name: "Zelle");

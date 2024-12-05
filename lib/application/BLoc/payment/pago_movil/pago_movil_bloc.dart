@@ -16,8 +16,9 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
     try {
       final result =
           await _processPagoMovilUseCase.execute(ProcessPagoMovilInput(
+        reference: event.referenceNumber,
         phone: event.phoneNumber,
-        idDocument: event.idNumber,
+        cedula: event.cedula,
         bank: event.bank,
         amount: event.amount,
         date: event.paymentDate,
