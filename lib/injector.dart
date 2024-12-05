@@ -14,6 +14,7 @@ import 'package:go_delivery_frontend/application/use_cases/auth/recover_password
 import 'package:go_delivery_frontend/application/use_cases/auth/register/register_usecase_input.dart';
 import 'package:go_delivery_frontend/application/use_cases/bundle/get_many_bundle.dart';
 import 'package:go_delivery_frontend/application/use_cases/bundle/get_one_bundle.dart';
+import 'package:go_delivery_frontend/application/use_cases/order/get_many_order.dart';
 import 'package:go_delivery_frontend/application/use_cases/product/get_one_product.dart';
 import 'package:go_delivery_frontend/domain/repositories/bundle/bundle_repository.dart';
 import 'package:go_delivery_frontend/domain/repositories/order/order_repository.dart';
@@ -21,6 +22,7 @@ import 'package:go_delivery_frontend/infrastructure/datasources/api/api_request_
 import 'package:go_delivery_frontend/infrastructure/datasources/cart/cart_isar_local_storage_datasource.dart';
 import 'package:go_delivery_frontend/infrastructure/datasources/localstorage/localstorage_impl.dart';
 import 'package:go_delivery_frontend/domain/repositories/product/product_repository.dart';
+import 'package:go_delivery_frontend/infrastructure/models/order_many_model.dart';
 import 'package:go_delivery_frontend/infrastructure/repositories/bundle/bundle_repository_impl.dart';
 import 'package:go_delivery_frontend/infrastructure/repositories/cart/cart_local_storage_repository_impl.dart';
 import 'package:go_delivery_frontend/infrastructure/repositories/order/order_repository_impl.dart';
@@ -31,6 +33,7 @@ import 'application/BLoc/auth/login/login_bloc.dart';
 import 'application/BLoc/auth/recover_password/recover_password_bloc.dart';
 import 'application/BLoc/auth/register/register_bloc.dart';
 import 'application/BLoc/cart/cart_bloc.dart';
+import 'application/BLoc/order/order_many/order_many_bloc.dart';
 import 'application/BLoc/themes/themes_bloc.dart';
 import 'application/use_cases/auth/login/login_usecase_input.dart';
 import 'application/use_cases/order/get_one_order.dart';
@@ -168,11 +171,17 @@ class InjectManager {
     //casos de uso
     final getOneOrderUseCase =
         GetOneOrderUseCase(orderRepository: orderRepository);
+    final getManyOrderUseCase =
+        GetManyOrdersUseCase(orderRepository: orderRepository);
 
     getIt.registerSingleton<GetOneOrderUseCase>(getOneOrderUseCase);
+    getIt.registerSingleton<GetManyOrdersUseCase>(getManyOrderUseCase);
     // ======================================================================= //
 
     getIt.registerSingleton(
         OrderDetailBloc(getOneOrderUseCase: getOneOrderUseCase));
+    getIt.registerSingleton(
+        ManyOrdersBloc(getManyOrdersUseCase: getManyOrderUseCase));
+
   }
 }

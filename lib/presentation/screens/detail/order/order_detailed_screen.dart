@@ -7,8 +7,8 @@ import '../../../../application/BLoc/order/order_detailed/order_detailed_bloc.da
 import '../../../../application/BLoc/order/order_detailed/order_detailed_event.dart';
 import '../../../../application/BLoc/order/order_detailed/order_detailed_state.dart';
 import '../../../../injector.dart';
-import 'order_detailed_screen_active.dart';
-import 'order_detailed_screen_inactive.dart';
+import 'active/order_detailed_screen_active.dart';
+import 'past/order_detailed_screen_past.dart';
 
 class OrderDetailScreen extends StatelessWidget {
   final String orderNumber;
@@ -33,6 +33,7 @@ class OrderDetailScreen extends StatelessWidget {
             child: const Text(
               'Detalle de Orden',
               style: TextStyle(
+                fontFamily: "Montserrat",
                 color: Colors.black,
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
@@ -68,9 +69,9 @@ class OrderDetailScreen extends StatelessWidget {
             }
 
             if (state is OrderDetailLoadedState) {
-              return state.status == 'Por Entregar'
+              return state.state.any((orderState) => orderState.state != 'DELIVERED')
                   ? ActiveOrderDetails(state: state)
-                  : InactiveOrderDetails(state: state);
+                  : PastOrderDetails(state: state);
             }
 
             return const SizedBox.shrink();

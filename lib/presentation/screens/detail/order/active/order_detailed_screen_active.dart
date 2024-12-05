@@ -4,8 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import '../../../../application/BLoc/order/order_detailed/order_detailed_state.dart';
-import 'driver_card.dart';
+import '../../../../../application/BLoc/order/order_detailed/order_detailed_state.dart';
+import '../../../../../domain/entities/order/order.dart';
+import '../driver_card.dart';
 
 class ActiveOrderDetails extends StatelessWidget {
   final OrderDetailLoadedState state;
@@ -14,172 +15,59 @@ class ActiveOrderDetails extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final currentActiveState = _getCurrentActiveState();
+
     return SingleChildScrollView(
       child: Column(
         children: [
           FadeInDown(
-            duration: const Duration(milliseconds: 50),
-            child: OrderHeaderInfo(
-              time: state.time,
-              location: state.location,
-              onAddInstructions: () => _showInstructionsDialog(context),
-            ),
-          ),
-          FadeInDown(
-            delay: const Duration(milliseconds: 50),
-            child: DriverCard(
-              driverName: "Juancho",
-              driverImage: "",
-              onCallPressed: () => _launchCall("1234325678"),
-            ),
-          ),
-          FadeInDown(
-            delay: const Duration(milliseconds: 50),
+            delay: const Duration(milliseconds: 20),
             child: OrderSummary(
               orderNumber: state.orderNumber,
               amount: state.price,
-              estimatedTime: state.time,
             ),
           ),
           FadeInDown(
-            delay: const Duration(milliseconds: 50),
-            child: OrderProgress(state: state),
+            delay: const Duration(milliseconds: 20),
+            child: OrderHeaderInfo(
+              time: state.time,
+              location: state.location,
+            ),
+          ),
+          FadeInDown(
+            delay: const Duration(milliseconds: 20),
+            child: OrderProgress(
+              state: state,
+              currentActiveState: currentActiveState,
+            ),
           ),
         ],
       ),
     );
   }
 
-  Future<void> _launchCall(String phone) async {
-    final url = 'tel:$phone';
-    if (await canLaunch(url)) {
-      await launch(url);
+  String _getCurrentActiveState() {
+    final activeStates = ['DELIVERED', 'SHIPPED', 'IN_PROCESS', 'CREATED'];
+
+    for (var activeState in activeStates) {
+      if (state.state.any((s) => s.state == activeState)) {
+        return activeState;
+      }
     }
-  }
 
-  void _showInstructionsDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (_) => FadeIn(
-        duration: const Duration(milliseconds: 100),
-        child: AlertDialog(
-          title: const Text('Agregar instrucciones'),
-          content: const TextField(
-            maxLines: 3,
-            decoration: InputDecoration(
-              hintText: 'Escribe las instrucciones para el conductor...',
-              border: OutlineInputBorder(),
-            ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: const Text('Cancelar'),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                //  context.read<OrderDetailBloc>().add(
-                //     UpdateInstructionsEvent(state.orderNumber, 'instructions'),
-                //  );
-                Navigator.pop(context);
-              },
-              child: const Text('Guardar'),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-Widget _buildTimelineItem(
-  String title,
-  String subtitle, {
-  bool isCompleted = false,
-}) {
-  return Row(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      Column(
-        children: [
-          Container(
-            width: 24,
-            height: 24,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: isCompleted ? Colors.indigo : Colors.grey[300],
-              border: Border.all(
-                color: isCompleted ? Colors.indigo : Colors.grey[300]!,
-                width: 2,
-              ),
-            ),
-            child: isCompleted
-                ? const Icon(Icons.check, color: Colors.white, size: 16)
-                : null,
-          ),
-          Container(
-            width: 2,
-            height: 32,
-            color: Colors.grey[300],
-          ),
-        ],
-      ),
-      const SizedBox(width: 12),
-      Expanded(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              title,
-              style: const TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 16,
-              ),
-            ),
-            Text(
-              subtitle,
-              style: TextStyle(
-                color: Colors.grey[600],
-                fontSize: 14,
-              ),
-            ),
-            const SizedBox(height: 16),
-          ],
-        ),
-      ),
-    ],
-  );
-}
-
-// Error boundary widget
-class ErrorBoundary extends StatelessWidget {
-  final Widget child;
-  final Widget Function(Object error, StackTrace? stackTrace) fallback;
-
-  const ErrorBoundary({
-    super.key,
-    required this.child,
-    required this.fallback,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Builder(
-      builder: (context) {
-        try {
-          return child;
-        } catch (error, stackTrace) {
-          return fallback(error, stackTrace);
-        }
-      },
-    );
+    return 'CREATED'; // Default to created if no state found
   }
 }
 
 class OrderProgress extends StatelessWidget {
   final OrderDetailLoadedState state;
+  final String currentActiveState;
 
-  const OrderProgress({super.key, required this.state});
+  const OrderProgress({
+    super.key,
+    required this.state,
+    required this.currentActiveState,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -189,23 +77,51 @@ class OrderProgress extends StatelessWidget {
         children: [
           _buildTimelineItem(
             'Orden realizada',
-            state.date,
-            isCompleted: true,
+            _getStateDateByType('CREATED'),
+            isCompleted: _isStateCompleted('CREATED'),
           ),
           _buildTimelineItem(
-            'Orden procesada',
-            state.date,
-            isCompleted: true,
+            'En proceso',
+            _getStateDateByType('IN_PROCESS'),
+            isCompleted: _isStateCompleted('IN_PROCESS'),
           ),
-          _buildDeliveryItem(),
+          _buildTimelineItem(
+            'Enviando',
+            _getStateDateByType('SHIPPED'),
+            isCompleted: _isStateCompleted('SHIPPED'),
+          ),
+          if (_shouldShowDeliveryItem())
+            _buildDeliveryItem(),
           _buildTimelineItem(
             'Orden entregada',
-            'Estimado para las ${state.time}',
-            isCompleted: false,
+            _getStateDateByType('DELIVERED'),
+            isCompleted: _isStateCompleted('DELIVERED'),
           ),
         ],
       ),
     );
+  }
+
+  String _getStateDateByType(String stateType) {
+    final matchingState = state.state.firstWhere(
+          (orderState) => orderState.state == stateType,
+      orElse: () => OrderState(state: stateType, date: 'Pendiente'),
+    );
+
+    return matchingState.date;
+  }
+
+  bool _isStateCompleted(String checkState) {
+    final stateOrder = ['CREATED', 'IN_PROCESS', 'SHIPPED', 'DELIVERED'];
+
+    final checkStateIndex = stateOrder.indexOf(checkState);
+    final currentStateIndex = stateOrder.indexOf(currentActiveState);
+
+    return checkStateIndex <= currentStateIndex;
+  }
+
+  bool _shouldShowDeliveryItem() {
+    return currentActiveState == 'SHIPPED' || currentActiveState == 'DELIVERED';
   }
 
   Widget _buildDeliveryItem() {
@@ -243,14 +159,73 @@ class OrderProgress extends StatelessWidget {
               const SizedBox(height: 8),
               ClipRRect(
                 borderRadius: BorderRadius.circular(8),
-                child: const SizedBox(
+                child: SizedBox(
                   height: 200,
                   child: DeliveryMap(
-                    driverLocation: LatLng(23, 33),
-                    destinationLocation: LatLng(23, 33),
+                    driverLocation: const LatLng(23, 33),
+                    destinationLocation: state.coordinates,
                   ),
                 ),
               ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildTimelineItem(
+      String title,
+      String subtitle, {
+        bool isCompleted = false,
+      }) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Column(
+          children: [
+            Container(
+              width: 24,
+              height: 24,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: isCompleted ? Colors.indigo : Colors.grey[300],
+                border: Border.all(
+                  color: isCompleted ? Colors.indigo : Colors.grey[300]!,
+                  width: 2,
+                ),
+              ),
+              child: isCompleted
+                  ? const Icon(Icons.check, color: Colors.white, size: 16)
+                  : null,
+            ),
+            Container(
+              width: 2,
+              height: 32,
+              color: Colors.grey[300],
+            ),
+          ],
+        ),
+        const SizedBox(width: 12),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                title,
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16,
+                ),
+              ),
+              Text(
+                subtitle,
+                style: TextStyle(
+                  color: Colors.grey[600],
+                  fontSize: 14,
+                ),
+              ),
+              const SizedBox(height: 16),
             ],
           ),
         ),
@@ -306,13 +281,11 @@ class DeliveryMap extends StatelessWidget {
 class OrderHeaderInfo extends StatelessWidget {
   final String time;
   final String location;
-  final VoidCallback onAddInstructions;
 
   const OrderHeaderInfo({
     super.key,
     required this.time,
     required this.location,
-    required this.onAddInstructions,
   });
 
   @override
@@ -347,16 +320,6 @@ class OrderHeaderInfo extends StatelessWidget {
               ),
             ],
           ),
-          TextButton(
-            onPressed: onAddInstructions,
-            child: const Text(
-              'Agregar instrucciones',
-              style: TextStyle(
-                color: Colors.indigo,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-          ),
         ],
       ),
     );
@@ -366,13 +329,11 @@ class OrderHeaderInfo extends StatelessWidget {
 class OrderSummary extends StatelessWidget {
   final String orderNumber;
   final String amount;
-  final String estimatedTime;
 
   const OrderSummary({
     super.key,
     required this.orderNumber,
     required this.amount,
-    required this.estimatedTime,
   });
 
   @override
@@ -383,7 +344,7 @@ class OrderSummary extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Orden #$orderNumber',
+            'Orden $orderNumber',
             style: const TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.bold,
@@ -393,16 +354,10 @@ class OrderSummary extends StatelessWidget {
           Text(
             'Monto $amount',
             style: TextStyle(
+              fontFamily: "inter",
               color: Colors.grey[600],
-              fontSize: 16,
-            ),
-          ),
-          const SizedBox(height: 16),
-          Text(
-            'Estimado: $estimatedTime minutos',
-            style: const TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 16,
+              fontSize: 20,
+              fontWeight: FontWeight.w700
             ),
           ),
         ],

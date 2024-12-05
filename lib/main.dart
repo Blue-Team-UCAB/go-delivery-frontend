@@ -4,6 +4,7 @@ import 'package:go_delivery_frontend/application/BLoc/auth/current/current_user_
 import 'package:go_delivery_frontend/application/BLoc/bundle/bundle_detail/bundle_detail_bloc.dart';
 import 'package:go_delivery_frontend/application/BLoc/bundle/bundle_many/bundle_many_bloc.dart';
 import 'package:go_delivery_frontend/application/BLoc/order/order_detailed/order_detailed_bloc.dart';
+import 'package:go_delivery_frontend/application/BLoc/order/order_many/order_many_bloc.dart';
 import 'package:go_delivery_frontend/application/BLoc/product/popular/product_popular_many_bloc.dart';
 import 'package:go_delivery_frontend/application/BLoc/product/popular/random/product_random_many_bloc.dart';
 import 'package:go_delivery_frontend/application/BLoc/product/product_detail/product_detail_bloc.dart';
@@ -39,6 +40,7 @@ void main() async {
             create: (_) => getIt<
                 ProductRandomListBloc>()), //THIS IS A PLACEHOLDER. Pronto estará el Popular list definitivo despues de tener casi listo la app //THIS IS A PLACEHOLDER. Pronto estará el Popular list definitivo despues de tener casi listo la app
         BlocProvider(create: (_) => getIt<OrderDetailBloc>()),
+        BlocProvider(create: (_) => getIt<ManyOrdersBloc>()),
       ],
       child: const GoDelyApp(),
     ),

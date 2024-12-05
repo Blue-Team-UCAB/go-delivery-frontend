@@ -25,3 +25,19 @@ class Product {
     required this.stock,
   });
 }
+
+class OrderProduct {
+  final String id;
+  final String name;
+  final double price;
+  final int quantity;
+  final String imageUrl;
+
+  const OrderProduct({
+    required this.id,
+    required this.name,
+    required this.price,
+    required this.quantity,
+    required this.imageUrl,
+  });
+}
