@@ -9,6 +9,8 @@ abstract class CartLocalStorageDatasource {
 
   Future<void> operateCartItem(String id, int quantity);
 
+  Future<void> emptyCart();
+
   Future<List<CartItem>> loadCartItems();
 
 }

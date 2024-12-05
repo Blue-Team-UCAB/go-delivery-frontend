@@ -19,10 +19,9 @@ class BundleCard extends StatelessWidget {
       },
       child: Container(
         height: 280,
-        decoration: BoxDecoration(
-          border: Border.all(color: const Color(0xFFD5CCFF)),
-          color: const Color(0xFFFFFFFF),
-          borderRadius: const BorderRadius.all(Radius.circular(14.0)),
+        decoration: const BoxDecoration(
+          color: Color(0xFFFFFFFF),
+          borderRadius: BorderRadius.all(Radius.circular(14.0)),
         ),
         child: Column(
           children: [
@@ -34,7 +33,7 @@ class BundleCard extends StatelessWidget {
               child: Image.network(
                 bundle.imageUrl,
                 height: 100,
-                width: 100,
+                width: double.infinity,
                 fit: BoxFit.cover,
               ),
             ),

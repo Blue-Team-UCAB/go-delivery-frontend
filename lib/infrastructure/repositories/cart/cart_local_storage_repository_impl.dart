@@ -27,5 +27,10 @@ class CartLocalStorageRepositoryImpl extends CartLocalStorageRepository{
   Future<void> operateCartItem(String id, int quantity){
     return datasource.operateCartItem(id, quantity);
   }
+
+  @override
+  Future<void> emptyCart(){
+    return datasource.emptyCart();
+  }
   
 }
