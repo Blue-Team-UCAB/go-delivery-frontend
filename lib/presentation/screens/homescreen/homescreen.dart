@@ -5,15 +5,8 @@ import 'package:go_delivery_frontend/presentation/screens/homescreen/category_ta
 import 'package:go_delivery_frontend/presentation/screens/homescreen/homescreen_combo_section.dart';
 import 'package:go_delivery_frontend/presentation/screens/homescreen/sidebar_screen.dart';
 import 'package:go_delivery_frontend/presentation/widgets/random_products/random_popular_section.dart';
-import 'package:go_router/go_router.dart';
-import '../../../application/BLoc/auth/current/current_user_event.dart';
-import '../../../infrastructure/datasources/localstorage/localstorage_impl.dart';
-import '../../widgets/current_user_view.dart';
-import '../../widgets/dialog_darken_window.dart';
 import '../../widgets/navbar.dart';
-import '../../widgets/sidebar.dart';
 import 'homescreen_locationbar.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
 class HomeScreenParentView extends StatelessWidget {
   static const name = 'home-screen';
@@ -68,12 +61,13 @@ class HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return AnimatedContainer(
-      transform: Matrix4.translationValues(xOffset, yOffset, 0)..scale(scaleFactor)..rotateY(isDrawerOpen? 0 : 0),
+      transform: Matrix4.translationValues(xOffset, yOffset, 0)
+        ..scale(scaleFactor)
+        ..rotateY(isDrawerOpen ? 0 : 0),
       duration: const Duration(milliseconds: 250),
       child: ClipRRect(
-        borderRadius: BorderRadius.all(Radius.circular(isDrawerOpen? 16 : 0)),
+        borderRadius: BorderRadius.all(Radius.circular(isDrawerOpen ? 16 : 0)),
         child: Scaffold(
-          
           backgroundColor: const Color(0xFFEBEAED),
           body: Container(
             color: const Color(0xFF2000B1),
@@ -99,12 +93,11 @@ class HomeScreenState extends State<HomeScreen> {
                     left: 16,
                     right: 16,
                     child: Container(
-                      decoration: const BoxDecoration(
-                        color: Color(0xFFFFFFFF),
-                        borderRadius: BorderRadius.all(Radius.circular(12))
-                      ),
-                      child: const LocationBar()
-                      ),
+                        decoration: const BoxDecoration(
+                            color: Color(0xFFFFFFFF),
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(12))),
+                        child: const LocationBar()),
                   ),
                 ],
               ),
@@ -131,30 +124,27 @@ class HomeScreenState extends State<HomeScreen> {
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
           isDrawerOpen
-          ? IconButton(
-            icon: const Icon(Icons.arrow_back_ios,
-                color: Colors.white),
-            onPressed: (){
-              setState(() {
-                xOffset=0;
-                yOffset=0;
-                scaleFactor=1;
-                isDrawerOpen=false;
-              });
-            }
-          )
-          : IconButton(
-            icon: const Icon(Icons.menu,
-                color: Colors.white),
-            onPressed: (){
-              setState(() {
-                xOffset=288;
-                scaleFactor=0.8;
-                yOffset=MediaQuery.of(context).size.height*((1-scaleFactor)/2);
-                isDrawerOpen=true;
-              });
-            }
-          ),
+              ? IconButton(
+                  icon: const Icon(Icons.arrow_back_ios, color: Colors.white),
+                  onPressed: () {
+                    setState(() {
+                      xOffset = 0;
+                      yOffset = 0;
+                      scaleFactor = 1;
+                      isDrawerOpen = false;
+                    });
+                  })
+              : IconButton(
+                  icon: const Icon(Icons.menu, color: Colors.white),
+                  onPressed: () {
+                    setState(() {
+                      xOffset = 288;
+                      scaleFactor = 0.8;
+                      yOffset = MediaQuery.of(context).size.height *
+                          ((1 - scaleFactor) / 2);
+                      isDrawerOpen = true;
+                    });
+                  }),
           const SizedBox(width: 5),
           const Expanded(
             flex: 1,
@@ -173,11 +163,10 @@ class HomeScreenState extends State<HomeScreen> {
                 Text(
                   'Compra tus productos favoritos',
                   style: TextStyle(
-                    fontFamily: 'Montserrat',
-                    color: Colors.white,
-                    fontSize: 14,
-                    fontWeight: FontWeight.w400
-                  ),
+                      fontFamily: 'Montserrat',
+                      color: Colors.white,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w400),
                 ),
               ],
             ),
@@ -188,9 +177,7 @@ class HomeScreenState extends State<HomeScreen> {
                 builder: (BuildContext innerContext) {
                   return IconButton(
                     icon: const Icon(Icons.notifications_none),
-                    onPressed: () {
-                      
-                    },
+                    onPressed: () {},
                     color: Colors.white,
                   );
                 },

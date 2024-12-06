@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 
 import '../../../application/BLoc/order/order_many/order_many_bloc.dart';
 import '../../../application/BLoc/order/order_many/order_many_event.dart';
@@ -32,7 +33,7 @@ class _OrdersPageState extends State<OrdersPage>
   int _currentActivePage = 1;
   int _currentPastPage = 1;
   final int _perPage = 10;
-  bool _isInitialLoad = true;
+  final bool _isInitialLoad = true;
 
   @override
   bool get wantKeepAlive => true;
@@ -61,18 +62,12 @@ class _OrdersPageState extends State<OrdersPage>
 
   void _loadActiveOrders() {
     context.read<ManyOrdersBloc>().add(LoadManyOrdersEvent(
-        page: _currentActivePage,
-        perpage: _perPage,
-        status: 'active'
-    ));
+        page: _currentActivePage, perpage: _perPage, status: 'active'));
   }
 
   void _loadPastOrders() {
     context.read<ManyOrdersBloc>().add(LoadManyOrdersEvent(
-        page: _currentPastPage,
-        perpage: _perPage,
-        status: 'past'
-    ));
+        page: _currentPastPage, perpage: _perPage, status: 'past'));
   }
 
   void _onRefresh(bool isActiveTab) {
@@ -151,7 +146,7 @@ class _OrdersPageState extends State<OrdersPage>
                   indicatorSize: TabBarIndicatorSize.tab,
                   labelPadding: const EdgeInsets.symmetric(horizontal: 16),
                   overlayColor: WidgetStateProperty.resolveWith<Color?>(
-                        (Set<WidgetState> states) {
+                    (Set<WidgetState> states) {
                       if (states.contains(WidgetState.pressed)) {
                         return Colors.purpleAccent.withOpacity(0.1);
                       }
@@ -199,67 +194,79 @@ class _OrdersPageState extends State<OrdersPage>
     );
   }
 
-
-
-  Widget _buildOrdersList(
-      List<OrderManyItem> orders,
-      bool isActiveTab
-      ) {
+  Widget _buildOrdersList(List<OrderManyItem> orders, bool isActiveTab) {
     return BlocBuilder<ManyOrdersBloc, ManyOrdersState>(
         builder: (context, state) {
-          if (orders.isEmpty && state is ManyOrdersLoadingState) {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
-          }
-
-          // Error state
-          if (state is ManyOrdersErrorState && orders.isEmpty) {
-            return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    'Error loading orders: ${state.error}',
-                    style: const TextStyle(color: Colors.red),
-                  ),
-                  ElevatedButton(
-                    onPressed: () => _onRefresh(isActiveTab),
-                    child: const Text('Retry'),
-                  )
-                ],
-              ),
-            );
-          }
-
-          // No orders
-          if (orders.isEmpty) {
-            return Center(
-              child: Text(isActiveTab ? 'No active orders' : 'No past orders'),
-            );
-          }
-
-          // Orders list with potential loading indicator
-          return RefreshIndicator(
-            onRefresh: () async => _onRefresh(isActiveTab),
-            child: ListView.builder(
-              itemCount: orders.length + (state is ManyOrdersLoadingState ? 1 : 0),
-              itemBuilder: (context, index) {
-                // Loading indicator for pagination
-                if (index == orders.length && state is ManyOrdersLoadingState) {
-                  return const Center(
-                    child: CircularProgressIndicator(),
-                  );
-                }
-
-                final order = orders[index];
-                return OrderCard(order: order);
-              },
-            ),
-          );
-        }
+      if (orders.isEmpty && state is ManyOrdersLoadingState) {
+        return const Center(
+          child: CircularProgressIndicator(),
         );
       }
+
+      // Error state
+      if (state is ManyOrdersErrorState && orders.isEmpty) {
+        return Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                'Error loading orders: ${state.error}',
+                style: const TextStyle(color: Colors.red),
+              ),
+              ElevatedButton(
+                onPressed: () => _onRefresh(isActiveTab),
+                child: const Text('Retry'),
+              )
+            ],
+          ),
+        );
+      }
+
+      // No orders
+      if (orders.isEmpty) {
+        return Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              SvgPicture.asset(
+                'assets/icon/order_not_found.svg',
+                height: 200,
+                width: 200,
+              ),
+              const SizedBox(height: 16),
+              const Text(
+                'No Hay Ordenes',
+                style: TextStyle(
+                  fontFamily: "Inter",
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ],
+          ),
+        );
+      }
+
+      // Orders list with potential loading indicator
+      return RefreshIndicator(
+        onRefresh: () async => _onRefresh(isActiveTab),
+        child: ListView.builder(
+          itemCount: orders.length + (state is ManyOrdersLoadingState ? 1 : 0),
+          itemBuilder: (context, index) {
+            // Loading indicator for pagination
+            if (index == orders.length && state is ManyOrdersLoadingState) {
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            }
+
+            final order = orders[index];
+            return OrderCard(order: order);
+          },
+        ),
+      );
+    });
+  }
 
   @override
   void dispose() {

@@ -1,6 +1,3 @@
-import 'package:go_delivery_frontend/infrastructure/mappers/order/many/many_orderitem_mapper.dart';
-import 'package:go_delivery_frontend/infrastructure/models/tracking_model.dart';
-
 import '../../../application/api/api_request.dart';
 import '../../../application/key_value_storage/key_value.dart';
 import '../../../common/result.dart';
@@ -38,16 +35,12 @@ class OrderRepositoryImpl extends OrderRepository {
       'perpage': perpage.toString(),
     };
 
-      final response = await _apiRequestManager.request(
-        '/order',
-        'GET',
-        queryParameters: queryParameters,
-            (data) {
-            return OrderManyMapper.fromJson(data['value']).orders;
-          }
-      );
-      return response;
-
+    final response = await _apiRequestManager.request(
+        '/order?status=$status', 'GET', queryParameters: queryParameters,
+        (data) {
+      return OrderManyMapper.fromJson(data['value']).orders;
+    });
+    return response;
   }
 
   @override
@@ -74,5 +67,4 @@ class OrderRepositoryImpl extends OrderRepository {
     // TODO: implement cancelOrder
     throw UnimplementedError();
   }
-
 }

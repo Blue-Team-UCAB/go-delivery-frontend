@@ -1,20 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_delivery_frontend/application/BLoc/product/product_detail/product_detail_bloc.dart';
-import 'package:go_delivery_frontend/application/BLoc/product/product_detail/product_detail_event.dart';
-import 'package:go_delivery_frontend/application/BLoc/product/product_detail/product_detail_state.dart';
-import 'package:go_delivery_frontend/presentation/core/common/image-loader.dart';
-
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_delivery_frontend/application/BLoc/product/product_detail/product_detail_bloc.dart';
-import 'package:go_delivery_frontend/application/BLoc/product/product_detail/product_detail_event.dart';
-import 'package:go_delivery_frontend/application/BLoc/product/product_detail/product_detail_state.dart';
 import 'package:go_delivery_frontend/presentation/core/common/image-loader.dart';
 
 import '../../domain/entities/product/product.dart';
-import '../../domain/repositories/product/product_repository.dart';
+
 class ProductStackedCard extends StatelessWidget {
   final OrderProduct productData;
 
@@ -44,10 +32,8 @@ class ProductStackedCard extends StatelessWidget {
               child: Text(
                 'x${productData.quantity}',
                 style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                  color: Theme.of(context)
-                      .colorScheme
-                      .onSecondaryContainer,
-                ),
+                      color: Theme.of(context).colorScheme.onSecondaryContainer,
+                    ),
               ),
             ),
           ),
@@ -59,22 +45,17 @@ class ProductStackedCard extends StatelessWidget {
                   width: 80,
                   height: 80,
                   decoration: BoxDecoration(
-                    color: Theme.of(context)
-                        .colorScheme
-                        .surfaceContainerHighest,
+                    color:
+                        Theme.of(context).colorScheme.surfaceContainerHighest,
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: productData.imageUrl != null
                       ? FastLoadingImage(
-                      fit: BoxFit.cover,
-                      imageUrl: productData.imageUrl
-                  )
+                          fit: BoxFit.cover, imageUrl: productData.imageUrl)
                       : Icon(
-                    Icons.image_outlined,
-                    color: Theme.of(context)
-                        .colorScheme
-                        .onSurfaceVariant,
-                  ),
+                          Icons.image_outlined,
+                          color: Theme.of(context).colorScheme.onSurfaceVariant,
+                        ),
                 ),
                 const SizedBox(width: 16),
                 Expanded(
@@ -90,12 +71,9 @@ class ProductStackedCard extends StatelessWidget {
                       const SizedBox(height: 8),
                       Text(
                         '\$${productData.price.toStringAsFixed(2)}',
-                        style: Theme.of(context)
-                            .textTheme
-                            .bodyMedium
-                            ?.copyWith(
-                          color: Theme.of(context).colorScheme.primary,
-                        ),
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                              color: Theme.of(context).colorScheme.primary,
+                            ),
                       ),
                     ],
                   ),

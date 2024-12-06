@@ -4,12 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_delivery_frontend/presentation/widgets/navbar.dart';
 import 'package:go_delivery_frontend/presentation/widgets/card.dart';
-import 'package:go_delivery_frontend/presentation/widgets/sidebar.dart';
 import 'package:go_delivery_frontend/application/BLoc/product/product_many/product_many_bloc.dart';
 import 'package:go_delivery_frontend/application/BLoc/product/product_many/product_many_state.dart';
 import 'package:go_delivery_frontend/application/BLoc/product/product_many/product_many_event.dart';
 import '../../../domain/entities/product/product.dart';
-import 'logout_from_catalog.dart';
 
 class CatalogScreen extends StatefulWidget {
   final int initialCounterNavbar;
@@ -24,7 +22,7 @@ class CatalogScreenState extends State<CatalogScreen>
     with AutomaticKeepAliveClientMixin {
   int _counter = 0;
   final ScrollController _scrollController = ScrollController();
-  final TextEditingController  _textfieldController = TextEditingController();
+  final TextEditingController _textfieldController = TextEditingController();
   bool _isLoadingMore = false;
   int _currentPage = 1;
   final _gridKey = const PageStorageKey('catalog_grid');
@@ -45,7 +43,6 @@ class CatalogScreenState extends State<CatalogScreen>
       LoadProductList(page: _currentPage, perpage: 6, category: ''),
     );
     _scrollController.addListener(_onScroll);
-    
 
     _productListSubscription =
         BlocProvider.of<ProductListBloc>(context).stream.listen((state) {

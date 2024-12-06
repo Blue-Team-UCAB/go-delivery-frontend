@@ -1,5 +1,3 @@
-
-
 abstract class OrderDetailEvent {}
 
 class LoadOrderDetailEvent extends OrderDetailEvent {
