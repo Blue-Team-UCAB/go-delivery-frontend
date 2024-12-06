@@ -13,7 +13,7 @@ import 'past/order_detailed_screen_past.dart';
 class OrderDetailScreen extends StatefulWidget {
   final String orderNumber;
 
-  const OrderDetailScreen({super.key, required this.orderNumber});
+  const OrderDetailScreen({Key? key, required this.orderNumber}) : super(key: key);
 
   @override
   State<OrderDetailScreen> createState() => _OrderDetailScreenState();
@@ -26,16 +26,12 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
   void initState() {
     super.initState();
     _orderDetailBloc = getIt<OrderDetailBloc>();
-
-    print("ORDER NUMBER: ${widget.orderNumber}");
-
-    _orderDetailBloc.add(LoadOrderDetailEvent(widget.orderNumber));
+    _clearAndLoadOrderDetail();
   }
 
-  @override
-  void dispose() {
-    _orderDetailBloc.close();
-    super.dispose();
+  void _clearAndLoadOrderDetail() {
+    _orderDetailBloc.add(ClearOrderDetailEvent());
+    _orderDetailBloc.add(LoadOrderDetailEvent(widget.orderNumber));
   }
 
   @override
@@ -49,7 +45,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
           elevation: 0,
           leading: IconButton(
             icon: const Icon(Icons.arrow_back_ios, color: Colors.black),
-            onPressed: () => context.pop(),
+            onPressed: () => Navigator.of(context).pop(),
           ),
           title: FadeIn(
             child: const Text(
@@ -76,9 +72,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                     children: [
                       Text(state.error),
                       ElevatedButton(
-                        onPressed: () {
-                          _orderDetailBloc.add(LoadOrderDetailEvent(widget.orderNumber));
-                        },
+                        onPressed: _clearAndLoadOrderDetail,
                         child: const Text('Reintentar'),
                       )
                     ],
@@ -88,8 +82,6 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
             }
 
             if (state is OrderDetailLoadedState) {
-              print(state.last_state);
-
               return state.last_state != 'DELIVERED' && state.last_state != 'CANCELED'
                   ? ActiveOrderDetails(state: state)
                   : PastOrderDetails(state: state);

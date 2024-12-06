@@ -5,3 +5,5 @@ class LoadOrderDetailEvent extends OrderDetailEvent {
 
   LoadOrderDetailEvent(this.orderNumber);
 }
+
+class ClearOrderDetailEvent extends OrderDetailEvent {}
