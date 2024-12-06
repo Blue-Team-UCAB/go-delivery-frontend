@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_delivery_frontend/application/BLoc/blocs.dart';
 
 class TotalAmountSection extends StatelessWidget {
   final double total;
@@ -7,6 +9,7 @@ class TotalAmountSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final couponBloc = context.watch<CouponBloc>();
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -14,12 +17,12 @@ class TotalAmountSection extends StatelessWidget {
         const SizedBox(height: 16),
         _buildAmountRow('Tarifa de viaje', '\$ 0.00'),
         const SizedBox(height: 16),
-        _buildAmountRow('Descuento cupón', '-\$ 0.00', isCoupon: true),
+        _buildAmountRow('Descuento cupón del ${couponBloc.state.coupon!.porcentage}% ', '-\$${total*couponBloc.state.coupon!.porcentage/100}', isCoupon: true),
         const Divider(
           color: Color(0xFFD4D6DD),
           height: 16,
         ),
-        _buildAmountRow('Total', '\$$total', isTotal: true),
+        _buildAmountRow('Total', '\$${total-total*couponBloc.state.coupon!.porcentage/100}', isTotal: true),
       ],
     );
   }

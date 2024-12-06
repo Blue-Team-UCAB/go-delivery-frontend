@@ -14,7 +14,7 @@ class CouponInitial extends CouponState {
 }
 
 class CouponLoading extends CouponState {
-  const CouponLoading(Coupon? coupon) : super(coupon: coupon);
+  const CouponLoading(Coupon coupon) : super(coupon: coupon);
 }
 
 class CouponLoaded extends CouponState {
@@ -25,7 +25,7 @@ class CouponLoaded extends CouponState {
 }
 
 class CouponFailed extends CouponState {
-  final Result<Coupon> result;
+  final Coupon result;
 
   const CouponFailed(this.result);
 
