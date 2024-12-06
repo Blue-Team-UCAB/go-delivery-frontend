@@ -1,5 +1,3 @@
-import '../bundle/bundle.dart';
-import '../direction/direction.dart';
 import 'package:go_delivery_frontend/domain/entities/courier/courier.dart';
 
 import '../bundle/bundle.dart';

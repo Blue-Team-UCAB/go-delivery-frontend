@@ -1,11 +1,9 @@
-// import 'package:google_maps_flutter/google_maps_flutter.dart';
-
-import '../../../../domain/entities/bundle/bundle.dart';
-import '../../../../domain/entities/direction/direction.dart';
-import '../../../../domain/entities/order/order.dart';
 import 'package:latlong2/latlong.dart';
 
+import '../../../../domain/entities/bundle/bundle.dart';
 import '../../../../domain/entities/courier/courier.dart';
+import '../../../../domain/entities/direction/direction.dart';
+import '../../../../domain/entities/order/order.dart';
 import '../../../../domain/entities/product/product.dart';
 
 abstract class OrderDetailState {}
