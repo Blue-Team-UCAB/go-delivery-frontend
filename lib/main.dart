@@ -26,6 +26,7 @@ void main() async {
         BlocProvider(create: (_) => getIt<ZelleBloc>()),
         BlocProvider(create: (_) => getIt<PaymentBloc>()),
         BlocProvider(create: (_) => getIt<CartBloc>()),
+        BlocProvider(create: (_) => getIt<CouponBloc>()),
         BlocProvider(create: (_) => getIt<LoginBloc>()),
         BlocProvider(create: (_) => getIt<CurrentUserBloc>()),
         BlocProvider(create: (_) => getIt<ThemesBloc>()),

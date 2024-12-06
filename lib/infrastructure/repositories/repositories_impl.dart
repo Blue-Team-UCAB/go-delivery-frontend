@@ -4,4 +4,5 @@ export 'package:go_delivery_frontend/infrastructure/repositories/order/order_rep
 export 'package:go_delivery_frontend/infrastructure/repositories/product/product_repository_impl.dart';
 export 'package:go_delivery_frontend/infrastructure/repositories/user/user_repository_impl.dart';
 export 'package:go_delivery_frontend/infrastructure/repositories/payment/payment_method_repository_impl.dart';
+export 'package:go_delivery_frontend/infrastructure/repositories/coupon/coupon_repository_impl.dart';
 export 'package:go_delivery_frontend/infrastructure/repositories/payment/wallet_repository_impl.dart';

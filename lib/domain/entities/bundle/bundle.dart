@@ -24,3 +24,19 @@ class Bundle {
     required this.products,
   });
 }
+
+class OrderBundle {
+  final String id;
+  final String name;
+  final double price;
+  final int quantity;
+  final String imageUrl;
+
+  const OrderBundle({
+    required this.id,
+    required this.name,
+    required this.price,
+    required this.quantity,
+    required this.imageUrl,
+  });
+}

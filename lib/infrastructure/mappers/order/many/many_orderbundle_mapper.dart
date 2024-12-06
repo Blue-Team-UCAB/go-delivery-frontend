@@ -1,8 +1,10 @@
-import 'package:go_delivery_frontend/domain/entities/product/product.dart';
+import 'package:go_delivery_frontend/domain/entities/bundle/bundle.dart';
 
-class OrderProductMapper {
-  static OrderProduct fromJson(Map<String, dynamic> json) {
-    return OrderProduct(
+import '../../../../domain/entities/product/product.dart';
+
+class OrderBundleMapper {
+  static OrderBundle fromJson(Map<String, dynamic> json) {
+    return OrderBundle(
       id: json['id'] as String,
       name: json['name'] as String,
       price: (json['price'] as num).toDouble(),
@@ -11,7 +13,7 @@ class OrderProductMapper {
     );
   }
 
-  static Map<String, dynamic> toJson(OrderProduct product) {
+  static Map<String, dynamic> toJson(OrderBundle product) {
     return {
       'id': product.id,
       'name': product.name,
@@ -21,11 +23,11 @@ class OrderProductMapper {
     };
   }
 
-  static List<OrderProduct> fromJsonList(List<dynamic> jsonList) {
+  static List<OrderBundle> fromJsonList(List<dynamic> jsonList) {
     return jsonList.map((json) => fromJson(json)).toList();
   }
 
-  static List<Map<String, dynamic>> toJsonList(List<OrderProduct> products) {
+  static List<Map<String, dynamic>> toJsonList(List<OrderBundle> products) {
     return products.map((product) => toJson(product)).toList();
   }
 }
