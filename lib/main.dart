@@ -1,3 +1,5 @@
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_delivery_frontend/application/BLoc/blocs.dart';
@@ -6,10 +8,15 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:go_delivery_frontend/presentation/core/app.dart';
 import 'application/BLoc/auth/recover_password/recover_password_bloc.dart';
+import 'firebase_options.dart';
+import 'infrastructure/firebase/firebase_notifications_manager.dart';
 import 'infrastructure/mappers/local_notifications.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
+
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   await LocalNotifications().initializeLocalNotifications();
   await InjectManager.setUpInjections();
   await dotenv.load();

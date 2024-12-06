@@ -147,7 +147,7 @@ class CatalogScreenState extends State<CatalogScreen>
           IconButton(
             icon: const Icon(Icons.notifications_none),
             onPressed: () {
-              // Acción para ir a la pantalla de notificaciones
+              context.push('/notification');
             },
           ),
         ],
