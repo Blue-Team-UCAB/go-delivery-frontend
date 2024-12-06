@@ -20,7 +20,7 @@ class CartEmptyStateWidget extends StatelessWidget {
           SizedBox(
             width: MediaQuery.of(context).size.width*0.75,
             child: const Text(
-              'Tu Carrito esta vacio',
+              'Tu Carrito está vacío',
               textAlign: TextAlign.center,
               style: TextStyle(fontFamily: 'Montserrat',fontSize: 24,fontWeight: FontWeight.w700 ,color: Color(0xFF000000))
             ),

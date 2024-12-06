@@ -73,6 +73,25 @@ class InjectManager {
      */
     // ======================================================================= //
 
+    // ============================= COUPON ============================= //
+    // Repositorio
+    final couponRepository = CouponRepositoryImpl(
+      apiRequestManager: apiRequestManagerImpl,
+      localStorage: localStorageService,
+    );
+
+    // Registrar el repositorio de cupones
+    getIt.registerSingleton<CouponRepository>(couponRepository);
+
+    // Casos de Uso
+    final getOneCouponUseCase =
+        GetOneCouponUseCase(couponRepository: couponRepository);
+
+    // Registrar el caso de uso de obtención de cupon
+    getIt.registerSingleton<GetOneCouponUseCase>(getOneCouponUseCase);
+    getIt.registerSingleton(CouponBloc(getOneCouponUseCase));
+    // ======================================================================= //
+
     // ============================= PRODUCTS ============================= //
     // Repositorio
     final productRepository = ProductRepositoryImpl(
