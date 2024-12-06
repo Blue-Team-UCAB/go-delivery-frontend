@@ -1,5 +1,3 @@
-import 'package:go_delivery_frontend/infrastructure/models/tracking_model.dart';
-
 import '../../../common/result.dart';
 import '../../../infrastructure/models/order_many_model.dart';
 import '../../entities/order/order.dart';
@@ -15,5 +13,4 @@ abstract class OrderRepository {
     required int perpage,
     required String status,
   });
-
 }

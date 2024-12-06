@@ -6,6 +6,7 @@ import 'package:go_delivery_frontend/domain/entities/payment/payment_method_zell
 import 'package:go_delivery_frontend/infrastructure/mappers/payment/payment_mapper.dart';
 import 'package:go_delivery_frontend/domain/entities/payment/payment_method_pago_movil.dart';
 import 'package:go_delivery_frontend/domain/repositories/payment/payment_method_repository.dart';
+import 'package:go_delivery_frontend/domain/entities/payment/payment_method_card.dart';
 
 class PaymentRepositoryImpl extends PaymentRepository {
   final IApiRequestManager _apiRequestManager;
@@ -92,6 +93,24 @@ class PaymentRepositoryImpl extends PaymentRepository {
     } catch (e) {
       print('Error en PaymentRepositoryImpl.processZelle: $e');
       return Result.fail(ServerFailure(message: 'Fallo al procesar Zelle: $e'));
+    }
+  }
+
+  @override
+  Future<Result<void>> processCard(Card card) async {
+    await _addAuthorizationHeader();
+    try {
+      final response = await _apiRequestManager.request(
+        '/pay/card',
+        'POST',
+        (data) => PaymentMethodMapper.parseApiResponse(data),
+        body: {'idCard': card.idCard},
+      );
+      return response;
+    } catch (e) {
+      print('Error en PaymentRepositoryImpl.processCard: $e');
+      return Result.fail(
+          ServerFailure(message: 'Fallo al procesar el pago con tarjeta: $e'));
     }
   }
 }

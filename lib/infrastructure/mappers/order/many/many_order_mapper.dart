@@ -3,13 +3,12 @@ import 'many_orderitem_mapper.dart';
 
 class OrderManyMapper {
   static OrderMany fromJson(Map<String, dynamic> json) {
-
     if (json['orders'] == null) {
       return OrderMany(orders: []);
     }
 
     if (json['orders'] is! List) {
-      throw FormatException('Orders must be a list');
+      throw const FormatException('Orders must be a list');
     }
 
     List ordersList = json['orders'] as List;
@@ -19,14 +18,17 @@ class OrderManyMapper {
 
     return OrderMany(
       orders: ordersList
-          .map((orderJson) => OrderManyItemMapper.fromJson(orderJson as Map<String, dynamic>))
+          .map((orderJson) =>
+              OrderManyItemMapper.fromJson(orderJson as Map<String, dynamic>))
           .toList(),
     );
   }
 
   static Map<String, dynamic> toJson(OrderMany orderMany) {
     return {
-      'orders': orderMany.orders.map((order) => OrderManyItemMapper.toJson(order)).toList(),
+      'orders': orderMany.orders
+          .map((order) => OrderManyItemMapper.toJson(order))
+          .toList(),
     };
   }
 }

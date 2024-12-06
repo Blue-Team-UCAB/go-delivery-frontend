@@ -1,32 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_delivery_frontend/application/BLoc/auth/current/current_user_bloc.dart';
-import 'package:go_delivery_frontend/application/BLoc/bundle/bundle_detail/bundle_detail_bloc.dart';
-import 'package:go_delivery_frontend/application/BLoc/bundle/bundle_many/bundle_many_bloc.dart';
-import 'package:go_delivery_frontend/application/BLoc/order/order_detailed/order_detailed_bloc.dart';
+import 'package:go_delivery_frontend/application/BLoc/blocs.dart';
 import 'package:go_delivery_frontend/application/BLoc/order/order_many/order_many_bloc.dart';
-import 'package:go_delivery_frontend/application/BLoc/product/popular/product_popular_many_bloc.dart';
-import 'package:go_delivery_frontend/application/BLoc/product/popular/random/product_random_many_bloc.dart';
-import 'package:go_delivery_frontend/application/BLoc/product/product_detail/product_detail_bloc.dart';
 import 'package:go_delivery_frontend/injector.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:go_delivery_frontend/presentation/core/app.dart';
-import 'package:go_delivery_frontend/application/BLoc/product/product_many/product_many_bloc.dart';
-import 'application/BLoc/auth/login/login_bloc.dart';
 import 'application/BLoc/auth/recover_password/recover_password_bloc.dart';
-import 'application/BLoc/cart/cart_bloc.dart';
-import 'application/BLoc/notifications/bloc/notifications_bloc.dart';
-import 'application/BLoc/payment/pago_movil/pago_movil_bloc.dart';
-import 'application/BLoc/payment/zelle/zelle_bloc.dart';
-import 'application/BLoc/themes/themes_bloc.dart';
 import 'infrastructure/mappers/local_notifications.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await LocalNotifications().initializeLocalNotifications();
   await InjectManager.setUpInjections();
+  await dotenv.load();
+  Stripe.publishableKey =
+      'pk_test_51NxjGZFJVOFDbNK1g173hTsB3N8JbaD7HmXWMOP2eiV7UHIndbfm1NuKv8q2LhvNxZxlsthbUOnflWiPil6vYZWZ00zu0xd7Hz';
+  Stripe.merchantIdentifier = 'merchant.flutter.stripe.test';
+  Stripe.urlScheme = 'flutterstripe';
+  await Stripe.instance.applySettings();
   runApp(
     MultiBlocProvider(
       providers: [
+        BlocProvider(create: (_) => getIt<CardBloc>()),
         BlocProvider(create: (_) => getIt<ZelleBloc>()),
         BlocProvider(create: (_) => getIt<PaymentBloc>()),
         BlocProvider(create: (_) => getIt<CartBloc>()),

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:go_delivery_frontend/presentation/widgets/coupon/coupon_empty_state_widget.dart';
 import 'package:go_router/go_router.dart';
 
-
 class CouponScreen extends StatelessWidget {
   static const name = 'coupon-screen';
   const CouponScreen({super.key});
@@ -12,28 +11,34 @@ class CouponScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
-          onPressed: (){
+          onPressed: () {
             context.pop();
           },
-          icon : const Icon(Icons.arrow_back_ios),
-          color:const Color(0xFF2000B1),
+          icon: const Icon(Icons.arrow_back_ios),
+          color: const Color(0xFF2000B1),
         ),
         title: const Text(
           'Cupones',
-          style: TextStyle(fontFamily: 'Montserrat',fontSize: 24,fontWeight: FontWeight.w700,color: Color(0xFF000000)),
+          style: TextStyle(
+              fontFamily: 'Montserrat',
+              fontSize: 24,
+              fontWeight: FontWeight.w700,
+              color: Color(0xFF000000)),
         ),
       ),
       body: Container(
-        padding: EdgeInsets.symmetric(horizontal: 10),
-        height: double.infinity,
-        child: CouponEmptyStateWidget()
-      ),
+          padding: const EdgeInsets.symmetric(horizontal: 10),
+          height: double.infinity,
+          child: const CouponEmptyStateWidget()),
       floatingActionButton: FloatingActionButton(
         heroTag: null,
         backgroundColor: const Color(0xFFED4B00),
-        onPressed: (){},
-        child: const Icon(Icons.add,color: Color(0xFFFFFFFF),),
+        onPressed: () {},
+        child: const Icon(
+          Icons.add,
+          color: Color(0xFFFFFFFF),
         ),
+      ),
     );
   }
 }

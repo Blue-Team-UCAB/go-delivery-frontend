@@ -8,3 +8,6 @@ export 'package:go_delivery_frontend/application/use_cases/product/get_many_prod
 export 'package:go_delivery_frontend/application/use_cases/auth/login/login_usecase_input.dart';
 export 'package:go_delivery_frontend/application/use_cases/payment/post_pago_movil.dart';
 export 'package:go_delivery_frontend/application/use_cases/payment/post_zelle.dart';
+export 'package:go_delivery_frontend/application/use_cases/payment/post_card.dart';
+export 'package:go_delivery_frontend/application/use_cases/order/get_many_order.dart';
+export 'package:go_delivery_frontend/application/use_cases/order/get_one_order.dart';
