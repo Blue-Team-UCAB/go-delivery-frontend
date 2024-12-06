@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_delivery_frontend/application/BLoc/auth/current/current_user_bloc.dart';
 import 'package:go_delivery_frontend/application/BLoc/bundle/bundle_detail/bundle_detail_bloc.dart';
 import 'package:go_delivery_frontend/application/BLoc/bundle/bundle_many/bundle_many_bloc.dart';
+import 'package:go_delivery_frontend/application/BLoc/coupon/coupon_bloc.dart';
 import 'package:go_delivery_frontend/application/BLoc/order/order_detailed/order_detailed_bloc.dart';
 import 'package:go_delivery_frontend/application/BLoc/order/order_many/order_many_bloc.dart';
 import 'package:go_delivery_frontend/application/BLoc/product/popular/product_popular_many_bloc.dart';
@@ -30,6 +31,7 @@ void main() async {
         BlocProvider(create: (_) => getIt<ZelleBloc>()),
         BlocProvider(create: (_) => getIt<PaymentBloc>()),
         BlocProvider(create: (_) => getIt<CartBloc>()),
+        BlocProvider(create: (_) => getIt<CouponBloc>()),
         BlocProvider(create: (_) => getIt<LoginBloc>()),
         BlocProvider(create: (_) => getIt<CurrentUserBloc>()),
         BlocProvider(create: (_) => getIt<ThemesBloc>()),

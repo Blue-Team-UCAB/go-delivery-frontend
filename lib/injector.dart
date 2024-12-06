@@ -1,6 +1,10 @@
 
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get_it/get_it.dart';
+import 'package:go_delivery_frontend/application/BLoc/coupon/coupon_bloc.dart';
+import 'package:go_delivery_frontend/application/use_cases/coupon/get_one_coupon.dart';
+import 'package:go_delivery_frontend/domain/repositories/coupon/coupon_repository.dart';
+import 'package:go_delivery_frontend/infrastructure/repositories/coupon/coupon_repository_impl.dart';
 
 import 'application/BLoc/auth/current/current_user_bloc.dart';
 import 'application/BLoc/auth/login/login_bloc.dart';
@@ -105,6 +109,25 @@ class InjectManager {
         FirebaseNotificationsManager(LocalNotifications()),
         notificationsRepositoryImpl.saveToken));
      */
+    // ======================================================================= //
+
+    // ============================= COUPON ============================= //
+    // Repositorio
+    final couponRepository = CouponRepositoryImpl(
+      apiRequestManager: apiRequestManagerImpl,
+      localStorage: localStorageService,
+    );
+
+    // Registrar el repositorio de cupones
+    getIt.registerSingleton<CouponRepository>(couponRepository);
+
+    // Casos de Uso
+    final getOneCouponUseCase =
+        GetOneCouponUseCase(couponRepository: couponRepository);
+
+    // Registrar el caso de uso de obtención de cupon
+    getIt.registerSingleton<GetOneCouponUseCase>(getOneCouponUseCase);
+    getIt.registerSingleton(CouponBloc(getOneCouponUseCase));
     // ======================================================================= //
 
     // ============================= PRODUCTS ============================= //
