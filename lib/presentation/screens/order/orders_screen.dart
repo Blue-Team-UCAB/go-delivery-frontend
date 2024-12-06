@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../application/BLoc/order/order_many/order_many_bloc.dart';
 import '../../../application/BLoc/order/order_many/order_many_event.dart';
@@ -97,7 +98,9 @@ class _OrdersPageState extends State<OrdersPage>
         actions: [
           IconButton(
             icon: const Icon(Icons.notifications_none),
-            onPressed: () {},
+            onPressed: () {
+              context.push('/notification');
+              },
           ),
           IconButton(
             icon: const Icon(Icons.menu),

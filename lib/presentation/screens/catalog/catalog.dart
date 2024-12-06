@@ -7,6 +7,7 @@ import 'package:go_delivery_frontend/presentation/widgets/card.dart';
 import 'package:go_delivery_frontend/application/BLoc/product/product_many/product_many_bloc.dart';
 import 'package:go_delivery_frontend/application/BLoc/product/product_many/product_many_state.dart';
 import 'package:go_delivery_frontend/application/BLoc/product/product_many/product_many_event.dart';
+import 'package:go_router/go_router.dart';
 import '../../../domain/entities/product/product.dart';
 
 class CatalogScreen extends StatefulWidget {
@@ -144,9 +145,9 @@ class CatalogScreenState extends State<CatalogScreen>
         elevation: 0,
         actions: [
           IconButton(
-            icon: const Icon(Icons.notifications_outlined),
+            icon: const Icon(Icons.notifications_none),
             onPressed: () {
-              // Acción para ir a la pantalla de notificaciones
+              context.push('/notification');
             },
           ),
         ],
@@ -180,7 +181,9 @@ class CatalogScreenState extends State<CatalogScreen>
                   fontSize: 16),
             ),
             trailing: const Icon(Icons.arrow_forward_ios),
-            onTap: () {},
+            onTap: () {
+              context.push('/notification');
+            },
           ),
           Padding(
             padding: const EdgeInsets.only(top: 16, left: 18, right: 18.0),

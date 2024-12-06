@@ -5,6 +5,7 @@ import 'package:go_delivery_frontend/presentation/screens/homescreen/category_ta
 import 'package:go_delivery_frontend/presentation/screens/homescreen/homescreen_combo_section.dart';
 import 'package:go_delivery_frontend/presentation/screens/homescreen/sidebar_screen.dart';
 import 'package:go_delivery_frontend/presentation/widgets/random_products/random_popular_section.dart';
+import 'package:go_router/go_router.dart';
 import '../../widgets/navbar.dart';
 import 'homescreen_locationbar.dart';
 
@@ -177,7 +178,9 @@ class HomeScreenState extends State<HomeScreen> {
                 builder: (BuildContext innerContext) {
                   return IconButton(
                     icon: const Icon(Icons.notifications_none),
-                    onPressed: () {},
+                    onPressed: () {
+                      context.push('/notification');
+                    },
                     color: Colors.white,
                   );
                 },

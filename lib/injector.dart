@@ -6,9 +6,12 @@ import 'package:go_delivery_frontend/domain/repositories/repositories.dart';
 import 'package:go_delivery_frontend/infrastructure/repositories/repositories_impl.dart';
 import 'application/BLoc/auth/recover_password/recover_password_bloc.dart';
 import 'application/BLoc/auth/register/register_bloc.dart';
+import 'application/use_cases/notification/send_device_token_usecase.dart';
+import 'domain/repositories/notifications/notifications_repository.dart';
 import 'infrastructure/datasources/api/api_request_impl.dart';
 import 'infrastructure/datasources/cart/cart_isar_local_storage_datasource.dart';
 import 'infrastructure/datasources/localstorage/localstorage_impl.dart';
+import 'infrastructure/repositories/notifications/notifications_repository_impl.dart';
 
 final getIt = GetIt.instance;
 
@@ -59,19 +62,23 @@ class InjectManager {
     // ======================================================================= //
 
     // ============================= NOTIFICATIONS =========================== //
-    /*
-    final notificationsRepositoryImpl = NotificationRespositoryImpl(
-            notificationsDatasource:
-            NotificationsDatasourceImpl(localStorageService));
 
-    getIt.registerFactory(() =>
-        NotificationListBloc(notificationsRepository: notificationsRepositoryImpl));
+    final notificationRepository = NotificationsRepositoryImpl(
+        apiRequestManager: apiRequestManagerImpl,
+        localStorage: localStorageService);
+
+    getIt.registerSingleton<NotificationsRepository>(notificationRepository);
+
+    final sendDeviceTokenUseCase =
+    SendDeviceTokenUseCase(notificationsRepository: notificationRepository);
+
+    getIt.registerSingleton<SendDeviceTokenUseCase>(sendDeviceTokenUseCase);
+
+    // ======================================================================= //
 
     getIt.registerSingleton(NotificationsBloc(
-        FirebaseNotificationsManager(LocalNotifications()),
-        notificationsRepositoryImpl.saveToken));
-     */
-    // ======================================================================= //
+      sendDeviceTokenUseCase: sendDeviceTokenUseCase,
+    ));
 
     // ============================= COUPON ============================= //
     // Repositorio
