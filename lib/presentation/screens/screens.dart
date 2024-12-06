@@ -11,3 +11,4 @@ export 'auth/verify/code_verification_screen.dart';
 export 'notification/notification_screen.dart';
 export 'detail/bundle_detail_screen.dart';
 export 'order/checkout_order_screen.dart';
+export 'coupon/coupon_screen.dart';

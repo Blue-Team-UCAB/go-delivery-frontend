@@ -24,6 +24,7 @@ class CatalogScreenState extends State<CatalogScreen>
     with AutomaticKeepAliveClientMixin {
   int _counter = 0;
   final ScrollController _scrollController = ScrollController();
+  final TextEditingController  _textfieldController = TextEditingController();
   bool _isLoadingMore = false;
   int _currentPage = 1;
   final _gridKey = const PageStorageKey('catalog_grid');
@@ -45,17 +46,18 @@ class CatalogScreenState extends State<CatalogScreen>
     );
     _scrollController.addListener(_onScroll);
 
+
     _productListSubscription =
         BlocProvider.of<ProductListBloc>(context).stream.listen((state) {
-      if (state is ProductListLoaded) {
-        if (mounted) {
-          setState(() {
-            _isLoadingMore = false;
-            _addUniqueProducts(state.products);
-          });
-        }
-      }
-    });
+          if (state is ProductListLoaded) {
+            if (mounted) {
+              setState(() {
+                _isLoadingMore = false;
+                _addUniqueProducts(state.products);
+              });
+            }
+          }
+        });
   }
 
   @override
@@ -91,10 +93,10 @@ class CatalogScreenState extends State<CatalogScreen>
           _searchQuery.isEmpty
               ? LoadProductList(page: _currentPage, perpage: 6, category: '')
               : SearchProductList(
-                  search: _searchQuery,
-                  page: _currentPage,
-                  perpage: 6,
-                  category: ''),
+              search: _searchQuery,
+              page: _currentPage,
+              perpage: 6,
+              category: ''),
         );
       }
     }
@@ -150,25 +152,7 @@ class CatalogScreenState extends State<CatalogScreen>
               // Acción para ir a la pantalla de notificaciones
             },
           ),
-          Builder(
-            builder: (BuildContext innerContext) {
-              return IconButton(
-                icon: const Icon(Icons.menu),
-                onPressed: () {
-                  Scaffold.of(innerContext).openEndDrawer();
-                },
-              );
-            },
-          ),
         ],
-      ),
-      endDrawer: Sidebar(
-        userName: 'User Name',
-        userEmail: 'user@example.com',
-        onLogout: () {
-          Navigator.pop(context);
-          showLogoutDialog(context);
-        },
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -226,6 +210,7 @@ class CatalogScreenState extends State<CatalogScreen>
                   ),
                   Expanded(
                     child: TextField(
+                      controller: _textfieldController,
                       onSubmitted: _handleSearch,
                       decoration: InputDecoration(
                         hintText: 'Buscar un producto',
@@ -233,11 +218,12 @@ class CatalogScreenState extends State<CatalogScreen>
                         border: InputBorder.none,
                         suffixIcon: _searchQuery.isNotEmpty
                             ? IconButton(
-                                icon: const Icon(Icons.clear),
-                                onPressed: () {
-                                  _handleSearch('');
-                                },
-                              )
+                          icon: const Icon(Icons.clear),
+                          onPressed: () {
+                            _textfieldController.clear();
+                            _handleSearch('');
+                          },
+                        )
                             : null,
                       ),
                       style: const TextStyle(color: Colors.grey),

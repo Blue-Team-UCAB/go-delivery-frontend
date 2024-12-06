@@ -110,11 +110,12 @@ class RandomItem extends StatelessWidget {
     return Column(
       children: [
         Material(
+          borderRadius: const BorderRadius.all( Radius.circular(16)),
           color: const Color(0xFFFFFFFF),
           child: ListTile(
             contentPadding: const EdgeInsets.symmetric(horizontal: 10),
             shape: RoundedRectangleBorder(
-              side: const BorderSide(color: Color(0xFFD5CCFF), width: 1),
+
               borderRadius: BorderRadius.circular(20),
             ),
             onTap: () {

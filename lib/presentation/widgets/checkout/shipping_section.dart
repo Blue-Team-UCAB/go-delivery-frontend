@@ -13,15 +13,15 @@ class _AddressSectionState extends State<AddressSection> {
   final List<Map<String, String>> _addresses = [
     {
       'title': 'Casa',
-      'description': 'Calle 123, Apartamento 4B, Ciudad',
+      'description': 'Edif. El Turpial, El Paraíso, Caracas, Venezuela',
     },
     {
       'title': 'Trabajo',
-      'description': 'Edificio Corporativo, Piso 5, Ciudad',
+      'description': 'Oficinas La Vitalicia, Los Palos Grandes, Caracas, Venezuela',
     },
     {
       'title': 'Otro',
-      'description': 'Avenida Principal, Local 23, Ciudad',
+      'description': 'Avenida Principal, Local 23, Bello Monte, Caracas, Venezuela',
     },
   ];
 
@@ -34,76 +34,44 @@ class _AddressSectionState extends State<AddressSection> {
         children: [
           const Text(
             'Dirección de Envío',
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            style: TextStyle(fontFamily: 'Inter',fontSize: 16, fontWeight: FontWeight.w800),
           ),
-          const SizedBox(height: 10),
+          const SizedBox(height: 18),
           Column(
             children: List.generate(_addresses.length, (index) {
               final address = _addresses[index];
               final isSelected = _selectedAddressIndex == index;
 
-              return Padding(
-                padding: const EdgeInsets.symmetric(vertical: 8.0),
-                child: OutlinedButton(
-                  onPressed: () {
-                    setState(() {
-                      _selectedAddressIndex = index;
-                    });
-                  },
-                  style: OutlinedButton.styleFrom(
+              return Column(
+                children: [
+                  RadioListTile(
+                    selected: isSelected? true : false,
+                    value: index,
+                    groupValue: _selectedAddressIndex,
+                    onChanged: (value){
+                      setState(() {
+                        _selectedAddressIndex = value;
+                      });
+                    },
+                    title: Text(
+                        address['title']!,
+                        style: const TextStyle(fontFamily: 'Inter',fontSize: 16,fontWeight: FontWeight.w700 ,color: Color(0xFF000000))
+                    ),
+                    subtitle: Text(
+                        address['description']!,
+                        style: const TextStyle(fontFamily: 'Inter',fontSize: 14,fontWeight: FontWeight.w400,color: Color(0xFF000000))
+                    ),
+                    secondary: IconButton(onPressed: (){}, icon: const Icon(Icons.edit),color: const Color(0xFF2000B1)),
+                    activeColor: const Color(0xFF2000B1),
+                    selectedTileColor: const Color(0xFFD5CCFF),
+                    isThreeLine: false,
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8.0),
+                      side: BorderSide(color: isSelected? Colors.transparent : const Color(0xFFC5C6CC), width: 1),
+                      borderRadius: BorderRadius.circular(12),
                     ),
-                    side: BorderSide(
-                      color: isSelected ? const Color(0xFF2000B1) : Colors.grey,
-                    ),
-                    padding: const EdgeInsets.all(12.0),
                   ),
-                  child: Row(
-                    children: [
-                      Container(
-                        width: 24,
-                        height: 24,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          border: Border.all(
-                            color: const Color(0xFF2000B1),
-                            width: 2,
-                          ),
-                          color: isSelected
-                              ? const Color(0xFF2000B1)
-                              : Colors.transparent,
-                        ),
-                        child: isSelected
-                            ? const Icon(Icons.check,
-                                size: 16, color: Colors.grey)
-                            : null,
-                      ),
-                      const SizedBox(width: 16),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            address['title']!,
-                            style: const TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black,
-                            ),
-                          ),
-                          Text(
-                            address['description']!,
-                            style: const TextStyle(
-                                fontSize: 14,
-                                color: Color.fromRGBO(73, 69, 79, 1)),
-                          ),
-                        ],
-                      ),
-                      const Spacer(),
-                      const Icon(Icons.edit, color: Color(0xFF2000B1)),
-                    ],
-                  ),
-                ),
+                  const SizedBox(height: 14,)
+                ],
               );
             }),
           ),
