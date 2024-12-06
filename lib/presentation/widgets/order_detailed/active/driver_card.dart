@@ -4,13 +4,13 @@ import '../../../screens/detail/order/active/order_detailed_screen_active.dart';
 
 class DriverCard extends StatelessWidget {
   final String driverName;
-  final String driverImage;
+  final String phoneNumber;
   final VoidCallback onCallPressed;
 
   const DriverCard({
     super.key,
     required this.driverName,
-    required this.driverImage,
+    required this.phoneNumber,
     required this.onCallPressed,
   });
 
@@ -31,9 +31,13 @@ class DriverCard extends StatelessWidget {
               height: 50,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                image: DecorationImage(
-                  image: NetworkImage(driverImage),
-                  fit: BoxFit.cover,
+                color: Colors.indigo.shade100,
+              ),
+              child: Center(
+                child: Icon(
+                  Icons.person,
+                  color: Colors.indigo.shade600,
+                  size: 30,
                 ),
               ),
             ),
@@ -45,15 +49,24 @@ class DriverCard extends StatelessWidget {
                   Text(
                     driverName,
                     style: const TextStyle(
+                      fontFamily: "Inter",
                       fontWeight: FontWeight.w600,
                       fontSize: 16,
+                    ),
+                  ),
+                  Text(
+                    phoneNumber,
+                    style: const TextStyle(
+                      fontFamily: "Inter",
+                      color: Colors.black,
+                      fontSize: 14,
                     ),
                   ),
                   Text(
                     'Tu conductor',
                     style: TextStyle(
                       color: Colors.grey[600],
-                      fontSize: 14,
+                      fontSize: 12,
                     ),
                   ),
                 ],

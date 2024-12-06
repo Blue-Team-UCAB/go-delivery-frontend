@@ -28,6 +28,7 @@ class OrderDetailBloc extends SafeBloc<OrderDetailEvent, OrderDetailState> {
         totalAmount: orderDetail.value!.totalAmount,
         subtotalAmount: orderDetail.value!.subtotalAmount,
         direction: orderDetail.value!.direction,
+        courier: orderDetail.value!.courier,
         products: orderDetail.value!.products,
         bundles: orderDetail.value!.bundles,
       ));

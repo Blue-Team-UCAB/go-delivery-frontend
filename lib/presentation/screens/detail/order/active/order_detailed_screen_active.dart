@@ -6,6 +6,7 @@ import '../../../../../application/BLoc/order/order_detailed/order_detailed_stat
 import '../../../../../domain/entities/order/order.dart';
 import '../../../../widgets/order_detailed/active/active_info.dart';
 import '../../../../widgets/order_detailed/active/delivery_map_order.dart';
+import '../../../../widgets/order_detailed/active/driver_card.dart';
 
 class ActiveOrderDetails extends StatelessWidget {
   final OrderDetailLoadedState state;
@@ -33,6 +34,17 @@ class ActiveOrderDetails extends StatelessWidget {
               location: state.location,
             ),
           ),
+          // Add DriverCard when state is SHIPPED and driver info exists
+          if (currentActiveState == 'SHIPPED' && state.courier!.name != null && state.courier!.id != null)
+            FadeInDown(
+              delay: const Duration(milliseconds: 20),
+              child: DriverCard(
+                driverName: state.courier!.name,
+                phoneNumber: state.courier!.phoneNumber,
+                onCallPressed: () {
+                },
+              ),
+            ),
           FadeInDown(
             delay: const Duration(milliseconds: 20),
             child: OrderProgress(
