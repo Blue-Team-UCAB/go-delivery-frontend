@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'package:flutter/material.dart';
+
 class TotalAmountSection extends StatelessWidget {
   final double total;
 

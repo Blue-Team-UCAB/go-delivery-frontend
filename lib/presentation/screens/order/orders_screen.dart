@@ -1,7 +1,13 @@
 import 'package:flutter/material.dart';
 
+import '../../../application/BLoc/order/order_many/order_many_bloc.dart';
+import '../../../application/BLoc/order/order_many/order_many_event.dart';
+import '../../../application/BLoc/order/order_many/order_many_state.dart';
+import '../../../infrastructure/models/order_many_model.dart';
 import '../../widgets/navbar.dart';
 import 'order_card.dart';
+
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class OrdersPage extends StatefulWidget {
   final int initialCounterNavbar;
@@ -13,69 +19,72 @@ class OrdersPage extends StatefulWidget {
 }
 
 class _OrdersPageState extends State<OrdersPage>
-    with SingleTickerProviderStateMixin {
+    with SingleTickerProviderStateMixin, AutomaticKeepAliveClientMixin {
   late int counterNavbar = 2;
   late TabController _tabController;
 
-  final List<Map<String, String>> allOrders = [
-    {
-      'orderNumber': '12333',
-      'date': 'Viernes, 15 Noviembre, 2024',
-      'items':
-          'Doritos (2), Pepsi 2Lt (3), Helado (1), Doritos (2), Pepsi 2Lt (3), Helado (4)',
-      'price': '117\$',
-      'status': 'Por Entregar'
-    },
-    {
-      'orderNumber': '12327',
-      'date': 'Miercoles, 6 Noviembre, 2024',
-      'items':
-          'Doritos (2), Pepsi 2Lt (3), Helado (1), Doritos (2), Pepsi 2Lt (3), Helado (4)',
-      'price': '50\$',
-      'status': 'Entregada'
-    },
-    {
-      'orderNumber': '12327',
-      'date': 'Miercoles, 6 Noviembre, 2024',
-      'items':
-          'Doritos (2), Pepsi 2Lt (3), Helado (1), Doritos (2), Pepsi 2Lt (3), Helado (4)',
-      'price': '50\$',
-      'status': 'Cancelada'
-    },
-  ];
+  final List<String> activeStatuses = ['CREATED', 'IN PROCESS', 'SHIPPED'];
+  final List<String> pastStatuses = ['DELIVERED', 'CANCELLED'];
 
-  // Method to get active orders
-  List<Map<String, String>> get activeOrders {
-    return allOrders
-        .where((order) => order['status'] == 'Por Entregar')
-        .toList();
-  }
+  List<OrderManyItem> _allActiveOrders = [];
+  List<OrderManyItem> _allPastOrders = [];
 
-  // Method to get past orders
-  List<Map<String, String>> get pastOrders {
-    return allOrders
-        .where((order) =>
-            order['status'] == 'Entregada' || order['status'] == 'Cancelada')
-        .toList();
-  }
+  int _currentActivePage = 1;
+  int _currentPastPage = 1;
+  final int _perPage = 10;
+  bool _isInitialLoad = true;
+
+  @override
+  bool get wantKeepAlive => true;
 
   @override
   void initState() {
     super.initState();
     counterNavbar = widget.initialCounterNavbar;
-    _tabController = TabController(length: 2, vsync: this);
-  }
+    _tabController = TabController(length: 2, vsync: this)
+      ..addListener(_handleTabChange);
 
-  @override
-  void dispose() {
-    _tabController.dispose();
-    super.dispose();
-  }
-
-  void _onNavItemTapped(int valueIndex) {
-    setState(() {
-      counterNavbar = valueIndex;
+    // Force initial load
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _loadActiveOrders();
+      _loadPastOrders();
     });
+  }
+
+  void _handleTabChange() {
+    if (_tabController.index == 0 && _allActiveOrders.isEmpty) {
+      _loadActiveOrders();
+    } else if (_tabController.index == 1 && _allPastOrders.isEmpty) {
+      _loadPastOrders();
+    }
+  }
+
+  void _loadActiveOrders() {
+    context.read<ManyOrdersBloc>().add(LoadManyOrdersEvent(
+        page: _currentActivePage,
+        perpage: _perPage,
+        status: 'active'
+    ));
+  }
+
+  void _loadPastOrders() {
+    context.read<ManyOrdersBloc>().add(LoadManyOrdersEvent(
+        page: _currentPastPage,
+        perpage: _perPage,
+        status: 'past'
+    ));
+  }
+
+  void _onRefresh(bool isActiveTab) {
+    if (isActiveTab) {
+      _currentActivePage = 1;
+      _allActiveOrders.clear();
+      _loadActiveOrders();
+    } else {
+      _currentPastPage = 1;
+      _allPastOrders.clear();
+      _loadPastOrders();
+    }
   }
 
   @override
@@ -142,7 +151,7 @@ class _OrdersPageState extends State<OrdersPage>
                   indicatorSize: TabBarIndicatorSize.tab,
                   labelPadding: const EdgeInsets.symmetric(horizontal: 16),
                   overlayColor: WidgetStateProperty.resolveWith<Color?>(
-                    (Set<WidgetState> states) {
+                        (Set<WidgetState> states) {
                       if (states.contains(WidgetState.pressed)) {
                         return Colors.purpleAccent.withOpacity(0.1);
                       }
@@ -155,32 +164,107 @@ class _OrdersPageState extends State<OrdersPage>
           ),
         ),
       ),
-      body: TabBarView(
-        controller: _tabController,
-        children: [
-          _buildOrderList(activeOrders),
-          _buildOrderList(pastOrders),
+      body: MultiBlocListener(
+        listeners: [
+          BlocListener<ManyOrdersBloc, ManyOrdersState>(
+            listener: (context, state) {
+              if (state is ManyOrdersLoadedState) {
+                setState(() {
+                  if (state.status == 'active') {
+                    _allActiveOrders = state.orders;
+                  } else if (state.status == 'past') {
+                    _allPastOrders = state.orders;
+                  }
+                });
+              }
+            },
+          ),
         ],
+        child: TabBarView(
+          controller: _tabController,
+          children: [
+            _buildOrdersList(_allActiveOrders, true),
+            _buildOrdersList(_allPastOrders, false),
+          ],
+        ),
       ),
       bottomNavigationBar: CustomNavBar(
         selectedIndex: counterNavbar,
-        onItemTapped: _onNavItemTapped,
+        onItemTapped: (index) {
+          setState(() {
+            counterNavbar = index;
+          });
+        },
       ),
     );
   }
 
-  Widget _buildOrderList(List<Map<String, String>> orders) {
-    return ListView.builder(
-      itemCount: orders.length,
-      itemBuilder: (context, index) {
-        return OrderCard(
-          orderNumber: orders[index]['orderNumber']!,
-          date: orders[index]['date']!,
-          items: orders[index]['items']!,
-          price: orders[index]['price']!,
-          initialStatus: orders[index]['status']!,
+
+
+  Widget _buildOrdersList(
+      List<OrderManyItem> orders,
+      bool isActiveTab
+      ) {
+    return BlocBuilder<ManyOrdersBloc, ManyOrdersState>(
+        builder: (context, state) {
+          if (orders.isEmpty && state is ManyOrdersLoadingState) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+
+          // Error state
+          if (state is ManyOrdersErrorState && orders.isEmpty) {
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    'Error loading orders: ${state.error}',
+                    style: const TextStyle(color: Colors.red),
+                  ),
+                  ElevatedButton(
+                    onPressed: () => _onRefresh(isActiveTab),
+                    child: const Text('Retry'),
+                  )
+                ],
+              ),
+            );
+          }
+
+          // No orders
+          if (orders.isEmpty) {
+            return Center(
+              child: Text(isActiveTab ? 'No active orders' : 'No past orders'),
+            );
+          }
+
+          // Orders list with potential loading indicator
+          return RefreshIndicator(
+            onRefresh: () async => _onRefresh(isActiveTab),
+            child: ListView.builder(
+              itemCount: orders.length + (state is ManyOrdersLoadingState ? 1 : 0),
+              itemBuilder: (context, index) {
+                // Loading indicator for pagination
+                if (index == orders.length && state is ManyOrdersLoadingState) {
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                }
+
+                final order = orders[index];
+                return OrderCard(order: order);
+              },
+            ),
+          );
+        }
         );
-      },
-    );
+      }
+
+  @override
+  void dispose() {
+    _tabController.removeListener(_handleTabChange);
+    _tabController.dispose();
+    super.dispose();
   }
 }

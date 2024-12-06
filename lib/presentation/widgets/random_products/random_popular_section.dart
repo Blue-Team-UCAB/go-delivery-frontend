@@ -34,10 +34,11 @@ class _RandomSectionState extends State<RandomSection> {
   void _loadRandomProducts() {
     if (!_mounted) return;
     final random = Random();
-    final randomPage = random.nextInt(7) + 1;
+    final randomPage = random.nextInt(6)+1;
+
     context
         .read<ProductRandomListBloc>()
-        .add(LoadProductList(page: randomPage, perpage: 8, category: ''));
+        .add(LoadProductList(page: randomPage, perpage: 5, category: ''));
   }
 
   @override

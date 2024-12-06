@@ -6,13 +6,13 @@ abstract class BundleListEvent extends Equatable {
 
 class LoadBundleList extends BundleListEvent {
   final int page;
-  final int take;
+  final int perpage;
 
   const LoadBundleList({
     required this.page,
-    required this.take,
+    required this.perpage,
   });
 
   @override
-  List<Object?> get props => [page, take];
+  List<Object?> get props => [page, perpage];
 }

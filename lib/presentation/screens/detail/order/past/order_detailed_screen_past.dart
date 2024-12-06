@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 
-import '../../../../application/BLoc/order/order_detailed/order_detailed_state.dart';
-import '../../../widgets/dialog_darken_window.dart';
-import '../../../widgets/product_stacked_card.dart';
+import '../../../../../application/BLoc/order/order_detailed/order_detailed_state.dart';
+import '../../../../widgets/dialog_darken_window.dart';
+import '../../../../widgets/product_stacked_card.dart';
 
-class InactiveOrderDetails extends StatelessWidget {
+class PastOrderDetails extends StatelessWidget {
   final OrderDetailLoadedState state;
 
-  const InactiveOrderDetails({super.key, required this.state});
+  const PastOrderDetails({super.key, required this.state});
 
   @override
   Widget build(BuildContext context) {
@@ -15,10 +15,10 @@ class InactiveOrderDetails extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Text(
-              'Orden #${state.orderNumber}',
+              'Orden ${state.orderNumber}',
               style: TextStyle(
                 fontFamily: 'Montserrat',
                 color: Colors.indigo[900],
@@ -51,7 +51,7 @@ class InactiveOrderDetails extends StatelessWidget {
               physics: const NeverScrollableScrollPhysics(),
               itemCount: state.products.length,
               itemBuilder: (context, index) {
-                return ProductStackedCard(productId: state.products[index].id);
+                return ProductStackedCard(productData: state.products[index]);
               },
             ),
             const SizedBox(height: 24),
@@ -96,15 +96,15 @@ class InactiveOrderDetails extends StatelessWidget {
                   'Total',
                   style: TextStyle(
                     fontFamily: 'Montserrat',
-                    fontSize: 16,
+                    fontSize: 23,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
                 Text(
-                  state.price,
+                  state.totalAmount.toString(),
                   style: const TextStyle(
                     fontFamily: 'Montserrat',
-                    fontSize: 16,
+                    fontSize: 23,
                     fontWeight: FontWeight.w600,
                   ),
                 ),

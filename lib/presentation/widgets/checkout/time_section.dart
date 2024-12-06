@@ -13,7 +13,7 @@ class _DeliveryTimeSectionState extends State<DeliveryTimeSection> {
 
   final List<String> _timeSlots = List.generate(
     24,
-    (index) {
+        (index) {
       final hour = index % 24;
       final nextHour = (hour + 1) % 24;
       final formattedHour = hour > 12 ? hour - 12 : hour;

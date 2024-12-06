@@ -1,21 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:go_delivery_frontend/infrastructure/models/order_many_model.dart';
+import 'package:go_router/go_router.dart';
 
+import '../../../domain/entities/order/order.dart';
 import '../../widgets/dialog_darken_window.dart';
 
 class OrderCard extends StatefulWidget {
-  final String orderNumber;
-  final String date;
-  final String items;
-  final String price;
-  final String initialStatus;
+  final OrderManyItem order;
 
   const OrderCard({
     super.key,
-    required this.orderNumber,
-    required this.date,
-    required this.items,
-    required this.price,
-    required this.initialStatus,
+    required this.order,
   });
 
   @override
@@ -28,11 +23,38 @@ class _OrderCardState extends State<OrderCard> {
   @override
   void initState() {
     super.initState();
-    status = widget.initialStatus;
+    status = widget.order.lastState.state.isNotEmpty
+        ? widget.order.lastState.state
+        : 'Unknown';
+  }
+
+  String _getReadableStatus(String status) {
+    switch (status) {
+      case 'CREATED':
+        return 'Inicializado';
+      case 'SHIPPED':
+        return 'En Camino';
+      case 'IN PROCESS':
+        return 'En Proceso';
+      case 'DELIVERED':
+        return 'Entregada';
+      case 'CANCELLED':
+        return 'Cancelada';
+      default:
+        return status;
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    // Format the first state's date (order creation date)
+    String orderDate = widget.order.lastState.date.isNotEmpty
+        ? widget.order.lastState.date
+        : 'Fecha no disponible';
+
+    // Create items string from products
+    String itemsDescription = widget.order.summaryOrder;
+
     return Card(
       margin: const EdgeInsets.all(8),
       shape: RoundedRectangleBorder(
@@ -47,13 +69,22 @@ class _OrderCardState extends State<OrderCard> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
-                  'Orden #${widget.orderNumber}',
-                  style: const TextStyle(
-                    fontFamily: 'Inter',
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black,
+                Expanded(
+                  child: Row(
+                    children: [
+                      Flexible(
+                        child: Text(
+                          widget.order.id,
+                          style: const TextStyle(
+                            fontFamily: 'Inter',
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black,
+                          ),
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
                 IconButton(
@@ -64,7 +95,7 @@ class _OrderCardState extends State<OrderCard> {
             ),
             const SizedBox(height: 4),
             Text(
-              widget.date,
+              orderDate,
               style: TextStyle(
                 fontFamily: 'Inter',
                 fontSize: 12,
@@ -73,7 +104,7 @@ class _OrderCardState extends State<OrderCard> {
             ),
             const SizedBox(height: 8),
             Text(
-              widget.items,
+              itemsDescription,
               style: const TextStyle(
                 fontFamily: 'Inter',
                 fontSize: 14,
@@ -81,7 +112,7 @@ class _OrderCardState extends State<OrderCard> {
             ),
             const SizedBox(height: 8),
             Text(
-              widget.price,
+              '\$${widget.order.totalAmount.toStringAsFixed(2)}',
               style: const TextStyle(
                 fontFamily: 'Inter',
                 fontSize: 16,
@@ -91,7 +122,7 @@ class _OrderCardState extends State<OrderCard> {
             ),
             const SizedBox(height: 8),
             Text(
-              status,
+              _getReadableStatus(status),
               style: TextStyle(
                 fontFamily: 'Inter',
                 fontSize: 14,
@@ -102,7 +133,7 @@ class _OrderCardState extends State<OrderCard> {
               ),
             ),
             const SizedBox(height: 16),
-            _buildButtons(),
+            _buildButtons(widget.order.id),
           ],
         ),
       ),
@@ -115,7 +146,7 @@ class _OrderCardState extends State<OrderCard> {
       builder: (BuildContext context) {
         return AnimatedSuccessDialog(
           title: 'Opciones de Orden',
-          message: 'Seleccione una acción para la orden #${widget.orderNumber}',
+          message: 'Seleccione una acción para la orden #${widget.order.id}',
           buttonText: 'Cerrar',
           icon: Icons.more_vert,
           iconColor: const Color(0xFF2000B1),
@@ -134,32 +165,36 @@ class _OrderCardState extends State<OrderCard> {
     );
   }
 
-  Widget _buildButtons() {
-    switch (status) {
-      case 'Cancelada':
-        return ElevatedButton(
-          onPressed: () {},
-          style: ElevatedButton.styleFrom(
-            backgroundColor: const Color(0xFF2000B1),
-          ),
-          child: const Text('Reportar un problema',
-              style: TextStyle(
-                color: Colors.white,
-                fontFamily: 'Inter',
-                fontSize: 14,
-                fontWeight: FontWeight.bold,
-              )),
-        );
-      case 'Entregada':
-        return Row(
+  Widget _buildButtons(String orderid) {
+    String readableStatus = _getReadableStatus(status);
+
+    if( readableStatus == 'Cancelada') {
+      return Row(
           children: [
             Expanded(
+              child: ElevatedButton(
+                  onPressed: () {},
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.deepOrangeAccent,
+                  ),
+                  child: const Text('Reportar un problema',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontFamily: 'Inter',
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold,
+                      ))
+              ),
+            ),
+            Expanded(
               child: OutlinedButton(
-                onPressed: () {},
+                onPressed: () {
+                  context.push('/orderdetail/$orderid');
+                },
                 style: OutlinedButton.styleFrom(
                   foregroundColor: const Color(0xFF2000B1),
                 ),
-                child: const Text('Reseña',
+                child: const Text('Ver',
                     style: TextStyle(
                       fontFamily: 'Inter',
                       fontSize: 14,
@@ -167,30 +202,55 @@ class _OrderCardState extends State<OrderCard> {
                     )),
               ),
             ),
-            const SizedBox(width: 8),
-            Expanded(
-              child: ElevatedButton(
-                onPressed: () {},
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF2000B1),
-                ),
-                child: const Text('Reordenar',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontFamily: 'Inter',
-                      fontSize: 14,
-                      fontWeight: FontWeight.bold,
-                    )),
+          ]
+      );
+    }
+
+    if(readableStatus == 'Entregada') {
+      return Row(
+        children: [
+          Expanded(
+            child: OutlinedButton(
+              onPressed: () {
+                context.push('/orderdetail/$orderid');
+              },
+              style: OutlinedButton.styleFrom(
+                foregroundColor: const Color(0xFF2000B1),
               ),
+              child: const Text('Ver',
+                  style: TextStyle(
+                    fontFamily: 'Inter',
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                  )),
             ),
-          ],
-        );
-      case 'Por Entregar':
+          ),
+          const SizedBox(width: 8),
+          Expanded(
+            child: ElevatedButton(
+              onPressed: () {},
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFF2000B1),
+              ),
+              child: const Text('Reordenar',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontFamily: 'Inter',
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                  )),
+            ),
+          ),
+        ],
+      );
+    }
+    if((readableStatus == 'Inicializado') || (readableStatus == "En Camino") || (readableStatus == "En Proceso")){
         return Row(
           children: [
             Expanded(
               child: OutlinedButton(
-                onPressed: () {},
+                onPressed: () {
+                },
                 style: OutlinedButton.styleFrom(
                   foregroundColor: Colors.grey,
                 ),
@@ -205,7 +265,9 @@ class _OrderCardState extends State<OrderCard> {
             const SizedBox(width: 8),
             Expanded(
               child: ElevatedButton(
-                onPressed: () {},
+                onPressed: () {
+                  context.push('/orderdetail/$orderid');
+                },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFF2000B1),
                 ),
@@ -220,8 +282,7 @@ class _OrderCardState extends State<OrderCard> {
             ),
           ],
         );
-      default:
-        return const SizedBox.shrink();
-    }
+      }
+    return SizedBox.shrink();
   }
 }

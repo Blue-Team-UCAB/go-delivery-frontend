@@ -22,13 +22,13 @@ class OrderDetailBloc extends SafeBloc<OrderDetailEvent, OrderDetailState> {
       final orderDetail = await getOneOrderUseCase
           .execute(GetOneOrderUseCaseInput(orderId: event.orderNumber));
       emit(OrderDetailLoadedState(
-        orderNumber: orderDetail.value!.orderNumber,
-        date: orderDetail.value!.date,
-        time: orderDetail.value!.time,
-        location: orderDetail.value!.location,
-        price: orderDetail.value!.price,
-        status: orderDetail.value!.status,
-        products: orderDetail.value!.products,
+          id: orderDetail.value!.id,
+          state: orderDetail.value!.state,
+          totalAmount: orderDetail.value!.totalAmount,
+          subtotalAmount: orderDetail.value!.subtotalAmount,
+          direction: orderDetail.value!.direction,
+          products: orderDetail.value!.products,
+          bundles: orderDetail.value!.bundles,
       ));
     } catch (e) {
       emit(OrderDetailErrorState(error: e.toString()));
