@@ -1,14 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:go_delivery_frontend/application/BLoc/notifications/notification-list/notification_list_bloc.dart';
-import 'package:go_delivery_frontend/common/result.dart';
-import 'package:go_delivery_frontend/domain/entities/notifications/notification.dart';
-import 'package:go_delivery_frontend/firebase_options.dart';
-import 'package:go_delivery_frontend/infrastructure/firebase/firebase_notifications_manager.dart';
 import 'package:go_delivery_frontend/infrastructure/mappers/push_message_model.dart';
-
 import '../../../use_cases/notification/send_device_token_usecase.dart';
 
 part 'notifications_event.dart';
@@ -18,13 +11,25 @@ class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState> {
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
   final SendDeviceTokenUseCase sendDeviceTokenUseCase;
 
-  NotificationsBloc({required this.sendDeviceTokenUseCase}) : super(const NotificationsState()) {
+  NotificationsBloc({required this.sendDeviceTokenUseCase})
+      : super(const NotificationsState()) {
     on<SendFCMTokenEvent>(_onSendFCMToken);
     on<RequestNotificationPermissionEvent>(_onRequestNotificationPermission);
     on<NotificationReceivedEvent>(_onNotificationReceived);
 
-    // Setup Firebase Messaging listeners
     _setupFirebaseMessaging();
+  }
+
+  PushMessageModel _remoteMessageToPushMessageModel(RemoteMessage message) {
+    return PushMessageModel(
+      messageId: message.messageId ?? '',
+      title: message.notification?.title ?? '',
+      body: message.notification?.body ?? '',
+      sentDate: message.sentTime ?? DateTime.now(),
+      data: message.data,
+      imageUrl: message.notification?.android?.imageUrl ??
+          message.notification?.apple?.imageUrl,
+    );
   }
 
   void _setupFirebaseMessaging() {
@@ -40,41 +45,32 @@ class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState> {
   }
 
   Future<void> _onSendFCMToken(
-      SendFCMTokenEvent event,
-      Emitter<NotificationsState> emit
-      ) async {
+      SendFCMTokenEvent event, Emitter<NotificationsState> emit) async {
     try {
       // Request notification permissions
-      NotificationSettings settings = await _firebaseMessaging.requestPermission(
+      NotificationSettings settings =
+          await _firebaseMessaging.requestPermission(
         alert: true,
         badge: true,
         sound: true,
       );
 
-      print("1");
-
       if (settings.authorizationStatus == AuthorizationStatus.authorized) {
         // Get FCM token
         final token = await _firebaseMessaging.getToken();
-
-        print(token);
-
-        print("2");
+        print('FCM Token: $token');
 
         if (token != null) {
           // Send token to your backend
-          print("3 EXECUTE");
-
-          final result = await sendDeviceTokenUseCase.execute(
-              SendDeviceTokenUseCaseInput(token: token)
-          );
+          final result = await sendDeviceTokenUseCase
+              .execute(SendDeviceTokenUseCaseInput(token: token));
 
           if (result.isSuccess) {
             emit(state.copyWith(
                 tokenSendStatus: TokenSendStatus.sent,
                 fcmToken: token,
-                notificationPermissionStatus: NotificationPermissionStatus.granted
-            ));
+                notificationPermissionStatus:
+                    NotificationPermissionStatus.granted));
           } else {
             emit(state.copyWith(tokenSendStatus: TokenSendStatus.error));
           }
@@ -82,23 +78,21 @@ class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState> {
       } else {
         emit(state.copyWith(
             tokenSendStatus: TokenSendStatus.error,
-            notificationPermissionStatus: NotificationPermissionStatus.denied
-        ));
+            notificationPermissionStatus: NotificationPermissionStatus.denied));
       }
     } catch (e) {
       emit(state.copyWith(
           tokenSendStatus: TokenSendStatus.error,
-          notificationPermissionStatus: NotificationPermissionStatus.denied
-      ));
+          notificationPermissionStatus: NotificationPermissionStatus.denied));
     }
   }
 
   Future<void> _onRequestNotificationPermission(
       RequestNotificationPermissionEvent event,
-      Emitter<NotificationsState> emit
-      ) async {
+      Emitter<NotificationsState> emit) async {
     try {
-      NotificationSettings settings = await _firebaseMessaging.requestPermission(
+      NotificationSettings settings =
+          await _firebaseMessaging.requestPermission(
         alert: true,
         badge: true,
         sound: true,
@@ -106,23 +100,20 @@ class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState> {
 
       emit(state.copyWith(
           notificationPermissionStatus:
-          settings.authorizationStatus == AuthorizationStatus.authorized
-              ? NotificationPermissionStatus.granted
-              : NotificationPermissionStatus.denied
-      ));
+              settings.authorizationStatus == AuthorizationStatus.authorized
+                  ? NotificationPermissionStatus.granted
+                  : NotificationPermissionStatus.denied));
     } catch (e) {
       emit(state.copyWith(
-          notificationPermissionStatus: NotificationPermissionStatus.denied
-      ));
+          notificationPermissionStatus: NotificationPermissionStatus.denied));
     }
   }
 
   void _onNotificationReceived(
-      NotificationReceivedEvent event,
-      Emitter<NotificationsState> emit
-      ) {
-    final updatedNotifications = List<RemoteMessage>.from(state.notifications)
-      ..add(event.message);
+      NotificationReceivedEvent event, Emitter<NotificationsState> emit) {
+    final pushMessage = _remoteMessageToPushMessageModel(event.message);
+    final updatedNotifications =
+        List<PushMessageModel>.from(state.notifications)..add(pushMessage);
 
     emit(state.copyWith(notifications: updatedNotifications));
   }
@@ -136,17 +127,15 @@ class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState> {
     add(RequestNotificationPermissionEvent());
   }
 
-  RemoteMessage? getMessageById(String messageId) {
+  PushMessageModel? getMessageById(String messageId) {
     try {
-      return state.notifications.firstWhere(
-              (message) => message.messageId == messageId
-      );
+      return state.notifications
+          .firstWhere((message) => message.messageId == messageId);
     } catch (e) {
       return null;
     }
   }
 
-  // Don't forget to close any streams or perform cleanup
   @override
   Future<void> close() {
     return super.close();
