@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_delivery_frontend/domain/entities/cart/cartitem.dart';
+import 'package:go_delivery_frontend/presentation/widgets/cart/cart_empty_state_widget.dart';
 import 'package:go_delivery_frontend/presentation/widgets/cart/cart_item.dart';
 import 'package:go_delivery_frontend/presentation/widgets/cart/cart_footer_box.dart';
 import 'package:go_router/go_router.dart';
@@ -10,17 +11,11 @@ import '../../../application/BLoc/cart/cart_bloc.dart';
 class CartScreen extends StatelessWidget {
   static const name = 'cart-screen';
   const CartScreen({super.key});
-
-  final CartItem testing = const CartItem(
-      id: 'fe',
-      name: 'Pringles FlamingHot Queso',
-      imgUrl: 'imgUrl',
-      price: 2.30,
-      presentation: '150 gr',
-      quantity: 1);
+  
 
   @override
   Widget build(BuildContext context) {
+    final cartBloc = context.watch<CartBloc>();
     return Scaffold(
       appBar: AppBar(
         leading: Padding(
@@ -32,15 +27,25 @@ class CartScreen extends StatelessWidget {
             },
           ),
         ),
-        title: const Text('Carrito'),
-        centerTitle: true,
+        title: const Text(
+          'Mi Carrito',
+          style: TextStyle(fontFamily: 'Montserrat',fontSize: 24,fontWeight: FontWeight.w700 ,color: Color(0xFF000000))
+        ),
       ),
-      body: _CartView(),
+      body: cartBloc.state.items.isEmpty
+        ? const CartEmptyStateWidget()
+        : _CartView(itemQuantity: cartBloc.state.howManyItems,cartItems: cartBloc.state.items,),
     );
   }
 }
 
 class _CartView extends StatelessWidget {
+
+  final int itemQuantity;
+  final List<CartItem> cartItems;
+
+  const _CartView({required this.itemQuantity, required this.cartItems});
+
   @override
   Widget build(BuildContext context) {
     final cartBloc = context.watch<CartBloc>();
