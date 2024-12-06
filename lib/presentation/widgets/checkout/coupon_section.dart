@@ -1,13 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_delivery_frontend/application/BLoc/blocs.dart';
 
-class ApplyCouponSection extends StatelessWidget {
+class ApplyCouponSection extends StatefulWidget {
   const ApplyCouponSection({super.key});
+
+  @override
+  State<ApplyCouponSection> createState() => _ApplyCouponSectionState();
+}
+
+class _ApplyCouponSectionState extends State<ApplyCouponSection> {
+  TextEditingController couponIdController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     return TextButton(
       onPressed: () {
-        // Acción para aplicar cupón
+        _showCouponForm(context);
       },
       style: TextButton.styleFrom(
         foregroundColor: const Color(0xFFED4B00), // Color naranja
@@ -31,6 +40,148 @@ class ApplyCouponSection extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+
+  Future<void> _showCouponForm(BuildContext context) async {
+
+    bool showError = false;
+    String? errorMessage;
+
+    await showModalBottomSheet(
+      context: context, 
+      builder: (context){
+        final couponBloc = context.read<CouponBloc>();
+        return BlocProvider.value(
+          value: couponBloc,
+          child: WillPopScope(
+            onWillPop: () async {
+              final shouldExit = await _showExitConfirmation(context);
+              return shouldExit ?? false;
+            },
+            child: BlocListener<CouponBloc, CouponState>(
+              listener: (context, state) {
+                if (state is CouponLoading) {
+                } else if (state is CouponLoaded) {
+                  Navigator.pop(context);
+                  _showCouponResult(context, "Cupon agregado con exito.");
+                } else if (state is CouponFailed) {
+                  Navigator.pop(context);
+                  _showCouponResult(
+                      context, "El Cupon ingresado no existe.");
+                }
+              },
+              child: StatefulBuilder(
+                builder: (context,setState){
+                  void validate(){
+                    if (couponIdController.text.isEmpty){
+                      setState((){
+                        showError = true;
+                        errorMessage = 'El Codigo del cupon no puede estar vacio.';
+                        return;
+                      });
+                    }
+
+                    context.read<CouponBloc>().add(LoadCoupon(couponId: couponIdController.text));
+                    
+                  }
+                  return Padding(
+                    padding: EdgeInsets.only(
+                      bottom: MediaQuery.of(context).viewInsets.bottom,
+                    ),
+                    child: SingleChildScrollView(
+                      child: Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Column(
+                          children: [
+                            if (showError)
+                              Text(
+                                errorMessage ?? 'Error desconocido.',
+                                style: const TextStyle(
+                                  color: Colors.red,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            TextField(
+                              controller: couponIdController,
+                              keyboardType: TextInputType.text,
+                              maxLength: 15,
+                              decoration: const InputDecoration(
+                                labelText: 'Codigo del Cupon',
+                              ),
+                            ),
+                            const SizedBox(height: 16),
+                            GestureDetector(
+                              onTap: validate,
+                              child: Container(
+                                alignment: Alignment.center,
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 12.0,
+                                  horizontal: 24.0,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: const Color(0xFF2000B1),
+                                  borderRadius: BorderRadius.circular(8.0),
+                                ),
+                                child: const Text(
+                                  'Confirmar',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  );
+                }
+              ), 
+            ),
+          )
+        );
+      });
+
+  }
+
+  Future<bool?> _showExitConfirmation(BuildContext context) async {
+    return showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Confirmar Salida'),
+        content: const Text('¿Estás seguro de que deseas salir?'),
+        actions: <Widget>[
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text('Cancelar'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(context, true),
+            child: const Text('Aceptar'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showCouponResult(BuildContext context, String message) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Resultado:'),
+          content: Text(message),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('Aceptar'),
+            ),
+          ],
+        );
+      },
     );
   }
 }

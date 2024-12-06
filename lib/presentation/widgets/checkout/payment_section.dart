@@ -349,6 +349,7 @@ class _PaymentMethodSectionState extends State<PaymentMethodSection> {
                 } else if (state is ZelleSuccess) {
                   Navigator.pop(context);
                   _showPaymentResult(context, "Pago registrado con éxito.");
+                  context.read<GetWalletAmountBloc>().add(LoadWalletAmount());
                 } else if (state is ZelleFailure) {
                   Navigator.pop(context);
                   _showPaymentResult(
@@ -486,6 +487,9 @@ class _PaymentMethodSectionState extends State<PaymentMethodSection> {
       isScrollControlled: true,
       builder: (context) {
         final paymentBloc = context.read<PaymentBloc>();
+        final walletBloc = context
+            .read<GetWalletAmountBloc>(); // Acceso al GetWalletAmountBloc
+
         return BlocProvider.value(
           value: paymentBloc,
           child: WillPopScope(
@@ -496,7 +500,10 @@ class _PaymentMethodSectionState extends State<PaymentMethodSection> {
             child: BlocListener<PaymentBloc, PaymentState>(
               listener: (context, state) {
                 if (state is PaymentLoading) {
+                  // Mostrar un cargador si es necesario
                 } else if (state is PaymentSuccess) {
+                  // Si el pago es exitoso, disparar la carga del monto de la billetera
+                  walletBloc.add(LoadWalletAmount());
                   Navigator.pop(context);
                   _showPaymentResult(context, "Pago registrado con éxito.");
                 } else if (state is PaymentFailure) {
@@ -505,239 +512,250 @@ class _PaymentMethodSectionState extends State<PaymentMethodSection> {
                       context, "Pago no ha podido ser procesado.");
                 }
               },
-              child: StatefulBuilder(
-                builder: (context, setState) {
-                  void validateAndConfirm() {
-                    final phoneRegex = RegExp(r'^\d{10}$');
-                    final referenceRegex = RegExp(r'^[a-zA-Z0-9]{6}$');
-
-                    if (!phoneRegex.hasMatch(phoneController.text)) {
-                      setState(() {
-                        showError = true;
-                        errorMessage =
-                            'El número de teléfono debe contener exactamente 10 dígitos.';
-                      });
-                      return;
-                    }
-
-                    if (idController.text.isEmpty) {
-                      setState(() {
-                        showError = true;
-                        errorMessage = 'La cédula no puede estar vacía.';
-                      });
-                      return;
-                    }
-
-                    if (_selectedBank == null || _selectedBank!.isEmpty) {
-                      setState(() {
-                        showError = true;
-                        errorMessage = 'Debes seleccionar un banco.';
-                      });
-                      return;
-                    }
-
-                    if (double.tryParse(_integerPartController.text) == null ||
-                        double.parse(_integerPartController.text) <= 0) {
-                      setState(() {
-                        showError = true;
-                        errorMessage =
-                            'El monto debe ser un número válido mayor a 0.';
-                      });
-                      return;
-                    }
-
-                    if (!referenceRegex.hasMatch(referenceController.text)) {
-                      setState(() {
-                        showError = true;
-                        errorMessage =
-                            'La referencia debe ser un string de exactamente 6 caracteres alfanuméricos.';
-                      });
-                      return;
-                    }
-
-                    if (selectedDate == null) {
-                      setState(() {
-                        showError = true;
-                        errorMessage = 'Debes seleccionar una fecha válida.';
-                      });
-                      return;
-                    }
-
-                    if (selectedDate!.isAfter(DateTime.now())) {
-                      setState(() {
-                        showError = true;
-                        errorMessage =
-                            'La fecha debe ser pasada, no puede ser futura.';
-                      });
-                      return;
-                    }
-
-                    setState(() {
-                      showError = false;
-                      errorMessage = null;
-                    });
-
-                    String fullPhoneNumber = '58${phoneController.text}';
-
-                    context.read<PaymentBloc>().add(SubmitPayment(
-                          phoneNumber: fullPhoneNumber,
-                          cedula: idController.text,
-                          bank: _selectedBank!,
-                          amount:
-                              double.tryParse(_integerPartController.text) ??
-                                  0.0,
-                          paymentDate: selectedDate!,
-                          referenceNumber: referenceController.text,
-                        ));
+              child: BlocListener<GetWalletAmountBloc, GetWalletAmountState>(
+                listener: (context, walletState) {
+                  if (walletState is WalletAmountLoaded) {
+                    final walletAmount = walletState.walletAmount;
+                  } else if (walletState is WalletAmountFailed) {
+                    final result = walletState.result;
                   }
+                },
+                child: StatefulBuilder(
+                  builder: (context, setState) {
+                    void validateAndConfirm() {
+                      final phoneRegex = RegExp(r'^\d{10}$');
+                      final referenceRegex = RegExp(r'^[a-zA-Z0-9]{6}$');
 
-                  return Padding(
-                    padding: EdgeInsets.only(
-                      bottom: MediaQuery.of(context).viewInsets.bottom,
-                    ),
-                    child: SingleChildScrollView(
-                      child: Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: Column(
-                          children: [
-                            if (showError)
-                              Text(
-                                errorMessage ?? 'Error desconocido.',
-                                style: const TextStyle(
-                                  color: Colors.red,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            const SizedBox(height: 8),
-                            TextField(
-                              controller: referenceController,
-                              keyboardType: TextInputType.text,
-                              maxLength: 6,
-                              decoration: const InputDecoration(
-                                labelText: 'Nro. Referencia',
-                              ),
-                            ),
-                            TextField(
-                              controller: _integerPartController,
-                              keyboardType:
-                                  const TextInputType.numberWithOptions(
-                                      decimal: true),
-                              decoration: const InputDecoration(
-                                labelText: 'Monto',
-                                hintText: 'Ej. 1200.00',
-                              ),
-                            ),
-                            const SizedBox(height: 16),
-                            TextField(
-                              controller: idController,
-                              keyboardType: TextInputType.number,
-                              maxLength: 8,
-                              decoration: const InputDecoration(
-                                labelText: 'Cédula',
-                              ),
-                            ),
-                            Row(
-                              children: [
-                                const Text('+58'),
-                                const SizedBox(width: 8.0),
-                                Expanded(
-                                  child: TextField(
-                                    controller: phoneController,
-                                    keyboardType: TextInputType.number,
-                                    maxLength: 10,
-                                    decoration: const InputDecoration(
-                                      labelText: 'Teléfono',
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                            DropdownButtonFormField<String>(
-                              value: _selectedBank,
-                              items: [
-                                '0105 - Mercantil',
-                                '0102 - Banco de Venezuela',
-                                '0134 - Banesco',
-                              ].map((bank) {
-                                return DropdownMenuItem(
-                                  value: bank,
-                                  child: Text(bank),
-                                );
-                              }).toList(),
-                              onChanged: (value) {
-                                setState(() {
-                                  _selectedBank = value;
-                                });
-                              },
-                              decoration: const InputDecoration(
-                                labelText: 'Banco',
-                              ),
-                            ),
-                            const SizedBox(height: 6),
-                            GestureDetector(
-                              onTap: () async {
-                                DateTime? pickedDate = await showDatePicker(
-                                  context: context,
-                                  initialDate: DateTime.now(),
-                                  firstDate: DateTime(2000),
-                                  lastDate: DateTime.now(),
-                                );
-                                if (pickedDate != null) {
-                                  setState(() {
-                                    selectedDate = pickedDate;
-                                  });
-                                }
-                              },
-                              child: Container(
-                                padding: const EdgeInsets.all(12.0),
-                                decoration: BoxDecoration(
-                                  color: Colors.grey[200],
-                                  borderRadius: BorderRadius.circular(8.0),
-                                ),
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(
-                                      selectedDate == null
-                                          ? 'Fecha Estimada de Pago'
-                                          : '${selectedDate?.toLocal()}'
-                                              .split(' ')[0],
-                                    ),
-                                    const Icon(Icons.calendar_today),
-                                  ],
-                                ),
-                              ),
-                            ),
-                            const SizedBox(height: 16),
-                            GestureDetector(
-                              onTap: validateAndConfirm,
-                              child: Container(
-                                alignment: Alignment.center,
-                                padding: const EdgeInsets.symmetric(
-                                  vertical: 12.0,
-                                  horizontal: 24.0,
-                                ),
-                                decoration: BoxDecoration(
-                                  color: const Color(0xFF2000B1),
-                                  borderRadius: BorderRadius.circular(8.0),
-                                ),
-                                child: const Text(
-                                  'Confirmar',
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 16,
+                      if (!phoneRegex.hasMatch(phoneController.text)) {
+                        setState(() {
+                          showError = true;
+                          errorMessage =
+                              'El número de teléfono debe contener exactamente 10 dígitos.';
+                        });
+                        return;
+                      }
+
+                      if (idController.text.isEmpty) {
+                        setState(() {
+                          showError = true;
+                          errorMessage = 'La cédula no puede estar vacía.';
+                        });
+                        return;
+                      }
+
+                      if (_selectedBank == null || _selectedBank!.isEmpty) {
+                        setState(() {
+                          showError = true;
+                          errorMessage = 'Debes seleccionar un banco.';
+                        });
+                        return;
+                      }
+
+                      if (double.tryParse(_integerPartController.text) ==
+                              null ||
+                          double.parse(_integerPartController.text) <= 0) {
+                        setState(() {
+                          showError = true;
+                          errorMessage =
+                              'El monto debe ser un número válido mayor a 0.';
+                        });
+                        return;
+                      }
+
+                      if (!referenceRegex.hasMatch(referenceController.text)) {
+                        setState(() {
+                          showError = true;
+                          errorMessage =
+                              'La referencia debe ser un string de exactamente 6 caracteres alfanuméricos.';
+                        });
+                        return;
+                      }
+
+                      if (selectedDate == null) {
+                        setState(() {
+                          showError = true;
+                          errorMessage = 'Debes seleccionar una fecha válida.';
+                        });
+                        return;
+                      }
+
+                      if (selectedDate!.isAfter(DateTime.now())) {
+                        setState(() {
+                          showError = true;
+                          errorMessage =
+                              'La fecha debe ser pasada, no puede ser futura.';
+                        });
+                        return;
+                      }
+
+                      setState(() {
+                        showError = false;
+                        errorMessage = null;
+                      });
+
+                      String fullPhoneNumber = '58${phoneController.text}';
+
+                      // Envía el pago, y una vez sea exitoso, se disparará el evento para obtener el monto
+                      context.read<PaymentBloc>().add(SubmitPayment(
+                            phoneNumber: fullPhoneNumber,
+                            cedula: idController.text,
+                            bank: _selectedBank!,
+                            amount:
+                                double.tryParse(_integerPartController.text) ??
+                                    0.0,
+                            paymentDate: selectedDate!,
+                            referenceNumber: referenceController.text,
+                          ));
+                    }
+
+                    return Padding(
+                      padding: EdgeInsets.only(
+                        bottom: MediaQuery.of(context).viewInsets.bottom,
+                      ),
+                      child: SingleChildScrollView(
+                        child: Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: Column(
+                            children: [
+                              if (showError)
+                                Text(
+                                  errorMessage ?? 'Error desconocido.',
+                                  style: const TextStyle(
+                                    color: Colors.red,
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
+                              const SizedBox(height: 8),
+                              TextField(
+                                controller: referenceController,
+                                keyboardType: TextInputType.text,
+                                maxLength: 6,
+                                decoration: const InputDecoration(
+                                  labelText: 'Nro. Referencia',
+                                ),
                               ),
-                            ),
-                          ],
+                              TextField(
+                                controller: _integerPartController,
+                                keyboardType:
+                                    const TextInputType.numberWithOptions(
+                                        decimal: true),
+                                decoration: const InputDecoration(
+                                  labelText: 'Monto',
+                                  hintText: 'Ej. 1200.00 BS',
+                                ),
+                              ),
+                              const SizedBox(height: 16),
+                              TextField(
+                                controller: idController,
+                                keyboardType: TextInputType.number,
+                                maxLength: 8,
+                                decoration: const InputDecoration(
+                                  labelText: 'Cédula',
+                                ),
+                              ),
+                              Row(
+                                children: [
+                                  const Text('+58'),
+                                  const SizedBox(width: 8.0),
+                                  Expanded(
+                                    child: TextField(
+                                      controller: phoneController,
+                                      keyboardType: TextInputType.number,
+                                      maxLength: 10,
+                                      decoration: const InputDecoration(
+                                        labelText: 'Teléfono',
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              DropdownButtonFormField<String>(
+                                value: _selectedBank,
+                                items: [
+                                  '0105 - Mercantil',
+                                  '0102 - Banco de Venezuela',
+                                  '0134 - Banesco',
+                                ].map((bank) {
+                                  return DropdownMenuItem(
+                                    value: bank,
+                                    child: Text(bank),
+                                  );
+                                }).toList(),
+                                onChanged: (value) {
+                                  setState(() {
+                                    _selectedBank = value;
+                                  });
+                                },
+                                decoration: const InputDecoration(
+                                  labelText: 'Banco',
+                                ),
+                              ),
+                              const SizedBox(height: 6),
+                              GestureDetector(
+                                onTap: () async {
+                                  DateTime? pickedDate = await showDatePicker(
+                                    context: context,
+                                    initialDate: DateTime.now(),
+                                    firstDate: DateTime(2000),
+                                    lastDate: DateTime.now(),
+                                  );
+                                  if (pickedDate != null) {
+                                    setState(() {
+                                      selectedDate = pickedDate;
+                                    });
+                                  }
+                                },
+                                child: Container(
+                                  padding: const EdgeInsets.all(12.0),
+                                  decoration: BoxDecoration(
+                                    color: Colors.grey[200],
+                                    borderRadius: BorderRadius.circular(8.0),
+                                  ),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        selectedDate == null
+                                            ? 'Fecha Estimada de Pago'
+                                            : '${selectedDate?.toLocal()}'
+                                                .split(' ')[0],
+                                      ),
+                                      const Icon(Icons.calendar_today),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(height: 16),
+                              GestureDetector(
+                                onTap: validateAndConfirm,
+                                child: Container(
+                                  alignment: Alignment.center,
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: 12.0,
+                                    horizontal: 24.0,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: const Color(0xFF2000B1),
+                                    borderRadius: BorderRadius.circular(8.0),
+                                  ),
+                                  child: const Text(
+                                    'Confirmar',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
-                    ),
-                  );
-                },
+                    );
+                  },
+                ),
               ),
             ),
           ),
