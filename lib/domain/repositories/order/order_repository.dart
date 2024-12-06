@@ -1,6 +1,8 @@
 import '../../../common/result.dart';
 import '../../../infrastructure/models/order_many_model.dart';
+import '../../entities/bundle/bundle.dart';
 import '../../entities/order/order.dart';
+import '../../entities/product/product.dart';
 
 abstract class OrderRepository {
   Future<Result<Order>> getOrderById(String orderId);
@@ -12,5 +14,15 @@ abstract class OrderRepository {
     required int page,
     required int perpage,
     required String status,
+  });
+
+  Future<Result<Order>> createOrder({
+    required String direction,
+    required double longitude,
+    required double latitude,
+    String? tokenStripe,
+    String? idCoupon,
+    List<OrderProduct>? products,
+    List<OrderBundle>? bundles
   });
 }
