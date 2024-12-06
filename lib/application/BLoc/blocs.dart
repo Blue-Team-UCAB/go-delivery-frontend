@@ -14,3 +14,4 @@ export 'package:go_delivery_frontend/application/BLoc/cart/cart_bloc.dart';
 export 'package:go_delivery_frontend/application/BLoc/order/order_many/order_many_bloc.dart';
 export 'package:go_delivery_frontend/application/BLoc/notifications/bloc/notifications_bloc.dart';
 export 'package:go_delivery_frontend/application/BLoc/themes/themes_bloc.dart';
+export 'package:go_delivery_frontend/application/BLoc/coupon/coupon_bloc.dart';

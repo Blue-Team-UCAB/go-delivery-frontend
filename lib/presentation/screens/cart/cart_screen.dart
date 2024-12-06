@@ -17,7 +17,9 @@ class CartScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final cartBloc = context.watch<CartBloc>();
     return Scaffold(
+      backgroundColor: Color(0xFFFFFFFF),
       appBar: AppBar(
+        backgroundColor: Color(0xFFFFFFFF),
         leading: Padding(
           padding: const EdgeInsets.all(4.0),
           child: IconButton(
@@ -48,7 +50,6 @@ class _CartView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final cartBloc = context.watch<CartBloc>();
 
     return SafeArea(
       child: Padding(
@@ -57,9 +58,9 @@ class _CartView extends StatelessWidget {
           children: [
             Expanded(
                 child: ListView.builder(
-                    itemCount: cartBloc.state.howManyItems,
+                    itemCount: itemQuantity,
                     itemBuilder: (context, index) {
-                      final cartItem = cartBloc.state.items[index];
+                      final cartItem = cartItems[index];
                       return CartItemWidget(item: cartItem);
                     })),
             const CartFooterBox()

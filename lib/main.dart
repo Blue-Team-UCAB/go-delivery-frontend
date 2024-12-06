@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_delivery_frontend/application/BLoc/blocs.dart';
-import 'package:go_delivery_frontend/application/BLoc/order/order_many/order_many_bloc.dart';
 import 'package:go_delivery_frontend/injector.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
@@ -26,6 +25,7 @@ void main() async {
         BlocProvider(create: (_) => getIt<ZelleBloc>()),
         BlocProvider(create: (_) => getIt<PaymentBloc>()),
         BlocProvider(create: (_) => getIt<CartBloc>()),
+        BlocProvider(create: (_) => getIt<CouponBloc>()),
         BlocProvider(create: (_) => getIt<LoginBloc>()),
         BlocProvider(create: (_) => getIt<CurrentUserBloc>()),
         BlocProvider(create: (_) => getIt<ThemesBloc>()),
