@@ -15,7 +15,10 @@ class TotalAmountSection extends StatelessWidget {
         _buildAmountRow('Tarifa de viaje', '\$ 0.00'),
         const SizedBox(height: 16),
         _buildAmountRow('Descuento cupón', '-\$ 0.00', isCoupon: true),
-        const Divider(color: Color(0xFFD4D6DD),height: 16,),
+        const Divider(
+          color: Color(0xFFD4D6DD),
+          height: 16,
+        ),
         _buildAmountRow('Total', '\$$total', isTotal: true),
       ],
     );
@@ -32,7 +35,7 @@ class TotalAmountSection extends StatelessWidget {
             fontFamily: 'Inter',
             fontSize: 18,
             fontWeight: isTotal ? FontWeight.bold : FontWeight.normal,
-            color: isCoupon ? const Color(0xFFED4B00) : Color(0xFF71727A),
+            color: isCoupon ? const Color(0xFFED4B00) : const Color(0xFF71727A),
           ),
         ),
         Text(

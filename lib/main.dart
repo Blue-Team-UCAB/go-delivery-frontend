@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_delivery_frontend/injector.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:go_delivery_frontend/presentation/core/app.dart';
 import 'package:go_delivery_frontend/application/BLoc/blocs.dart';
 import 'package:go_delivery_frontend/application/BLoc/auth/recover_password/recover_password_bloc.dart';
@@ -10,6 +12,12 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await LocalNotifications().initializeLocalNotifications();
   await InjectManager.setUpInjections();
+  await dotenv.load();
+  Stripe.publishableKey =
+      'pk_test_51NxjGZFJVOFDbNK1g173hTsB3N8JbaD7HmXWMOP2eiV7UHIndbfm1NuKv8q2LhvNxZxlsthbUOnflWiPil6vYZWZ00zu0xd7Hz';
+  Stripe.merchantIdentifier = 'merchant.flutter.stripe.test';
+  Stripe.urlScheme = 'flutterstripe';
+  await Stripe.instance.applySettings();
   runApp(
     MultiBlocProvider(
       providers: [

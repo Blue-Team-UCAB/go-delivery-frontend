@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_delivery_frontend/presentation/screens/order/card_screen.dart';
 import 'package:go_delivery_frontend/application/BLoc/payment/pago_movil/pago_movil_bloc.dart';
 import 'package:go_delivery_frontend/application/BLoc/payment/pago_movil/pago_movil_event.dart';
 import 'package:go_delivery_frontend/application/BLoc/payment/pago_movil/pago_movil_state.dart';
@@ -62,7 +63,7 @@ class _PaymentMethodSectionState extends State<PaymentMethodSection> {
   Widget _buildSectionContainer(String title, Widget child) {
     return Container(
       decoration: BoxDecoration(
-        border: Border.all(color: Color(0xFFC5C6CC)),
+        border: Border.all(color: const Color(0xFFC5C6CC)),
         borderRadius: BorderRadius.circular(12),
       ),
       child: Column(
@@ -146,7 +147,7 @@ class _PaymentMethodSectionState extends State<PaymentMethodSection> {
                     children: [
                       Text(option),
                       Radio<String>(
-                        activeColor: Color(0xFF2000B1),
+                        activeColor: const Color(0xFF2000B1),
                         value: option,
                         groupValue: _selectedCardType,
                         onChanged: (value) {
@@ -164,7 +165,12 @@ class _PaymentMethodSectionState extends State<PaymentMethodSection> {
           const SizedBox(height: 16),
           GestureDetector(
             onTap: () {
-              // Para añadir nueva tarjeta
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const AddCardScreen(),
+                ),
+              );
             },
             child: const Center(
               child: Row(
