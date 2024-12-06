@@ -59,6 +59,7 @@ flutter:
     - assets/icon/apple.svg
     - assets/not-found-image.svg
     - assets/coupon/coupon_emptystate.svg
+    - assets/icon/order_not_found.svg
   fonts:
     - family: Montserrat
       fonts:

@@ -1,11 +1,9 @@
 import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 import '../../../../../application/BLoc/order/order_detailed/order_detailed_state.dart';
 import '../../../../../domain/entities/order/order.dart';
-import '../driver_card.dart';
+import '../../../../widgets/order_detailed/active/active_info.dart';
 
 class ActiveOrderDetails extends StatelessWidget {
   final OrderDetailLoadedState state;
@@ -156,7 +154,7 @@ class OrderProgress extends StatelessWidget {
               ),
               const Text('Tu conductor va en camino'),
               const SizedBox(height: 8),
-              ClipRRect(
+              /*ClipRRect(
                 borderRadius: BorderRadius.circular(8),
                 child: SizedBox(
                   height: 200,
@@ -166,6 +164,7 @@ class OrderProgress extends StatelessWidget {
                   ),
                 ),
               ),
+               */
             ],
           ),
         ),
@@ -233,134 +232,3 @@ class OrderProgress extends StatelessWidget {
   }
 }
 
-class DeliveryMap extends StatelessWidget {
-  final LatLng driverLocation;
-  final LatLng destinationLocation;
-
-  const DeliveryMap({
-    super.key,
-    required this.driverLocation,
-    required this.destinationLocation,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return GoogleMap(
-      initialCameraPosition: CameraPosition(
-        target: driverLocation,
-        zoom: 15,
-      ),
-      markers: {
-        Marker(
-          markerId: const MarkerId('driver'),
-          position: driverLocation,
-          icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue),
-        ),
-        Marker(
-          markerId: const MarkerId('destination'),
-          position: destinationLocation,
-          icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
-        ),
-      },
-      polylines: {
-        Polyline(
-          polylineId: const PolylineId('route'),
-          points: [driverLocation, destinationLocation],
-          color: Colors.blue,
-          width: 3,
-        ),
-      },
-      myLocationEnabled: true,
-      zoomControlsEnabled: true,
-      mapToolbarEnabled: false,
-    );
-  }
-}
-
-class OrderHeaderInfo extends StatelessWidget {
-  final String time;
-  final String location;
-
-  const OrderHeaderInfo({
-    super.key,
-    required this.time,
-    required this.location,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              const Icon(Icons.access_time_outlined,
-                  size: 16, color: Colors.grey),
-              const SizedBox(width: 4),
-              Text(
-                'Ordenada a las $time',
-                style: const TextStyle(color: Colors.grey, fontSize: 14),
-              ),
-            ],
-          ),
-          const SizedBox(height: 8),
-          Row(
-            children: [
-              const Icon(Icons.location_on_outlined,
-                  size: 16, color: Colors.grey),
-              const SizedBox(width: 4),
-              Expanded(
-                child: Text(
-                  location,
-                  style: const TextStyle(color: Colors.grey, fontSize: 14),
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class OrderSummary extends StatelessWidget {
-  final String orderNumber;
-  final String amount;
-
-  const OrderSummary({
-    super.key,
-    required this.orderNumber,
-    required this.amount,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'Orden $orderNumber',
-            style: const TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          const SizedBox(height: 4),
-          Text(
-            'Monto $amount',
-            style: TextStyle(
-              fontFamily: "inter",
-              color: Colors.grey[600],
-              fontSize: 20,
-              fontWeight: FontWeight.w700
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}

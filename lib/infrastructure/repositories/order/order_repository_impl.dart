@@ -39,7 +39,7 @@ class OrderRepositoryImpl extends OrderRepository {
     };
 
       final response = await _apiRequestManager.request(
-        '/order',
+        '/order?status=$status',
         'GET',
         queryParameters: queryParameters,
             (data) {
