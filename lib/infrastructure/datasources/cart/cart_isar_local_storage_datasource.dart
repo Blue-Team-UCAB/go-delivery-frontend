@@ -17,9 +17,9 @@ class CartIsarLocalStorageDatasource extends CartLocalStorageDatasource{
   Future<Isar> openDB() async {
     final dir = await getApplicationDocumentsDirectory();
     if (Isar.instanceNames.isEmpty) {
-      return await Isar.open([IsarCartitemSchema],directory: dir.path, inspector: true);
+      return await Isar.open([IsarCartitemSchema],directory: dir.path, inspector: true,name: 'CartIsar');
     }
-    return Future.value(Isar.getInstance());
+    return Future.value(Isar.getInstance('CartIsar'));
   }
 
   @override
@@ -78,4 +78,12 @@ class CartIsarLocalStorageDatasource extends CartLocalStorageDatasource{
     
     return;
   }
+
+  @override
+  Future<void> emptyCart() async {
+    final isar = await db;
+    await isar.writeTxn(() => isar.isarCartitems.clear());
+    return;
+  }
+
 }

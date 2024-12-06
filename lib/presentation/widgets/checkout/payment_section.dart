@@ -283,7 +283,7 @@ class _PaymentMethodSectionState extends State<PaymentMethodSection> {
                       setState(() {
                         showError = true;
                         errorMessage =
-                        'La referencia debe ser un string de exactamente 6 caracteres alfanuméricos.';
+                            'La referencia debe ser un string de exactamente 6 caracteres alfanuméricos.';
                       });
                       return;
                     }
@@ -292,7 +292,7 @@ class _PaymentMethodSectionState extends State<PaymentMethodSection> {
                       setState(() {
                         showError = true;
                         errorMessage =
-                        'El monto debe ser un número válido mayor a 0.';
+                            'El monto debe ser un número válido mayor a 0.';
                       });
                       return;
                     }
@@ -309,10 +309,10 @@ class _PaymentMethodSectionState extends State<PaymentMethodSection> {
                     });
 
                     context.read<ZelleBloc>().add(SubmitZellePayment(
-                      reference: referenceController.text,
-                      amount: double.tryParse(amountController.text) ?? 0.0,
-                      email: emailController.text,
-                    ));
+                          reference: referenceController.text,
+                          amount: double.tryParse(amountController.text) ?? 0.0,
+                          email: emailController.text,
+                        ));
                   }
 
                   return Padding(
@@ -344,8 +344,8 @@ class _PaymentMethodSectionState extends State<PaymentMethodSection> {
                             TextField(
                               controller: amountController,
                               keyboardType:
-                              const TextInputType.numberWithOptions(
-                                  decimal: true),
+                                  const TextInputType.numberWithOptions(
+                                      decimal: true),
                               decoration: const InputDecoration(
                                 labelText: 'Monto',
                                 hintText: 'Ej. 1200.00',
@@ -435,7 +435,7 @@ class _PaymentMethodSectionState extends State<PaymentMethodSection> {
                       setState(() {
                         showError = true;
                         errorMessage =
-                        'El número de teléfono debe contener exactamente 10 dígitos.';
+                            'El número de teléfono debe contener exactamente 10 dígitos.';
                       });
                       return;
                     }
@@ -461,7 +461,7 @@ class _PaymentMethodSectionState extends State<PaymentMethodSection> {
                       setState(() {
                         showError = true;
                         errorMessage =
-                        'El monto debe ser un número válido mayor a 0.';
+                            'El monto debe ser un número válido mayor a 0.';
                       });
                       return;
                     }
@@ -470,7 +470,7 @@ class _PaymentMethodSectionState extends State<PaymentMethodSection> {
                       setState(() {
                         showError = true;
                         errorMessage =
-                        'La referencia debe ser un string de exactamente 6 caracteres alfanuméricos.';
+                            'La referencia debe ser un string de exactamente 6 caracteres alfanuméricos.';
                       });
                       return;
                     }
@@ -487,7 +487,7 @@ class _PaymentMethodSectionState extends State<PaymentMethodSection> {
                       setState(() {
                         showError = true;
                         errorMessage =
-                        'La fecha debe ser pasada, no puede ser futura.';
+                            'La fecha debe ser pasada, no puede ser futura.';
                       });
                       return;
                     }
@@ -500,15 +500,15 @@ class _PaymentMethodSectionState extends State<PaymentMethodSection> {
                     String fullPhoneNumber = '58${phoneController.text}';
 
                     context.read<PaymentBloc>().add(SubmitPayment(
-                      phoneNumber: fullPhoneNumber,
-                      cedula: idController.text,
-                      bank: _selectedBank!,
-                      amount:
-                      double.tryParse(_integerPartController.text) ??
-                          0.0,
-                      paymentDate: selectedDate!,
-                      referenceNumber: referenceController.text,
-                    ));
+                          phoneNumber: fullPhoneNumber,
+                          cedula: idController.text,
+                          bank: _selectedBank!,
+                          amount:
+                              double.tryParse(_integerPartController.text) ??
+                                  0.0,
+                          paymentDate: selectedDate!,
+                          referenceNumber: referenceController.text,
+                        ));
                   }
 
                   return Padding(
@@ -540,8 +540,8 @@ class _PaymentMethodSectionState extends State<PaymentMethodSection> {
                             TextField(
                               controller: _integerPartController,
                               keyboardType:
-                              const TextInputType.numberWithOptions(
-                                  decimal: true),
+                                  const TextInputType.numberWithOptions(
+                                      decimal: true),
                               decoration: const InputDecoration(
                                 labelText: 'Monto',
                                 hintText: 'Ej. 1200.00',
@@ -616,13 +616,13 @@ class _PaymentMethodSectionState extends State<PaymentMethodSection> {
                                 ),
                                 child: Row(
                                   mainAxisAlignment:
-                                  MainAxisAlignment.spaceBetween,
+                                      MainAxisAlignment.spaceBetween,
                                   children: [
                                     Text(
                                       selectedDate == null
                                           ? 'Fecha Estimada de Pago'
                                           : '${selectedDate?.toLocal()}'
-                                          .split(' ')[0],
+                                              .split(' ')[0],
                                     ),
                                     const Icon(Icons.calendar_today),
                                   ],

@@ -24,7 +24,7 @@ class _ComboSectionState extends State<ComboSection> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Colors.white,
+      
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

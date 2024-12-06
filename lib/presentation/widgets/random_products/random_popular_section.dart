@@ -115,7 +115,7 @@ class RandomItem extends StatelessWidget {
           child: ListTile(
             contentPadding: const EdgeInsets.symmetric(horizontal: 10),
             shape: RoundedRectangleBorder(
-
+              
               borderRadius: BorderRadius.circular(20),
             ),
             onTap: () {

@@ -74,7 +74,7 @@ class HomeScreenState extends State<HomeScreen> {
       child: ClipRRect(
         borderRadius: BorderRadius.all(Radius.circular(isDrawerOpen? 16 : 0)),
         child: Scaffold(
-
+          
           backgroundColor: const Color(0xFFEBEAED),
           body: Container(
             color: const Color(0xFF2000B1),
@@ -100,12 +100,12 @@ class HomeScreenState extends State<HomeScreen> {
                     left: 16,
                     right: 16,
                     child: Container(
-                        decoration: const BoxDecoration(
-                            color: Color(0xFFFFFFFF),
-                            borderRadius: BorderRadius.all(Radius.circular(12))
-                        ),
-                        child: const LocationBar()
-                    ),
+                      decoration: const BoxDecoration(
+                        color: Color(0xFFFFFFFF),
+                        borderRadius: BorderRadius.all(Radius.circular(12))
+                      ),
+                      child: const LocationBar()
+                      ),
                   ),
                 ],
               ),
@@ -132,29 +132,29 @@ class HomeScreenState extends State<HomeScreen> {
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
           isDrawerOpen
-              ? IconButton(
-              icon: const Icon(Icons.arrow_back_ios,
-                  color: Colors.white),
-              onPressed: (){
-                setState(() {
-                  xOffset=0;
-                  yOffset=0;
-                  scaleFactor=1;
-                  isDrawerOpen=false;
-                });
-              }
+          ? IconButton(
+            icon: const Icon(Icons.arrow_back_ios,
+                color: Colors.white),
+            onPressed: (){
+              setState(() {
+                xOffset=0;
+                yOffset=0;
+                scaleFactor=1;
+                isDrawerOpen=false;
+              });
+            }
           )
-              : IconButton(
-              icon: const Icon(Icons.menu,
-                  color: Colors.white),
-              onPressed: (){
-                setState(() {
-                  xOffset=288;
-                  scaleFactor=0.8;
-                  yOffset=MediaQuery.of(context).size.height*((1-scaleFactor)/2);
-                  isDrawerOpen=true;
-                });
-              }
+          : IconButton(
+            icon: const Icon(Icons.menu,
+                color: Colors.white),
+            onPressed: (){
+              setState(() {
+                xOffset=288;
+                scaleFactor=0.8;
+                yOffset=MediaQuery.of(context).size.height*((1-scaleFactor)/2);
+                isDrawerOpen=true;
+              });
+            }
           ),
           const SizedBox(width: 5),
           const Expanded(
@@ -174,10 +174,10 @@ class HomeScreenState extends State<HomeScreen> {
                 Text(
                   'Compra tus productos favoritos',
                   style: TextStyle(
-                      fontFamily: 'Montserrat',
-                      color: Colors.white,
-                      fontSize: 14,
-                      fontWeight: FontWeight.w400
+                    fontFamily: 'Montserrat',
+                    color: Colors.white,
+                    fontSize: 14,
+                    fontWeight: FontWeight.w400
                   ),
                 ),
               ],
@@ -190,7 +190,7 @@ class HomeScreenState extends State<HomeScreen> {
                   return IconButton(
                     icon: const Icon(Icons.notifications_none),
                     onPressed: () {
-
+                      
                     },
                     color: Colors.white,
                   );

@@ -45,19 +45,19 @@ class CatalogScreenState extends State<CatalogScreen>
       LoadProductList(page: _currentPage, perpage: 6, category: ''),
     );
     _scrollController.addListener(_onScroll);
-
+    
 
     _productListSubscription =
         BlocProvider.of<ProductListBloc>(context).stream.listen((state) {
-          if (state is ProductListLoaded) {
-            if (mounted) {
-              setState(() {
-                _isLoadingMore = false;
-                _addUniqueProducts(state.products);
-              });
-            }
-          }
-        });
+      if (state is ProductListLoaded) {
+        if (mounted) {
+          setState(() {
+            _isLoadingMore = false;
+            _addUniqueProducts(state.products);
+          });
+        }
+      }
+    });
   }
 
   @override
@@ -93,10 +93,10 @@ class CatalogScreenState extends State<CatalogScreen>
           _searchQuery.isEmpty
               ? LoadProductList(page: _currentPage, perpage: 6, category: '')
               : SearchProductList(
-              search: _searchQuery,
-              page: _currentPage,
-              perpage: 6,
-              category: ''),
+                  search: _searchQuery,
+                  page: _currentPage,
+                  perpage: 6,
+                  category: ''),
         );
       }
     }
@@ -218,12 +218,12 @@ class CatalogScreenState extends State<CatalogScreen>
                         border: InputBorder.none,
                         suffixIcon: _searchQuery.isNotEmpty
                             ? IconButton(
-                          icon: const Icon(Icons.clear),
-                          onPressed: () {
-                            _textfieldController.clear();
-                            _handleSearch('');
-                          },
-                        )
+                                icon: const Icon(Icons.clear),
+                                onPressed: () {
+                                  _textfieldController.clear();
+                                  _handleSearch('');
+                                },
+                              )
                             : null,
                       ),
                       style: const TextStyle(color: Colors.grey),

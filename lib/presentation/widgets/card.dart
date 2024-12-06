@@ -44,14 +44,16 @@ class ProductCard extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  Text(
-                    product.name,
-                    maxLines: 2,
-                    style: const TextStyle(
-                        fontFamily: 'Inter',
-                        fontSize: 14.0,
-                        fontWeight: FontWeight.w400,
-                        color: Color(0xFF000000)),
+                  SizedBox(
+                    child: Text( 
+                      product.name,
+                      maxLines: 2,
+                      style: const TextStyle(
+                          fontFamily: 'Inter',
+                          fontSize: 14.0,
+                          fontWeight: FontWeight.w400,
+                          color: Color(0xFF000000)),
+                    ),
                   ),
                   Text(
                     '\$${product.price.toStringAsFixed(2)}',

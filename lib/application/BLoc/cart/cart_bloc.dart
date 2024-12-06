@@ -20,6 +20,7 @@ class CartBloc extends Bloc<CartEvent, CartState> {
     on<PlusOneQuantity>(_plusOneQuantity);
     on<MinusOneQuantity>(_minusOneQuantity);
     on<DeleteCartItem>(_deleteCartItemHandler);
+    on<EmptyCart>(_emptyCartHandler);
     
   }
 
@@ -42,6 +43,15 @@ class CartBloc extends Bloc<CartEvent, CartState> {
   }
   void deleteCartItem(CartItem item) {
     add(DeleteCartItem(item));
+  }
+
+  void emptyCart() {
+    add(const EmptyCart());
+  }
+
+  void _emptyCartHandler(EmptyCart event, Emitter<CartState> emit) {
+    _cartLocalStorageRepository.emptyCart();
+    emit(state.copyWith(items: []));
   }
 
   void _addCartItemHandler(AddCartItem event, Emitter<CartState> emit){

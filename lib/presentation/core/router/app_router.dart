@@ -17,7 +17,7 @@ class RoutesManager {
           path: '/',
           pageBuilder: (context, state) => CustomTransitions.slideRight(
                 key: state.pageKey,
-                child: const HomeScreen(initialCounterNavbar: 0),
+                child: const HomeScreenParentView(initialCounterNavbar: 0),
               )),
       GoRoute(
         path: '/splash',
