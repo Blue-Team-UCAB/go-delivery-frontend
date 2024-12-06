@@ -5,7 +5,6 @@ import 'package:go_delivery_frontend/presentation/screens/screens.dart';
 import 'package:go_router/go_router.dart';
 import '../../../infrastructure/datasources/localstorage/localstorage_impl.dart';
 import '../../screens/auth/password_recovery/reset_pass_screen.dart';
-import '../../screens/coupon/coupon_screen.dart';
 import '../../screens/detail/order/order_detailed_screen.dart';
 import '../transition/transitions.dart';
 
@@ -109,8 +108,7 @@ class RoutesManager {
                 orderNumber: orderId,
               ),
             );
-          }
-      ),
+          }),
       GoRoute(
         path: '/productdetail/:name',
         pageBuilder: (context, state) {

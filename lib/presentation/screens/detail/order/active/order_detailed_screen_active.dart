@@ -101,8 +101,7 @@ class OrderProgress extends StatelessWidget {
             _getStateDateByType('SHIPPED'),
             isCompleted: _isStateCompleted('SHIPPED'),
           ),
-          if (_shouldShowDeliveryItem())
-            _buildDeliveryItem(),
+          if (_shouldShowDeliveryItem()) _buildDeliveryItem(),
           _buildTimelineItem(
             'Orden entregada',
             _getStateDateByType('DELIVERED'),
@@ -115,7 +114,7 @@ class OrderProgress extends StatelessWidget {
 
   String _getStateDateByType(String stateType) {
     final matchingState = state.state.firstWhere(
-          (orderState) => orderState.state == stateType,
+      (orderState) => orderState.state == stateType,
       orElse: () => OrderState(state: stateType, date: 'Pendiente'),
     );
 
@@ -158,11 +157,11 @@ class OrderProgress extends StatelessWidget {
           ],
         ),
         const SizedBox(width: 12),
-        Expanded(
+        const Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text(
+              Text(
                 'Entregando',
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),
@@ -187,10 +186,10 @@ class OrderProgress extends StatelessWidget {
   }
 
   Widget _buildTimelineItem(
-      String title,
-      String subtitle, {
-        bool isCompleted = false,
-      }) {
+    String title,
+    String subtitle, {
+    bool isCompleted = false,
+  }) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -245,4 +244,3 @@ class OrderProgress extends StatelessWidget {
     );
   }
 }
-

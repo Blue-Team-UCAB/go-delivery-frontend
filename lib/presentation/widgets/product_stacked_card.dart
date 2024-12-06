@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_delivery_frontend/presentation/core/common/image-loader.dart';
-
 import 'package:flutter/cupertino.dart';
-
 import '../../domain/entities/product/product.dart';
 
 class ProductStackedCard extends StatelessWidget {
@@ -54,9 +52,7 @@ class ProductStackedCard extends StatelessWidget {
                   ),
                   child: productData.imageUrl != null
                       ? FastLoadingImage(
-                      fit: BoxFit.cover,
-                      imageUrl: productData.imageUrl
-                  )
+                          fit: BoxFit.cover, imageUrl: productData.imageUrl)
                       : Icon(
                     Icons.image_outlined,
                     color: Colors.white,

@@ -2,13 +2,11 @@ import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../../application/BLoc/order/order_detailed/order_detailed_state.dart';
-import '../../../../widgets/dialog_darken_window.dart';
 import '../../../../widgets/order_detailed/past/order_items_list.dart';
 import '../../../../widgets/order_detailed/past/order_past_header.dart';
 import '../../../../widgets/order_detailed/past/reorder_button.dart';
 import '../../../../widgets/order_detailed/past/show_reorder_darken_window.dart';
 import '../../../../widgets/order_detailed/past/statusBadge.dart';
-import '../../../../widgets/product_stacked_card.dart';
 
 class PastOrderDetails extends StatelessWidget {
   final OrderDetailLoadedState state;

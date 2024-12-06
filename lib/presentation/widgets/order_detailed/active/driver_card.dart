@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../../../screens/detail/order/active/order_detailed_screen_active.dart';
-
 class DriverCard extends StatelessWidget {
   final String driverName;
   final String phoneNumber;
@@ -97,4 +95,3 @@ class DriverCard extends StatelessWidget {
     );
   }
 }
-

@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class OrderHeaderInfo extends StatelessWidget {
@@ -80,8 +79,7 @@ class OrderSummary extends StatelessWidget {
                 fontFamily: "Montserrat",
                 color: Colors.black,
                 fontSize: 20,
-                fontWeight: FontWeight.w700
-            ),
+                fontWeight: FontWeight.w700),
           ),
         ],
       ),

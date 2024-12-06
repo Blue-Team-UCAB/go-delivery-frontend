@@ -1,4 +1,5 @@
 import 'package:go_delivery_frontend/domain/entities/payment/payment_method.dart';
+import 'package:go_delivery_frontend/domain/entities/payment/payment_method_card.dart';
 import 'package:go_delivery_frontend/domain/entities/payment/payment_method_zelle.dart';
 import 'package:go_delivery_frontend/domain/entities/payment/payment_method_pago_movil.dart';
 
@@ -18,6 +19,10 @@ class PaymentMethodMapper {
         'amount': paymentMethod.amount,
         'email': paymentMethod.email,
         'reference': paymentMethod.reference,
+      };
+    } else if (paymentMethod is Card) {
+      return {
+        'idCard': paymentMethod.idCard,
       };
     }
     throw Exception('Unsupported PaymentMethod type');
@@ -39,6 +44,8 @@ class PaymentMethodMapper {
         email: json['email'],
         reference: json['reference'],
       );
+    } else if (json['type'] == 'Card') {
+      return Card(idCard: json['idCard']);
     }
     throw Exception('Unsupported PaymentMethod type');
   }
