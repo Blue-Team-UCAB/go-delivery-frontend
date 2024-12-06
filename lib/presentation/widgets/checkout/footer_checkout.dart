@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class ContinueButton extends StatelessWidget {
   const ContinueButton({super.key});
@@ -9,7 +10,7 @@ class ContinueButton extends StatelessWidget {
       width: double.infinity, // Para hacer que el botón ocupe todo el ancho
       child: ElevatedButton(
         onPressed: () {
-          // Acción al presionar el botón
+            context.go('/order');
         },
         style: ElevatedButton.styleFrom(
           backgroundColor: const Color(0xFF2000B1), // Azul
