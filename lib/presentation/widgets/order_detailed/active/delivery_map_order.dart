@@ -1,47 +1,64 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:flutter_map/flutter_map.dart';
+import 'package:latlong2/latlong.dart';
 
 class DeliveryMap extends StatelessWidget {
   final LatLng driverLocation;
   final LatLng destinationLocation;
 
   const DeliveryMap({
-    super.key,
+    Key? key,
     required this.driverLocation,
     required this.destinationLocation,
-  });
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return GoogleMap(
-      initialCameraPosition: CameraPosition(
-        target: driverLocation,
-        zoom: 15,
+    return FlutterMap(
+      options: MapOptions(
+        initialCenter: driverLocation,
+        initialZoom: 15.0,
       ),
-      markers: {
-        Marker(
-          markerId: const MarkerId('driver'),
-          position: driverLocation,
-          icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue),
+      children: [
+        TileLayer(
+          urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+          userAgentPackageName: 'com.example.go_delivery_frontend',
         ),
-        Marker(
-          markerId: const MarkerId('destination'),
-          position: destinationLocation,
-          icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
+        MarkerLayer(
+          markers: [
+            Marker(
+              point: driverLocation,
+              width: 80.0,
+              height: 80.0,
+              child: const Icon(
+                Icons.location_on,
+                color: Colors.blue,
+                size: 40.0,
+              ),
+            ),
+            Marker(
+              point: destinationLocation,
+              width: 80.0,
+              height: 80.0,
+              child: const Icon(
+                Icons.location_on,
+                color: Colors.blue,
+                size: 40.0,
+              ),
+            ),
+          ],
         ),
-      },
-      polylines: {
-        Polyline(
-          polylineId: const PolylineId('route'),
-          points: [driverLocation, destinationLocation],
-          color: Colors.blue,
-          width: 3,
+        PolylineLayer(
+          polylines: [
+            Polyline(
+              points: [driverLocation, destinationLocation],
+              strokeWidth: 4.0,
+              color: Colors.blue,
+            ),
+          ],
         ),
-      },
-      myLocationEnabled: true,
-      zoomControlsEnabled: true,
-      mapToolbarEnabled: false,
+      ],
     );
   }
 }

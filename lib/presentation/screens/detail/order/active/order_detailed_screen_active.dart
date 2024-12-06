@@ -1,9 +1,11 @@
 import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
+import 'package:latlong2/latlong.dart';
 
 import '../../../../../application/BLoc/order/order_detailed/order_detailed_state.dart';
 import '../../../../../domain/entities/order/order.dart';
 import '../../../../widgets/order_detailed/active/active_info.dart';
+import '../../../../widgets/order_detailed/active/delivery_map_order.dart';
 
 class ActiveOrderDetails extends StatelessWidget {
   final OrderDetailLoadedState state;
@@ -144,27 +146,27 @@ class OrderProgress extends StatelessWidget {
           ],
         ),
         const SizedBox(width: 12),
-        const Expanded(
+        Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
+              const Text(
                 'Entregando',
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),
-              Text('Tu conductor va en camino'),
-              SizedBox(height: 8),
-              /*ClipRRect(
+              const Text('Tu conductor va en camino'),
+              const SizedBox(height: 8),
+              ClipRRect(
                 borderRadius: BorderRadius.circular(8),
                 child: SizedBox(
                   height: 200,
                   child: DeliveryMap(
-                    driverLocation: const LatLng(23, 33),
+                    driverLocation: LatLng(10.48801, -66.87919),
                     destinationLocation: state.coordinates,
                   ),
                 ),
               ),
-               */
+
             ],
           ),
         ),

@@ -1,4 +1,4 @@
-import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:latlong2/latlong.dart';
 
 import '../../../../domain/entities/bundle/bundle.dart';
 import '../../../../domain/entities/direction/direction.dart';
