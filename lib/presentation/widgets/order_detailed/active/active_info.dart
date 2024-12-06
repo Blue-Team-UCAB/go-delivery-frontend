@@ -75,10 +75,10 @@ class OrderSummary extends StatelessWidget {
           ),
           const SizedBox(height: 4),
           Text(
-            'Monto $amount',
+            '\$$amount',
             style: TextStyle(
-                fontFamily: "inter",
-                color: Colors.grey[600],
+                fontFamily: "Montserrat",
+                color: Colors.black,
                 fontSize: 20,
                 fontWeight: FontWeight.w700
             ),

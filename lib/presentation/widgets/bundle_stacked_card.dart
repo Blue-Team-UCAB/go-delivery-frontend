@@ -1,14 +1,13 @@
-import 'package:flutter/material.dart';
-import 'package:go_delivery_frontend/presentation/core/common/image-loader.dart';
-
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 
-import '../../domain/entities/product/product.dart';
+import '../../domain/entities/bundle/bundle.dart';
+import '../core/common/image-loader.dart';
 
-class ProductStackedCard extends StatelessWidget {
-  final OrderProduct productData;
+class BundleStackedCard extends StatelessWidget {
+  final OrderBundle bundleData;
 
-  const ProductStackedCard({super.key, required this.productData});
+  const BundleStackedCard({Key? key, required this.bundleData}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -33,14 +32,14 @@ class ProductStackedCard extends StatelessWidget {
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Text(
-                'x${productData.quantity}',
+                'x${bundleData.quantity}',
                 style: const TextStyle(
                   fontFamily: "Inter",
                   fontSize: 12,
                 ),
-                ),
               ),
             ),
+          ),
           Padding(
             padding: const EdgeInsets.all(16.0),
             child: Row(
@@ -52,14 +51,15 @@ class ProductStackedCard extends StatelessWidget {
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(12),
                   ),
-                  child: productData.imageUrl != null
+                  child: bundleData.imageUrl != null
                       ? FastLoadingImage(
                       fit: BoxFit.cover,
-                      imageUrl: productData.imageUrl
+                      imageUrl: bundleData.imageUrl
                   )
                       : Icon(
-                    Icons.image_outlined,
-                    color: Colors.white,
+                    Icons.inventory_2_outlined,
+                    color: Colors.grey,
+                    size: 40,
                   ),
                 ),
                 const SizedBox(width: 16),
@@ -68,19 +68,19 @@ class ProductStackedCard extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        productData.name,
+                        bundleData.name,
                         style: Theme.of(context).textTheme.bodyLarge,
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                       ),
                       const SizedBox(height: 8),
                       Text(
-                        '\$${productData.price.toStringAsFixed(2)}',
+                        '\$${bundleData.price.toStringAsFixed(2)}',
                         style: const TextStyle(
                           fontFamily: "Inter",
                           fontSize: 15,
-                          ),
                         ),
+                      ),
                     ],
                   ),
                 ),

@@ -9,7 +9,7 @@ class Order {
   double subtotalAmount;
   Direction direction;
   List<OrderProduct> products;
-  List<Bundle> bundles;
+  List<OrderBundle> bundles;
 
   Order({
     required this.id,

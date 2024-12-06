@@ -20,3 +20,4 @@ class OrderManyItem {
     required this.summaryOrder,
   });
 }
+

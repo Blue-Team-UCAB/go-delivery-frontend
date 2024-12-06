@@ -18,7 +18,7 @@ class OrderDetailLoadedState extends OrderDetailState {
   final double subtotalAmount;
   final Direction direction;
   final List<OrderProduct> products;
-  final List<Bundle> bundles;
+  final List<OrderBundle> bundles;
 
   OrderDetailLoadedState({
     required this.id,

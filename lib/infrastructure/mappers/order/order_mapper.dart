@@ -3,6 +3,7 @@ import 'package:go_delivery_frontend/infrastructure/mappers/product/orderproduct
 import '../../../domain/entities/order/order.dart';
 import '../bundle/bundle_mapper.dart';
 import '../direction/direction_mapper.dart';
+import 'many/many_orderbundle_mapper.dart';
 
 class OrderMapper {
   static Order fromJson(Map<String, dynamic> json) {
@@ -18,7 +19,7 @@ class OrderMapper {
           .map((productJson) => OrderProductMapper.fromJson(productJson))
           .toList(),
       bundles: (json['bundles'] as List)
-          .map((bundleJson) => BundleMapper.fromJson(bundleJson))
+          .map((bundleJson) => OrderBundleMapper.fromJson(bundleJson))
           .toList(),
     );
   }
@@ -31,7 +32,7 @@ class OrderMapper {
       'subtotalAmount': order.subtotalAmount,
       'direction': DirectionMapper.toJson(order.direction),
       'products': order.products.map((p) => OrderProductMapper.toJson(p)).toList(),
-      'bundles': order.bundles.map((b) => BundleMapper.toJson(b)).toList(),
+      'bundles': order.bundles.map((b) => OrderBundleMapper.toJson(b)).toList(),
     };
   }
 }

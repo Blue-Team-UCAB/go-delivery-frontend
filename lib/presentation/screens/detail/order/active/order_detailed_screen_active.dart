@@ -79,8 +79,8 @@ class OrderProgress extends StatelessWidget {
           ),
           _buildTimelineItem(
             'En proceso',
-            _getStateDateByType('IN_PROCESS'),
-            isCompleted: _isStateCompleted('IN_PROCESS'),
+            _getStateDateByType('IN PROCESS'),
+            isCompleted: _isStateCompleted('IN PROCESS'),
           ),
           _buildTimelineItem(
             'Enviando',
@@ -109,7 +109,7 @@ class OrderProgress extends StatelessWidget {
   }
 
   bool _isStateCompleted(String checkState) {
-    final stateOrder = ['CREATED', 'IN_PROCESS', 'SHIPPED', 'DELIVERED'];
+    final stateOrder = ['CREATED', 'IN PROCESS', 'SHIPPED', 'DELIVERED'];
 
     final checkStateIndex = stateOrder.indexOf(checkState);
     final currentStateIndex = stateOrder.indexOf(currentActiveState);
@@ -144,16 +144,16 @@ class OrderProgress extends StatelessWidget {
           ],
         ),
         const SizedBox(width: 12),
-        Expanded(
+        const Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text(
+              Text(
                 'Entregando',
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),
-              const Text('Tu conductor va en camino'),
-              const SizedBox(height: 8),
+              Text('Tu conductor va en camino'),
+              SizedBox(height: 8),
               /*ClipRRect(
                 borderRadius: BorderRadius.circular(8),
                 child: SizedBox(
