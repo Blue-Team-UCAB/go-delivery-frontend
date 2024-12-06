@@ -109,6 +109,8 @@ import 'dart:convert';
 //     await prefs.setString('notifications', notificationsData);
 //   }
 
+/*
+
 class NotificationScreen extends StatelessWidget {
   const NotificationScreen({super.key});
   @override
@@ -136,7 +138,6 @@ class NotificationScreen extends StatelessWidget {
           actions: [
             IconButton(
                 onPressed: () {
-                  context.read<NotificationsBloc>().requestPermission();
                 },
                 icon: const Icon(Icons.settings))
           ]),
@@ -150,7 +151,7 @@ class NotificationScreen extends StatelessWidget {
             color: const Color(0xFF02066F),
             child: ListTile(
               title: Text(
-                notification.title,
+                notification.,
                 style: const TextStyle(color: Colors.white),
               ),
               subtitle: Text(
@@ -175,3 +176,4 @@ class NotificationScreen extends StatelessWidget {
     );
   }
 }
+*/

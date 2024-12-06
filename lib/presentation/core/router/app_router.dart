@@ -65,7 +65,7 @@ class RoutesManager {
                 key: state.pageKey,
                 child: const CartScreen(),
               )),
-      GoRoute(
+     /* GoRoute(
           path: '/notification',
           pageBuilder: (context, state) => CustomTransitions.slideRight(
                 key: state.pageKey,
@@ -78,7 +78,7 @@ class RoutesManager {
                 child: DetailsScreen(
                   pushMessageId: state.pathParameters['messageId'] ?? '',
                 ),
-              )),
+              )),*/
       GoRoute(
           path: '/password/forgot',
           pageBuilder: (context, state) => CustomTransitions.slideRight(

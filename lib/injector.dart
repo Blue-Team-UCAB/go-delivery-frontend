@@ -19,6 +19,7 @@ import 'package:go_delivery_frontend/application/use_cases/bundle/get_one_bundle
 import 'package:go_delivery_frontend/application/use_cases/notification/send_device_token_usecase.dart';
 import 'package:go_delivery_frontend/application/use_cases/product/get_one_product.dart';
 import 'package:go_delivery_frontend/domain/repositories/bundle/bundle_repository.dart';
+import 'package:go_delivery_frontend/domain/repositories/notifications/notifications_repository.dart';
 import 'package:go_delivery_frontend/domain/repositories/order/order_repository.dart';
 import 'package:go_delivery_frontend/infrastructure/datasources/api/api_request_impl.dart';
 import 'package:go_delivery_frontend/infrastructure/datasources/cart/cart_isar_local_storage_datasource.dart';
@@ -38,6 +39,7 @@ import 'application/BLoc/cart/cart_bloc.dart';
 import 'application/BLoc/themes/themes_bloc.dart';
 import 'application/use_cases/auth/login/login_usecase_input.dart';
 import 'application/use_cases/order/get_one_order.dart';
+import 'infrastructure/firebase/firebase_notifications_manager.dart';
 import 'infrastructure/repositories/user/user_repository_impl.dart';
 
 final getIt = GetIt.instance;
@@ -89,23 +91,21 @@ class InjectManager {
     // ======================================================================= //
 
     // ============================= NOTIFICATIONS =========================== //
-
-    // getIt.registerSingleton(NotificationsBloc());
-
     final notificationRepository = NotificationsRepositoryImpl(
         apiRequestManager: apiRequestManagerImpl,
         localStorage: localStorageService);
 
+    getIt.registerSingleton<NotificationsRepository>(notificationRepository);
+
     final sendDeviceTokenUseCase =
         SendDeviceTokenUseCase(notificationsRepository: notificationRepository);
-    // getIt.registerSingleton<SendDeviceTokenUseCase>(sendDeviceTokenUseCase);
 
-    getIt.registerSingleton(
-        NotificationsBloc(sendDeviceTokenUseCase.sendFCMToken));
-    // getIt.registerSingleton(NotificationsBloc());
-    // getIt.registerFactory(() => NotificationsBloc(sendDeviceTokenUseCase.sendFCMToken()));
-
+    getIt.registerSingleton<SendDeviceTokenUseCase>(sendDeviceTokenUseCase);
     // ======================================================================= //
+
+    getIt.registerSingleton(NotificationsBloc(
+        sendDeviceTokenUseCase: sendDeviceTokenUseCase,
+    ));
 
     // ============================= PRODUCTS ============================= //
     // Repositorio

@@ -19,14 +19,17 @@ import 'application/BLoc/auth/recover_password/recover_password_bloc.dart';
 import 'application/BLoc/cart/cart_bloc.dart';
 import 'application/BLoc/notifications/bloc/notifications_bloc.dart';
 import 'application/BLoc/themes/themes_bloc.dart';
+import 'infrastructure/firebase/firebase_notifications_manager.dart';
 import 'infrastructure/mappers/local_notifications.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await NotificationsBloc.initializeFirebaseNotifications();
+  FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
+
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+
   await LocalNotifications().initializeLocalNotifications();
   await InjectManager.setUpInjections();
-  FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
   runApp(
     MultiBlocProvider(
       providers: [

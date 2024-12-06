@@ -16,8 +16,6 @@ class SendDeviceTokenUseCase {
       {required NotificationsRepository notificationsRepository})
       : _notificationsRepository = notificationsRepository;
 
-  Future<void> Function()? get sendFCMToken => null;
-
   Future<Result<bool>> execute(SendDeviceTokenUseCaseInput input) {
     return _notificationsRepository.saveToken(input.token);
   }

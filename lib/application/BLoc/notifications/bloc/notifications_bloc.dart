@@ -6,110 +6,149 @@ import 'package:go_delivery_frontend/application/BLoc/notifications/notification
 import 'package:go_delivery_frontend/common/result.dart';
 import 'package:go_delivery_frontend/domain/entities/notifications/notification.dart';
 import 'package:go_delivery_frontend/firebase_options.dart';
+import 'package:go_delivery_frontend/infrastructure/firebase/firebase_notifications_manager.dart';
 import 'package:go_delivery_frontend/infrastructure/mappers/push_message_model.dart';
+
+import '../../../use_cases/notification/send_device_token_usecase.dart';
 
 part 'notifications_event.dart';
 part 'notifications_state.dart';
 
-@pragma('vm:entry-point')
-Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-  await Firebase.initializeApp();
-  print("Handling a background message: ${message.messageId}");
-}
-
 class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState> {
-  FirebaseMessaging messaging = FirebaseMessaging.instance;
+  final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
+  final SendDeviceTokenUseCase sendDeviceTokenUseCase;
 
-  final Future<void> Function()? sendFCMToken;
+  NotificationsBloc({required this.sendDeviceTokenUseCase}) : super(const NotificationsState()) {
+    on<SendFCMTokenEvent>(_onSendFCMToken);
+    on<RequestNotificationPermissionEvent>(_onRequestNotificationPermission);
+    on<NotificationReceivedEvent>(_onNotificationReceived);
 
-  NotificationsBloc(this.sendFCMToken) : super(const NotificationsState()) {
-    on<NotificationsStatusChanged>(_notificationStatusChanged);
-    on<NotificationsReceived>(_onPushMessageReceived);
-
-    //notification status check
-    _initialStatusCheck();
-    //foreground notificacion listener (always active)
-    _onForegroundMessage();
+    // Setup Firebase Messaging listeners
+    _setupFirebaseMessaging();
   }
 
-  void sendToken() async {
-    if (sendFCMToken != null) {
-      await messaging.getToken();
-      print('FCM token:${messaging.getToken()}');
+  void _setupFirebaseMessaging() {
+    // Handle foreground messages
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      add(NotificationReceivedEvent(message));
+    });
+
+    // Handle background messages
+    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+      add(NotificationReceivedEvent(message));
+    });
+  }
+
+  Future<void> _onSendFCMToken(
+      SendFCMTokenEvent event,
+      Emitter<NotificationsState> emit
+      ) async {
+    try {
+      // Request notification permissions
+      NotificationSettings settings = await _firebaseMessaging.requestPermission(
+        alert: true,
+        badge: true,
+        sound: true,
+      );
+
+      print("1");
+
+      if (settings.authorizationStatus == AuthorizationStatus.authorized) {
+        // Get FCM token
+        final token = await _firebaseMessaging.getToken();
+
+        print(token);
+
+        print("2");
+
+        if (token != null) {
+          // Send token to your backend
+          print("3 EXECUTE");
+
+          final result = await sendDeviceTokenUseCase.execute(
+              SendDeviceTokenUseCaseInput(token: token)
+          );
+
+          if (result.isSuccess) {
+            emit(state.copyWith(
+                tokenSendStatus: TokenSendStatus.sent,
+                fcmToken: token,
+                notificationPermissionStatus: NotificationPermissionStatus.granted
+            ));
+          } else {
+            emit(state.copyWith(tokenSendStatus: TokenSendStatus.error));
+          }
+        }
+      } else {
+        emit(state.copyWith(
+            tokenSendStatus: TokenSendStatus.error,
+            notificationPermissionStatus: NotificationPermissionStatus.denied
+        ));
+      }
+    } catch (e) {
+      emit(state.copyWith(
+          tokenSendStatus: TokenSendStatus.error,
+          notificationPermissionStatus: NotificationPermissionStatus.denied
+      ));
     }
   }
-  // Future<void> sendFCMToken() async {
-  //   return _getFCMToken();
-  // }
 
-  static Future<void> initializeFirebaseNotifications() async {
-    await Firebase.initializeApp(
-        options: DefaultFirebaseOptions.currentPlatform);
+  Future<void> _onRequestNotificationPermission(
+      RequestNotificationPermissionEvent event,
+      Emitter<NotificationsState> emit
+      ) async {
+    try {
+      NotificationSettings settings = await _firebaseMessaging.requestPermission(
+        alert: true,
+        badge: true,
+        sound: true,
+      );
+
+      emit(state.copyWith(
+          notificationPermissionStatus:
+          settings.authorizationStatus == AuthorizationStatus.authorized
+              ? NotificationPermissionStatus.granted
+              : NotificationPermissionStatus.denied
+      ));
+    } catch (e) {
+      emit(state.copyWith(
+          notificationPermissionStatus: NotificationPermissionStatus.denied
+      ));
+    }
   }
 
-  void _notificationStatusChanged(
-      NotificationsStatusChanged event, Emitter<NotificationsState> emit) {
-    emit(state.copyWith(status: event.status));
-    _getFCMToken();
+  void _onNotificationReceived(
+      NotificationReceivedEvent event,
+      Emitter<NotificationsState> emit
+      ) {
+    final updatedNotifications = List<RemoteMessage>.from(state.notifications)
+      ..add(event.message);
+
+    emit(state.copyWith(notifications: updatedNotifications));
   }
 
-  void _onPushMessageReceived(
-      NotificationsReceived event, Emitter<NotificationsState> emit) {
-    emit(state
-        .copyWith(notifications: [event.pushMessage, ...state.notifications]));
-    _getFCMToken();
+  // Public methods to trigger events
+  void sendFCMToken() {
+    add(SendFCMTokenEvent());
   }
 
-  void _initialStatusCheck() async {
-    final settings = await messaging.getNotificationSettings();
-    add(NotificationsStatusChanged(settings.authorizationStatus));
+  void requestNotificationPermission() {
+    add(RequestNotificationPermissionEvent());
   }
 
-  void _getFCMToken() async {
-    //TODO este token al backend con un listener si es que ha cambiado
-    if (state.status != AuthorizationStatus.authorized) return;
-    final token = await messaging.getToken();
-    print('FCM token:${token}');
+  RemoteMessage? getMessageById(String messageId) {
+    try {
+      return state.notifications.firstWhere(
+              (message) => message.messageId == messageId
+      );
+    } catch (e) {
+      return null;
+    }
   }
 
-  void _handleRemoteMessage(RemoteMessage message) {
-    if (message.notification == null) return;
-    final notification = PushMessageModel(
-        messageId:
-            message.messageId?.replaceAll(':', '').replaceAll('%', '') ?? '',
-        title: message.notification!.title ?? '',
-        body: message.notification!.body ?? '',
-        sentDate: message.sentTime ?? DateTime.now(),
-        data: message.data,
-        imageUrl: message.notification!.android?.imageUrl);
-    print(notification);
-    add(NotificationsReceived(notification));
-  }
-
-  void _onForegroundMessage() {
-    final listener = FirebaseMessaging.onMessage.listen(_handleRemoteMessage);
-    // listener.cancel();
-  }
-
-  void requestPermission() async {
-    NotificationSettings settings = await messaging.requestPermission(
-      alert: true,
-      announcement: false,
-      badge: true,
-      carPlay: false,
-      criticalAlert: true,
-      provisional: false,
-      sound: true,
-    );
-    add(NotificationsStatusChanged(settings.authorizationStatus));
-    settings.authorizationStatus;
-  }
-
-  PushMessageModel? getMessageById(String pushMessageId) {
-    final exist = state.notifications
-        .any((element) => element.messageId == pushMessageId);
-    if (!exist) return null;
-    return state.notifications
-        .firstWhere((element) => element.messageId == pushMessageId);
+  // Don't forget to close any streams or perform cleanup
+  @override
+  Future<void> close() {
+    return super.close();
   }
 }

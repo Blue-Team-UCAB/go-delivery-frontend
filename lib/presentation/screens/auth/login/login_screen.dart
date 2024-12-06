@@ -73,7 +73,7 @@ class LoginFormState extends State<LoginForm> {
             previous.formStatus != current.formStatus,
         listener: (context, state) {
           if (state.formStatus == LoginFormStatus.valid) {
-            context.read<NotificationsBloc>().sendFCMToken!();
+            context.read<NotificationsBloc>().sendFCMToken();
             context.go('/');
           } else if (state.formStatus == LoginFormStatus.invalid &&
               state.errorMessage.isNotEmpty) {
