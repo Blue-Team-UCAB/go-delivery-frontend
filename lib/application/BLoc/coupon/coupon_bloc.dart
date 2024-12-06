@@ -25,9 +25,9 @@ class CouponBloc extends Bloc<CouponEvent, CouponState> {
       try {
         final currentState = state is CouponLoaded
             ? state
-            : const CouponLoading(null);
+            : const CouponLoading( Coupon(id: '',porcentage: 0));
 
-        emit(CouponLoading(currentState.coupon));
+        emit(CouponLoading(currentState.coupon!));
 
         final result = await _getOneCouponUseCase.execute(
           GetOneCouponUseCaseInput(couponId: event.couponId),
@@ -37,11 +37,11 @@ class CouponBloc extends Bloc<CouponEvent, CouponState> {
           final coupon = result.getValue();
           emit(CouponLoaded(coupon));
         } else {
-          emit(CouponFailed(result));
+          emit(const CouponLoaded(Coupon(id: '',porcentage: 0)));
         }
       } catch (e) {
         print('Error in CouponBloc: $e');
-        emit(CouponFailed(Result.fail(e.toString() as Failure)));
+        // emit(CouponFailed(Result.fail(e.toString() as Failure)));
       }
     }
   }
