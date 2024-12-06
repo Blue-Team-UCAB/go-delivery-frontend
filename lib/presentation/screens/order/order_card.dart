@@ -87,10 +87,6 @@ class _OrderCardState extends State<OrderCard> {
                     ],
                   ),
                 ),
-                IconButton(
-                  icon: const Icon(Icons.more_vert),
-                  onPressed: () => _showOptionsMenu(context),
-                ),
               ],
             ),
             const SizedBox(height: 4),
@@ -140,14 +136,14 @@ class _OrderCardState extends State<OrderCard> {
     );
   }
 
-  void _showOptionsMenu(BuildContext context) {
+  void _showCancelMenu(BuildContext context) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AnimatedSuccessDialog(
-          title: 'Opciones de Orden',
-          message: 'Seleccione una acción para la orden #${widget.order.id}',
-          buttonText: 'Cerrar',
+          title: 'Cancelar Orden?',
+          message: 'Cancelar Orden #${widget.order.id}?',
+          buttonText: 'Atras',
           icon: Icons.more_vert,
           iconColor: const Color(0xFF2000B1),
           buttonColor: const Color(0xFF2000B1),
@@ -157,7 +153,6 @@ class _OrderCardState extends State<OrderCard> {
           rejectButtonText: 'Cancelar Orden',
           rejectButtonColor: Colors.red,
           onRejectPressed: () {
-            // Handle order cancellation
             Navigator.of(context).pop();
           },
         );
@@ -250,6 +245,7 @@ class _OrderCardState extends State<OrderCard> {
             Expanded(
               child: OutlinedButton(
                 onPressed: () {
+                   _showCancelMenu(context);
                 },
                 style: OutlinedButton.styleFrom(
                   foregroundColor: Colors.grey,

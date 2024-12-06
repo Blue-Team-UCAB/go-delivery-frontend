@@ -2,6 +2,10 @@ import 'package:flutter/material.dart';
 
 import '../../../../../application/BLoc/order/order_detailed/order_detailed_state.dart';
 import '../../../../widgets/dialog_darken_window.dart';
+import '../../../../widgets/order_detailed/past/order_items_list.dart';
+import '../../../../widgets/order_detailed/past/order_past_header.dart';
+import '../../../../widgets/order_detailed/past/reorder_button.dart';
+import '../../../../widgets/order_detailed/past/statusBadge.dart';
 import '../../../../widgets/product_stacked_card.dart';
 
 class PastOrderDetails extends StatelessWidget {
@@ -17,44 +21,16 @@ class PastOrderDetails extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Text(
-              'Orden ${state.orderNumber}',
-              style: TextStyle(
-                fontFamily: 'Montserrat',
-                color: Colors.indigo[900],
-                fontSize: 16,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-            Text(
-              state.date,
-              style: const TextStyle(
-                fontFamily: 'Inter',
-                color: Colors.black87,
-                fontSize: 14,
-              ),
+            OrderHeader(
+              orderNumber: state.orderNumber,
+              date: state.date,
             ),
             const SizedBox(height: 24),
-            _buildStatusBadge(context),
+            StatusBadge(status: state.last_state),
             const SizedBox(height: 24),
-            const Text(
-              'Items',
-              style: TextStyle(
-                fontFamily: 'Montserrat',
-                fontSize: 16,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-            const SizedBox(height: 16),
-            ListView.builder(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              itemCount: state.products.length,
-              itemBuilder: (context, index) {
-                return ProductStackedCard(productData: state.products[index]);
-              },
-            ),
+            OrderItemsList(products: state.products),
             const SizedBox(height: 24),
+            // Metadata section
             Row(
               children: [
                 const Icon(Icons.access_time_outlined,
@@ -89,6 +65,7 @@ class PastOrderDetails extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 24),
+            // Total section
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -111,28 +88,9 @@ class PastOrderDetails extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 24),
-            if (state.status == 'Entregada')
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: () => _handleReorder(context),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.indigo[900],
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                  ),
-                  child: const Text(
-                    'Pídelo de nuevo',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontFamily: 'Inter',
-                      fontSize: 16,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                ),
+            if (state.last_state == 'DELIVERED')
+              ReorderButton(
+                onReorder: () => _showReorderDialog(context),
               ),
           ],
         ),
@@ -140,68 +98,72 @@ class PastOrderDetails extends StatelessWidget {
     );
   }
 
-  Widget _buildStatusBadge(BuildContext context) {
-    Color badgeColor;
-    IconData badgeIcon;
-
-    switch (state.status) {
-      case 'Entregada':
-        badgeColor = Colors.green;
-        badgeIcon = Icons.check_circle_outline;
-        break;
-      case 'Cancelada':
-        badgeColor = Colors.red;
-        badgeIcon = Icons.cancel_outlined;
-        break;
-      default:
-        badgeColor = Colors.grey;
-        badgeIcon = Icons.info_outline;
-    }
-
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-      decoration: BoxDecoration(
-        color: badgeColor.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(20),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(badgeIcon, color: badgeColor, size: 18),
-          const SizedBox(width: 8),
-          Text(
-            state.status,
-            style: TextStyle(
-              fontFamily: 'Inter',
-              color: badgeColor,
-              fontWeight: FontWeight.w500,
-              fontSize: 14,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  void _handleReorder(BuildContext context) {
+  void _showReorderDialog(BuildContext context) {
     showDialog(
       context: context,
-      builder: (context) => AnimatedSuccessDialog(
-        title: 'Reordenar',
-        message: '¿Deseas realizar el mismo pedido nuevamente?',
-        buttonText: 'Sí, reordenar',
-        rejectButtonText: 'Cancelar',
-        icon: Icons.shopping_cart,
-        iconColor: const Color(0xFF2000B1),
-        buttonColor: const Color(0xFF2000B1),
-        onButtonPressed: () {
-          Navigator.of(context).pop();
-          // Implement reorder logic here
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Reorden iniciada')),
-          );
-        },
-        onRejectPressed: () => Navigator.of(context).pop(),
+      builder: (context) => Dialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(24.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Icon(
+                Icons.shopping_cart,
+                size: 48,
+                color: Color(0xFF2000B1),
+              ),
+              const SizedBox(height: 16),
+              const Text(
+                'Reordenar',
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: 8),
+              const Text(
+                '¿Deseas realizar el mismo pedido nuevamente?',
+                textAlign: TextAlign.center,
+                style: TextStyle(color: Colors.grey),
+              ),
+              const SizedBox(height: 24),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('Reorden iniciada')),
+                    );
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF2000B1),
+                    padding: const EdgeInsets.symmetric(vertical: 12),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
+                  child: const Text('Sí, reordenar',
+                      style: TextStyle(color: Colors.white)),
+                ),
+              ),
+              const SizedBox(height: 8),
+              SizedBox(
+                width: double.infinity,
+                child: TextButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  child: Text(
+                    'Cancelar',
+                    style: TextStyle(color: Colors.grey[600]),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }

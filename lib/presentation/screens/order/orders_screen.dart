@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 
 import '../../../application/BLoc/order/order_many/order_many_bloc.dart';
 import '../../../application/BLoc/order/order_many/order_many_event.dart';
@@ -235,7 +236,25 @@ class _OrdersPageState extends State<OrdersPage>
           // No orders
           if (orders.isEmpty) {
             return Center(
-              child: Text(isActiveTab ? 'No active orders' : 'No past orders'),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  SvgPicture.asset(
+                    'assets/icon/order_not_found.svg',
+                    height: 200,
+                    width: 200,
+                  ),
+                  const SizedBox(height: 16),
+                  const Text(
+                    'No Hay Ordenes',
+                    style: TextStyle(
+                      fontFamily: "Inter",
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ],
+              ),
             );
           }
 
