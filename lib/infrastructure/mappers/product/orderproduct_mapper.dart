@@ -21,7 +21,6 @@ class OrderProductMapper {
     };
   }
 
-  // Optional: List mapping methods
   static List<OrderProduct> fromJsonList(List<dynamic> jsonList) {
     return jsonList.map((json) => fromJson(json)).toList();
   }

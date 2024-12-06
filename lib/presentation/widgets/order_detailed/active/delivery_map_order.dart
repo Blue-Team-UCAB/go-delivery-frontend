@@ -1,46 +1,61 @@
 import 'package:flutter/material.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:flutter_map/flutter_map.dart';
+import 'package:latlong2/latlong.dart';
 
 class DeliveryMap extends StatelessWidget {
   final LatLng driverLocation;
   final LatLng destinationLocation;
 
   const DeliveryMap({
-    super.key,
+    Key? key,
     required this.driverLocation,
     required this.destinationLocation,
-  });
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return GoogleMap(
-      initialCameraPosition: CameraPosition(
-        target: driverLocation,
-        zoom: 15,
+    return FlutterMap(
+      options: MapOptions(
+        initialCenter: driverLocation,
+        initialZoom: 15.0,
+        backgroundColor: Colors.grey.shade900,
       ),
-      markers: {
-        Marker(
-          markerId: const MarkerId('driver'),
-          position: driverLocation,
-          icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue),
+      children: [
+        // Use a regular TileLayer with a dark, minimalist style
+        TileLayer(
+          urlTemplate:
+              'https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}.png',
+          subdomains: ['a', 'b', 'c'],
         ),
-        Marker(
-          markerId: const MarkerId('destination'),
-          position: destinationLocation,
-          icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
+        PolylineLayer(
+          polylines: [
+            Polyline(
+              points: [driverLocation, destinationLocation],
+              strokeWidth: 3.0,
+              color: Color(0xFF2000B1),
+            ),
+          ],
         ),
-      },
-      polylines: {
-        Polyline(
-          polylineId: const PolylineId('route'),
-          points: [driverLocation, destinationLocation],
-          color: Colors.blue,
-          width: 3,
+        MarkerLayer(
+          markers: [
+            _buildMarker(driverLocation, Color(0xFF2000B1)),
+            _buildMarker(destinationLocation, Colors.red),
+          ],
         ),
-      },
-      myLocationEnabled: true,
-      zoomControlsEnabled: true,
-      mapToolbarEnabled: false,
+      ],
+    );
+  }
+
+  Marker _buildMarker(LatLng position, Color color) {
+    return Marker(
+      point: position,
+      width: 40.0,
+      height: 40.0,
+      child: Icon(
+        Icons.location_on,
+        color: color,
+        size: 40.0,
+      ),
     );
   }
 }

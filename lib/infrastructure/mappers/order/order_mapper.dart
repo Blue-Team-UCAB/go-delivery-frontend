@@ -1,8 +1,9 @@
+import 'package:go_delivery_frontend/infrastructure/mappers/courier/courier_mapper.dart';
 import 'package:go_delivery_frontend/infrastructure/mappers/product/orderproduct_mapper.dart';
 
 import '../../../domain/entities/order/order.dart';
-import '../bundle/bundle_mapper.dart';
 import '../direction/direction_mapper.dart';
+import 'many/many_orderbundle_mapper.dart';
 
 class OrderMapper {
   static Order fromJson(Map<String, dynamic> json) {
@@ -14,11 +15,14 @@ class OrderMapper {
       totalAmount: json['totalAmount'].toDouble(),
       subtotalAmount: json['subtotalAmount'].toDouble(),
       direction: DirectionMapper.fromJson(json['direction']),
+      courier: json['courier'] != null
+          ? CourierMapper.fromJson(json['courier'])
+          : null,
       products: (json['products'] as List)
           .map((productJson) => OrderProductMapper.fromJson(productJson))
           .toList(),
       bundles: (json['bundles'] as List)
-          .map((bundleJson) => BundleMapper.fromJson(bundleJson))
+          .map((bundleJson) => OrderBundleMapper.fromJson(bundleJson))
           .toList(),
     );
   }
@@ -30,8 +34,11 @@ class OrderMapper {
       'totalAmount': order.totalAmount,
       'subtotalAmount': order.subtotalAmount,
       'direction': DirectionMapper.toJson(order.direction),
-      'products': order.products.map((p) => OrderProductMapper.toJson(p)).toList(),
-      'bundles': order.bundles.map((b) => BundleMapper.toJson(b)).toList(),
+      'courier':
+          order.courier != null ? CourierMapper.toJson(order.courier!) : null,
+      'products':
+          order.products.map((p) => OrderProductMapper.toJson(p)).toList(),
+      'bundles': order.bundles.map((b) => OrderBundleMapper.toJson(b)).toList(),
     };
   }
 }
@@ -51,4 +58,3 @@ class OrderStateMapper {
     };
   }
 }
-

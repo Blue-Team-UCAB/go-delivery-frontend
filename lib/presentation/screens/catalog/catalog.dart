@@ -147,7 +147,7 @@ class CatalogScreenState extends State<CatalogScreen>
           IconButton(
             icon: const Icon(Icons.notifications_none),
             onPressed: () {
-              context.push('/notification');
+              // Acción para ir a la pantalla de notificaciones
             },
           ),
         ],
@@ -181,7 +181,9 @@ class CatalogScreenState extends State<CatalogScreen>
                   fontSize: 16),
             ),
             trailing: const Icon(Icons.arrow_forward_ios),
-            onTap: () {},
+            onTap: () {
+              context.push('/notification');
+            },
           ),
           Padding(
             padding: const EdgeInsets.only(top: 16, left: 18, right: 18.0),

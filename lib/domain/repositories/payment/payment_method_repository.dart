@@ -7,4 +7,5 @@ abstract class PaymentRepository {
   Future<Result<void>> processPagoMovil(PagoMovil pagoMovil);
   Future<Result<void>> processZelle(Zelle zelle);
   Future<Result<void>> processCard(Card card);
+  Future<Result<List<Card>>> getCard();
 }

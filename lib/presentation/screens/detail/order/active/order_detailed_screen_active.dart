@@ -1,9 +1,12 @@
 import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
+import 'package:latlong2/latlong.dart';
 
 import '../../../../../application/BLoc/order/order_detailed/order_detailed_state.dart';
 import '../../../../../domain/entities/order/order.dart';
 import '../../../../widgets/order_detailed/active/active_info.dart';
+import '../../../../widgets/order_detailed/active/delivery_map_order.dart';
+import '../../../../widgets/order_detailed/active/driver_card.dart';
 
 class ActiveOrderDetails extends StatelessWidget {
   final OrderDetailLoadedState state;
@@ -31,6 +34,18 @@ class ActiveOrderDetails extends StatelessWidget {
               location: state.location,
             ),
           ),
+          // Add DriverCard when state is SHIPPED and driver info exists
+          if (currentActiveState == 'SHIPPED' &&
+              state.courier!.name != null &&
+              state.courier!.id != null)
+            FadeInDown(
+              delay: const Duration(milliseconds: 20),
+              child: DriverCard(
+                driverName: state.courier!.name,
+                phoneNumber: state.courier!.phoneNumber,
+                onCallPressed: () {},
+              ),
+            ),
           FadeInDown(
             delay: const Duration(milliseconds: 20),
             child: OrderProgress(
@@ -79,8 +94,8 @@ class OrderProgress extends StatelessWidget {
           ),
           _buildTimelineItem(
             'En proceso',
-            _getStateDateByType('IN_PROCESS'),
-            isCompleted: _isStateCompleted('IN_PROCESS'),
+            _getStateDateByType('IN PROCESS'),
+            isCompleted: _isStateCompleted('IN PROCESS'),
           ),
           _buildTimelineItem(
             'Enviando',
@@ -108,7 +123,7 @@ class OrderProgress extends StatelessWidget {
   }
 
   bool _isStateCompleted(String checkState) {
-    final stateOrder = ['CREATED', 'IN_PROCESS', 'SHIPPED', 'DELIVERED'];
+    final stateOrder = ['CREATED', 'IN PROCESS', 'SHIPPED', 'DELIVERED'];
 
     final checkStateIndex = stateOrder.indexOf(checkState);
     final currentStateIndex = stateOrder.indexOf(currentActiveState);
@@ -143,7 +158,7 @@ class OrderProgress extends StatelessWidget {
           ],
         ),
         const SizedBox(width: 12),
-        const Expanded(
+        Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -151,19 +166,18 @@ class OrderProgress extends StatelessWidget {
                 'Entregando',
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),
-              Text('Tu conductor va en camino'),
-              SizedBox(height: 8),
-              /*ClipRRect(
+              const Text('Tu conductor va en camino'),
+              const SizedBox(height: 8),
+              ClipRRect(
                 borderRadius: BorderRadius.circular(8),
                 child: SizedBox(
                   height: 200,
                   child: DeliveryMap(
-                    driverLocation: const LatLng(23, 33),
+                    driverLocation: const LatLng(10.48801, -66.87919),
                     destinationLocation: state.coordinates,
                   ),
                 ),
               ),
-               */
             ],
           ),
         ),

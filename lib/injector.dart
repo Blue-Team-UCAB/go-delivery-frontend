@@ -78,6 +78,25 @@ class InjectManager {
       sendDeviceTokenUseCase: sendDeviceTokenUseCase,
     ));
 
+    // ============================= COUPON ============================= //
+    // Repositorio
+    final couponRepository = CouponRepositoryImpl(
+      apiRequestManager: apiRequestManagerImpl,
+      localStorage: localStorageService,
+    );
+
+    // Registrar el repositorio de cupones
+    getIt.registerSingleton<CouponRepository>(couponRepository);
+
+    // Casos de Uso
+    final getOneCouponUseCase =
+        GetOneCouponUseCase(couponRepository: couponRepository);
+
+    // Registrar el caso de uso de obtención de cupon
+    getIt.registerSingleton<GetOneCouponUseCase>(getOneCouponUseCase);
+    getIt.registerSingleton(CouponBloc(getOneCouponUseCase));
+    // ======================================================================= //
+
     // ============================= PRODUCTS ============================= //
     // Repositorio
     final productRepository = ProductRepositoryImpl(
@@ -197,9 +216,30 @@ class InjectManager {
     final processCardUseCase =
         ProcessCardPaymentUseCase(paymentRepository: paymentRepository);
 
+    final getCardUseCase =
+        GetUserCardsUseCase(paymentRepository: paymentRepository);
+
     getIt.registerSingleton<ProcessCardPaymentUseCase>(processCardUseCase);
+    getIt.registerSingleton<GetUserCardsUseCase>(getCardUseCase);
 
     //Bloc
     getIt.registerSingleton(CardBloc(processCardUseCase));
+    getIt.registerSingleton(CardListBloc(getCardUseCase));
+
+    // ============================= WALLET =================================== //
+
+    //Repositorio
+    final walletRepository = WalletRepositoryImpl(
+        apiRequestManager: apiRequestManagerImpl,
+        localStorage: localStorageService);
+
+    //Caso de uso
+    final getWalletAmountUseCase =
+        GetWalletAmountUseCase(walletRepository: walletRepository);
+
+    getIt.registerSingleton<GetWalletAmountUseCase>(getWalletAmountUseCase);
+
+    //Bloc
+    getIt.registerSingleton(GetWalletAmountBloc(getWalletAmountUseCase));
   }
 }

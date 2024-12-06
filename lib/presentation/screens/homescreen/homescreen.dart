@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:go_delivery_frontend/application/BLoc/blocs.dart';
 import 'package:go_delivery_frontend/presentation/screens/homescreen/category_tab.dart';
 import 'package:go_delivery_frontend/presentation/screens/homescreen/homescreen_combo_section.dart';
 import 'package:go_delivery_frontend/presentation/screens/homescreen/sidebar_screen.dart';
@@ -172,14 +174,17 @@ class HomeScreenState extends State<HomeScreen> {
           ),
           Row(
             children: [
-              IconButton(
-                icon: const Icon(Icons.notifications_outlined,
-                    color: Colors.white),
-                onPressed: () {
-                  context.push('/notification');
+              Builder(
+                builder: (BuildContext innerContext) {
+                  return IconButton(
+                    icon: const Icon(Icons.notifications_none),
+                    onPressed: () {
+                      context.push('/notification');
+                    },
+                    color: Colors.white,
+                  );
                 },
               ),
-              const SizedBox(width: 16),
             ],
           ),
         ],

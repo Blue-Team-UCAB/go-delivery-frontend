@@ -25,14 +25,16 @@ void main() async {
       'pk_test_51NxjGZFJVOFDbNK1g173hTsB3N8JbaD7HmXWMOP2eiV7UHIndbfm1NuKv8q2LhvNxZxlsthbUOnflWiPil6vYZWZ00zu0xd7Hz';
   Stripe.merchantIdentifier = 'merchant.flutter.stripe.test';
   Stripe.urlScheme = 'flutterstripe';
-  await Stripe.instance.applySettings();
   runApp(
     MultiBlocProvider(
       providers: [
+        BlocProvider(create: (_) => getIt<GetWalletAmountBloc>()),
+        BlocProvider(create: (_) => getIt<CardListBloc>()),
         BlocProvider(create: (_) => getIt<CardBloc>()),
         BlocProvider(create: (_) => getIt<ZelleBloc>()),
         BlocProvider(create: (_) => getIt<PaymentBloc>()),
         BlocProvider(create: (_) => getIt<CartBloc>()),
+        BlocProvider(create: (_) => getIt<CouponBloc>()),
         BlocProvider(create: (_) => getIt<LoginBloc>()),
         BlocProvider(create: (_) => getIt<CurrentUserBloc>()),
         BlocProvider(create: (_) => getIt<ThemesBloc>()),

@@ -1,3 +1,4 @@
+import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../../application/BLoc/order/order_detailed/order_detailed_state.dart';
@@ -15,6 +16,8 @@ class PastOrderDetails extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
+        child: FadeInDown(
+      delay: const Duration(milliseconds: 20),
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -27,7 +30,7 @@ class PastOrderDetails extends StatelessWidget {
             const SizedBox(height: 24),
             StatusBadge(status: state.last_state),
             const SizedBox(height: 24),
-            OrderItemsList(products: state.products),
+            OrderItemsList(products: state.products, bundles: state.bundles),
             const SizedBox(height: 24),
             // Metadata section
             Row(
@@ -77,7 +80,7 @@ class PastOrderDetails extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  state.totalAmount.toString(),
+                  state.totalAmount.toString() + "\$",
                   style: const TextStyle(
                     fontFamily: 'Montserrat',
                     fontSize: 23,
@@ -94,6 +97,6 @@ class PastOrderDetails extends StatelessWidget {
           ],
         ),
       ),
-    );
+    ));
   }
 }

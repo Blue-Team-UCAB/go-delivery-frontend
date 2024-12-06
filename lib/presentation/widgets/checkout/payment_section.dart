@@ -1,5 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_delivery_frontend/application/BLoc/payment/card_get/get_card_bloc.dart';
+import 'package:go_delivery_frontend/application/BLoc/payment/card_get/get_card_event.dart';
+import 'package:go_delivery_frontend/application/BLoc/payment/card_get/get_card_state.dart';
+import 'package:go_delivery_frontend/application/BLoc/payment/get_wallet/get_wallet_bloc.dart';
+import 'package:go_delivery_frontend/application/BLoc/payment/get_wallet/get_wallet_event.dart';
+import 'package:go_delivery_frontend/application/BLoc/payment/get_wallet/get_wallet_state.dart';
 import 'package:go_delivery_frontend/presentation/screens/order/card_screen.dart';
 import 'package:go_delivery_frontend/application/BLoc/payment/pago_movil/pago_movil_bloc.dart';
 import 'package:go_delivery_frontend/application/BLoc/payment/pago_movil/pago_movil_event.dart';
@@ -29,6 +35,12 @@ class _PaymentMethodSectionState extends State<PaymentMethodSection> {
   TextEditingController phoneController = TextEditingController();
   TextEditingController emailController = TextEditingController();
   final TextEditingController _integerPartController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    BlocProvider.of<GetWalletAmountBloc>(context).add(LoadWalletAmount());
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -101,12 +113,31 @@ class _PaymentMethodSectionState extends State<PaymentMethodSection> {
                     ),
                   ),
                   if (title == 'GoDely Points')
-                    Text(
-                      '\$${userPoints.toStringAsFixed(2)}',
-                      style: const TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w500,
-                      ),
+                    BlocBuilder<GetWalletAmountBloc, GetWalletAmountState>(
+                      builder: (context, state) {
+                        if (state is WalletAmountLoading) {
+                          return const CircularProgressIndicator();
+                        } else if (state is WalletAmountLoaded) {
+                          return Text(
+                            '\$${state.walletAmount.amount.toStringAsFixed(2)}',
+                            style: const TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          );
+                        } else if (state is WalletAmountFailed) {
+                          return Text(
+                            'Error: ${state.result.getError().message}',
+                            style: const TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w500,
+                              color: Colors.red,
+                            ),
+                          );
+                        } else {
+                          return const SizedBox.shrink();
+                        }
+                      },
                     ),
                 ],
               ),
@@ -123,44 +154,82 @@ class _PaymentMethodSectionState extends State<PaymentMethodSection> {
       padding: const EdgeInsets.all(12.0),
       child: Column(
         children: [
-          Column(
-            children: ['Mastercard', 'Visa'].map((option) {
-              return GestureDetector(
-                onTap: () {
-                  setState(() {
-                    _selectedCardType = option;
-                  });
-                },
-                child: Container(
-                  margin: const EdgeInsets.only(bottom: 8.0),
-                  padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                  decoration: BoxDecoration(
-                    border: Border.all(
-                      color: _selectedCardType == option
-                          ? const Color(0xFF2000B1)
-                          : Colors.grey,
-                    ),
-                    borderRadius: BorderRadius.circular(8.0),
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(option),
-                      Radio<String>(
-                        activeColor: const Color(0xFF2000B1),
-                        value: option,
-                        groupValue: _selectedCardType,
-                        onChanged: (value) {
-                          setState(() {
-                            _selectedCardType = value;
-                          });
-                        },
+          BlocBuilder<CardListBloc, CardListState>(
+            builder: (context, state) {
+              // Dispara el evento para cargar las tarjetas si aún no hay estado cargado
+              if (state is CardListInitial) {
+                BlocProvider.of<CardListBloc>(context).add(LoadCardList());
+                return const CircularProgressIndicator();
+              }
+
+              if (state is CardListLoading) {
+                return const CircularProgressIndicator();
+              } else if (state is CardListLoaded) {
+                return Column(
+                  children: state.cards.map((card) {
+                    // Identificar tarjeta única
+                    final cardIdentifier =
+                        "${card.brand ?? ''}-${card.last4 ?? ''}-${card.expMonth ?? ''}-${card.expYear ?? ''}";
+
+                    return GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          _selectedCardType = cardIdentifier;
+                        });
+                      },
+                      child: Container(
+                        margin: const EdgeInsets.only(bottom: 12.0),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 12.0,
+                          vertical: 8.0,
+                        ),
+                        width: double.infinity, // Toma todo el ancho disponible
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                            color: _selectedCardType == cardIdentifier
+                                ? const Color(0xFF2000B1)
+                                : Colors.grey,
+                          ),
+                          borderRadius: BorderRadius.circular(8.0),
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            // Marca en mayúsculas
+                            Text(
+                              (card.brand ?? 'Desconocido').toUpperCase(),
+                              style: const TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            const SizedBox(height: 4),
+                            // Últimos 4 dígitos de la tarjeta
+                            Text(
+                              "XXXX XXXX XXXX ${card.last4 ?? '0000'}",
+                              style: const TextStyle(
+                                fontSize: 14,
+                              ),
+                            ),
+                            const SizedBox(height: 4),
+                            // Fecha de expiración formateada
+                            Text(
+                              "Fecha: ${card.expMonth?.toString().padLeft(2, '0') ?? '00'}/${card.expYear?.toString().substring(2, 4) ?? '00'}",
+                              style: const TextStyle(
+                                fontSize: 14,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
-                    ],
-                  ),
-                ),
-              );
-            }).toList(),
+                    );
+                  }).toList(),
+                );
+              } else if (state is CardListFailed) {
+                return Text('Error: ${state.result.getError()}');
+              }
+              return Container();
+            },
           ),
           const SizedBox(height: 16),
           GestureDetector(
