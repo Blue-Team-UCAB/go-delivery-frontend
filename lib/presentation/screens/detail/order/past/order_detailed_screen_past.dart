@@ -5,6 +5,7 @@ import '../../../../widgets/dialog_darken_window.dart';
 import '../../../../widgets/order_detailed/past/order_items_list.dart';
 import '../../../../widgets/order_detailed/past/order_past_header.dart';
 import '../../../../widgets/order_detailed/past/reorder_button.dart';
+import '../../../../widgets/order_detailed/past/show_reorder_darken_window.dart';
 import '../../../../widgets/order_detailed/past/statusBadge.dart';
 import '../../../../widgets/product_stacked_card.dart';
 
@@ -90,79 +91,9 @@ class PastOrderDetails extends StatelessWidget {
             const SizedBox(height: 24),
             if (state.last_state == 'DELIVERED')
               ReorderButton(
-                onReorder: () => _showReorderDialog(context),
+                onReorder: () => showReorderPopupDialog(context),
               ),
           ],
-        ),
-      ),
-    );
-  }
-
-  void _showReorderDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (context) => Dialog(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(24.0),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const Icon(
-                Icons.shopping_cart,
-                size: 48,
-                color: Color(0xFF2000B1),
-              ),
-              const SizedBox(height: 16),
-              const Text(
-                'Reordenar',
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              const SizedBox(height: 8),
-              const Text(
-                '¿Deseas realizar el mismo pedido nuevamente?',
-                textAlign: TextAlign.center,
-                style: TextStyle(color: Colors.grey),
-              ),
-              const SizedBox(height: 24),
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Reorden iniciada')),
-                    );
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF2000B1),
-                    padding: const EdgeInsets.symmetric(vertical: 12),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                  ),
-                  child: const Text('Sí, reordenar',
-                      style: TextStyle(color: Colors.white)),
-                ),
-              ),
-              const SizedBox(height: 8),
-              SizedBox(
-                width: double.infinity,
-                child: TextButton(
-                  onPressed: () => Navigator.of(context).pop(),
-                  child: Text(
-                    'Cancelar',
-                    style: TextStyle(color: Colors.grey[600]),
-                  ),
-                ),
-              ),
-            ],
-          ),
         ),
       ),
     );
