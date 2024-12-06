@@ -1,28 +1,21 @@
 part of 'notifications_bloc.dart';
 
-class NotificationsState extends Equatable {
-  final bool status;
-  final String token;
-  final String recoveryCode;
-
-  const NotificationsState({
-    this.token = '',
-    this.status = false,
-    this.recoveryCode = '',
-  });
-
-  NotificationsState copyWith({
-    bool? status,
-    String? token,
-    String? recoveryCode,
-  }) {
-    return NotificationsState(
-      status: status ?? this.status,
-      token: token ?? this.token,
-      recoveryCode: recoveryCode ?? this.recoveryCode,
-    );
-  }
+abstract class NotificationsEvent extends Equatable {
+  const NotificationsEvent();
 
   @override
-  List<Object> get props => [status, token, recoveryCode];
+  List<Object?> get props => [];
+}
+
+class SendFCMTokenEvent extends NotificationsEvent {}
+
+class RequestNotificationPermissionEvent extends NotificationsEvent {}
+
+class NotificationReceivedEvent extends NotificationsEvent {
+  final RemoteMessage message;
+
+  const NotificationReceivedEvent(this.message);
+
+  @override
+  List<Object?> get props => [message];
 }
