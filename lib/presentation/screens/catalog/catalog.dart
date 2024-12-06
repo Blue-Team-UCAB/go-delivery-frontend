@@ -4,13 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_delivery_frontend/presentation/widgets/navbar.dart';
 import 'package:go_delivery_frontend/presentation/widgets/card.dart';
-import 'package:go_delivery_frontend/presentation/widgets/sidebar.dart';
 import 'package:go_delivery_frontend/application/BLoc/product/product_many/product_many_bloc.dart';
 import 'package:go_delivery_frontend/application/BLoc/product/product_many/product_many_state.dart';
 import 'package:go_delivery_frontend/application/BLoc/product/product_many/product_many_event.dart';
 import 'package:go_router/go_router.dart';
 import '../../../domain/entities/product/product.dart';
-import 'logout_from_catalog.dart';
 
 class CatalogScreen extends StatefulWidget {
   final int initialCounterNavbar;
@@ -25,6 +23,7 @@ class CatalogScreenState extends State<CatalogScreen>
     with AutomaticKeepAliveClientMixin {
   int _counter = 0;
   final ScrollController _scrollController = ScrollController();
+  final TextEditingController _textfieldController = TextEditingController();
   bool _isLoadingMore = false;
   int _currentPage = 1;
   final _gridKey = const PageStorageKey('catalog_grid');
@@ -151,25 +150,7 @@ class CatalogScreenState extends State<CatalogScreen>
               context.push('/notification');
             },
           ),
-          Builder(
-            builder: (BuildContext innerContext) {
-              return IconButton(
-                icon: const Icon(Icons.menu),
-                onPressed: () {
-                  Scaffold.of(innerContext).openEndDrawer();
-                },
-              );
-            },
-          ),
         ],
-      ),
-      endDrawer: Sidebar(
-        userName: 'User Name',
-        userEmail: 'user@example.com',
-        onLogout: () {
-          Navigator.pop(context);
-          showLogoutDialog(context);
-        },
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -227,6 +208,7 @@ class CatalogScreenState extends State<CatalogScreen>
                   ),
                   Expanded(
                     child: TextField(
+                      controller: _textfieldController,
                       onSubmitted: _handleSearch,
                       decoration: InputDecoration(
                         hintText: 'Buscar un producto',
@@ -236,6 +218,7 @@ class CatalogScreenState extends State<CatalogScreen>
                             ? IconButton(
                                 icon: const Icon(Icons.clear),
                                 onPressed: () {
+                                  _textfieldController.clear();
                                   _handleSearch('');
                                 },
                               )

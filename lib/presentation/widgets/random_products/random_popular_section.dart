@@ -34,10 +34,11 @@ class _RandomSectionState extends State<RandomSection> {
   void _loadRandomProducts() {
     if (!_mounted) return;
     final random = Random();
-    final randomPage = random.nextInt(7) + 1;
+    final randomPage = random.nextInt(6)+1;
+
     context
         .read<ProductRandomListBloc>()
-        .add(LoadProductList(page: randomPage, perpage: 8, category: ''));
+        .add(LoadProductList(page: randomPage, perpage: 5, category: ''));
   }
 
   @override
@@ -110,11 +111,12 @@ class RandomItem extends StatelessWidget {
     return Column(
       children: [
         Material(
+          borderRadius: const BorderRadius.all( Radius.circular(16)),
           color: const Color(0xFFFFFFFF),
           child: ListTile(
             contentPadding: const EdgeInsets.symmetric(horizontal: 10),
             shape: RoundedRectangleBorder(
-              side: const BorderSide(color: Color(0xFFD5CCFF), width: 1),
+              
               borderRadius: BorderRadius.circular(20),
             ),
             onTap: () {

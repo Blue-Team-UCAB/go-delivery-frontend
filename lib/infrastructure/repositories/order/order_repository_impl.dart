@@ -1,11 +1,11 @@
-import 'package:go_delivery_frontend/infrastructure/models/tracking_model.dart';
-
 import '../../../application/api/api_request.dart';
 import '../../../application/key_value_storage/key_value.dart';
 import '../../../common/result.dart';
 import '../../../domain/entities/order/order.dart';
 import '../../../domain/repositories/order/order_repository.dart';
+import '../../mappers/order/many/many_order_mapper.dart';
 import '../../mappers/order/order_mapper.dart';
+import '../../models/order_many_model.dart';
 
 class OrderRepositoryImpl extends OrderRepository {
   final IApiRequestManager _apiRequestManager;
@@ -23,31 +23,24 @@ class OrderRepositoryImpl extends OrderRepository {
   }
 
   @override
-  Future<Result<List<Order>>> getOrders({
+  Future<Result<List<OrderManyItem>>> getOrders({
     required int page,
-    required int take,
+    required int perpage,
+    required String status,
   }) async {
     await _addAuthorizationHeader();
-    try {
-      final response = await _apiRequestManager.request(
-        '/orders',
-        'GET',
-        queryParameters: {
-          'page': page.toString(),
-          'take': take.toString(),
-        },
+
+    Map<String, String> queryParameters = {
+      'page': page.toString(),
+      'perpage': perpage.toString(),
+    };
+
+    final response = await _apiRequestManager.request(
+        '/order?status=$status', 'GET', queryParameters: queryParameters,
         (data) {
-          List<Order> orders = (data['orders'] as List)
-              .map((orderData) => OrderMapper.fromJson(orderData))
-              .toList();
-          return orders;
-        },
-      );
-      return response;
-    } catch (e) {
-      print('Error in OrderRepositoryImpl.getOrders: $e');
-      rethrow;
-    }
+      return OrderManyMapper.fromJson(data['value']).orders;
+    });
+    return response;
   }
 
   @override
@@ -55,15 +48,10 @@ class OrderRepositoryImpl extends OrderRepository {
     await _addAuthorizationHeader();
     try {
       final response = await _apiRequestManager.request(
-        '/orders/$orderId',
+        '/order/$orderId',
         'GET',
         (data) {
-          print('API response for order: $data');
-          final order = OrderMapper.fromJson(data);
-          print('Products in the order:');
-          for (var product in order.products) {
-            print('Product: ${product.name}, Price: ${product.price}');
-          }
+          final order = OrderMapper.fromJson(data["value"]);
           return order;
         },
       );
@@ -77,54 +65,6 @@ class OrderRepositoryImpl extends OrderRepository {
   @override
   Future<Result<bool>> cancelOrder(String orderId, {String? reason}) {
     // TODO: implement cancelOrder
-    throw UnimplementedError();
-  }
-
-  @override
-  Future<Result<InvoiceDownloadInfo>> downloadInvoice(String orderId) {
-    // TODO: implement downloadInvoice
-    throw UnimplementedError();
-  }
-
-  @override
-  Future<Result<List<Order>>> getOrderHistory(
-      {int page = 1, int limit = 10, String? status}) {
-    // TODO: implement getOrderHistory
-    throw UnimplementedError();
-  }
-
-  @override
-  Future<Result<Order>> modifyOrderQuantity(
-      {required String orderId,
-      required String productId,
-      required int newQuantity}) {
-    // TODO: implement modifyOrderQuantity
-    throw UnimplementedError();
-  }
-
-  @override
-  Future<Result<bool>> rateOrder(
-      {required String orderId, required int rating, String? review}) {
-    // TODO: implement rateOrder
-    throw UnimplementedError();
-  }
-
-  @override
-  Future<Result<Order>> reorderPreviousOrder(String originalOrderId) {
-    // TODO: implement reorderPreviousOrder
-    throw UnimplementedError();
-  }
-
-  @override
-  Future<Result<TrackingInfo>> trackOrderStatus(String orderId) {
-    // TODO: implement trackOrderStatus
-    throw UnimplementedError();
-  }
-
-  @override
-  Future<Result<Order>> updateOrderStatus(
-      {required String orderId, required String newStatus}) {
-    // TODO: implement updateOrderStatus
     throw UnimplementedError();
   }
 }

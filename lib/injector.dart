@@ -1,46 +1,17 @@
-import 'package:get_it/get_it.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:go_delivery_frontend/application/BLoc/auth/current/current_user_bloc.dart';
+import 'package:get_it/get_it.dart';
 import 'package:go_delivery_frontend/application/BLoc/blocs.dart';
-import 'package:go_delivery_frontend/application/BLoc/bundle/bundle_detail/bundle_detail_bloc.dart';
-import 'package:go_delivery_frontend/application/BLoc/bundle/bundle_many/bundle_many_bloc.dart';
-import 'package:go_delivery_frontend/application/BLoc/order/order_detailed/order_detailed_bloc.dart';
-import 'package:go_delivery_frontend/application/BLoc/notifications/bloc/notifications_bloc.dart';
-import 'package:go_delivery_frontend/application/BLoc/notifications/notification-list/notification_list_bloc.dart';
-import 'package:go_delivery_frontend/application/BLoc/product/popular/product_popular_many_bloc.dart';
-import 'package:go_delivery_frontend/application/BLoc/product/popular/random/product_random_many_bloc.dart';
-import 'package:go_delivery_frontend/application/BLoc/product/product_detail/product_detail_bloc.dart';
-import 'package:go_delivery_frontend/application/BLoc/product/product_many/product_many_bloc.dart';
-import 'package:go_delivery_frontend/application/use_cases/auth/current/current_user_usecase_input.dart';
-import 'package:go_delivery_frontend/application/use_cases/auth/recover_password/recovery_usecase_input.dart';
-import 'package:go_delivery_frontend/application/use_cases/auth/register/register_usecase_input.dart';
-import 'package:go_delivery_frontend/application/use_cases/bundle/get_many_bundle.dart';
-import 'package:go_delivery_frontend/application/use_cases/bundle/get_one_bundle.dart';
 import 'package:go_delivery_frontend/application/use_cases/notification/send_device_token_usecase.dart';
-import 'package:go_delivery_frontend/application/use_cases/product/get_one_product.dart';
-import 'package:go_delivery_frontend/domain/repositories/bundle/bundle_repository.dart';
+import 'package:go_delivery_frontend/application/use_cases/use_cases.dart';
 import 'package:go_delivery_frontend/domain/repositories/notifications/notifications_repository.dart';
-import 'package:go_delivery_frontend/domain/repositories/order/order_repository.dart';
-import 'package:go_delivery_frontend/infrastructure/datasources/api/api_request_impl.dart';
-import 'package:go_delivery_frontend/infrastructure/datasources/cart/cart_isar_local_storage_datasource.dart';
-import 'package:go_delivery_frontend/infrastructure/datasources/localstorage/localstorage_impl.dart';
-import 'package:go_delivery_frontend/domain/repositories/product/product_repository.dart';
-import 'package:go_delivery_frontend/infrastructure/repositories/bundle/bundle_repository_impl.dart';
-import 'package:go_delivery_frontend/infrastructure/repositories/cart/cart_local_storage_repository_impl.dart';
-import 'package:go_delivery_frontend/infrastructure/repositories/order/order_repository_impl.dart';
+import 'package:go_delivery_frontend/domain/repositories/repositories.dart';
 import 'package:go_delivery_frontend/infrastructure/repositories/notifications/notifications_repository_impl.dart';
-import 'package:go_delivery_frontend/infrastructure/repositories/product/product_repository_impl.dart';
-import 'package:go_delivery_frontend/application/use_cases/product/get_many_product.dart';
-
-import 'application/BLoc/auth/login/login_bloc.dart';
+import 'package:go_delivery_frontend/infrastructure/repositories/repositories_impl.dart';
 import 'application/BLoc/auth/recover_password/recover_password_bloc.dart';
 import 'application/BLoc/auth/register/register_bloc.dart';
-import 'application/BLoc/cart/cart_bloc.dart';
-import 'application/BLoc/themes/themes_bloc.dart';
-import 'application/use_cases/auth/login/login_usecase_input.dart';
-import 'application/use_cases/order/get_one_order.dart';
-import 'infrastructure/firebase/firebase_notifications_manager.dart';
-import 'infrastructure/repositories/user/user_repository_impl.dart';
+import 'infrastructure/datasources/api/api_request_impl.dart';
+import 'infrastructure/datasources/cart/cart_isar_local_storage_datasource.dart';
+import 'infrastructure/datasources/localstorage/localstorage_impl.dart';
 
 final getIt = GetIt.instance;
 
@@ -104,7 +75,7 @@ class InjectManager {
     // ======================================================================= //
 
     getIt.registerSingleton(NotificationsBloc(
-        sendDeviceTokenUseCase: sendDeviceTokenUseCase,
+      sendDeviceTokenUseCase: sendDeviceTokenUseCase,
     ));
 
     // ============================= PRODUCTS ============================= //
@@ -176,11 +147,59 @@ class InjectManager {
     //casos de uso
     final getOneOrderUseCase =
         GetOneOrderUseCase(orderRepository: orderRepository);
+    final getManyOrderUseCase =
+        GetManyOrdersUseCase(orderRepository: orderRepository);
 
     getIt.registerSingleton<GetOneOrderUseCase>(getOneOrderUseCase);
+    getIt.registerSingleton<GetManyOrdersUseCase>(getManyOrderUseCase);
     // ======================================================================= //
 
     getIt.registerSingleton(
         OrderDetailBloc(getOneOrderUseCase: getOneOrderUseCase));
+    getIt.registerSingleton(
+        ManyOrdersBloc(getManyOrdersUseCase: getManyOrderUseCase));
+
+    // ============================= PAYMENT =================================== //
+
+    //Repositorio
+    final paymentRepository = PaymentRepositoryImpl(
+        apiRequestManager: apiRequestManagerImpl,
+        localStorage: localStorageService);
+
+    // Registrar el repositorio de payment
+    getIt.registerSingleton<PaymentRepository>(paymentRepository);
+
+    // ============================= PAGO MOVIL =================================== //
+
+    //Casos de uso
+    final processPagoMovilUseCase =
+        ProcessPagoMovilUseCase(paymentRepository: paymentRepository);
+
+    getIt.registerSingleton<ProcessPagoMovilUseCase>(processPagoMovilUseCase);
+
+    //Bloc
+    getIt.registerSingleton(PaymentBloc(processPagoMovilUseCase));
+
+    // ============================= ZELLE =================================== //
+
+    //Casos de uso
+    final processZelleUseCase =
+        ProcessZelleUseCase(paymentRepository: paymentRepository);
+
+    getIt.registerSingleton<ProcessZelleUseCase>(processZelleUseCase);
+
+    //Bloc
+    getIt.registerSingleton(ZelleBloc(processZelleUseCase));
+
+    // ============================= CARD =================================== //
+
+    //Casos de uso
+    final processCardUseCase =
+        ProcessCardPaymentUseCase(paymentRepository: paymentRepository);
+
+    getIt.registerSingleton<ProcessCardPaymentUseCase>(processCardUseCase);
+
+    //Bloc
+    getIt.registerSingleton(CardBloc(processCardUseCase));
   }
 }

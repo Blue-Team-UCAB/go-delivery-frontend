@@ -28,7 +28,7 @@ class BundleListBloc extends Bloc<BundleListEvent, BundleListState> {
         final result = await _getBundlesUseCase.execute(
           GetBundlesUseCaseInput(
             page: event.page,
-            perpage: event.take,
+            perpage: event.perpage,
           ),
         );
 
