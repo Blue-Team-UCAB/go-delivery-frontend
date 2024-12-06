@@ -25,13 +25,12 @@ class GetManyOrdersUseCase {
   GetManyOrdersUseCase({required OrderRepository orderRepository})
       : _orderRepository = orderRepository;
 
-  Future<Result<List<OrderManyItem>>> execute(GetManyOrdersUseCaseInput input) async {
+  Future<Result<List<OrderManyItem>>> execute(
+      GetManyOrdersUseCaseInput input) async {
     return _orderRepository.getOrders(
       page: input.page,
       perpage: input.perpage,
-      status: input.status!,
+      status: input.status,
     );
-
   }
-
 }

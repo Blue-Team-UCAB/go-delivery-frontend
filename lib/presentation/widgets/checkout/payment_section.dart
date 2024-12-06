@@ -165,10 +165,15 @@ class _PaymentMethodSectionState extends State<PaymentMethodSection> {
           const SizedBox(height: 16),
           GestureDetector(
             onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const AddCardScreen(),
+              showModalBottomSheet(
+                context: context,
+                isScrollControlled: true,
+                shape: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+                ),
+                builder: (context) => SizedBox(
+                  height: MediaQuery.of(context).size.height * 0.60,
+                  child: const AddCardScreen(),
                 ),
               );
             },

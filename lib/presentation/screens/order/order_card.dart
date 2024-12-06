@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_delivery_frontend/infrastructure/models/order_many_model.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../domain/entities/order/order.dart';
+//import '../../../domain/entities/order/order.dart';
 import '../../widgets/dialog_darken_window.dart';
 import '../../widgets/order_detailed/past/show_reorder_darken_window.dart';
 
@@ -159,51 +159,47 @@ class _OrderCardState extends State<OrderCard> {
         );
       },
     );
-
   }
 
   Widget _buildButtons(String orderid) {
     String readableStatus = _getReadableStatus(status);
 
-    if( readableStatus == 'Cancelada') {
-      return Row(
-          children: [
-            Expanded(
-              child: ElevatedButton(
-                  onPressed: () {},
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.deepOrangeAccent,
-                  ),
-                  child: const Text('Reportar un problema',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontFamily: 'Inter',
-                        fontSize: 14,
-                        fontWeight: FontWeight.bold,
-                      ))
+    if (readableStatus == 'Cancelada') {
+      return Row(children: [
+        Expanded(
+          child: ElevatedButton(
+              onPressed: () {},
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.deepOrangeAccent,
               ),
+              child: const Text('Reportar un problema',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontFamily: 'Inter',
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                  ))),
+        ),
+        Expanded(
+          child: OutlinedButton(
+            onPressed: () {
+              context.push('/orderdetail/$orderid');
+            },
+            style: OutlinedButton.styleFrom(
+              foregroundColor: const Color(0xFF2000B1),
             ),
-            Expanded(
-              child: OutlinedButton(
-                onPressed: () {
-                  context.push('/orderdetail/$orderid');
-                },
-                style: OutlinedButton.styleFrom(
-                  foregroundColor: const Color(0xFF2000B1),
-                ),
-                child: const Text('Ver',
-                    style: TextStyle(
-                      fontFamily: 'Inter',
-                      fontSize: 14,
-                      fontWeight: FontWeight.bold,
-                    )),
-              ),
-            ),
-          ]
-      );
+            child: const Text('Ver',
+                style: TextStyle(
+                  fontFamily: 'Inter',
+                  fontSize: 14,
+                  fontWeight: FontWeight.bold,
+                )),
+          ),
+        ),
+      ]);
     }
 
-    if(readableStatus == 'Entregada') {
+    if (readableStatus == 'Entregada') {
       return Row(
         children: [
           Expanded(
@@ -243,46 +239,48 @@ class _OrderCardState extends State<OrderCard> {
         ],
       );
     }
-    if((readableStatus == 'Inicializado') || (readableStatus == "En Camino") || (readableStatus == "En Proceso")){
-        return Row(
-          children: [
-            Expanded(
-              child: OutlinedButton(
-                onPressed: () {
-                   _showCancelMenu(context);
-                },
-                style: OutlinedButton.styleFrom(
-                  foregroundColor: Colors.grey,
-                ),
-                child: const Text('Cancelar',
-                    style: TextStyle(
-                      fontFamily: 'Inter',
-                      fontSize: 14,
-                      fontWeight: FontWeight.bold,
-                    )),
+    if ((readableStatus == 'Inicializado') ||
+        (readableStatus == "En Camino") ||
+        (readableStatus == "En Proceso")) {
+      return Row(
+        children: [
+          Expanded(
+            child: OutlinedButton(
+              onPressed: () {
+                _showCancelMenu(context);
+              },
+              style: OutlinedButton.styleFrom(
+                foregroundColor: Colors.grey,
               ),
+              child: const Text('Cancelar',
+                  style: TextStyle(
+                    fontFamily: 'Inter',
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                  )),
             ),
-            const SizedBox(width: 8),
-            Expanded(
-              child: ElevatedButton(
-                onPressed: () {
-                  context.push('/orderdetail/$orderid');
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF2000B1),
-                ),
-                child: const Text('Ver',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontFamily: 'Inter',
-                      fontSize: 14,
-                      fontWeight: FontWeight.bold,
-                    )),
+          ),
+          const SizedBox(width: 8),
+          Expanded(
+            child: ElevatedButton(
+              onPressed: () {
+                context.push('/orderdetail/$orderid');
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFF2000B1),
               ),
+              child: const Text('Ver',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontFamily: 'Inter',
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                  )),
             ),
-          ],
-        );
-      }
-    return SizedBox.shrink();
+          ),
+        ],
+      );
+    }
+    return const SizedBox.shrink();
   }
 }
