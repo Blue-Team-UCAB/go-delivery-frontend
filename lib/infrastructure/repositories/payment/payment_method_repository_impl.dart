@@ -113,4 +113,29 @@ class PaymentRepositoryImpl extends PaymentRepository {
           ServerFailure(message: 'Fallo al procesar el pago con tarjeta: $e'));
     }
   }
+
+  @override
+  Future<Result<List<Card>>> getCard() async {
+    await _addAuthorizationHeader();
+
+    try {
+      final result = await _apiRequestManager.request(
+        '/pay/card',
+        'GET',
+        (data) => (data as List)
+            .map((item) => PaymentMethodMapper.cardFromJson(item))
+            .toList(),
+      );
+
+      if (result.isSuccessful()) {
+        final cards = result.getValue(); // Extrae la lista de tarjetas
+        return Result.success(cards);
+      } else {
+        return Result.fail(result.getError()); // Propaga el error
+      }
+    } catch (e) {
+      print('Error in PaymentMethodRepositoryImpl.getCard: $e');
+      return Result.fail(Exception('Failed to fetch cards: $e') as Failure);
+    }
+  }
 }

@@ -10,5 +10,7 @@ export 'package:go_delivery_frontend/application/use_cases/auth/login/login_usec
 export 'package:go_delivery_frontend/application/use_cases/payment/post_pago_movil.dart';
 export 'package:go_delivery_frontend/application/use_cases/payment/post_zelle.dart';
 export 'package:go_delivery_frontend/application/use_cases/payment/post_card.dart';
+export 'package:go_delivery_frontend/application/use_cases/payment/get_cards.dart';
 export 'package:go_delivery_frontend/application/use_cases/order/get_many_order.dart';
 export 'package:go_delivery_frontend/application/use_cases/order/get_one_order.dart';
+export 'package:go_delivery_frontend/application/use_cases/wallet/get_wallet.dart';

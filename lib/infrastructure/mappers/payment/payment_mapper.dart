@@ -58,4 +58,14 @@ class PaymentMethodMapper {
       'error': json['error'],
     };
   }
+
+  static Card cardFromJson(Map<String, dynamic> json) {
+    return Card(
+      idCard: json['id'],
+      brand: json['brand'],
+      last4: json['last4'],
+      expMonth: json['exp_month'],
+      expYear: json['exp_year'],
+    );
+  }
 }
