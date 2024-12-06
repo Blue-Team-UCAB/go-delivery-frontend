@@ -65,13 +65,13 @@ class RoutesManager {
                 key: state.pageKey,
                 child: const CartScreen(),
               )),
-     /* GoRoute(
+      GoRoute(
           path: '/notification',
           pageBuilder: (context, state) => CustomTransitions.slideRight(
                 key: state.pageKey,
                 child: const NotificationScreen(),
               )),
-      GoRoute(
+      /* GoRoute(
           path: '/push-details/:messageId',
           pageBuilder: (context, state) => CustomTransitions.slideRight(
                 key: state.pageKey,
