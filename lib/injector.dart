@@ -1,9 +1,5 @@
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get_it/get_it.dart';
-import 'package:go_delivery_frontend/application/BLoc/coupon/coupon_bloc.dart';
-import 'package:go_delivery_frontend/application/use_cases/coupon/get_one_coupon.dart';
-import 'package:go_delivery_frontend/domain/repositories/coupon/coupon_repository.dart';
-import 'package:go_delivery_frontend/infrastructure/repositories/coupon/coupon_repository_impl.dart';
 import 'package:go_delivery_frontend/application/BLoc/blocs.dart';
 import 'package:go_delivery_frontend/application/use_cases/use_cases.dart';
 import 'package:go_delivery_frontend/domain/repositories/repositories.dart';
