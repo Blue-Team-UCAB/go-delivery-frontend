@@ -1,7 +1,7 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
+
 
 class DeliveryMap extends StatelessWidget {
   final LatLng driverLocation;
@@ -19,46 +19,43 @@ class DeliveryMap extends StatelessWidget {
       options: MapOptions(
         initialCenter: driverLocation,
         initialZoom: 15.0,
+        backgroundColor: Colors.grey.shade900,
       ),
       children: [
+        // Use a regular TileLayer with a dark, minimalist style
         TileLayer(
-          urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-          userAgentPackageName: 'com.example.go_delivery_frontend',
-        ),
-        MarkerLayer(
-          markers: [
-            Marker(
-              point: driverLocation,
-              width: 80.0,
-              height: 80.0,
-              child: const Icon(
-                Icons.location_on,
-                color: Colors.blue,
-                size: 40.0,
-              ),
-            ),
-            Marker(
-              point: destinationLocation,
-              width: 80.0,
-              height: 80.0,
-              child: const Icon(
-                Icons.location_on,
-                color: Colors.blue,
-                size: 40.0,
-              ),
-            ),
-          ],
+          urlTemplate: 'https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}.png',
+          subdomains: ['a', 'b', 'c'],
         ),
         PolylineLayer(
           polylines: [
             Polyline(
               points: [driverLocation, destinationLocation],
-              strokeWidth: 4.0,
-              color: Colors.blue,
+              strokeWidth: 3.0,
+              color: Color(0xFF2000B1),
             ),
           ],
         ),
+        MarkerLayer(
+          markers: [
+            _buildMarker(driverLocation, Color(0xFF2000B1)),
+            _buildMarker(destinationLocation, Colors.red),
+          ],
+        ),
       ],
+    );
+  }
+
+  Marker _buildMarker(LatLng position, Color color) {
+    return Marker(
+      point: position,
+      width: 40.0,
+      height: 40.0,
+      child: Icon(
+        Icons.location_on,
+        color: color,
+        size: 40.0,
+      ),
     );
   }
 }
