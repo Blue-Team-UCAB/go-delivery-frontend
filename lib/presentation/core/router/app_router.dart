@@ -1,5 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_delivery_frontend/application/BLoc/cart/cart_bloc.dart';
+import 'package:go_delivery_frontend/presentation/screens/notification/notification_detail_screen.dart';
 import 'package:go_delivery_frontend/presentation/screens/order/orders_screen.dart';
 import 'package:go_delivery_frontend/presentation/screens/screens.dart';
 import 'package:go_router/go_router.dart';
@@ -71,6 +72,14 @@ class RoutesManager {
                 child: const NotificationScreen(),
               )),
       GoRoute(
+          path: '/push-details/:messageId',
+          pageBuilder: (context, state) => CustomTransitions.slideRight(
+                key: state.pageKey,
+                child: DetailsScreen(
+                  pushMessageId: state.pathParameters['messageId'] ?? '',
+                ),
+              )),
+      GoRoute(
           path: '/password/forgot',
           pageBuilder: (context, state) => CustomTransitions.slideRight(
                 key: state.pageKey,
@@ -104,8 +113,7 @@ class RoutesManager {
                 orderNumber: orderId,
               ),
             );
-          }
-      ),
+          }),
       GoRoute(
         path: '/productdetail/:name',
         pageBuilder: (context, state) {

@@ -3,6 +3,7 @@ import 'package:equatable/equatable.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:go_delivery_frontend/application/BLoc/notifications/notification-list/notification_list_bloc.dart';
+import 'package:go_delivery_frontend/common/result.dart';
 import 'package:go_delivery_frontend/domain/entities/notifications/notification.dart';
 import 'package:go_delivery_frontend/firebase_options.dart';
 import 'package:go_delivery_frontend/infrastructure/mappers/push_message_model.dart';
@@ -18,7 +19,10 @@ Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 
 class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState> {
   FirebaseMessaging messaging = FirebaseMessaging.instance;
-  NotificationsBloc() : super(const NotificationsState()) {
+
+  final Future<void> Function()? sendFCMToken;
+
+  NotificationsBloc(this.sendFCMToken) : super(const NotificationsState()) {
     on<NotificationsStatusChanged>(_notificationStatusChanged);
     on<NotificationsReceived>(_onPushMessageReceived);
 
@@ -27,6 +31,16 @@ class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState> {
     //foreground notificacion listener (always active)
     _onForegroundMessage();
   }
+
+  void sendToken() async {
+    if (sendFCMToken != null) {
+      await messaging.getToken();
+      print('FCM token:${messaging.getToken()}');
+    }
+  }
+  // Future<void> sendFCMToken() async {
+  //   return _getFCMToken();
+  // }
 
   static Future<void> initializeFirebaseNotifications() async {
     await Firebase.initializeApp(
@@ -89,5 +103,13 @@ class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState> {
     );
     add(NotificationsStatusChanged(settings.authorizationStatus));
     settings.authorizationStatus;
+  }
+
+  PushMessageModel? getMessageById(String pushMessageId) {
+    final exist = state.notifications
+        .any((element) => element.messageId == pushMessageId);
+    if (!exist) return null;
+    return state.notifications
+        .firstWhere((element) => element.messageId == pushMessageId);
   }
 }

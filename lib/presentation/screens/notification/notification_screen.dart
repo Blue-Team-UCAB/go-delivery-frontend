@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_delivery_frontend/application/BLoc/notifications/bloc/notifications_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 
@@ -159,6 +160,9 @@ class NotificationScreen extends StatelessWidget {
               leading: notification.imageUrl != null
                   ? Image.network(notification.imageUrl!)
                   : null,
+              onTap: () {
+                context.push('/push-details/${notification.messageId}');
+              },
 
               // trailing: Text(
               //   '${notification.date.day}/${notification.date.month}/${notification.date.year}',
