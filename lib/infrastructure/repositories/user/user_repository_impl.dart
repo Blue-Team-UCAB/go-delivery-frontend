@@ -138,9 +138,6 @@ class UserRepositoryImpl implements UserRepository {
   @override
   Future<Result<bool>> changePassword(
       String email, String code, String password) async {
-    print(email);
-    print(code);
-    print(password);
 
     final response = await _apiRequestManager.request<bool>(
       '/auth/change/password',
@@ -160,9 +157,15 @@ class UserRepositoryImpl implements UserRepository {
   Future<Result<User>> getCurrent() async {
     await _addAuthorizationHeader();
     final response =
-        await _apiRequestManager.request('/auth/current', 'GET', (data) {
-      return UserMapper.fromJson(data);
-    });
+        await _apiRequestManager.request(
+            '/auth/current',
+            'GET',
+                (data) {
+                  return UserMapper.fromJson(data);
+                }
+         );
+    print("GETCURRENT");
+
     return response;
   }
 }

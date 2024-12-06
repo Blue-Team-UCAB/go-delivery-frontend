@@ -17,7 +17,7 @@ class _ComboSectionState extends State<ComboSection> {
   void initState() {
     super.initState();
     BlocProvider.of<BundleListBloc>(context).add(
-        const LoadBundleList(page: 1, take: 4)
+        const LoadBundleList(page: 1, perpage: 4)
     );
   }
 

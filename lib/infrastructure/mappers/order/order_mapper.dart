@@ -1,32 +1,54 @@
+import 'package:go_delivery_frontend/infrastructure/mappers/product/orderproduct_mapper.dart';
+
 import '../../../domain/entities/order/order.dart';
-import '../product/product_mapper.dart';
+import '../bundle/bundle_mapper.dart';
+import '../direction/direction_mapper.dart';
 
 class OrderMapper {
   static Order fromJson(Map<String, dynamic> json) {
     return Order(
-      orderNumber: json['orderNumber'] ?? '',
-      date: json['date'] ?? '',
-      items: json['items'] ?? '',
-      price: json['price'] ?? '',
-      status: json['status'] ?? '',
-      time: json['time'] ?? '',
-      location: json['location'] ?? '',
-      products: (json['products'] as List<dynamic>?)
-          ?.map((productJson) => ProductMapper.fromJson(productJson))
-          .toList() ?? [],
+      id: json['id'],
+      state: (json['state'] as List)
+          .map((stateJson) => OrderStateMapper.fromJson(stateJson))
+          .toList(),
+      totalAmount: json['totalAmount'].toDouble(),
+      subtotalAmount: json['subtotalAmount'].toDouble(),
+      direction: DirectionMapper.fromJson(json['direction']),
+      products: (json['products'] as List)
+          .map((productJson) => OrderProductMapper.fromJson(productJson))
+          .toList(),
+      bundles: (json['bundles'] as List)
+          .map((bundleJson) => BundleMapper.fromJson(bundleJson))
+          .toList(),
     );
   }
 
   static Map<String, dynamic> toJson(Order order) {
     return {
-      'orderNumber': order.orderNumber,
-      'date': order.date,
-      'items': order.items,
-      'price': order.price,
-      'status': order.status,
-      'time': order.time,
-      'location': order.location,
-      'products': order.products.map((product) => ProductMapper.toJson(product)).toList(),
+      'id': order.id,
+      'state': order.state.map((s) => OrderStateMapper.toJson(s)).toList(),
+      'totalAmount': order.totalAmount,
+      'subtotalAmount': order.subtotalAmount,
+      'direction': DirectionMapper.toJson(order.direction),
+      'products': order.products.map((p) => OrderProductMapper.toJson(p)).toList(),
+      'bundles': order.bundles.map((b) => BundleMapper.toJson(b)).toList(),
     };
   }
 }
+
+class OrderStateMapper {
+  static OrderState fromJson(Map<String, dynamic> json) {
+    return OrderState(
+      state: json['state'],
+      date: json['date'],
+    );
+  }
+
+  static Map<String, dynamic> toJson(OrderState state) {
+    return {
+      'state': state.state,
+      'date': state.date,
+    };
+  }
+}
+

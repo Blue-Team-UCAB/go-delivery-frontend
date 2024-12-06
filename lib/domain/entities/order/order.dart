@@ -1,22 +1,34 @@
+import '../bundle/bundle.dart';
+import '../direction/direction.dart';
 import '../product/product.dart';
 
 class Order {
-  final String orderNumber;
-  final String date;
-  final String items;
-  final String price;
-  final String status;
-  final String time;
-  final String location;
-  final List<Product> products;
+  String id;
+  List<OrderState> state;
+  double totalAmount;
+  double subtotalAmount;
+  Direction direction;
+  List<OrderProduct> products;
+  List<Bundle> bundles;
 
-  Order(
-      {required this.orderNumber,
-      required this.date,
-      required this.items,
-      required this.price,
-      required this.status,
-      required this.time,
-      required this.location,
-      required this.products});
+  Order({
+    required this.id,
+    required this.state,
+    required this.totalAmount,
+    required this.subtotalAmount,
+    required this.direction,
+    required this.products,
+    required this.bundles,
+  });
 }
+
+class OrderState {
+  String state;
+  String date;
+
+  OrderState({
+    required this.state,
+    required this.date,
+  });
+}
+

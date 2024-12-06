@@ -7,19 +7,41 @@ import '../../../../application/BLoc/order/order_detailed/order_detailed_bloc.da
 import '../../../../application/BLoc/order/order_detailed/order_detailed_event.dart';
 import '../../../../application/BLoc/order/order_detailed/order_detailed_state.dart';
 import '../../../../injector.dart';
-import 'order_detailed_screen_active.dart';
-import 'order_detailed_screen_inactive.dart';
+import 'active/order_detailed_screen_active.dart';
+import 'past/order_detailed_screen_past.dart';
 
-class OrderDetailScreen extends StatelessWidget {
+class OrderDetailScreen extends StatefulWidget {
   final String orderNumber;
 
   const OrderDetailScreen({super.key, required this.orderNumber});
 
   @override
+  State<OrderDetailScreen> createState() => _OrderDetailScreenState();
+}
+
+class _OrderDetailScreenState extends State<OrderDetailScreen> {
+  late OrderDetailBloc _orderDetailBloc;
+
+  @override
+  void initState() {
+    super.initState();
+    _orderDetailBloc = getIt<OrderDetailBloc>();
+
+    print("ORDER NUMBER: ${widget.orderNumber}");
+
+    _orderDetailBloc.add(LoadOrderDetailEvent(widget.orderNumber));
+  }
+
+  @override
+  void dispose() {
+    _orderDetailBloc.close();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) =>
-          getIt<OrderDetailBloc>()..add(LoadOrderDetailEvent(orderNumber)),
+    return BlocProvider.value(
+      value: _orderDetailBloc,
       child: Scaffold(
         backgroundColor: Colors.white,
         appBar: AppBar(
@@ -33,6 +55,7 @@ class OrderDetailScreen extends StatelessWidget {
             child: const Text(
               'Detalle de Orden',
               style: TextStyle(
+                fontFamily: "Montserrat",
                 color: Colors.black,
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
@@ -45,7 +68,6 @@ class OrderDetailScreen extends StatelessWidget {
             if (state is OrderDetailLoadingState) {
               return const Center(child: CircularProgressIndicator());
             }
-
             if (state is OrderDetailErrorState) {
               return Center(
                 child: FadeInUp(
@@ -55,9 +77,7 @@ class OrderDetailScreen extends StatelessWidget {
                       Text(state.error),
                       ElevatedButton(
                         onPressed: () {
-                          context
-                              .read<OrderDetailBloc>()
-                              .add(LoadOrderDetailEvent(orderNumber));
+                          _orderDetailBloc.add(LoadOrderDetailEvent(widget.orderNumber));
                         },
                         child: const Text('Reintentar'),
                       )
@@ -68,9 +88,11 @@ class OrderDetailScreen extends StatelessWidget {
             }
 
             if (state is OrderDetailLoadedState) {
-              return state.status == 'Por Entregar'
+              print(state.last_state);
+
+              return state.last_state != 'DELIVERED' && state.last_state != 'CANCELED'
                   ? ActiveOrderDetails(state: state)
-                  : InactiveOrderDetails(state: state);
+                  : PastOrderDetails(state: state);
             }
 
             return const SizedBox.shrink();

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'order_detailed_screen_active.dart';
+import '../../../screens/detail/order/active/order_detailed_screen_active.dart';
 
 class DriverCard extends StatelessWidget {
   final String driverName;
@@ -85,34 +85,3 @@ class DriverCard extends StatelessWidget {
   }
 }
 
-// You might also want to add this extension for better error handling
-extension DriverCardErrorHandler on DriverCard {
-  Widget withErrorHandler() {
-    return ErrorBoundary(
-      child: this,
-      fallback: (error, stackTrace) {
-        return Card(
-          margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-          child: Padding(
-            padding: const EdgeInsets.all(16),
-            child: Row(
-              children: [
-                CircleAvatar(
-                  backgroundColor: Colors.grey[300],
-                  child: Icon(Icons.person, color: Colors.grey[600]),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Text(
-                    'Error loading driver information',
-                    style: TextStyle(color: Colors.grey[600]),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        );
-      },
-    );
-  }
-}

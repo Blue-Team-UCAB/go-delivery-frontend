@@ -1,15 +1,48 @@
-import 'package:get_it/get_it.dart';
+
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:go_delivery_frontend/application/BLoc/blocs.dart'; //Para añadir nuevos blocs
-import 'package:go_delivery_frontend/application/use_cases/use_cases.dart'; //Para añadir nuevos casos de uso
-import 'package:go_delivery_frontend/domain/repositories/repositories_interface.dart'; //Para añadir las interfaces de los repositorios
-import 'package:go_delivery_frontend/infrastructure/repositories/repositories.dart'; //Para añadir las implementaciones de los repositorios
-import 'package:go_delivery_frontend/infrastructure/datasources/api/api_request_impl.dart';
-import 'package:go_delivery_frontend/infrastructure/datasources/cart/cart_isar_local_storage_datasource.dart';
-import 'package:go_delivery_frontend/infrastructure/datasources/localstorage/localstorage_impl.dart';
+import 'package:get_it/get_it.dart';
+
+import 'application/BLoc/auth/current/current_user_bloc.dart';
+import 'application/BLoc/auth/login/login_bloc.dart';
 import 'application/BLoc/auth/recover_password/recover_password_bloc.dart';
 import 'application/BLoc/auth/register/register_bloc.dart';
+import 'application/BLoc/bundle/bundle_detail/bundle_detail_bloc.dart';
+import 'application/BLoc/bundle/bundle_many/bundle_many_bloc.dart';
+import 'application/BLoc/cart/cart_bloc.dart';
+import 'application/BLoc/order/order_detailed/order_detailed_bloc.dart';
+import 'application/BLoc/order/order_many/order_many_bloc.dart';
+import 'application/BLoc/payment/pago_movil/pago_movil_bloc.dart';
+import 'application/BLoc/payment/zelle/zelle_bloc.dart';
+import 'application/BLoc/product/popular/product_popular_many_bloc.dart';
+import 'application/BLoc/product/popular/random/product_random_many_bloc.dart';
+import 'application/BLoc/product/product_detail/product_detail_bloc.dart';
+import 'application/BLoc/product/product_many/product_many_bloc.dart';
+import 'application/BLoc/themes/themes_bloc.dart';
+import 'application/use_cases/auth/current/current_user_usecase_input.dart';
+import 'application/use_cases/auth/login/login_usecase_input.dart';
+import 'application/use_cases/auth/recover_password/recovery_usecase_input.dart';
+import 'application/use_cases/auth/register/register_usecase_input.dart';
+import 'application/use_cases/bundle/get_many_bundle.dart';
+import 'application/use_cases/bundle/get_one_bundle.dart';
+import 'application/use_cases/order/get_many_order.dart';
 import 'application/use_cases/order/get_one_order.dart';
+import 'application/use_cases/payment/post_pago_movil.dart';
+import 'application/use_cases/payment/post_zelle.dart';
+import 'application/use_cases/product/get_many_product.dart';
+import 'application/use_cases/product/get_one_product.dart';
+import 'domain/repositories/bundle/bundle_repository.dart';
+import 'domain/repositories/order/order_repository.dart';
+import 'domain/repositories/payment/payment_method_repository.dart';
+import 'domain/repositories/product/product_repository.dart';
+import 'infrastructure/datasources/api/api_request_impl.dart';
+import 'infrastructure/datasources/cart/cart_isar_local_storage_datasource.dart';
+import 'infrastructure/datasources/localstorage/localstorage_impl.dart';
+import 'infrastructure/repositories/bundle/bundle_repository_impl.dart';
+import 'infrastructure/repositories/cart/cart_local_storage_repository_impl.dart';
+import 'infrastructure/repositories/order/order_repository_impl.dart';
+import 'infrastructure/repositories/payment/payment_method_repository_impl.dart';
+import 'infrastructure/repositories/product/product_repository_impl.dart';
+import 'infrastructure/repositories/user/user_repository_impl.dart';
 
 final getIt = GetIt.instance;
 
@@ -143,12 +176,17 @@ class InjectManager {
     //casos de uso
     final getOneOrderUseCase =
         GetOneOrderUseCase(orderRepository: orderRepository);
+    final getManyOrderUseCase =
+        GetManyOrdersUseCase(orderRepository: orderRepository);
 
     getIt.registerSingleton<GetOneOrderUseCase>(getOneOrderUseCase);
+    getIt.registerSingleton<GetManyOrdersUseCase>(getManyOrderUseCase);
     // ======================================================================= //
 
     getIt.registerSingleton(
         OrderDetailBloc(getOneOrderUseCase: getOneOrderUseCase));
+    getIt.registerSingleton(
+        ManyOrdersBloc(getManyOrdersUseCase: getManyOrderUseCase));
 
     // ============================= PAYMENT =================================== //
 
@@ -164,7 +202,7 @@ class InjectManager {
 
     //Casos de uso
     final processPagoMovilUseCase =
-        ProcessPagoMovilUseCase(paymentRepository: paymentRepository);
+    ProcessPagoMovilUseCase(paymentRepository: paymentRepository);
 
     getIt.registerSingleton<ProcessPagoMovilUseCase>(processPagoMovilUseCase);
 
@@ -175,11 +213,12 @@ class InjectManager {
 
     //Casos de uso
     final processZelleUseCase =
-        ProcessZelleUseCase(paymentRepository: paymentRepository);
+    ProcessZelleUseCase(paymentRepository: paymentRepository);
 
     getIt.registerSingleton<ProcessZelleUseCase>(processZelleUseCase);
 
     //Bloc
     getIt.registerSingleton(ZelleBloc(processZelleUseCase));
+
   }
 }
