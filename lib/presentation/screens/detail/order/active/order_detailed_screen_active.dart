@@ -34,19 +34,18 @@ class ActiveOrderDetails extends StatelessWidget {
               location: state.location,
             ),
           ),
-          // Add DriverCard when state is SHIPPED and driver info exists
-          if (currentActiveState == 'SHIPPED' && state.courier!.name != null && state.courier!.id != null)
+          if (currentActiveState == 'SHIPPED' && state.courier!.name != null && state.courier!.id != null && state.courier!.phone != null)
             FadeInDown(
-              delay: const Duration(milliseconds: 20),
+              delay: const Duration(milliseconds: 100),
               child: DriverCard(
                 driverName: state.courier!.name,
-                phoneNumber: state.courier!.phoneNumber,
+                phoneNumber: state.courier!.phone,
                 onCallPressed: () {
                 },
               ),
             ),
           FadeInDown(
-            delay: const Duration(milliseconds: 20),
+            delay: const Duration(milliseconds: 160),
             child: OrderProgress(
               state: state,
               currentActiveState: currentActiveState,

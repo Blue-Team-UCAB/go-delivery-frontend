@@ -5,7 +5,7 @@ class CourierMapper {
     return Courier(
       id: json['id'] as String? ?? '',
       name: json['name'] as String? ?? 'Unknown Driver',
-      phoneNumber: json['phoneNumber'] as String? ?? '',
+      phone: json['phone'] as String? ?? '',
     );
   }
 
@@ -13,7 +13,7 @@ class CourierMapper {
     return {
       'id': courier.id,
       'name': courier.name,
-      'phoneNumber': courier.phoneNumber,
+      'phoneNumber': courier.phone,
     };
   }
 

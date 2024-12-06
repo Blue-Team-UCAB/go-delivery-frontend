@@ -22,6 +22,7 @@ class OrderDetailBloc extends SafeBloc<OrderDetailEvent, OrderDetailState> {
     try {
       final orderDetail = await getOneOrderUseCase
           .execute(GetOneOrderUseCaseInput(orderId: event.orderNumber));
+
       emit(OrderDetailLoadedState(
         id: orderDetail.value!.id,
         state: orderDetail.value!.state,
