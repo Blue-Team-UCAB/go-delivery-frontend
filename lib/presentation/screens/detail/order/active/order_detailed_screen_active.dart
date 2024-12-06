@@ -157,7 +157,7 @@ class OrderProgress extends StatelessWidget {
           ],
         ),
         const SizedBox(width: 12),
-        const Expanded(
+        Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -172,7 +172,7 @@ class OrderProgress extends StatelessWidget {
                 child: SizedBox(
                   height: 200,
                   child: DeliveryMap(
-                    driverLocation: LatLng(10.48801, -66.87919),
+                    driverLocation: const LatLng(10.48801, -66.87919),
                     destinationLocation: state.coordinates,
                   ),
                 ),
