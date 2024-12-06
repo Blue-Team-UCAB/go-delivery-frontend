@@ -192,9 +192,30 @@ class InjectManager {
     final processCardUseCase =
         ProcessCardPaymentUseCase(paymentRepository: paymentRepository);
 
+    final getCardUseCase =
+        GetUserCardsUseCase(paymentRepository: paymentRepository);
+
     getIt.registerSingleton<ProcessCardPaymentUseCase>(processCardUseCase);
+    getIt.registerSingleton<GetUserCardsUseCase>(getCardUseCase);
 
     //Bloc
     getIt.registerSingleton(CardBloc(processCardUseCase));
+    getIt.registerSingleton(CardListBloc(getCardUseCase));
+
+    // ============================= WALLET =================================== //
+
+    //Repositorio
+    final walletRepository = WalletRepositoryImpl(
+        apiRequestManager: apiRequestManagerImpl,
+        localStorage: localStorageService);
+
+    //Caso de uso
+    final getWalletAmountUseCase =
+        GetWalletAmountUseCase(walletRepository: walletRepository);
+
+    getIt.registerSingleton<GetWalletAmountUseCase>(getWalletAmountUseCase);
+
+    //Bloc
+    getIt.registerSingleton(GetWalletAmountBloc(getWalletAmountUseCase));
   }
 }

@@ -4,6 +4,7 @@ import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:go_delivery_frontend/application/BLoc/blocs.dart';
 import 'package:go_delivery_frontend/application/BLoc/payment/card/card_event.dart';
 import 'package:go_delivery_frontend/application/BLoc/payment/card/card_state.dart';
+import 'package:go_delivery_frontend/application/BLoc/payment/card_get/get_card_event.dart';
 
 class AddCardScreen extends StatefulWidget {
   const AddCardScreen({super.key});
@@ -14,8 +15,6 @@ class AddCardScreen extends StatefulWidget {
 
 class _AddCardScreenState extends State<AddCardScreen> {
   CardFieldInputDetails? _cardDetails;
-
-  // Método para guardar la tarjeta, invocando el BLoC
   Future<void> _saveCard(BuildContext context) async {
     if (_cardDetails == null || !_cardDetails!.complete) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -26,7 +25,6 @@ class _AddCardScreenState extends State<AddCardScreen> {
     }
 
     try {
-      // Creamos el PaymentMethod con Stripe
       final paymentMethod = await Stripe.instance.createPaymentMethod(
         params: const PaymentMethodParams.card(
           paymentMethodData: PaymentMethodData(
@@ -38,7 +36,6 @@ class _AddCardScreenState extends State<AddCardScreen> {
       final cardId = paymentMethod.id;
 
       print('Tarjeta creada con ID: $cardId');
-
       BlocProvider.of<CardBloc>(context).add(SubmitCardPayment(idCard: cardId));
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -77,17 +74,22 @@ class _AddCardScreenState extends State<AddCardScreen> {
                     builder: (context) =>
                         const Center(child: CircularProgressIndicator()),
                   );
-                } else if (state is PaymentSuccess) {
+                } else {
+                  // Cerrar el diálogo de carga
                   Navigator.pop(context);
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text("¡Pago exitoso!")),
-                  );
+
+                  if (state is PaymentSuccess) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                          content: Text("¡Tarjeta añadida con éxito!")),
+                    );
+                  } else if (state is PaymentFailure) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text("Error: ${state.message}")),
+                    );
+                  }
+                  BlocProvider.of<CardListBloc>(context).add(LoadCardList());
                   Navigator.pop(context);
-                } else if (state is PaymentFailure) {
-                  Navigator.pop(context);
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text("Error: ${state.message}")),
-                  );
                 }
               },
               child: Center(

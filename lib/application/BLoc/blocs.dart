@@ -8,6 +8,8 @@ export 'package:go_delivery_frontend/application/BLoc/product/product_detail/pro
 export 'package:go_delivery_frontend/application/BLoc/payment/pago_movil/pago_movil_bloc.dart';
 export 'package:go_delivery_frontend/application/BLoc/payment/card/card_bloc.dart';
 export 'package:go_delivery_frontend/application/BLoc/payment/zelle/zelle_bloc.dart';
+export 'package:go_delivery_frontend/application/BLoc/payment/card_get/get_card_bloc.dart';
+export 'package:go_delivery_frontend/application/BLoc/payment/get_wallet/get_wallet_bloc.dart';
 export 'package:go_delivery_frontend/application/BLoc/product/product_many/product_many_bloc.dart';
 export 'package:go_delivery_frontend/application/BLoc/auth/login/login_bloc.dart';
 export 'package:go_delivery_frontend/application/BLoc/cart/cart_bloc.dart';
