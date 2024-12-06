@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../domain/entities/order/order.dart';
 import '../../widgets/dialog_darken_window.dart';
+import '../../widgets/order_detailed/past/show_reorder_darken_window.dart';
 
 class OrderCard extends StatefulWidget {
   final OrderManyItem order;
@@ -158,6 +159,7 @@ class _OrderCardState extends State<OrderCard> {
         );
       },
     );
+
   }
 
   Widget _buildButtons(String orderid) {
@@ -223,7 +225,9 @@ class _OrderCardState extends State<OrderCard> {
           const SizedBox(width: 8),
           Expanded(
             child: ElevatedButton(
-              onPressed: () {},
+              onPressed: () {
+                showReorderPopupDialog(context);
+              },
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFF2000B1),
               ),

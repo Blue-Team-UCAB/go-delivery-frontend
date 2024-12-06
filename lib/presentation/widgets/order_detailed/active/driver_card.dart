@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'active/order_detailed_screen_active.dart';
+import '../../../screens/detail/order/active/order_detailed_screen_active.dart';
 
 class DriverCard extends StatelessWidget {
   final String driverName;
