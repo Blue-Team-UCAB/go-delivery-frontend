@@ -68,7 +68,8 @@ class CartBloc extends Bloc<CartEvent, CartState> {
       imgUrl: event.item.imgUrl, 
       price: event.item.price, 
       presentation: event.item.presentation, 
-      quantity: event.item.quantity
+      quantity: event.item.quantity,
+      type: event.item.type
     );
 
     _cartLocalStorageRepository.addCartItem(newCartItem);
