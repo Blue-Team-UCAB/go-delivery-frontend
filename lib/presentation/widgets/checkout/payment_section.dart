@@ -119,7 +119,7 @@ class _PaymentMethodSectionState extends State<PaymentMethodSection> {
                           return const CircularProgressIndicator();
                         } else if (state is WalletAmountLoaded) {
                           return Text(
-                            '\$${state.walletAmount.amount.toStringAsFixed(2)}',
+                            '\$${(state.walletAmount.amount*100).truncateToDouble()/100}',
                             style: const TextStyle(
                               fontSize: 14,
                               fontWeight: FontWeight.w500,

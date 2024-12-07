@@ -77,8 +77,7 @@ class DataBox extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final double totalItem =
-        double.parse((price * quantity).toStringAsFixed(2));
+    final double totalItem = (price * quantity)*100.truncateToDouble()/100;
 
     return Flexible(
       flex: 1,
