@@ -81,7 +81,6 @@ class OrderRepositoryImpl extends OrderRepository {
   }) async {
     await _addAuthorizationHeader();
 
-    try {
       // Prepare the body
       final body = {
         'direction': direction,
@@ -93,20 +92,27 @@ class OrderRepositoryImpl extends OrderRepository {
         if (bundles != null && bundles.isNotEmpty)
           'bundles': CheckoutBundleMapper.toJsonList(bundles),
       };
+      var message;
 
+      print("APPLIED COUPON: ${body["id_coupon"]}");
 
       final response = await _apiRequestManager.request(
         '/order',
         'POST',
             (data) {
-          return true;
+              if (data['errorCode'] != 200) {
+                message = data["message"];
+                return false;
+              } else {
+                return true;
+              }
         },
         body: body,
       );
+    if (response.value == true) {
       return response;
-    } catch (e) {
-      print('Error in OrderRepositoryImpl.createOrder: $e');
-      rethrow;
+    } else {
+      return Result.fail(CustomFailure(message: message));
     }
   }
 

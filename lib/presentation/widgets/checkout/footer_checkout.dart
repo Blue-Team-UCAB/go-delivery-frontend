@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import '../../../application/BLoc/cart/cart_bloc.dart';
+import '../../../application/BLoc/coupon/coupon_bloc.dart';
 import '../../../application/BLoc/order/order_create/order_create_bloc.dart';
 import '../../../application/BLoc/order/order_create/order_create_event.dart';
 import '../../../application/BLoc/order/order_create/order_create_state.dart';
@@ -13,10 +14,12 @@ import 'coupon_section.dart';
 
 class ContinueButton extends StatelessWidget {
   final Map<String, dynamic>? selectedAddress;
+  final String? selectedCardId; // Add this line
 
   const ContinueButton({
     super.key,
     required this.selectedAddress,
+    this.selectedCardId, // Add this to the constructor
   });
 
   @override
@@ -40,6 +43,7 @@ class ContinueButton extends StatelessWidget {
             state.errorMessage == null) {
           // Show success dialog only once
           WidgetsBinding.instance.addPostFrameCallback((_) {
+            context.read<CouponBloc>().clearCoupon();
             context.read<CartBloc>().emptyCart();
             _showOrderCreatedDialog(context);
           });
@@ -107,13 +111,16 @@ class ContinueButton extends StatelessWidget {
       return;
     }
 
+    print(selectedCardId);
+
+
     // Dispatch checkout event with all necessary data
     context.read<CheckoutBloc>().add(
       ProcessCheckoutEvent(
         direction: selectedAddress!['description'],
         longitude: selectedAddress!['longitude'],
         latitude: selectedAddress!['latitude'],
-        tokenStripe: null,
+        tokenStripe: selectedCardId != "" ? selectedCardId : "",
         couponId: state.appliedCoupon?.id,
         productItems: state.productItems
             .map((item) => CheckoutProduct(
@@ -128,6 +135,7 @@ class ContinueButton extends StatelessWidget {
       ),
     );
   }
+
 
   void _showOrderCreatedDialog(BuildContext context) {
     showDialog(

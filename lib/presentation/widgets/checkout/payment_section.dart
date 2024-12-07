@@ -15,7 +15,12 @@ import 'package:go_delivery_frontend/application/BLoc/payment/zelle/zelle_state.
 import 'package:go_delivery_frontend/application/BLoc/payment/zelle/zelle_event.dart';
 
 class PaymentMethodSection extends StatefulWidget {
-  const PaymentMethodSection({super.key});
+  final Function(String?)? onCardSelected;
+
+  const PaymentMethodSection({
+    super.key,
+    this.onCardSelected,
+  });
 
   @override
   State<PaymentMethodSection> createState() => _PaymentMethodSectionState();
@@ -27,6 +32,7 @@ class _PaymentMethodSectionState extends State<PaymentMethodSection> {
   String? _selectedGoDelyOption;
   String? _referenceNumber;
   String? _selectedBank;
+  String? _selectedCardId;
   double userPoints = 0.00;
 
   TextEditingController referenceController = TextEditingController();
@@ -169,12 +175,25 @@ class _PaymentMethodSectionState extends State<PaymentMethodSection> {
                     // Identificar tarjeta única
                     final cardIdentifier =
                         "${card.brand ?? ''}-${card.last4 ?? ''}-${card.expMonth ?? ''}-${card.expYear ?? ''}";
+                    final selectedCard_id = card.idCard;
 
                     return GestureDetector(
                       onTap: () {
                         setState(() {
+                          _selectedCardId = selectedCard_id;
                           _selectedCardType = cardIdentifier;
                         });
+
+                        // Debugging print
+                        print('Selected Card ID: $selectedCard_id');
+                        print('Callback: ${widget.onCardSelected}');
+
+                        // Ensure the callback is not null before calling
+                        if (widget.onCardSelected != null) {
+                          widget.onCardSelected!(selectedCard_id);
+                        } else {
+                          print('onCardSelected callback is null');
+                        }
                       },
                       child: Container(
                         margin: const EdgeInsets.only(bottom: 12.0),
