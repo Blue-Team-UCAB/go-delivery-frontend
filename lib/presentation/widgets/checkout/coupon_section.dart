@@ -70,7 +70,7 @@ class ApplyCouponSectionState extends State<ApplyCouponSection> {
               listener: (context, state) {
                 if (state is CouponLoading) {
                 } else if (state is CouponLoaded) {
-                  _couponId = state.coupon!.id;
+                  _couponId = state.coupon.id;
                   Navigator.pop(context);
                   _showCouponResult(context, "Cupon agregado con exito.");
                 } else if (state is CouponFailed) {
@@ -119,28 +119,26 @@ class ApplyCouponSectionState extends State<ApplyCouponSection> {
                               ),
                             ),
                             const SizedBox(height: 16),
-                            GestureDetector(
-                              onTap: validate,
-                              child: Container(
-                                alignment: Alignment.center,
-                                padding: const EdgeInsets.symmetric(
-                                  vertical: 12.0,
-                                  horizontal: 24.0,
-                                ),
-                                decoration: BoxDecoration(
-                                  color: const Color(0xFF2000B1),
-                                  borderRadius: BorderRadius.circular(8.0),
-                                ),
-                                child: const Text(
-                                  'Confirmar',
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
+                            SizedBox(
+                              width: double.infinity,
+                              height: 48,
+                              child: FilledButton(
+                                  style: ButtonStyle(
+                                    backgroundColor:
+                                        const WidgetStatePropertyAll(Color(0xFF2000B1)),
+                                    shape: WidgetStatePropertyAll<RoundedRectangleBorder>(
+                                      RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(12.0),
+                                      ),
+                                    ),
                                   ),
-                                ),
-                              ),
-                            ),
+                                  onPressed: validate,
+                                  child: const Text('Confirmar',
+                                      style: TextStyle(
+                                          fontFamily: 'Inter',
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 16))),
+        ),
                           ],
                         ),
                       ),
