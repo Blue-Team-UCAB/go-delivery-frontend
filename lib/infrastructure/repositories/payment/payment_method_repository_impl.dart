@@ -103,10 +103,16 @@ class PaymentRepositoryImpl extends PaymentRepository {
       final response = await _apiRequestManager.request(
         '/pay/card',
         'POST',
-        (data) => PaymentMethodMapper.parseApiResponse(data),
+        (data) => data,
         body: {'idCard': card.idCard},
       );
-      return response;
+
+      if (response == true) {
+        return Result.success('Funciono');
+      } else {
+        return Result.fail(
+            const ServerFailure(message: 'Error al procesar la tarjeta'));
+      }
     } catch (e) {
       print('Error en PaymentRepositoryImpl.processCard: $e');
       return Result.fail(

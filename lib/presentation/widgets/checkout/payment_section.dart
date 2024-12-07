@@ -156,7 +156,6 @@ class _PaymentMethodSectionState extends State<PaymentMethodSection> {
         children: [
           BlocBuilder<CardListBloc, CardListState>(
             builder: (context, state) {
-              // Dispara el evento para cargar las tarjetas si aún no hay estado cargado
               if (state is CardListInitial) {
                 BlocProvider.of<CardListBloc>(context).add(LoadCardList());
                 return const CircularProgressIndicator();
@@ -212,7 +211,6 @@ class _PaymentMethodSectionState extends State<PaymentMethodSection> {
                               ),
                             ),
                             const SizedBox(height: 4),
-                            // Fecha de expiración formateada
                             Text(
                               "Fecha: ${card.expMonth?.toString().padLeft(2, '0') ?? '00'}/${card.expYear?.toString().substring(2, 4) ?? '00'}",
                               style: const TextStyle(
@@ -487,8 +485,7 @@ class _PaymentMethodSectionState extends State<PaymentMethodSection> {
       isScrollControlled: true,
       builder: (context) {
         final paymentBloc = context.read<PaymentBloc>();
-        final walletBloc = context
-            .read<GetWalletAmountBloc>(); // Acceso al GetWalletAmountBloc
+        final walletBloc = context.read<GetWalletAmountBloc>();
 
         return BlocProvider.value(
           value: paymentBloc,
@@ -500,9 +497,7 @@ class _PaymentMethodSectionState extends State<PaymentMethodSection> {
             child: BlocListener<PaymentBloc, PaymentState>(
               listener: (context, state) {
                 if (state is PaymentLoading) {
-                  // Mostrar un cargador si es necesario
                 } else if (state is PaymentSuccess) {
-                  // Si el pago es exitoso, disparar la carga del monto de la billetera
                   walletBloc.add(LoadWalletAmount());
                   Navigator.pop(context);
                   _showPaymentResult(context, "Pago registrado con éxito.");
@@ -515,10 +510,7 @@ class _PaymentMethodSectionState extends State<PaymentMethodSection> {
               child: BlocListener<GetWalletAmountBloc, GetWalletAmountState>(
                 listener: (context, walletState) {
                   if (walletState is WalletAmountLoaded) {
-                    final walletAmount = walletState.walletAmount;
-                  } else if (walletState is WalletAmountFailed) {
-                    final result = walletState.result;
-                  }
+                  } else if (walletState is WalletAmountFailed) {}
                 },
                 child: StatefulBuilder(
                   builder: (context, setState) {
@@ -566,7 +558,7 @@ class _PaymentMethodSectionState extends State<PaymentMethodSection> {
                         setState(() {
                           showError = true;
                           errorMessage =
-                              'La referencia debe ser un string de exactamente 6 caracteres alfanuméricos.';
+                              'La referencia debe ser un codigo de exactamente 6 caracteres alfanuméricos.';
                         });
                         return;
                       }
@@ -595,7 +587,6 @@ class _PaymentMethodSectionState extends State<PaymentMethodSection> {
 
                       String fullPhoneNumber = '58${phoneController.text}';
 
-                      // Envía el pago, y una vez sea exitoso, se disparará el evento para obtener el monto
                       context.read<PaymentBloc>().add(SubmitPayment(
                             phoneNumber: fullPhoneNumber,
                             cedula: idController.text,
