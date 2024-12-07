@@ -114,7 +114,17 @@ class ApplyCouponSectionState extends State<ApplyCouponSection> {
                               controller: couponIdController,
                               keyboardType: TextInputType.text,
                               maxLength: 15,
+                              cursorColor: const Color(0xFF2000B1),
                               decoration: const InputDecoration(
+                                labelStyle: TextStyle(fontFamily: 'Inter',fontSize: 16, color: Color(0xFF858597)),
+                                focusedBorder: OutlineInputBorder(
+                                  borderSide: BorderSide(color: Color(0xFF2000B1),width: 1),
+                                  borderRadius: BorderRadius.all(Radius.circular(12))
+                                ),
+                                border: OutlineInputBorder(
+                                  borderSide: BorderSide(color: Color(0xFFB8B8D2),width: 0.5),
+                                  borderRadius: BorderRadius.all(Radius.circular(12))
+                                ),
                                 labelText: 'Codigo del Cupon',
                               ),
                             ),
