@@ -10,8 +10,10 @@ class ContinueButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final addressSection = context.findAncestorStateOfType<AddressSectionState>();
-    final checkoutStager = context.findAncestorStateOfType<CheckoutStagerState>();
+    final addressSection =
+        context.findAncestorStateOfType<AddressSectionState>();
+    final checkoutStager =
+        context.findAncestorStateOfType<CheckoutStagerState>();
 
     return SizedBox(
       width: double.infinity,
@@ -31,9 +33,9 @@ class ContinueButton extends StatelessWidget {
               _showOrderCreatedDialog(context);
             }
           } else {
-            // Show error that no address is selected
             ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Por favor, selecciona una dirección')),
+              const SnackBar(
+                  content: Text('Por favor, selecciona una dirección')),
             );
           }
         },
