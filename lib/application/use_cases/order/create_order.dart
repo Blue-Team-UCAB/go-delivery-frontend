@@ -33,7 +33,6 @@ class CheckoutUseCase {
       : _orderRepository = orderRepository;
 
   Future<Result<Order>> execute(CheckoutUseCaseInput input) {
-    // Directly call repository method to create order
     return _orderRepository.createOrder(
       direction: input.direction,
       longitude: input.longitude,

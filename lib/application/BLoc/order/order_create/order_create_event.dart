@@ -9,8 +9,16 @@ class ApplyCouponEvent extends CheckoutEvent {
 }
 
 class ProcessCheckoutEvent extends CheckoutEvent {
+  final String direction;
+  final double longitude;
+  final double latitude;
   final String? tokenStripe;
 
-  ProcessCheckoutEvent({this.tokenStripe});
+  ProcessCheckoutEvent({
+    required this.direction,
+    required this.longitude,
+    required this.latitude,
+    this.tokenStripe,
+  });
 }
 

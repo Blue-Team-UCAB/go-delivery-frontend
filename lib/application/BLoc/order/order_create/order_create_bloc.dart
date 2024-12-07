@@ -1,15 +1,16 @@
-import 'dart:math';
-
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_delivery_frontend/application/use_cases/order/create_order.dart';
-import 'package:go_delivery_frontend/domain/repositories/cart/cart_local_storage_repository.dart';
+import 'package:go_delivery_frontend/domain/entities/bundle/bundle.dart';
+
+import '../../../../domain/entities/cart/cartitem.dart';
 import '../../../../domain/entities/product/product.dart';
-import '../../../../domain/repositories/order/order_repository.dart';
+import '../../../../domain/repositories/cart/cart_local_storage_repository.dart';
+import '../../../core/bloc/ensure_bloc.dart';
 import '../../../use_cases/coupon/get_one_coupon.dart';
+import '../../../use_cases/order/create_order.dart';
 import 'order_create_event.dart';
 import 'order_create_state.dart';
 
-class CheckoutBloc extends Bloc<CheckoutEvent, CheckoutState> {
+class CheckoutBloc extends SafeBloc<CheckoutEvent, CheckoutState> {
   final CartLocalStorageRepository _cartRepository;
   final CheckoutUseCase _checkoutUseCase;
   final GetOneCouponUseCase _getOneCouponUseCase;
@@ -32,23 +33,42 @@ class CheckoutBloc extends Bloc<CheckoutEvent, CheckoutState> {
       Emitter<CheckoutState> emit,
       ) async {
     try {
-      emit(state.copyWith(status: CheckoutStatus.loading));
-
       final cartItems = await _cartRepository.loadCartItems();
 
-      double total = 0.0;
-      for (var item in cartItems) {
-        total += item.price * item.quantity;
+      // Segregate items by type
+      final List<CartItem> productItems = cartItems
+          .where((item) => item.type == 'product')
+          .toList();
+
+      final List<CartItem> bundleItems = cartItems
+          .where((item) => item.type == 'bundle')
+          .toList();
+
+      // Calculate total for product items
+      double productTotal = 0.0;
+      for (var item in productItems) {
+        productTotal += item.price * item.quantity;
       }
 
+      // Calculate total for bundle items
+      double bundleTotal = 0.0;
+      for (var item in bundleItems) {
+        bundleTotal += item.price * item.quantity;
+      }
+
+      // Calculate overall total
+      double total = productTotal + bundleTotal;
+
       emit(state.copyWith(
-        status: CheckoutStatus.initial,
         cartItems: cartItems,
+        productItems: productItems,
+        bundleItems: bundleItems,
+        productTotal: productTotal,
+        bundleTotal: bundleTotal,
         total: total,
       ));
     } catch (e) {
       emit(state.copyWith(
-        status: CheckoutStatus.failure,
         errorMessage: 'Failed to load cart items',
       ));
     }
@@ -59,8 +79,6 @@ class CheckoutBloc extends Bloc<CheckoutEvent, CheckoutState> {
       Emitter<CheckoutState> emit,
       ) async {
     try {
-      emit(state.copyWith(status: CheckoutStatus.loading));
-
       // Fetch coupon
       final input = GetOneCouponUseCaseInput(couponId: event.couponId);
       final couponResult = await _getOneCouponUseCase.execute(input);
@@ -68,7 +86,6 @@ class CheckoutBloc extends Bloc<CheckoutEvent, CheckoutState> {
       if (!couponResult.isSuccessful()) {
         // Handling failure
         emit(state.copyWith(
-          status: CheckoutStatus.failure,
           errorMessage: couponResult.getError().message ?? 'Invalid coupon',
         ));
       } else {
@@ -79,14 +96,12 @@ class CheckoutBloc extends Bloc<CheckoutEvent, CheckoutState> {
         double discountedTotal = state.total * (1 - (coupon.porcentage / 100));
 
         emit(state.copyWith(
-          status: CheckoutStatus.initial,
           appliedCoupon: coupon,
           total: discountedTotal,
         ));
       }
     } catch (e) {
       emit(state.copyWith(
-        status: CheckoutStatus.failure,
         errorMessage: 'Failed to apply coupon',
       ));
     }
@@ -97,12 +112,9 @@ class CheckoutBloc extends Bloc<CheckoutEvent, CheckoutState> {
       Emitter<CheckoutState> emit,
       ) async {
     try {
-      emit(state.copyWith(status: CheckoutStatus.loading));
-
       // Validate required information
       if (state.cartItems.isEmpty) {
         emit(state.copyWith(
-          status: CheckoutStatus.failure,
           errorMessage: 'Cart is empty',
         ));
         return;
@@ -112,14 +124,13 @@ class CheckoutBloc extends Bloc<CheckoutEvent, CheckoutState> {
           state.longitude == null ||
           state.latitude == null) {
         emit(state.copyWith(
-          status: CheckoutStatus.failure,
           errorMessage: 'Delivery information is incomplete',
         ));
         return;
       }
 
-      // Prepare products
-      final List<OrderProduct> products = state.cartItems
+      // Prepare products and bundles
+      final List<OrderProduct> products = state.productItems
           .map((item) => OrderProduct(
         id: item.id,
         name: item.name,
@@ -129,6 +140,17 @@ class CheckoutBloc extends Bloc<CheckoutEvent, CheckoutState> {
       ))
           .toList();
 
+      final List<OrderBundle> bundles = state.bundleItems
+          .map((item) => OrderBundle(
+        id: item.id,
+        name: item.name,
+        price: item.price,
+        quantity: item.quantity,
+        imageUrl: item.imgUrl,
+      ))
+          .toList();
+
+
       // Prepare checkout input
       final checkoutInput = CheckoutUseCaseInput(
         direction: state.direction!,
@@ -137,6 +159,7 @@ class CheckoutBloc extends Bloc<CheckoutEvent, CheckoutState> {
         tokenStripe: event.tokenStripe,
         idCoupon: state.appliedCoupon?.id,
         products: products,
+        bundles: bundles,
       );
 
       // Execute checkout use case
@@ -146,7 +169,6 @@ class CheckoutBloc extends Bloc<CheckoutEvent, CheckoutState> {
       if (!orderResult.isSuccessful()) {
         // Handling failure
         emit(state.copyWith(
-          status: CheckoutStatus.failure,
           errorMessage: orderResult.getError().message ?? 'Failed to create order',
         ));
       } else {
@@ -156,16 +178,17 @@ class CheckoutBloc extends Bloc<CheckoutEvent, CheckoutState> {
         // Clear cart after successful order
         await _cartRepository.emptyCart();
 
-        emit(state.copyWith(
-          status: CheckoutStatus.success,
+        emit(CheckoutState(
           cartItems: [],
+          productItems: [],
+          bundleItems: [],
           total: 0.0,
-          appliedCoupon: null,
+          productTotal: 0.0,
+          bundleTotal: 0.0,
         ));
       }
     } catch (e) {
       emit(state.copyWith(
-        status: CheckoutStatus.failure,
         errorMessage: 'Failed to process checkout',
       ));
     }
