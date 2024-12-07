@@ -1,59 +1,129 @@
 import 'package:flutter/material.dart';
-import 'package:go_delivery_frontend/presentation/widgets/checkout/shipping_section.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-
-import '../../screens/order/order_staging.dart';
+import '../../../application/BLoc/cart/cart_bloc.dart';
+import '../../../application/BLoc/order/order_create/order_create_bloc.dart';
+import '../../../application/BLoc/order/order_create/order_create_event.dart';
+import '../../../application/BLoc/order/order_create/order_create_state.dart';
+import '../../../domain/entities/bundle/bundle.dart';
+import '../../../domain/entities/product/product.dart';
 import '../dialog_darken_window.dart';
+import 'coupon_section.dart';
+
 
 class ContinueButton extends StatelessWidget {
-  const ContinueButton({super.key});
+  final Map<String, dynamic>? selectedAddress;
+
+  const ContinueButton({
+    super.key,
+    required this.selectedAddress,
+  });
 
   @override
   Widget build(BuildContext context) {
-    final addressSection =
-        context.findAncestorStateOfType<AddressSectionState>();
-    final checkoutStager =
-        context.findAncestorStateOfType<CheckoutStagerState>();
+    return BlocConsumer<CheckoutBloc, CheckoutState>(
+      listener: (context, state) {
+        if (state.errorMessage != null) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(state.errorMessage!),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
 
-    return SizedBox(
-      width: double.infinity,
-      child: ElevatedButton(
-        onPressed: () async {
-          final selectedAddress = addressSection?.selectedAddress;
+        // Check for successful order creation
+        if (state.cartItems.isEmpty &&
+            state.total == 0.0 &&
+            state.errorMessage == null) {
+          // Show success dialog only once
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            context.read<CartBloc>().emptyCart();
+            _showOrderCreatedDialog(context);
+          });
+        }
+      },
+      builder: (context, state) {
+        // Check if we're in a processing state
+        final bool isProcessing = state.cartItems.isEmpty &&
+            state.total == 0.0 &&
+            state.errorMessage != null;
 
-          if (selectedAddress != null) {
-            final isSuccessful = await checkoutStager?.processCheckout(
-              direction: selectedAddress['description'],
-              longitude: selectedAddress['longitude'],
-              latitude: selectedAddress['latitude'],
-              tokenStripe: 'stripe_token',
-            );
-
-            if (isSuccessful == true) {
-              _showOrderCreatedDialog(context);
-            }
-          } else {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                  content: Text('Por favor, selecciona una dirección')),
-            );
-          }
-        },
-        style: ElevatedButton.styleFrom(
-          backgroundColor: const Color(0xFF2000B1),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(8.0),
+        return Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: SizedBox(
+            width: double.infinity,
+            child: ElevatedButton(
+              onPressed: isProcessing
+                  ? null
+                  : () => _onButtonPressed(context, state),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFF2000B1),
+                disabledBackgroundColor: Colors.grey,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8.0),
+                ),
+                padding: const EdgeInsets.symmetric(vertical: 16.0),
+              ),
+              child: isProcessing
+                  ? const CircularProgressIndicator(color: Colors.white)
+                  : const Text(
+                'Continuar',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
           ),
-          padding: const EdgeInsets.symmetric(vertical: 16.0),
+        );
+      },
+    );
+  }
+
+  void _onButtonPressed(BuildContext context, CheckoutState state) {
+    // Address validation
+    if (selectedAddress == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Por favor, selecciona una dirección'),
+          backgroundColor: Colors.red,
         ),
-        child: const Text(
-          'Continuar',
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
-          ),
+      );
+      return;
+    }
+
+    // Cart validation
+    if (state.cartItems.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('No hay items en el carrito'),
+          backgroundColor: Colors.red,
         ),
+      );
+      return;
+    }
+
+
+    // Dispatch checkout event with all necessary data
+    context.read<CheckoutBloc>().add(
+      ProcessCheckoutEvent(
+        direction: selectedAddress!['description'],
+        longitude: selectedAddress!['longitude'],
+        latitude: selectedAddress!['latitude'],
+        tokenStripe: null,
+        idCoupon: state.appliedCoupon!.id,
+        productItems: state.productItems
+            .map((item) => CheckoutProduct(
+            id: item.id,
+            quantity: item.quantity))
+            .toList(),
+        bundleItems: state.bundleItems
+            .map((item) => CheckoutBundle(
+            id: item.id,
+            quantity: item.quantity))
+            .toList(),
       ),
     );
   }
@@ -61,6 +131,7 @@ class ContinueButton extends StatelessWidget {
   void _showOrderCreatedDialog(BuildContext context) {
     showDialog(
       context: context,
+      barrierDismissible: false,
       builder: (BuildContext context) {
         return AnimatedSuccessDialog(
           title: 'Orden Creada!',
