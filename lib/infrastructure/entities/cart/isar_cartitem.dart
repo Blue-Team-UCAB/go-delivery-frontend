@@ -13,6 +13,7 @@ class IsarCartitem {
   final double price;
   final String presentation;
   final int quantity;
+  final String type;
 
   IsarCartitem({
     required this.id,
@@ -21,6 +22,7 @@ class IsarCartitem {
     required this.price, 
     required this.presentation,
     required this.quantity,
+    required this.type,
   });
 
   IsarCartitem copyWith({
@@ -30,11 +32,14 @@ class IsarCartitem {
     double? price,
     String? presentation,
     int? quantity,
+    String? type
   }) => IsarCartitem(
     id: id ?? this.id, 
     name: name ?? this.name, 
     imgUrl: imgUrl ?? this.imgUrl, 
     price: price ?? this.price, 
     presentation: presentation ?? this.presentation, 
-    quantity: quantity ?? this.quantity);
+    quantity: quantity ?? this.quantity,
+    type: type ?? this.type
+  );
 }
