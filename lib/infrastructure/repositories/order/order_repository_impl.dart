@@ -1,3 +1,6 @@
+import 'package:go_delivery_frontend/infrastructure/mappers/order/checkout/bundlecheckout_mapper.dart';
+import 'package:go_delivery_frontend/infrastructure/mappers/order/checkout/productcheckout_mapper.dart';
+
 import '../../../application/api/api_request.dart';
 import '../../../application/key_value_storage/key_value.dart';
 import '../../../common/result.dart';
@@ -67,14 +70,14 @@ class OrderRepositoryImpl extends OrderRepository {
   }
 
   @override
-  Future<Result<Order>> createOrder({
+  Future<Result<bool>> createOrder({
     required String direction,
     required double longitude,
     required double latitude,
     String? tokenStripe,
     String? idCoupon,
-    List<OrderProduct>? products,
-    List<OrderBundle>? bundles
+    required List<CheckoutProduct> products,
+    List<CheckoutBundle>? bundles
   }) async {
     await _addAuthorizationHeader();
     try {
@@ -82,8 +85,7 @@ class OrderRepositoryImpl extends OrderRepository {
         '/order',
         'POST',
             (data) {
-          final order = OrderMapper.fromJson(data["value"]);
-          return order;
+          return true;
         },
         body: {
           'direction': direction,
@@ -92,9 +94,9 @@ class OrderRepositoryImpl extends OrderRepository {
           if (tokenStripe != null) 'token_stripe': tokenStripe,
           if (idCoupon != null) 'id_coupon': idCoupon,
           if (products != null && products.isNotEmpty)
-            'products': OrderProductMapper.toJsonList(products),
+            'products': CheckoutProductMapper.toJsonList(products),
           if (bundles != null && bundles.isNotEmpty)
-            'bundles': OrderBundleMapper.toJsonList(bundles),
+            'bundles': CheckoutBundleMapper.toJsonList(bundles),
         },
       );
       return response;

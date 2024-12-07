@@ -12,8 +12,8 @@ class CheckoutUseCaseInput extends IUseCaseInput {
   final double latitude;
   final String? tokenStripe;
   final String? idCoupon;
-  final List<OrderProduct>? products;
-  final List<OrderBundle>? bundles;
+  final List<CheckoutProduct> products;
+  final List<CheckoutBundle>? bundles;
 
   CheckoutUseCaseInput({
     required this.direction,
@@ -21,7 +21,7 @@ class CheckoutUseCaseInput extends IUseCaseInput {
     required this.latitude,
     this.tokenStripe,
     this.idCoupon,
-    this.products,
+    required this.products,
     this.bundles,
   });
 }
@@ -32,7 +32,7 @@ class CheckoutUseCase {
   CheckoutUseCase({required OrderRepository orderRepository})
       : _orderRepository = orderRepository;
 
-  Future<Result<Order>> execute(CheckoutUseCaseInput input) {
+  Future<Result<bool>> execute(CheckoutUseCaseInput input) {
     return _orderRepository.createOrder(
       direction: input.direction,
       longitude: input.longitude,

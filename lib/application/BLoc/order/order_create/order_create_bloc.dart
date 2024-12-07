@@ -11,7 +11,7 @@ import 'order_create_event.dart';
 import 'order_create_state.dart';
 
 class CheckoutBloc extends SafeBloc<CheckoutEvent, CheckoutState> {
-  final CartLocalStorageRepository _cartRepository;
+  final CartLocalStorageRepository cartRepository;
   final CheckoutUseCase _checkoutUseCase;
   final GetOneCouponUseCase _getOneCouponUseCase;
 
@@ -19,7 +19,7 @@ class CheckoutBloc extends SafeBloc<CheckoutEvent, CheckoutState> {
     required CartLocalStorageRepository cartRepository,
     required CheckoutUseCase checkoutUseCase,
     required GetOneCouponUseCase getOneCouponUseCase,
-  })  : _cartRepository = cartRepository,
+  })  : cartRepository = cartRepository,
         _checkoutUseCase = checkoutUseCase,
         _getOneCouponUseCase = getOneCouponUseCase,
         super(const CheckoutState()) {
@@ -33,7 +33,7 @@ class CheckoutBloc extends SafeBloc<CheckoutEvent, CheckoutState> {
       Emitter<CheckoutState> emit,
       ) async {
     try {
-      final cartItems = await _cartRepository.loadCartItems();
+      final cartItems = await cartRepository.loadCartItems();
 
       // Segregate items by type
       final List<CartItem> productItems = cartItems
@@ -112,71 +112,28 @@ class CheckoutBloc extends SafeBloc<CheckoutEvent, CheckoutState> {
       Emitter<CheckoutState> emit,
       ) async {
     try {
-      // Validate required information
-      if (state.cartItems.isEmpty) {
-        emit(state.copyWith(
-          errorMessage: 'Cart is empty',
-        ));
-        return;
-      }
-
-      if (state.direction == null ||
-          state.longitude == null ||
-          state.latitude == null) {
-        emit(state.copyWith(
-          errorMessage: 'Delivery information is incomplete',
-        ));
-        return;
-      }
-
-      // Prepare products and bundles
-      final List<OrderProduct> products = state.productItems
-          .map((item) => OrderProduct(
-        id: item.id,
-        name: item.name,
-        price: item.price,
-        quantity: item.quantity,
-        imageUrl: item.imgUrl,
-      ))
-          .toList();
-
-      final List<OrderBundle> bundles = state.bundleItems
-          .map((item) => OrderBundle(
-        id: item.id,
-        name: item.name,
-        price: item.price,
-        quantity: item.quantity,
-        imageUrl: item.imgUrl,
-      ))
-          .toList();
-
-
-      // Prepare checkout input
+      // Prepare checkout input using CheckoutProduct and CheckoutBundle directly
       final checkoutInput = CheckoutUseCaseInput(
-        direction: state.direction!,
-        longitude: state.longitude!,
-        latitude: state.latitude!,
+        direction: event.direction,
+        longitude: event.longitude,
+        latitude: event.latitude,
         tokenStripe: event.tokenStripe,
         idCoupon: state.appliedCoupon?.id,
-        products: products,
-        bundles: bundles,
+        products: event.productItems,
+        bundles: event.bundleItems,
       );
 
-      // Execute checkout use case
+      // Rest of the checkout process remains the same
       final orderResult = await _checkoutUseCase.execute(checkoutInput);
 
       // Handle order creation result
       if (!orderResult.isSuccessful()) {
-        // Handling failure
         emit(state.copyWith(
           errorMessage: orderResult.getError().message ?? 'Failed to create order',
         ));
       } else {
-        // Handling success
-        final order = orderResult.getValue();
-
         // Clear cart after successful order
-        await _cartRepository.emptyCart();
+        await cartRepository.emptyCart();
 
         emit(CheckoutState(
           cartItems: [],

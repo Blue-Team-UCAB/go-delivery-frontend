@@ -3,11 +3,14 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_delivery_frontend/domain/entities/bundle/bundle.dart';
+import 'package:go_delivery_frontend/domain/entities/product/product.dart';
 
 import '../../../application/BLoc/coupon/coupon_bloc.dart';
 import '../../../application/BLoc/order/order_create/order_create_bloc.dart';
 import '../../../application/BLoc/order/order_create/order_create_event.dart';
 import '../../../application/BLoc/order/order_create/order_create_state.dart';
+import '../../../domain/entities/cart/cartitem.dart';
 import '../../../domain/entities/coupon/coupon.dart';
 
 
@@ -32,29 +35,35 @@ class CheckoutStagerState extends State<CheckoutStager> {
   Coupon? _fetchedCoupon;
   bool _isLoading = false;
   String? _errorMessage;
+  List<CheckoutProduct> _productItems = [];
+  List<CheckoutBundle> _bundleItems = [];
 
-  // One-time coupon ID getter
-  String? consumeCouponId() {
-    final currentCouponId = _couponId;
-    _couponId = null;
-    return currentCouponId;
+  @override
+  void initState() {
+    super.initState();
+    _segregateCartItems();
   }
 
-  Future<void> validateAndFetchCoupon(String couponId) async {
-    setState(() {
-      _isLoading = true;
-      _errorMessage = null;
-    });
+  void _segregateCartItems() async {
+    final cartItems = await widget.checkoutBloc.cartRepository.loadCartItems();
 
-    try {
-      // Dispatch ApplyCouponEvent to CheckoutBloc
-      widget.checkoutBloc.add(ApplyCouponEvent(couponId));
-    } catch (e) {
-      setState(() {
-        _errorMessage = 'Failed to fetch coupon';
-        _isLoading = false;
-      });
-    }
+    setState(() {
+      _productItems = cartItems
+          .where((item) => item.type == 'product')
+          .map((item) => CheckoutProduct(
+        id: item.id,
+        quantity: item.quantity,
+      ))
+          .toList();
+
+      _bundleItems = cartItems
+          .where((item) => item.type == 'bundle')
+          .map((item) => CheckoutBundle(
+        id: item.id,
+        quantity: item.quantity,
+      ))
+          .toList();
+    });
   }
 
   Future<bool> processCheckout({
@@ -70,6 +79,7 @@ class CheckoutStagerState extends State<CheckoutStager> {
 
     final completer = Completer<bool>();
 
+    // Listen for state changes
     late StreamSubscription subscription;
     subscription = widget.checkoutBloc.stream.listen(
           (state) {
@@ -103,12 +113,14 @@ class CheckoutStagerState extends State<CheckoutStager> {
       cancelOnError: true,
     );
 
-    // Dispatch ProcessCheckoutEvent
+    // Dispatch ProcessCheckoutEvent with segregated items
     widget.checkoutBloc.add(ProcessCheckoutEvent(
       direction: direction,
       longitude: longitude,
       latitude: latitude,
       tokenStripe: tokenStripe,
+      productItems: _productItems,
+      bundleItems: _bundleItems,
     ));
 
     return completer.future;
