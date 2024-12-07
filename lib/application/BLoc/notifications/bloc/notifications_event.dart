@@ -1,38 +1,21 @@
 part of 'notifications_bloc.dart';
 
-enum TokenSendStatus { initial, sent, error }
-
-enum NotificationPermissionStatus { initial, granted, denied }
-
-class NotificationsState extends Equatable {
-  final TokenSendStatus tokenSendStatus;
-  final NotificationPermissionStatus notificationPermissionStatus;
-  final String? fcmToken;
-  final List<PushMessageModel> notifications;
-
-  const NotificationsState({
-    this.tokenSendStatus = TokenSendStatus.initial,
-    this.notificationPermissionStatus = NotificationPermissionStatus.initial,
-    this.fcmToken,
-    this.notifications = const [],
-  });
-
-  NotificationsState copyWith({
-    TokenSendStatus? tokenSendStatus,
-    NotificationPermissionStatus? notificationPermissionStatus,
-    String? fcmToken,
-    List<PushMessageModel>? notifications,
-  }) {
-    return NotificationsState(
-      tokenSendStatus: tokenSendStatus ?? this.tokenSendStatus,
-      notificationPermissionStatus:
-          notificationPermissionStatus ?? this.notificationPermissionStatus,
-      fcmToken: fcmToken ?? this.fcmToken,
-      notifications: notifications ?? this.notifications,
-    );
-  }
+abstract class NotificationsEvent extends Equatable {
+  const NotificationsEvent();
 
   @override
-  List<Object?> get props =>
-      [tokenSendStatus, notificationPermissionStatus, fcmToken, notifications];
+  List<Object?> get props => [];
+}
+
+class SendFCMTokenEvent extends NotificationsEvent {}
+
+class RequestNotificationPermissionEvent extends NotificationsEvent {}
+
+class NotificationReceivedEvent extends NotificationsEvent {
+  final RemoteMessage message;
+
+  const NotificationReceivedEvent(this.message);
+
+  @override
+  List<Object?> get props => [message];
 }

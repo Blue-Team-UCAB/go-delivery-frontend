@@ -66,8 +66,7 @@ class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState> {
               .execute(SendDeviceTokenUseCaseInput(token: token));
 
           if (result.isSuccess) {
-            print("NOTIF SUCCESS");
-
+            // print("NOTIF SUCCESS");
             emit(state.copyWith(
                 tokenSendStatus: TokenSendStatus.sent,
                 fcmToken: token,

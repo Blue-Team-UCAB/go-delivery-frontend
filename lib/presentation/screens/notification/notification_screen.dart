@@ -40,30 +40,27 @@ class NotificationScreen extends StatelessWidget {
         physics: const BouncingScrollPhysics(),
         itemCount: notifications.length,
         itemBuilder: (context, index) {
-          // final notification = notifications[index];
-          final notification = notifications[index];
-          return Card(
-            color: const Color(0xFF02066F),
+          final notification = notifications[notifications.length - 1 - index];
+          return Container(
+            decoration: const BoxDecoration(
+              borderRadius:
+                  BorderRadius.all(Radius.circular(12))),
             child: ListTile(
               title: Text(
                 notification.title,
-                style: const TextStyle(color: Colors.white),
+                style: const TextStyle(fontFamily: 'Inter',fontSize: 16, fontWeight: FontWeight.w600,color: Color(0xFF000000)),
               ),
               subtitle: Text(
                 notification.body,
-                style: const TextStyle(color: Colors.white70),
+                style: const TextStyle(fontFamily: 'Inter',fontSize: 14, color: Color(0xFF000000)),
               ),
               leading: notification.imageUrl != null
                   ? Image.network(notification.imageUrl!)
                   : null,
               onTap: () {
-                // context.push('/push-details/${notification.messageId}');
+                context.push(
+                    '/push-details/${Uri.encodeComponent(notification.messageId)}');
               },
-
-              // trailing: Text(
-              //   '${notification.date.day}/${notification.date.month}/${notification.date.year}',
-              //   style: const TextStyle(fontSize: 12, color: Colors.white54),
-              // ),
             ),
           );
         },
