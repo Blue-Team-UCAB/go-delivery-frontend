@@ -5,15 +5,14 @@ import 'package:go_delivery_frontend/infrastructure/mappers/order/checkout/produ
 
 import '../../../application/api/api_request.dart';
 import '../../../application/key_value_storage/key_value.dart';
+import '../../../common/failure.dart';
 import '../../../common/result.dart';
 import '../../../domain/entities/bundle/bundle.dart';
 import '../../../domain/entities/order/order.dart';
 import '../../../domain/entities/product/product.dart';
 import '../../../domain/repositories/order/order_repository.dart';
 import '../../mappers/order/many/many_order_mapper.dart';
-import '../../mappers/order/many/many_orderbundle_mapper.dart';
 import '../../mappers/order/order_mapper.dart';
-import '../../mappers/product/orderproduct_mapper.dart';
 import '../../models/order_many_model.dart';
 
 class OrderRepositoryImpl extends OrderRepository {
@@ -95,8 +94,6 @@ class OrderRepositoryImpl extends OrderRepository {
           'bundles': CheckoutBundleMapper.toJsonList(bundles),
       };
 
-      // Print the entire body for debugging
-      print('Order Request Body: ${json.encode(body)}');
 
       final response = await _apiRequestManager.request(
         '/order',
@@ -114,8 +111,28 @@ class OrderRepositoryImpl extends OrderRepository {
   }
 
   @override
-  Future<Result<bool>> cancelOrder(String orderId, {String? reason}) {
-    // TODO: implement cancelOrder
-    throw UnimplementedError();
+  Future<Result<bool>> cancelOrder(String orderId) async {
+    var message;
+    await _addAuthorizationHeader();
+      final response = await _apiRequestManager.request(
+        '/order/cancel',
+        'POST',
+            (data) {
+              if (data['errorCode'] != 200) {
+                message = data["message"];
+                return false;
+              } else {
+                return true;
+              }
+            },
+        body: {
+          'orderId': orderId
+        },
+      );
+    if (response.value == true) {
+      return response;
+    } else {
+      return Result.fail(CustomFailure(message: message));
+    }
   }
 }

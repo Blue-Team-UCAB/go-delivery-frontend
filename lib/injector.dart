@@ -2,11 +2,13 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_delivery_frontend/application/BLoc/blocs.dart';
 import 'package:go_delivery_frontend/application/BLoc/order/order_create/order_create_bloc.dart';
+import 'package:go_delivery_frontend/application/use_cases/order/cancel_order.dart';
 import 'package:go_delivery_frontend/application/use_cases/use_cases.dart';
 import 'package:go_delivery_frontend/domain/repositories/repositories.dart';
 import 'package:go_delivery_frontend/infrastructure/repositories/repositories_impl.dart';
 import 'application/BLoc/auth/recover_password/recover_password_bloc.dart';
 import 'application/BLoc/auth/register/register_bloc.dart';
+import 'application/BLoc/order/order_cancel/order_cancel_bloc.dart';
 import 'application/use_cases/notification/send_device_token_usecase.dart';
 import 'application/use_cases/order/create_order.dart';
 import 'domain/repositories/cart/cart_local_storage_repository.dart';
@@ -175,13 +177,14 @@ class InjectManager {
         GetManyOrdersUseCase(orderRepository: orderRepository);
     final checkoutUseCase =
         CheckoutUseCase(orderRepository: orderRepository);
+    final cancelOneOrderUseCase =
+        CancelOneOrderUseCase(orderRepository: orderRepository);
 
     getIt.registerSingleton<GetOneOrderUseCase>(getOneOrderUseCase);
     getIt.registerSingleton<GetManyOrdersUseCase>(getManyOrderUseCase);
     getIt.registerSingleton<CheckoutUseCase>(checkoutUseCase);
+    getIt.registerSingleton<CancelOneOrderUseCase>(cancelOneOrderUseCase);
     // ======================================================================= //
-
-
 
     getIt.registerSingleton(
         OrderDetailBloc(getOneOrderUseCase: getOneOrderUseCase));
@@ -191,6 +194,8 @@ class InjectManager {
         CheckoutBloc(cartRepository: cartLocalStorageRepo,
                      checkoutUseCase: checkoutUseCase,
                      getOneCouponUseCase: getOneCouponUseCase));
+    getIt.registerSingleton(
+        OrderCancelBloc(cancelOrderUseCase: cancelOneOrderUseCase));
 
     // ============================= PAYMENT =================================== //
 
