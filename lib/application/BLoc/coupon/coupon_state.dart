@@ -1,16 +1,18 @@
 part of 'coupon_bloc.dart';
 
 abstract class CouponState extends Equatable {
-  final Coupon? coupon;
+  final Coupon coupon;
 
-  const CouponState({this.coupon});
+  const CouponState({this.coupon = const Coupon(id: '', porcentage: 0)});
+
+  double get howMuchDiscount => coupon.porcentage/100;
 
   @override
   List<Object?> get props => [coupon];
 }
 
 class CouponInitial extends CouponState {
-  CouponInitial() : super(coupon: Coupon(id: '', porcentage: 0)){}
+  CouponInitial() : super(){}
 }
 
 class CouponLoading extends CouponState {
