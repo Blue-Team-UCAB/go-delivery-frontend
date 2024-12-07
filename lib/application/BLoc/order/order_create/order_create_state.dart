@@ -9,6 +9,7 @@ class CheckoutState {
   final double productTotal;
   final double bundleTotal;
   final Coupon? appliedCoupon;
+  final String? cardid;
   final String? direction;
   final double? longitude;
   final double? latitude;
@@ -18,6 +19,7 @@ class CheckoutState {
     this.cartItems = const [],
     this.productItems = const [],
     this.bundleItems = const [],
+    this.cardid = null,
     this.total = 0.0,
     this.productTotal = 0.0,
     this.bundleTotal = 0.0,

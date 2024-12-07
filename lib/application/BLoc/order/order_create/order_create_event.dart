@@ -31,3 +31,4 @@ class ProcessCheckoutEvent extends CheckoutEvent {
     required this.bundleItems,
   });
 }
+

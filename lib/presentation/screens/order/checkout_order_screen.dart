@@ -18,6 +18,7 @@ class CheckoutOrderScreen extends StatefulWidget {
 
 class _CheckoutOrderScreenState extends State<CheckoutOrderScreen> {
   Map<String, dynamic>? selectedAddress;
+  String? _selectedCardId; // Change to mutable variable
 
   @override
   void initState() {
@@ -56,7 +57,13 @@ class _CheckoutOrderScreenState extends State<CheckoutOrderScreen> {
                   },
                 ),
                 const DeliveryTimeSection(),
-                const PaymentMethodSection(),
+                PaymentMethodSection(
+                  onCardSelected: (cardId) { // Add this method
+                    setState(() {
+                      _selectedCardId = cardId;
+                    });
+                  },
+                ),
                 const SizedBox(height: 8),
                 const ApplyCouponSection(),
                 const SizedBox(height: 8),
@@ -64,7 +71,10 @@ class _CheckoutOrderScreenState extends State<CheckoutOrderScreen> {
                   total: state.total > 0 ? state.total : widget.total,
                 ),
                 const SizedBox(height: 16),
-                ContinueButton(selectedAddress: selectedAddress),
+                ContinueButton(
+                  selectedAddress: selectedAddress,
+                  selectedCardId: _selectedCardId, // Use the local variable
+                )
               ],
             ),
           ),

@@ -130,6 +130,7 @@ class CheckoutBloc extends SafeBloc<CheckoutEvent, CheckoutState> {
     }
   }
 
+
   Future<void> _onProcessCheckout(
       ProcessCheckoutEvent event,
       Emitter<CheckoutState> emit,
