@@ -46,6 +46,11 @@ const IsarCartitemSchema = CollectionSchema(
       id: 5,
       name: r'quantity',
       type: IsarType.long,
+    ),
+    r'type': PropertySchema(
+      id: 6,
+      name: r'type',
+      type: IsarType.string,
     )
   },
   estimateSize: _isarCartitemEstimateSize,
@@ -72,6 +77,7 @@ int _isarCartitemEstimateSize(
   bytesCount += 3 + object.imgUrl.length * 3;
   bytesCount += 3 + object.name.length * 3;
   bytesCount += 3 + object.presentation.length * 3;
+  bytesCount += 3 + object.type.length * 3;
   return bytesCount;
 }
 
@@ -87,6 +93,7 @@ void _isarCartitemSerialize(
   writer.writeString(offsets[3], object.presentation);
   writer.writeDouble(offsets[4], object.price);
   writer.writeLong(offsets[5], object.quantity);
+  writer.writeString(offsets[6], object.type);
 }
 
 IsarCartitem _isarCartitemDeserialize(
@@ -102,6 +109,7 @@ IsarCartitem _isarCartitemDeserialize(
     presentation: reader.readString(offsets[3]),
     price: reader.readDouble(offsets[4]),
     quantity: reader.readLong(offsets[5]),
+    type: reader.readString(offsets[6]),
   );
   object.isarId = id;
   return object;
@@ -126,6 +134,8 @@ P _isarCartitemDeserializeProp<P>(
       return (reader.readDouble(offset)) as P;
     case 5:
       return (reader.readLong(offset)) as P;
+    case 6:
+      return (reader.readString(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
   }
@@ -954,6 +964,140 @@ extension IsarCartitemQueryFilter
       ));
     });
   }
+
+  QueryBuilder<IsarCartitem, IsarCartitem, QAfterFilterCondition> typeEqualTo(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'type',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<IsarCartitem, IsarCartitem, QAfterFilterCondition>
+      typeGreaterThan(
+    String value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'type',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<IsarCartitem, IsarCartitem, QAfterFilterCondition> typeLessThan(
+    String value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'type',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<IsarCartitem, IsarCartitem, QAfterFilterCondition> typeBetween(
+    String lower,
+    String upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'type',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<IsarCartitem, IsarCartitem, QAfterFilterCondition>
+      typeStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'type',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<IsarCartitem, IsarCartitem, QAfterFilterCondition> typeEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'type',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<IsarCartitem, IsarCartitem, QAfterFilterCondition> typeContains(
+      String value,
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'type',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<IsarCartitem, IsarCartitem, QAfterFilterCondition> typeMatches(
+      String pattern,
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'type',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<IsarCartitem, IsarCartitem, QAfterFilterCondition>
+      typeIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'type',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<IsarCartitem, IsarCartitem, QAfterFilterCondition>
+      typeIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'type',
+        value: '',
+      ));
+    });
+  }
 }
 
 extension IsarCartitemQueryObject
@@ -1034,6 +1178,18 @@ extension IsarCartitemQuerySortBy
   QueryBuilder<IsarCartitem, IsarCartitem, QAfterSortBy> sortByQuantityDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'quantity', Sort.desc);
+    });
+  }
+
+  QueryBuilder<IsarCartitem, IsarCartitem, QAfterSortBy> sortByType() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'type', Sort.asc);
+    });
+  }
+
+  QueryBuilder<IsarCartitem, IsarCartitem, QAfterSortBy> sortByTypeDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'type', Sort.desc);
     });
   }
 }
@@ -1124,6 +1280,18 @@ extension IsarCartitemQuerySortThenBy
       return query.addSortBy(r'quantity', Sort.desc);
     });
   }
+
+  QueryBuilder<IsarCartitem, IsarCartitem, QAfterSortBy> thenByType() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'type', Sort.asc);
+    });
+  }
+
+  QueryBuilder<IsarCartitem, IsarCartitem, QAfterSortBy> thenByTypeDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'type', Sort.desc);
+    });
+  }
 }
 
 extension IsarCartitemQueryWhereDistinct
@@ -1165,6 +1333,13 @@ extension IsarCartitemQueryWhereDistinct
   QueryBuilder<IsarCartitem, IsarCartitem, QDistinct> distinctByQuantity() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'quantity');
+    });
+  }
+
+  QueryBuilder<IsarCartitem, IsarCartitem, QDistinct> distinctByType(
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'type', caseSensitive: caseSensitive);
     });
   }
 }
@@ -1210,6 +1385,12 @@ extension IsarCartitemQueryProperty
   QueryBuilder<IsarCartitem, int, QQueryOperations> quantityProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'quantity');
+    });
+  }
+
+  QueryBuilder<IsarCartitem, String, QQueryOperations> typeProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'type');
     });
   }
 }
