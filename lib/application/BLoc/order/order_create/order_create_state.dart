@@ -1,53 +1,58 @@
 import '../../../../domain/entities/cart/cartitem.dart';
 import '../../../../domain/entities/coupon/coupon.dart';
 
-enum CheckoutStatus { initial, loading, success, failure }
-
-
 class CheckoutState {
-  final CheckoutStatus status;
   final List<CartItem> cartItems;
+  final List<CartItem> productItems;
+  final List<CartItem> bundleItems;
   final double total;
+  final double productTotal;
+  final double bundleTotal;
   final Coupon? appliedCoupon;
-  final String? errorMessage;
   final String? direction;
   final double? longitude;
   final double? latitude;
-  final String? tokenStripe;
+  final String? errorMessage;
 
   const CheckoutState({
-    this.status = CheckoutStatus.initial,
     this.cartItems = const [],
+    this.productItems = const [],
+    this.bundleItems = const [],
     this.total = 0.0,
+    this.productTotal = 0.0,
+    this.bundleTotal = 0.0,
     this.appliedCoupon,
-    this.errorMessage,
     this.direction,
     this.longitude,
     this.latitude,
-    this.tokenStripe,
+    this.errorMessage,
   });
 
   CheckoutState copyWith({
-    CheckoutStatus? status,
     List<CartItem>? cartItems,
+    List<CartItem>? productItems,
+    List<CartItem>? bundleItems,
     double? total,
+    double? productTotal,
+    double? bundleTotal,
     Coupon? appliedCoupon,
-    String? errorMessage,
     String? direction,
     double? longitude,
     double? latitude,
-    String? tokenStripe,
+    String? errorMessage,
   }) {
     return CheckoutState(
-      status: status ?? this.status,
       cartItems: cartItems ?? this.cartItems,
+      productItems: productItems ?? this.productItems,
+      bundleItems: bundleItems ?? this.bundleItems,
       total: total ?? this.total,
+      productTotal: productTotal ?? this.productTotal,
+      bundleTotal: bundleTotal ?? this.bundleTotal,
       appliedCoupon: appliedCoupon ?? this.appliedCoupon,
-      errorMessage: errorMessage ?? this.errorMessage,
       direction: direction ?? this.direction,
       longitude: longitude ?? this.longitude,
       latitude: latitude ?? this.latitude,
-      tokenStripe: tokenStripe ?? this.tokenStripe,
+      errorMessage: errorMessage ?? this.errorMessage,
     );
   }
 }

@@ -16,13 +16,13 @@ abstract class OrderRepository {
     required String status,
   });
 
-  Future<Result<Order>> createOrder({
+  Future<Result<bool>> createOrder({
     required String direction,
     required double longitude,
     required double latitude,
     String? tokenStripe,
     String? idCoupon,
-    List<OrderProduct>? products,
-    List<OrderBundle>? bundles
+    required List<CheckoutProduct> products,
+    List<CheckoutBundle>? bundles
   });
 }
