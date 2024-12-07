@@ -20,7 +20,7 @@ class CardBloc extends Bloc<CardEvent, CardState> {
         ProcessCardPaymentInput(idCard: event.idCard),
       );
 
-      if (result == 'true') {
+      if (result == true) {
         emit(const PaymentSuccess());
       } else {
         emit(PaymentFailure(message: 'Error en el procesamiento del pago'));

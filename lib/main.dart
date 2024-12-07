@@ -20,10 +20,8 @@ void main() async {
   await LocalNotifications().initializeLocalNotifications();
   await InjectManager.setUpInjections();
   await dotenv.load();
-  Stripe.publishableKey =
-      'pk_test_51NxjGZFJVOFDbNK1g173hTsB3N8JbaD7HmXWMOP2eiV7UHIndbfm1NuKv8q2LhvNxZxlsthbUOnflWiPil6vYZWZ00zu0xd7Hz';
-  Stripe.merchantIdentifier = 'merchant.flutter.stripe.test';
-  Stripe.urlScheme = 'flutterstripe';
+  Stripe.publishableKey = dotenv.env['STRIPE_PUBLISHABLE_KEY'] ?? '';
+  await Stripe.instance.applySettings();
   runApp(
     MultiBlocProvider(
       providers: [
