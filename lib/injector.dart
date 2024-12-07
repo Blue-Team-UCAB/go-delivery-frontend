@@ -1,12 +1,15 @@
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_delivery_frontend/application/BLoc/blocs.dart';
+import 'package:go_delivery_frontend/application/BLoc/order/order_create/order_create_bloc.dart';
 import 'package:go_delivery_frontend/application/use_cases/use_cases.dart';
 import 'package:go_delivery_frontend/domain/repositories/repositories.dart';
 import 'package:go_delivery_frontend/infrastructure/repositories/repositories_impl.dart';
 import 'application/BLoc/auth/recover_password/recover_password_bloc.dart';
 import 'application/BLoc/auth/register/register_bloc.dart';
 import 'application/use_cases/notification/send_device_token_usecase.dart';
+import 'application/use_cases/order/create_order.dart';
+import 'domain/repositories/cart/cart_local_storage_repository.dart';
 import 'domain/repositories/notifications/notifications_repository.dart';
 import 'infrastructure/datasources/api/api_request_impl.dart';
 import 'infrastructure/datasources/cart/cart_isar_local_storage_datasource.dart';
@@ -170,15 +173,24 @@ class InjectManager {
         GetOneOrderUseCase(orderRepository: orderRepository);
     final getManyOrderUseCase =
         GetManyOrdersUseCase(orderRepository: orderRepository);
+    final checkoutUseCase =
+        CheckoutUseCase(orderRepository: orderRepository);
 
     getIt.registerSingleton<GetOneOrderUseCase>(getOneOrderUseCase);
     getIt.registerSingleton<GetManyOrdersUseCase>(getManyOrderUseCase);
+    getIt.registerSingleton<CheckoutUseCase>(checkoutUseCase);
     // ======================================================================= //
+
+
 
     getIt.registerSingleton(
         OrderDetailBloc(getOneOrderUseCase: getOneOrderUseCase));
     getIt.registerSingleton(
         ManyOrdersBloc(getManyOrdersUseCase: getManyOrderUseCase));
+    getIt.registerSingleton(
+        CheckoutBloc(cartRepository: cartLocalStorageRepo,
+                     checkoutUseCase: checkoutUseCase,
+                     getOneCouponUseCase: getOneCouponUseCase));
 
     // ============================= PAYMENT =================================== //
 

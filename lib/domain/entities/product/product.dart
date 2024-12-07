@@ -41,3 +41,13 @@ class OrderProduct {
     required this.imageUrl,
   });
 }
+
+class CheckoutProduct{
+  final String id;
+  final int quantity;
+
+  const CheckoutProduct({
+    required this.id,
+    required this.quantity,
+  });
+}

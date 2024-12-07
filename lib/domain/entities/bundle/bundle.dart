@@ -40,3 +40,14 @@ class OrderBundle {
     required this.imageUrl,
   });
 }
+
+class CheckoutBundle{
+  final String id;
+  final int quantity;
+
+  const CheckoutBundle({
+    required this.id,
+    required this.quantity,
+  });
+}
+
