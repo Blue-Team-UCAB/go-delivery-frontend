@@ -17,12 +17,12 @@ class TotalAmountSection extends StatelessWidget {
         const SizedBox(height: 16),
         _buildAmountRow('Tarifa de viaje', '\$ 0.00'),
         const SizedBox(height: 16),
-        _buildAmountRow('Descuento cupón del ${couponBloc.state.coupon!.porcentage}% ', '-\$${total*couponBloc.state.coupon!.porcentage/100}', isCoupon: true),
+        _buildAmountRow('Descuento cupón del ${couponBloc.state.coupon.porcentage}% ', '-\$${total*couponBloc.state.howMuchDiscount}', isCoupon: true),
         const Divider(
           color: Color(0xFFD4D6DD),
           height: 16,
         ),
-        _buildAmountRow('Total', '\$${total-total*couponBloc.state.coupon!.porcentage/100}', isTotal: true),
+        _buildAmountRow('Total', '\$${total-total*couponBloc.state.howMuchDiscount}', isTotal: true),
       ],
     );
   }
