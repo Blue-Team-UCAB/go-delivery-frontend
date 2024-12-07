@@ -1,8 +1,6 @@
 import '../../../../domain/entities/cart/cartitem.dart';
 import '../../../../domain/entities/coupon/coupon.dart';
 
-class checkoutIsloading extends CheckoutState{}
-
 class CheckoutState {
   final List<CartItem> cartItems;
   final List<CartItem> productItems;
@@ -57,4 +55,70 @@ class CheckoutState {
       errorMessage: errorMessage ?? this.errorMessage,
     );
   }
+}
+
+class CheckoutInitial extends CheckoutState {}
+
+class CheckoutLoading extends CheckoutState {}
+
+class CheckoutCouponLoading extends CheckoutState {
+  const CheckoutCouponLoading({
+    List<CartItem>? cartItems,
+    List<CartItem>? productItems,
+    List<CartItem>? bundleItems,
+    double? total,
+    double? productTotal,
+    double? bundleTotal,
+    Coupon? appliedCoupon,
+  }) : super(
+    cartItems: cartItems ?? const [],
+    productItems: productItems ?? const [],
+    bundleItems: bundleItems ?? const [],
+    total: total ?? 0.0,
+    productTotal: productTotal ?? 0.0,
+    bundleTotal: bundleTotal ?? 0.0,
+    appliedCoupon: appliedCoupon,
+  );
+}
+
+class CheckoutCouponApplied extends CheckoutState {
+  const CheckoutCouponApplied({
+    required Coupon coupon,
+    required double discountedTotal,
+    List<CartItem>? cartItems,
+    List<CartItem>? productItems,
+    List<CartItem>? bundleItems,
+    double? productTotal,
+    double? bundleTotal,
+  }) : super(
+    appliedCoupon: coupon,
+    total: discountedTotal,
+    cartItems: cartItems ?? const [],
+    productItems: productItems ?? const [],
+    bundleItems: bundleItems ?? const [],
+    productTotal: productTotal ?? 0.0,
+    bundleTotal: bundleTotal ?? 0.0,
+  );
+}
+
+class CheckoutCouponError extends CheckoutState {
+  final String couponErrorMessage;
+
+  const CheckoutCouponError({
+    required this.couponErrorMessage,
+    List<CartItem>? cartItems,
+    List<CartItem>? productItems,
+    List<CartItem>? bundleItems,
+    double? total,
+    double? productTotal,
+    double? bundleTotal,
+  }) : super(
+    cartItems: cartItems ?? const [],
+    productItems: productItems ?? const [],
+    bundleItems: bundleItems ?? const [],
+    total: total ?? 0.0,
+    productTotal: productTotal ?? 0.0,
+    bundleTotal: bundleTotal ?? 0.0,
+    errorMessage: couponErrorMessage,
+  );
 }

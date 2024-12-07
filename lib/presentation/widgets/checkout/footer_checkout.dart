@@ -23,6 +23,7 @@ class ContinueButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocConsumer<CheckoutBloc, CheckoutState>(
       listener: (context, state) {
+        // Handle error messages
         if (state.errorMessage != null) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
@@ -32,8 +33,9 @@ class ContinueButton extends StatelessWidget {
           );
         }
 
-        // Check for successful order creation
-        if (state.cartItems.isEmpty &&
+        // Check for successful order creation more precisely
+        if (state is CheckoutInitial &&
+            state.cartItems.isEmpty &&
             state.total == 0.0 &&
             state.errorMessage == null) {
           // Show success dialog only once
@@ -44,10 +46,10 @@ class ContinueButton extends StatelessWidget {
         }
       },
       builder: (context, state) {
-        // Check if we're in a processing state
-        final bool isProcessing = state.cartItems.isEmpty &&
-            state.total == 0.0 &&
-            state.errorMessage != null;
+        // Determine processing state more accurately
+        final bool isProcessing =
+            state is CheckoutLoading ||
+                state is CheckoutCouponLoading;
 
         return Padding(
           padding: const EdgeInsets.all(16.0),
@@ -105,7 +107,6 @@ class ContinueButton extends StatelessWidget {
       return;
     }
 
-
     // Dispatch checkout event with all necessary data
     context.read<CheckoutBloc>().add(
       ProcessCheckoutEvent(
@@ -113,7 +114,7 @@ class ContinueButton extends StatelessWidget {
         longitude: selectedAddress!['longitude'],
         latitude: selectedAddress!['latitude'],
         tokenStripe: null,
-        idCoupon: state.appliedCoupon!.id,
+        couponId: state.appliedCoupon?.id,
         productItems: state.productItems
             .map((item) => CheckoutProduct(
             id: item.id,

@@ -1,8 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get_it/get_it.dart';
+import 'package:go_delivery_frontend/application/BLoc/order/order_cancel/order_cancel_bloc.dart';
 import 'package:go_delivery_frontend/infrastructure/models/order_many_model.dart';
 import 'package:go_router/go_router.dart';
 
 //import '../../../domain/entities/order/order.dart';
+import '../../../application/BLoc/order/order_cancel/order_cancel_event.dart';
+import '../../../application/BLoc/order/order_cancel/order_cancel_state.dart';
+import '../../../application/use_cases/order/cancel_order.dart';
 import '../../widgets/dialog_darken_window.dart';
 import '../../widgets/order_detailed/past/show_reorder_darken_window.dart';
 
@@ -141,21 +147,63 @@ class _OrderCardState extends State<OrderCard> {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return AnimatedSuccessDialog(
-          title: 'Cancelar Orden?',
-          message: 'Cancelar Orden #${widget.order.id}?',
-          buttonText: 'Atras',
-          icon: Icons.more_vert,
-          iconColor: const Color(0xFF2000B1),
-          buttonColor: const Color(0xFF2000B1),
-          onButtonPressed: () {
-            Navigator.of(context).pop();
-          },
-          rejectButtonText: 'Cancelar Orden',
-          rejectButtonColor: Colors.red,
-          onRejectPressed: () {
-            Navigator.of(context).pop();
-          },
+        return BlocProvider(
+          create: (context) => OrderCancelBloc(
+            cancelOrderUseCase: GetIt.instance<CancelOneOrderUseCase>(),
+          ),
+          child: BlocConsumer<OrderCancelBloc, OrderCancelState>(
+            listener: (context, state) {
+              if (state is OrderCancelSuccessState) {
+                // Close the dialog
+                Navigator.of(context).pop();
+
+                // Navigate to orders page or show success message
+                context.go('/order');
+
+                // Optionally show a success snackbar
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text('Orden ${widget.order.id} cancelada exitosamente'),
+                    backgroundColor: Colors.green,
+                  ),
+                );
+              }
+
+              if (state is OrderCancelErrorState) {
+                // Close the dialog
+                Navigator.of(context).pop();
+
+                // Show error dialog or snackbar
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text('Error al cancelar la orden: ${state.error}'),
+                    backgroundColor: Colors.red,
+                  ),
+                );
+              }
+            },
+            builder: (context, state) {
+              return AnimatedSuccessDialog(
+                title: 'Cancelar Orden?',
+                message: 'Cancelar Orden #${widget.order.id}?',
+                buttonText: 'Atras',
+                icon: Icons.more_vert,
+                iconColor: const Color(0xFF2000B1),
+                buttonColor: const Color(0xFF2000B1),
+                onButtonPressed: () {
+                  Navigator.of(context).pop();
+                },
+                rejectButtonText: 'Cancelar Orden',
+                rejectButtonColor: Colors.red,
+                onRejectPressed: () {
+                  // Dispatch cancel order event
+                  context.read<OrderCancelBloc>().add(
+                    CancelOrderEvent(orderId: widget.order.id),
+                  );
+                },
+              );
+            },
+          ),
         );
       },
     );

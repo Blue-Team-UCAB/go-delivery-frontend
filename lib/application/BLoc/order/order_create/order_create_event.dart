@@ -9,7 +9,7 @@ class LoadCartItemsEvent extends CheckoutEvent {}
 class ApplyCouponEvent extends CheckoutEvent {
   final String couponId;
 
-  ApplyCouponEvent(this.couponId);
+  ApplyCouponEvent({required this.couponId});
 }
 
 class ProcessCheckoutEvent extends CheckoutEvent {
@@ -17,7 +17,7 @@ class ProcessCheckoutEvent extends CheckoutEvent {
   final double longitude;
   final double latitude;
   final String? tokenStripe;
-  final String? idCoupon;
+  final String? couponId;
   final List<CheckoutProduct> productItems;
   final List<CheckoutBundle> bundleItems;
 
@@ -26,7 +26,7 @@ class ProcessCheckoutEvent extends CheckoutEvent {
     required this.longitude,
     required this.latitude,
     this.tokenStripe,
-    this.idCoupon, // Add this parameter
+    this.couponId,
     required this.productItems,
     required this.bundleItems,
   });

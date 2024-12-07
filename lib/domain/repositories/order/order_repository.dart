@@ -8,7 +8,7 @@ abstract class OrderRepository {
   Future<Result<Order>> getOrderById(String orderId);
 
   // Cancela una orden
-  Future<Result<bool>> cancelOrder(String orderId, {String? reason});
+  Future<Result<bool>> cancelOrder(String orderId);
 
   Future<Result<List<OrderManyItem>>> getOrders({
     required int page,

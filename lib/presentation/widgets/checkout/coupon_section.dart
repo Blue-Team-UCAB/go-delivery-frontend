@@ -67,7 +67,6 @@ class ApplyCouponSectionState extends State<ApplyCouponSection> {
               listener: (context, state) {
                 if (state is CouponLoading) {
                 } else if (state is CouponLoaded) {
-                  state.coupon.id;
                   Navigator.pop(context);
                   _showCouponResult(context, "Cupon agregado con exito.");
                 } else if (state is CouponFailed) {
@@ -88,7 +87,7 @@ class ApplyCouponSectionState extends State<ApplyCouponSection> {
                     }
 
                     context.read<CouponBloc>().add(LoadCoupon(couponId: couponIdController.text));
-                    
+                    context.read<CheckoutBloc>().add(ApplyCouponEvent(couponId: couponIdController.text));
                   }
                   return Padding(
                     padding: EdgeInsets.only(

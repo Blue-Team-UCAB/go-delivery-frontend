@@ -2,11 +2,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_delivery_frontend/domain/entities/bundle/bundle.dart';
 
 import '../../../../domain/entities/cart/cartitem.dart';
+import '../../../../domain/entities/coupon/coupon.dart';
 import '../../../../domain/entities/product/product.dart';
 import '../../../../domain/repositories/cart/cart_local_storage_repository.dart';
 import '../../../core/bloc/ensure_bloc.dart';
 import '../../../use_cases/coupon/get_one_coupon.dart';
 import '../../../use_cases/order/create_order.dart';
+import '../../coupon/coupon_bloc.dart';
 import 'order_create_event.dart';
 import 'order_create_state.dart';
 
@@ -22,7 +24,7 @@ class CheckoutBloc extends SafeBloc<CheckoutEvent, CheckoutState> {
   })  : cartRepository = cartRepository,
         _checkoutUseCase = checkoutUseCase,
         _getOneCouponUseCase = getOneCouponUseCase,
-        super(const CheckoutState()) {
+        super(CheckoutInitial()) {
     on<LoadCartItemsEvent>(_onLoadCartItems);
     on<ApplyCouponEvent>(_onApplyCoupon);
     on<ProcessCheckoutEvent>(_onProcessCheckout);
@@ -33,6 +35,8 @@ class CheckoutBloc extends SafeBloc<CheckoutEvent, CheckoutState> {
       Emitter<CheckoutState> emit,
       ) async {
     try {
+      emit(CheckoutLoading());
+
       final cartItems = await cartRepository.loadCartItems();
 
       // Segregate items by type
@@ -79,30 +83,49 @@ class CheckoutBloc extends SafeBloc<CheckoutEvent, CheckoutState> {
       Emitter<CheckoutState> emit,
       ) async {
     try {
+
       // Fetch coupon
-      final input = GetOneCouponUseCaseInput(couponId: event.couponId);
-      final couponResult = await _getOneCouponUseCase.execute(input);
+      final input = GetOneCouponUseCaseInput(couponId: event.couponId.toUpperCase());
+      final result = await _getOneCouponUseCase.execute(input);
 
-      if (!couponResult.isSuccessful()) {
-        // Handling failure
-        emit(state.copyWith(
-          errorMessage: couponResult.getError().message ?? 'Invalid coupon',
-        ));
-      } else {
-        // Handling success
-        final coupon = couponResult.getValue();
+      if (result.isSuccessful()) {
+        final coupon = result.getValue();
 
-        // Apply percentage coupon logic
+        // Calculate discounted total
         double discountedTotal = state.total * (1 - (coupon.porcentage / 100));
 
-        emit(state.copyWith(
-          appliedCoupon: coupon,
-          total: discountedTotal,
+        // Emit coupon applied state
+        emit(CheckoutCouponApplied(
+          coupon: coupon,
+          discountedTotal: discountedTotal,
+          cartItems: state.cartItems,
+          productItems: state.productItems,
+          bundleItems: state.bundleItems,
+          productTotal: state.productTotal,
+          bundleTotal: state.bundleTotal,
+        ));
+      } else {
+        // Emit coupon error state
+        emit(CheckoutCouponError(
+          couponErrorMessage: 'Coupon is not valid',
+          cartItems: state.cartItems,
+          productItems: state.productItems,
+          bundleItems: state.bundleItems,
+          total: state.total,
+          productTotal: state.productTotal,
+          bundleTotal: state.bundleTotal,
         ));
       }
     } catch (e) {
-      emit(state.copyWith(
-        errorMessage: 'Failed to apply coupon',
+      // Emit error state if an exception occurs
+      emit(CheckoutCouponError(
+        couponErrorMessage: 'Error applying coupon: ${e.toString()}',
+        cartItems: state.cartItems,
+        productItems: state.productItems,
+        bundleItems: state.bundleItems,
+        total: state.total,
+        productTotal: state.productTotal,
+        bundleTotal: state.bundleTotal,
       ));
     }
   }
@@ -112,13 +135,16 @@ class CheckoutBloc extends SafeBloc<CheckoutEvent, CheckoutState> {
       Emitter<CheckoutState> emit,
       ) async {
     try {
+      // Emit loading state at the start of checkout
+      emit(CheckoutLoading());
+
       // Prepare checkout input using CheckoutProduct and CheckoutBundle directly
       final checkoutInput = CheckoutUseCaseInput(
         direction: event.direction,
         longitude: event.longitude,
         latitude: event.latitude,
         tokenStripe: event.tokenStripe,
-        idCoupon: state.appliedCoupon?.id,
+        idCoupon: event.couponId,
         products: event.productItems,
         bundles: event.bundleItems,
       );
@@ -128,8 +154,6 @@ class CheckoutBloc extends SafeBloc<CheckoutEvent, CheckoutState> {
 
       // Handle order creation result
       if (!orderResult.isSuccessful()) {
-        print("Hubo un error en crear la orden");
-
         emit(state.copyWith(
           errorMessage: orderResult.getError().message ?? 'Failed to create order',
         ));
@@ -137,18 +161,12 @@ class CheckoutBloc extends SafeBloc<CheckoutEvent, CheckoutState> {
         // Clear cart after successful order
         await cartRepository.emptyCart();
 
-        emit(CheckoutState(
-          cartItems: [],
-          productItems: [],
-          bundleItems: [],
-          total: 0.0,
-          productTotal: 0.0,
-          bundleTotal: 0.0,
-        ));
+        // Emit initial state to reset everything
+        emit(CheckoutInitial());
       }
     } catch (e) {
       emit(state.copyWith(
-        errorMessage: 'Failed to process checkout',
+        errorMessage: 'Failed to process checkout: ${e.toString()}',
       ));
     }
   }
