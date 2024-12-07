@@ -70,7 +70,7 @@ class ApplyCouponSectionState extends State<ApplyCouponSection> {
               listener: (context, state) {
                 if (state is CouponLoading) {
                 } else if (state is CouponLoaded) {
-                  _couponId = state.coupon!.id;
+                  _couponId = state.coupon.id;
                   Navigator.pop(context);
                   _showCouponResult(context, "Cupon agregado con exito.");
                 } else if (state is CouponFailed) {
