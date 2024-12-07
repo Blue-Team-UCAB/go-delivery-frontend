@@ -13,6 +13,15 @@ class CouponBloc extends Bloc<CouponEvent, CouponState> {
   CouponBloc(this._getOneCouponUseCase)
       : super(CouponInitial()) {
     on<LoadCoupon>(_onLoadCoupon);
+    on<ClearCoupon>(_clearCouponHandler);
+  }
+
+  void clearCoupon(){
+    add(const ClearCoupon());
+  }
+
+  void _clearCouponHandler(ClearCoupon event, Emitter<CouponState> emit) {
+    emit(CouponInitial());
   }
 
   Future<void> _onLoadCoupon(
