@@ -15,3 +15,7 @@ class LoadCoupon extends CouponEvent {
   @override
   List<Object?> get props => [couponId];
 }
+
+class ClearCoupon extends CouponEvent {
+  const ClearCoupon();
+}
