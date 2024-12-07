@@ -128,6 +128,8 @@ class CheckoutBloc extends SafeBloc<CheckoutEvent, CheckoutState> {
 
       // Handle order creation result
       if (!orderResult.isSuccessful()) {
+        print("Hubo un error en crear la orden");
+
         emit(state.copyWith(
           errorMessage: orderResult.getError().message ?? 'Failed to create order',
         ));

@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:go_delivery_frontend/infrastructure/mappers/order/checkout/bundlecheckout_mapper.dart';
 import 'package:go_delivery_frontend/infrastructure/mappers/order/checkout/productcheckout_mapper.dart';
 
@@ -69,7 +71,6 @@ class OrderRepositoryImpl extends OrderRepository {
     }
   }
 
-  @override
   Future<Result<bool>> createOrder({
     required String direction,
     required double longitude,
@@ -80,24 +81,30 @@ class OrderRepositoryImpl extends OrderRepository {
     List<CheckoutBundle>? bundles
   }) async {
     await _addAuthorizationHeader();
+
     try {
+      // Prepare the body
+      final body = {
+        'direction': direction,
+        'longitude': longitude,
+        'latitude': latitude,
+        if (tokenStripe != null) 'token_stripe': tokenStripe,
+        if (idCoupon != null) 'id_coupon': idCoupon,
+        'products': CheckoutProductMapper.toJsonList(products),
+        if (bundles != null && bundles.isNotEmpty)
+          'bundles': CheckoutBundleMapper.toJsonList(bundles),
+      };
+
+      // Print the entire body for debugging
+      print('Order Request Body: ${json.encode(body)}');
+
       final response = await _apiRequestManager.request(
         '/order',
         'POST',
             (data) {
           return true;
         },
-        body: {
-          'direction': direction,
-          'longitude': longitude,
-          'latitude': latitude,
-          if (tokenStripe != null) 'token_stripe': tokenStripe,
-          if (idCoupon != null) 'id_coupon': idCoupon,
-          if (products != null && products.isNotEmpty)
-            'products': CheckoutProductMapper.toJsonList(products),
-          if (bundles != null && bundles.isNotEmpty)
-            'bundles': CheckoutBundleMapper.toJsonList(bundles),
-        },
+        body: body,
       );
       return response;
     } catch (e) {
@@ -105,7 +112,6 @@ class OrderRepositoryImpl extends OrderRepository {
       rethrow;
     }
   }
-
 
   @override
   Future<Result<bool>> cancelOrder(String orderId, {String? reason}) {

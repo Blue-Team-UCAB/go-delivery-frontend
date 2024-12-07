@@ -1,7 +1,6 @@
 import 'package:go_delivery_frontend/domain/entities/bundle/bundle.dart';
 import 'package:go_delivery_frontend/domain/entities/product/product.dart';
 
-import '../../../../domain/entities/cart/cartitem.dart';
 
 abstract class CheckoutEvent {}
 
@@ -18,16 +17,17 @@ class ProcessCheckoutEvent extends CheckoutEvent {
   final double longitude;
   final double latitude;
   final String? tokenStripe;
+  final String? idCoupon;
   final List<CheckoutProduct> productItems;
-  final List<CheckoutBundle>? bundleItems;
+  final List<CheckoutBundle> bundleItems;
 
   ProcessCheckoutEvent({
     required this.direction,
     required this.longitude,
     required this.latitude,
     this.tokenStripe,
+    this.idCoupon, // Add this parameter
     required this.productItems,
-    this.bundleItems,
+    required this.bundleItems,
   });
 }
-

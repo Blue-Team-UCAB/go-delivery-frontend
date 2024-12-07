@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_delivery_frontend/application/BLoc/blocs.dart';
 
+import '../../../application/BLoc/order/order_create/order_create_bloc.dart';
+import '../../../application/BLoc/order/order_create/order_create_event.dart';
+
 class ApplyCouponSection extends StatefulWidget {
   const ApplyCouponSection({super.key});
 
@@ -11,13 +14,7 @@ class ApplyCouponSection extends StatefulWidget {
 
 class ApplyCouponSectionState extends State<ApplyCouponSection> {
   TextEditingController couponIdController = TextEditingController();
-  String? _couponId;
 
-  String? get checkoutCoupon {
-    final currentCouponId = _couponId;
-    _couponId = null;
-    return currentCouponId;
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -70,7 +67,7 @@ class ApplyCouponSectionState extends State<ApplyCouponSection> {
               listener: (context, state) {
                 if (state is CouponLoading) {
                 } else if (state is CouponLoaded) {
-                  _couponId = state.coupon.id;
+                  state.coupon.id;
                   Navigator.pop(context);
                   _showCouponResult(context, "Cupon agregado con exito.");
                 } else if (state is CouponFailed) {

@@ -1,6 +1,8 @@
 import '../../../../domain/entities/cart/cartitem.dart';
 import '../../../../domain/entities/coupon/coupon.dart';
 
+class checkoutIsloading extends CheckoutState{}
+
 class CheckoutState {
   final List<CartItem> cartItems;
   final List<CartItem> productItems;
