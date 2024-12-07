@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:go_delivery_frontend/presentation/widgets/checkout/shipping_section.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../screens/order/order_staging.dart';
 import '../dialog_darken_window.dart';
 
 class ContinueButton extends StatelessWidget {
@@ -8,14 +10,35 @@ class ContinueButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final addressSection = context.findAncestorStateOfType<AddressSectionState>();
+    final checkoutStager = context.findAncestorStateOfType<CheckoutStagerState>();
+
     return SizedBox(
-      width: double.infinity, // Para hacer que el botón ocupe todo el ancho
+      width: double.infinity,
       child: ElevatedButton(
-        onPressed: () {
-          showOrderCreated(context);
+        onPressed: () async {
+          final selectedAddress = addressSection?.selectedAddress;
+
+          if (selectedAddress != null) {
+            final isSuccessful = await checkoutStager?.processCheckout(
+              direction: selectedAddress['description'],
+              longitude: selectedAddress['longitude'],
+              latitude: selectedAddress['latitude'],
+              tokenStripe: 'stripe_token',
+            );
+
+            if (isSuccessful == true) {
+              _showOrderCreatedDialog(context);
+            }
+          } else {
+            // Show error that no address is selected
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('Por favor, selecciona una dirección')),
+            );
+          }
         },
         style: ElevatedButton.styleFrom(
-          backgroundColor: const Color(0xFF2000B1), // Azul
+          backgroundColor: const Color(0xFF2000B1),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(8.0),
           ),
@@ -33,7 +56,7 @@ class ContinueButton extends StatelessWidget {
     );
   }
 
-  void showOrderCreated(BuildContext context) {
+  void _showOrderCreatedDialog(BuildContext context) {
     showDialog(
       context: context,
       builder: (BuildContext context) {

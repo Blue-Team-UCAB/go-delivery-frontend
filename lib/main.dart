@@ -8,6 +8,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:go_delivery_frontend/presentation/core/app.dart';
 import 'application/BLoc/auth/recover_password/recover_password_bloc.dart';
+import 'application/BLoc/order/order_create/order_create_bloc.dart';
 import 'firebase_options.dart';
 import 'infrastructure/firebase/firebase_notifications_manager.dart';
 import 'infrastructure/mappers/local_notifications.dart';
@@ -37,6 +38,7 @@ void main() async {
         BlocProvider(create: (_) => getIt<ThemesBloc>()),
         BlocProvider(create: (_) => getIt<NotificationsBloc>()),
         BlocProvider(create: (_) => getIt<RecoverPasswordBloc>()),
+        BlocProvider(create: (_) => getIt<CheckoutBloc>()),
         BlocProvider(create: (_) => getIt<ProductListBloc>()),
         BlocProvider(create: (_) => getIt<ProductDetailBloc>()),
         BlocProvider(create: (_) => getIt<BundleListBloc>()),

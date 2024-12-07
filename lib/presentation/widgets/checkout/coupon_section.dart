@@ -6,11 +6,18 @@ class ApplyCouponSection extends StatefulWidget {
   const ApplyCouponSection({super.key});
 
   @override
-  State<ApplyCouponSection> createState() => _ApplyCouponSectionState();
+  State<ApplyCouponSection> createState() => ApplyCouponSectionState();
 }
 
-class _ApplyCouponSectionState extends State<ApplyCouponSection> {
+class ApplyCouponSectionState extends State<ApplyCouponSection> {
   TextEditingController couponIdController = TextEditingController();
+  String? _couponId;
+
+  String? get checkoutCoupon {
+    final currentCouponId = _couponId;
+    _couponId = null;
+    return currentCouponId;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -63,6 +70,7 @@ class _ApplyCouponSectionState extends State<ApplyCouponSection> {
               listener: (context, state) {
                 if (state is CouponLoading) {
                 } else if (state is CouponLoaded) {
+                  _couponId = state.coupon!.id;
                   Navigator.pop(context);
                   _showCouponResult(context, "Cupon agregado con exito.");
                 } else if (state is CouponFailed) {
