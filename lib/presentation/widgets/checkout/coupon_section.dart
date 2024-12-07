@@ -134,11 +134,13 @@ class ApplyCouponSectionState extends State<ApplyCouponSection> {
                                   ),
                                   onPressed: validate,
                                   child: const Text('Confirmar',
-                                      style: TextStyle(
-                                          fontFamily: 'Inter',
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 16))),
-        ),
+                                    style: TextStyle(
+                                      fontFamily: 'Inter',
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 16)
+                                    )
+                                  ),
+                                ),
                           ],
                         ),
                       ),
