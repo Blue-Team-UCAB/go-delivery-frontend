@@ -40,8 +40,7 @@ class NotificationScreen extends StatelessWidget {
         physics: const BouncingScrollPhysics(),
         itemCount: notifications.length,
         itemBuilder: (context, index) {
-          // final notification = notifications[index];
-          final notification = notifications[index];
+          final notification = notifications[notifications.length - 1 - index];
           return Card(
             color: const Color(0xFF02066F),
             child: ListTile(
@@ -57,13 +56,9 @@ class NotificationScreen extends StatelessWidget {
                   ? Image.network(notification.imageUrl!)
                   : null,
               onTap: () {
-                // context.push('/push-details/${notification.messageId}');
+                context.push(
+                    '/push-details/${Uri.encodeComponent(notification.messageId)}');
               },
-
-              // trailing: Text(
-              //   '${notification.date.day}/${notification.date.month}/${notification.date.year}',
-              //   style: const TextStyle(fontSize: 12, color: Colors.white54),
-              // ),
             ),
           );
         },
