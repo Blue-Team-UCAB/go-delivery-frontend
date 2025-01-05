@@ -81,7 +81,7 @@ class HomeScreenState extends State<HomeScreen> {
             // HomescreenPlaceholder();
             //Aqui pones lo retornado en el loading de las siluetas de productos en el homescreen. Gustavo.
             
-            return HomescreenPlaceholder().build(context);
+            return const HomescreenPlaceholder();
           }
           if (state is CurrentUserInitial || state is CurrentUserError) {
             return const Center(child: Text('Usuario no cargado'));
