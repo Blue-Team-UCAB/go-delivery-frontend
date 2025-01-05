@@ -1,8 +1,11 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_delivery_frontend/application/BLoc/blocs.dart';
 import 'package:go_delivery_frontend/presentation/screens/homescreen/category_tab.dart';
 import 'package:go_delivery_frontend/presentation/screens/homescreen/homescreen_combo_section.dart';
+import 'package:go_delivery_frontend/presentation/screens/homescreen/homescreen_placeholder.dart';
 import 'package:go_delivery_frontend/presentation/screens/homescreen/sidebar_screen.dart';
 import 'package:go_delivery_frontend/presentation/widgets/random_products/random_popular_section.dart';
 import 'package:go_router/go_router.dart';
@@ -74,9 +77,10 @@ class HomeScreenState extends State<HomeScreen> {
       child: BlocBuilder<CurrentUserBloc, CurrentUserState>(
         builder: (context, state) {
           if (state is CurrentUserLoading) {
+            // HomescreenPlaceholder();
             //Aqui pones lo retornado en el loading de las siluetas de productos en el homescreen. Gustavo.
 
-            return const Center(child: CircularProgressIndicator());
+            return const HomescreenPlaceholder();
           }
           if (state is CurrentUserInitial || state is CurrentUserError) {
             return const Center(child: Text('Usuario no cargado'));

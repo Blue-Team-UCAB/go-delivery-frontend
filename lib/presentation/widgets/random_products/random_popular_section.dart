@@ -1,6 +1,7 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_delivery_frontend/presentation/widgets/homescreen/popular_product_section_placeholder.dart';
 import 'package:go_router/go_router.dart';
 import 'package:go_delivery_frontend/application/BLoc/cart/cart_bloc.dart';
 import 'package:go_delivery_frontend/application/BLoc/product/popular/random/product_random_many_bloc.dart';
@@ -54,11 +55,11 @@ class RandomSectionState extends State<RandomSection> {
             ),
           ),
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: 16),
         BlocBuilder<ProductRandomListBloc, ProductListState>(
           builder: (context, state) {
             if (state is ProductListLoading) {
-              return const Center(child: CircularProgressIndicator());
+              return const PopularProductSectionPlaceholder();
             } else if (state is ProductListLoaded) {
               return ListView.builder(
                 shrinkWrap: true,
@@ -79,7 +80,7 @@ class RandomSectionState extends State<RandomSection> {
             } else {
               // Use Future.microtask to avoid calling setState during build
               Future.microtask(() => _loadRandomProducts());
-              return const Center(child: CircularProgressIndicator());
+              return const PopularProductSectionPlaceholder();
             }
           },
         ),
@@ -120,8 +121,7 @@ class RandomItem extends StatelessWidget {
             },
             leading: FastLoadingImage(
               imageUrl: product.imageUrl,
-              height: 100,
-              width: 100,
+              width: 60,
               fit: BoxFit.contain,
             ),
             title: Text(
