@@ -1,4 +1,4 @@
-import '../../../domain/entities/courier/courier.dart';
+import 'package:go_delivery_frontend/domain/entities/courier/courier.dart';
 
 class CourierMapper {
   static Courier fromJson(Map<String, dynamic> json) {

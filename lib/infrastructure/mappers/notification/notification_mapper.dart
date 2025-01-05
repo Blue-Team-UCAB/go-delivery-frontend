@@ -1,5 +1,5 @@
 
-import '../../../domain/entities/notifications/notification.dart';
+import 'package:go_delivery_frontend/domain/entities/notifications/notification.dart';
 
 class NotificationMapper {
 

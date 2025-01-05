@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_delivery_frontend/presentation/widgets/checkout/checkout_widgets.dart';
-
-import '../../../application/BLoc/order/order_create/order_create_bloc.dart';
-import '../../../application/BLoc/order/order_create/order_create_event.dart';
-import '../../../application/BLoc/order/order_create/order_create_state.dart';
+import 'package:go_delivery_frontend/application/BLoc/order/order_create/order_create_bloc.dart';
+import 'package:go_delivery_frontend/application/BLoc/order/order_create/order_create_event.dart';
+import 'package:go_delivery_frontend/application/BLoc/order/order_create/order_create_state.dart';
 
 class CheckoutOrderScreen extends StatefulWidget {
   static const name = 'checkout-screen';
@@ -58,7 +57,7 @@ class _CheckoutOrderScreenState extends State<CheckoutOrderScreen> {
                 ),
                 const DeliveryTimeSection(),
                 PaymentMethodSection(
-                  onCardSelected: (cardId) { // Add this method
+                  onCardSelected: (cardId) {
                     setState(() {
                       _selectedCardId = cardId;
                     });
@@ -73,7 +72,7 @@ class _CheckoutOrderScreenState extends State<CheckoutOrderScreen> {
                 const SizedBox(height: 16),
                 ContinueButton(
                   selectedAddress: selectedAddress,
-                  selectedCardId: _selectedCardId, // Use the local variable
+                  selectedCardId: _selectedCardId,
                 )
               ],
             ),

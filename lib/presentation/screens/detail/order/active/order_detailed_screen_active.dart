@@ -2,11 +2,11 @@ import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
 import 'package:latlong2/latlong.dart';
 
-import '../../../../../application/BLoc/order/order_detailed/order_detailed_state.dart';
-import '../../../../../domain/entities/order/order.dart';
-import '../../../../widgets/order_detailed/active/active_info.dart';
-import '../../../../widgets/order_detailed/active/delivery_map_order.dart';
-import '../../../../widgets/order_detailed/active/driver_card.dart';
+import 'package:go_delivery_frontend/application/BLoc/order/order_detailed/order_detailed_state.dart';
+import 'package:go_delivery_frontend/domain/entities/order/order.dart';
+import 'package:go_delivery_frontend/presentation/widgets/order_detailed/active/active_info.dart';
+import 'package:go_delivery_frontend/presentation/widgets/order_detailed/active/delivery_map_order.dart';
+import 'package:go_delivery_frontend/presentation/widgets/order_detailed/active/driver_card.dart';
 
 class ActiveOrderDetails extends StatelessWidget {
   final OrderDetailLoadedState state;

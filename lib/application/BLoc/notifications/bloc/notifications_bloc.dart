@@ -2,7 +2,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:go_delivery_frontend/infrastructure/mappers/push_message_model.dart';
-import '../../../use_cases/notification/send_device_token_usecase.dart';
+import 'package:go_delivery_frontend/application/use_cases/notification/send_device_token_usecase.dart';
 
 part 'notifications_event.dart';
 part 'notifications_state.dart';

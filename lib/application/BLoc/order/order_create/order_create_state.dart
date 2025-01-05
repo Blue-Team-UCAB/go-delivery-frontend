@@ -1,5 +1,5 @@
-import '../../../../domain/entities/cart/cartitem.dart';
-import '../../../../domain/entities/coupon/coupon.dart';
+import 'package:go_delivery_frontend/domain/entities/cart/cartitem.dart';
+import 'package:go_delivery_frontend/domain/entities/coupon/coupon.dart';
 
 class CheckoutState {
   final List<CartItem> cartItems;

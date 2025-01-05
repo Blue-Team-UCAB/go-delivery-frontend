@@ -24,7 +24,6 @@ class WalletScreen extends StatefulWidget {
 
 class _WalletScreenState extends State<WalletScreen> {
   bool isVisible = true;
-  String? _selectedPaymentMethod;
   String? _selectedCardType;
   String? _selectedGoDelyOption;
   String? _referenceNumber;
@@ -37,6 +36,12 @@ class _WalletScreenState extends State<WalletScreen> {
   TextEditingController phoneController = TextEditingController();
   TextEditingController emailController = TextEditingController();
   final TextEditingController _integerPartController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    BlocProvider.of<GetWalletAmountBloc>(context).add(LoadWalletAmount());
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -84,28 +89,57 @@ class _WalletScreenState extends State<WalletScreen> {
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              RichText(
-                                text: TextSpan(
-                                  children: [
-                                    if (isVisible)
-                                      const TextSpan(
-                                        text: "\$",
-                                        style: TextStyle(
-                                          fontSize: 30,
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.normal,
-                                        ),
+                              BlocBuilder<GetWalletAmountBloc,
+                                  GetWalletAmountState>(
+                                builder: (context, state) {
+                                  if (state is WalletAmountLoading) {
+                                    return const CircularProgressIndicator(
+                                      valueColor: AlwaysStoppedAnimation<Color>(
+                                          Colors.white),
+                                    );
+                                  } else if (state is WalletAmountLoaded) {
+                                    final amountText =
+                                        '${(state.walletAmount.amount * 100).truncateToDouble() / 100}';
+                                    final fontSize =
+                                        amountText.length > 7 ? 50.0 : 82.0;
+
+                                    return RichText(
+                                      text: TextSpan(
+                                        children: [
+                                          if (isVisible)
+                                            const TextSpan(
+                                              text: "\$",
+                                              style: TextStyle(
+                                                fontSize: 30,
+                                                color: Colors.white,
+                                                fontWeight: FontWeight.normal,
+                                              ),
+                                            ),
+                                          TextSpan(
+                                            text:
+                                                isVisible ? amountText : '****',
+                                            style: TextStyle(
+                                              fontSize: fontSize,
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                        ],
                                       ),
-                                    TextSpan(
-                                      text: isVisible ? '12.5' : '****',
+                                    );
+                                  } else if (state is WalletAmountFailed) {
+                                    return Text(
+                                      'Error',
                                       style: const TextStyle(
                                         fontSize: 82,
                                         color: Colors.white,
                                         fontWeight: FontWeight.bold,
                                       ),
-                                    ),
-                                  ],
-                                ),
+                                    );
+                                  } else {
+                                    return const SizedBox.shrink();
+                                  }
+                                },
                               ),
                               IconButton(
                                 onPressed: () {
@@ -143,13 +177,13 @@ class _WalletScreenState extends State<WalletScreen> {
                   Column(
                     children: [
                       _buildSectionContainer(
-                        'Tarjeta de Crédito',
-                        _buildCreditCardOptions(),
+                        'GoDely Points',
+                        _buildGoDelyOptions(),
                       ),
                       const SizedBox(height: 16),
                       _buildSectionContainer(
-                        'GoDely Points',
-                        _buildGoDelyOptions(),
+                        'Tus tarjetas',
+                        _buildCreditCardOptions(),
                       ),
                     ],
                   ),
@@ -162,7 +196,7 @@ class _WalletScreenState extends State<WalletScreen> {
     );
   }
 
-  Widget _buildSectionContainer(String title, Widget child) {
+  Widget _buildSectionContainer(String title, Widget child, {String? amount}) {
     return Container(
       decoration: BoxDecoration(
         border: Border.all(color: const Color(0xFFC5C6CC)),
@@ -171,69 +205,35 @@ class _WalletScreenState extends State<WalletScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          GestureDetector(
-            behavior: HitTestBehavior.opaque,
-            onTap: () {
-              setState(() {
-                if (_selectedPaymentMethod == title) {
-                  _selectedPaymentMethod = null;
-                } else {
-                  _selectedPaymentMethod = title;
-                }
-              });
-            },
-            child: Container(
-              padding: const EdgeInsets.all(12.0),
-              decoration: BoxDecoration(
-                color: _selectedPaymentMethod == title
-                    ? const Color(0xFF2000B1).withOpacity(0.1)
-                    : Colors.transparent,
-                borderRadius: const BorderRadius.vertical(
-                  top: Radius.circular(8.0),
-                ),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    title,
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  if (title == 'GoDely Points')
-                    BlocBuilder<GetWalletAmountBloc, GetWalletAmountState>(
-                      builder: (context, state) {
-                        if (state is WalletAmountLoading) {
-                          return const CircularProgressIndicator();
-                        } else if (state is WalletAmountLoaded) {
-                          return Text(
-                            '\$${(state.walletAmount.amount * 100).truncateToDouble() / 100}',
-                            style: const TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          );
-                        } else if (state is WalletAmountFailed) {
-                          return Text(
-                            'Error: ${state.result.getError().message}',
-                            style: const TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w500,
-                              color: Colors.red,
-                            ),
-                          );
-                        } else {
-                          return const SizedBox.shrink();
-                        }
-                      },
-                    ),
-                ],
+          Container(
+            padding: const EdgeInsets.all(12.0),
+            decoration: const BoxDecoration(
+              borderRadius: BorderRadius.vertical(
+                top: Radius.circular(8.0),
               ),
             ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  title,
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                if (title == 'GoDely Points' && amount != null)
+                  Text(
+                    amount,
+                    style: const TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+              ],
+            ),
           ),
-          if (_selectedPaymentMethod == title) child,
+          child,
         ],
       ),
     );
@@ -363,7 +363,7 @@ class _WalletScreenState extends State<WalletScreen> {
       child: Column(
         children: [
           const SizedBox(height: 16),
-          Row(
+          Column(
             children: ['Pago Móvil', 'Zelle'].map((option) {
               return GestureDetector(
                 behavior: HitTestBehavior.opaque,
@@ -378,7 +378,10 @@ class _WalletScreenState extends State<WalletScreen> {
                   }
                 },
                 child: Container(
-                  margin: const EdgeInsets.only(right: 8.0),
+                  width:
+                      double.infinity, // Botón ocupa todo el ancho disponible
+                  margin: const EdgeInsets.only(
+                      bottom: 8.0), // Espacio entre botones
                   padding: const EdgeInsets.symmetric(
                       horizontal: 16.0, vertical: 12.0),
                   decoration: BoxDecoration(
@@ -391,6 +394,7 @@ class _WalletScreenState extends State<WalletScreen> {
                   ),
                   child: Text(
                     option,
+                    textAlign: TextAlign.left,
                     style: TextStyle(
                       fontSize: 14,
                       color: _selectedGoDelyOption == option

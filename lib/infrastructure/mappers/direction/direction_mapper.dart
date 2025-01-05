@@ -1,4 +1,4 @@
-import '../../../domain/entities/direction/direction.dart';
+import 'package:go_delivery_frontend/domain/entities/direction/direction.dart';
 
 class DirectionMapper {
   static Direction fromJson(Map<String, dynamic> json) {

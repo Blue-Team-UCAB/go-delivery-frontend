@@ -6,11 +6,11 @@ import 'package:go_delivery_frontend/presentation/screens/homescreen/homescreen_
 import 'package:go_delivery_frontend/presentation/screens/homescreen/sidebar_screen.dart';
 import 'package:go_delivery_frontend/presentation/widgets/random_products/random_popular_section.dart';
 import 'package:go_router/go_router.dart';
-import '../../../application/BLoc/auth/current/current_user_event.dart';
-import '../../../application/BLoc/auth/current/current_user_state.dart';
-import '../../widgets/dialog_darken_window.dart';
-import '../../widgets/navbar.dart';
-import 'homescreen_locationbar.dart';
+import 'package:go_delivery_frontend/application/BLoc/auth/current/current_user_event.dart';
+import 'package:go_delivery_frontend/application/BLoc/auth/current/current_user_state.dart';
+import 'package:go_delivery_frontend/presentation/widgets/dialog_darken_window.dart';
+import 'package:go_delivery_frontend/presentation/widgets/navbar.dart';
+import 'package:go_delivery_frontend/presentation/screens/homescreen/homescreen_locationbar.dart';
 
 class HomeScreenParentView extends StatelessWidget {
   static const name = 'home-screen';

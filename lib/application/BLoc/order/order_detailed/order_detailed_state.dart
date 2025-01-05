@@ -1,10 +1,10 @@
 import 'package:latlong2/latlong.dart';
 
-import '../../../../domain/entities/bundle/bundle.dart';
-import '../../../../domain/entities/courier/courier.dart';
-import '../../../../domain/entities/direction/direction.dart';
-import '../../../../domain/entities/order/order.dart';
-import '../../../../domain/entities/product/product.dart';
+import 'package:go_delivery_frontend/domain/entities/bundle/bundle.dart';
+import 'package:go_delivery_frontend/domain/entities/courier/courier.dart';
+import 'package:go_delivery_frontend/domain/entities/direction/direction.dart';
+import 'package:go_delivery_frontend/domain/entities/order/order.dart';
+import 'package:go_delivery_frontend/domain/entities/product/product.dart';
 
 abstract class OrderDetailState {}
 

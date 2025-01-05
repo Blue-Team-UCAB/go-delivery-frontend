@@ -2,27 +2,24 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import '../../../application/BLoc/cart/cart_bloc.dart';
-import '../../../application/BLoc/product/popular/random/product_random_many_bloc.dart';
-import '../../../application/BLoc/product/product_many/product_many_event.dart';
-import '../../../application/BLoc/product/product_many/product_many_state.dart';
-import '../../../domain/entities/product/product.dart';
-import '../../../infrastructure/mappers/cart/cart_item_mapper.dart';
-import '../../core/common/image-loader.dart';
+import 'package:go_delivery_frontend/application/BLoc/cart/cart_bloc.dart';
+import 'package:go_delivery_frontend/application/BLoc/product/popular/random/product_random_many_bloc.dart';
+import 'package:go_delivery_frontend/application/BLoc/product/product_many/product_many_event.dart';
+import 'package:go_delivery_frontend/application/BLoc/product/product_many/product_many_state.dart';
+import 'package:go_delivery_frontend/domain/entities/product/product.dart';
+import 'package:go_delivery_frontend/infrastructure/mappers/cart/cart_item_mapper.dart';
+import 'package:go_delivery_frontend/presentation/core/common/image-loader.dart';
 
-//THIS IS A PLACEHOLDER. Pronto estará el Popular list definitivo despues de tener casi listo la app
-//THIS IS A PLACEHOLDER. Pronto estará el Popular list definitivo despues de tener casi listo la app
-//THIS IS A PLACEHOLDER. Pronto estará el Popular list definitivo despues de tener casi listo la app
 //THIS IS A PLACEHOLDER. Pronto estará el Popular list definitivo despues de tener casi listo la app
 
 class RandomSection extends StatefulWidget {
   const RandomSection({super.key});
 
   @override
-  _RandomSectionState createState() => _RandomSectionState();
+  RandomSectionState createState() => RandomSectionState();
 }
 
-class _RandomSectionState extends State<RandomSection> {
+class RandomSectionState extends State<RandomSection> {
   bool _mounted = true;
 
   @override
@@ -34,7 +31,7 @@ class _RandomSectionState extends State<RandomSection> {
   void _loadRandomProducts() {
     if (!_mounted) return;
     final random = Random();
-    final randomPage = random.nextInt(6)+1;
+    final randomPage = random.nextInt(6) + 1;
 
     context
         .read<ProductRandomListBloc>()
@@ -111,12 +108,11 @@ class RandomItem extends StatelessWidget {
     return Column(
       children: [
         Material(
-          borderRadius: const BorderRadius.all( Radius.circular(16)),
+          borderRadius: const BorderRadius.all(Radius.circular(16)),
           color: const Color(0xFFFFFFFF),
           child: ListTile(
             contentPadding: const EdgeInsets.symmetric(horizontal: 10),
             shape: RoundedRectangleBorder(
-              
               borderRadius: BorderRadius.circular(20),
             ),
             onTap: () {

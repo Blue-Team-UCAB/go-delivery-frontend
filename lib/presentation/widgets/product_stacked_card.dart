@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_delivery_frontend/presentation/core/common/image-loader.dart';
-import '../../domain/entities/product/product.dart';
+import 'package:go_delivery_frontend/domain/entities/product/product.dart';
 
 class ProductStackedCard extends StatelessWidget {
   final OrderProduct productData;
@@ -35,9 +35,9 @@ class ProductStackedCard extends StatelessWidget {
                   fontFamily: "Inter",
                   fontSize: 12,
                 ),
-                ),
               ),
             ),
+          ),
           Padding(
             padding: const EdgeInsets.all(16.0),
             child: Row(
@@ -53,9 +53,9 @@ class ProductStackedCard extends StatelessWidget {
                       ? FastLoadingImage(
                           fit: BoxFit.cover, imageUrl: productData.imageUrl)
                       : const Icon(
-                    Icons.image_outlined,
-                    color: Colors.white,
-                  ),
+                          Icons.image_outlined,
+                          color: Colors.white,
+                        ),
                 ),
                 const SizedBox(width: 16),
                 Expanded(
@@ -74,8 +74,8 @@ class ProductStackedCard extends StatelessWidget {
                         style: const TextStyle(
                           fontFamily: "Inter",
                           fontSize: 15,
-                          ),
                         ),
+                      ),
                     ],
                   ),
                 ),

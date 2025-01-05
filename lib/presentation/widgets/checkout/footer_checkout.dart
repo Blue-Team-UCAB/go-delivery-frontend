@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import '../../../application/BLoc/cart/cart_bloc.dart';
-import '../../../application/BLoc/coupon/coupon_bloc.dart';
-import '../../../application/BLoc/order/order_create/order_create_bloc.dart';
-import '../../../application/BLoc/order/order_create/order_create_event.dart';
-import '../../../application/BLoc/order/order_create/order_create_state.dart';
-import '../../../domain/entities/bundle/bundle.dart';
-import '../../../domain/entities/product/product.dart';
-import '../dialog_darken_window.dart';
+import 'package:go_delivery_frontend/application/BLoc/cart/cart_bloc.dart';
+import 'package:go_delivery_frontend/application/BLoc/coupon/coupon_bloc.dart';
+import 'package:go_delivery_frontend/application/BLoc/order/order_create/order_create_bloc.dart';
+import 'package:go_delivery_frontend/application/BLoc/order/order_create/order_create_event.dart';
+import 'package:go_delivery_frontend/application/BLoc/order/order_create/order_create_state.dart';
+import 'package:go_delivery_frontend/domain/entities/bundle/bundle.dart';
+import 'package:go_delivery_frontend/domain/entities/product/product.dart';
+import 'package:go_delivery_frontend/presentation/widgets/dialog_darken_window.dart';
 
 
 class ContinueButton extends StatelessWidget {

@@ -1,7 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
 
-import '../../../presentation/core/theme/theme.dart';
+import 'package:go_delivery_frontend/presentation/core/theme/theme.dart';
 
 part 'themes_event.dart';
 part 'themes_state.dart';

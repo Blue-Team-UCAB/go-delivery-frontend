@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../application/BLoc/auth/current/current_user_bloc.dart';
-import '../../application/BLoc/auth/current/current_user_event.dart';
-import '../../application/BLoc/auth/current/current_user_state.dart';
-import 'dialog_darken_window.dart';
+import 'package:go_delivery_frontend/application/BLoc/auth/current/current_user_bloc.dart';
+import 'package:go_delivery_frontend/application/BLoc/auth/current/current_user_event.dart';
+import 'package:go_delivery_frontend/application/BLoc/auth/current/current_user_state.dart';
+import 'package:go_delivery_frontend/presentation/widgets/dialog_darken_window.dart';
 
 class TokenLoginStateChecker extends StatefulWidget {
   const TokenLoginStateChecker({super.key});
 
   @override
-  _TokenLoginStateCheckerState createState() => _TokenLoginStateCheckerState();
+  TokenLoginStateCheckerState createState() => TokenLoginStateCheckerState();
 }
 
-class _TokenLoginStateCheckerState extends State<TokenLoginStateChecker> {
+class TokenLoginStateCheckerState extends State<TokenLoginStateChecker> {
   @override
   void initState() {
     super.initState();

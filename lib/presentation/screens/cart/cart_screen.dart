@@ -6,7 +6,7 @@ import 'package:go_delivery_frontend/presentation/widgets/cart/cart_item.dart';
 import 'package:go_delivery_frontend/presentation/widgets/cart/cart_footer_box.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../application/BLoc/cart/cart_bloc.dart';
+import 'package:go_delivery_frontend/application/BLoc/cart/cart_bloc.dart';
 
 class CartScreen extends StatelessWidget {
   static const name = 'cart-screen';

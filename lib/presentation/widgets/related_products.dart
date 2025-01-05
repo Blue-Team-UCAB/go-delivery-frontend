@@ -15,10 +15,10 @@ class RelatedProductsSection extends StatefulWidget {
   const RelatedProductsSection({super.key, required this.category});
 
   @override
-  _RelatedProductsSectionState createState() => _RelatedProductsSectionState();
+  RelatedProductsSectionState createState() => RelatedProductsSectionState();
 }
 
-class _RelatedProductsSectionState extends State<RelatedProductsSection> {
+class RelatedProductsSectionState extends State<RelatedProductsSection> {
   late String _currentCategory;
   bool _isRequestInProgress = false;
   StreamSubscription<ProductListState>? _blocSubscription;

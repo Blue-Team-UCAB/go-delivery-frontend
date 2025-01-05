@@ -1,9 +1,9 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../core/bloc/ensure_bloc.dart';
-import '../../../use_cases/order/cancel_order.dart';
-import 'order_cancel_event.dart';
-import 'order_cancel_state.dart';
+import 'package:go_delivery_frontend/application/core/bloc/ensure_bloc.dart';
+import 'package:go_delivery_frontend/application/use_cases/order/cancel_order.dart';
+import 'package:go_delivery_frontend/application/BLoc/order/order_cancel/order_cancel_event.dart';
+import 'package:go_delivery_frontend/application/BLoc/order/order_cancel/order_cancel_state.dart';
 
 class OrderCancelBloc extends SafeBloc<OrderCancelEvent, OrderCancelState> {
   final CancelOneOrderUseCase cancelOrderUseCase;

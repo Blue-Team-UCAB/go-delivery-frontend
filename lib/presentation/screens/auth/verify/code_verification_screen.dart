@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../../application/BLoc/auth/recover_password/recover_password_bloc.dart';
+import 'package:go_delivery_frontend/application/BLoc/auth/recover_password/recover_password_bloc.dart';
 
 class CodeVerificationScreen extends StatefulWidget {
   const CodeVerificationScreen({super.key});

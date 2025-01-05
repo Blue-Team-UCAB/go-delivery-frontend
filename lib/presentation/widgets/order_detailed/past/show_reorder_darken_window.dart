@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../dialog_darken_window.dart';
+import 'package:go_delivery_frontend/presentation/widgets/dialog_darken_window.dart';
 
 void showReorderPopupDialog(BuildContext context) {
   showDialog(

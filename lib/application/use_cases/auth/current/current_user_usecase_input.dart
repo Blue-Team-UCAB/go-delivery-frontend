@@ -1,7 +1,7 @@
 import 'package:go_delivery_frontend/infrastructure/models/user_model.dart';
 
-import '../../../../common/result.dart';
-import '../../../../domain/repositories/user/user_repository.dart';
+import 'package:go_delivery_frontend/common/result.dart';
+import 'package:go_delivery_frontend/domain/repositories/user/user_repository.dart';
 
 class CurrentUserUseCase {
   final UserRepository _userRepository;

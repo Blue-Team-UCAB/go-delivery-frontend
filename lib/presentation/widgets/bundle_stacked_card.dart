@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../../domain/entities/bundle/bundle.dart';
-import '../core/common/image-loader.dart';
+import 'package:go_delivery_frontend/domain/entities/bundle/bundle.dart';
+import 'package:go_delivery_frontend/presentation/core/common/image-loader.dart';
 
 class BundleStackedCard extends StatelessWidget {
   final OrderBundle bundleData;

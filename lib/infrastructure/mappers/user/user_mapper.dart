@@ -1,4 +1,4 @@
-import '../../models/user_model.dart';
+import 'package:go_delivery_frontend/infrastructure/models/user_model.dart';
 
 class UserMapper {
   static User fromJson(Map<String, dynamic> json, {String? token}) {

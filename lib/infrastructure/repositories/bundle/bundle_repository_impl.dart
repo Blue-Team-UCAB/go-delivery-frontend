@@ -4,7 +4,7 @@ import 'package:go_delivery_frontend/infrastructure/mappers/bundle/bundle_mapper
 import 'package:go_delivery_frontend/application/key_value_storage/key_value.dart';
 import 'package:go_delivery_frontend/common/result.dart';
 
-import '../../../application/api/api_request.dart';
+import 'package:go_delivery_frontend/application/api/api_request.dart';
 
 class BundleRepositoryImpl extends BundleRepository {
   final IApiRequestManager _apiRequestManager;

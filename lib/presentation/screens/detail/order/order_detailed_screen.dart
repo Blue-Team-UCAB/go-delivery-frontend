@@ -2,12 +2,12 @@ import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../../application/BLoc/order/order_detailed/order_detailed_bloc.dart';
-import '../../../../application/BLoc/order/order_detailed/order_detailed_event.dart';
-import '../../../../application/BLoc/order/order_detailed/order_detailed_state.dart';
-import '../../../../injector.dart';
-import 'active/order_detailed_screen_active.dart';
-import 'past/order_detailed_screen_past.dart';
+import 'package:go_delivery_frontend/application/BLoc/order/order_detailed/order_detailed_bloc.dart';
+import 'package:go_delivery_frontend/application/BLoc/order/order_detailed/order_detailed_event.dart';
+import 'package:go_delivery_frontend/application/BLoc/order/order_detailed/order_detailed_state.dart';
+import 'package:go_delivery_frontend/injector.dart';
+import 'package:go_delivery_frontend/presentation/screens/detail/order/active/order_detailed_screen_active.dart';
+import 'package:go_delivery_frontend/presentation/screens/detail/order/past/order_detailed_screen_past.dart';
 
 class OrderDetailScreen extends StatefulWidget {
   final String orderNumber;
