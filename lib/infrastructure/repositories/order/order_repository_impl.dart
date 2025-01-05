@@ -96,6 +96,8 @@ class OrderRepositoryImpl extends OrderRepository {
 
       print("APPLIED COUPON: ${body["id_coupon"]}");
 
+      print(body);
+
       final response = await _apiRequestManager.request(
         '/order',
         'POST',

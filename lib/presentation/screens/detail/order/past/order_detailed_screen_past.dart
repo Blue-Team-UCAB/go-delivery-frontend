@@ -22,17 +22,17 @@ class PastOrderDetails extends StatelessWidget {
             Padding(
             padding: const EdgeInsets.all(16.0),
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 OrderHeader(
                   orderNumber: state.orderNumber,
                   date: state.date,
                 ),
-                const SizedBox(height: 24),
+                const SizedBox(height: 18),
                 StatusBadge(status: state.last_state),
-                const SizedBox(height: 24),
+                const SizedBox(height: 18),
                 OrderItemsList(products: state.products, bundles: state.bundles),
-                const SizedBox(height: 24),
+                const SizedBox(height: 18),
                 // Metadata section
                 Row(
                   children: [
@@ -93,7 +93,7 @@ class PastOrderDetails extends StatelessWidget {
                 const SizedBox(height: 24),
                 if (state.last_state == 'DELIVERED')
                   ReorderButton(
-                    onReorder: () => showReorderPopupDialog(context),
+                    onReorder: () => showReorderPopupDialog(context, state.id),
                   ),
               ],
             ),

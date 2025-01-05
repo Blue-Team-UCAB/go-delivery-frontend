@@ -290,7 +290,6 @@ class _OrdersPageState extends State<OrdersPage>
           );
         }
 
-        // Orders list with potential loading indicator
         return NotificationListener<ScrollNotification>(
           onNotification: (ScrollNotification scrollInfo) {
             if (scrollInfo.metrics.pixels == scrollInfo.metrics.maxScrollExtent) {
