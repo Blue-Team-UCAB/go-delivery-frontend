@@ -4,6 +4,7 @@ import 'package:go_delivery_frontend/presentation/widgets/bundle_card.dart';
 import 'package:go_delivery_frontend/application/BLoc/bundle/bundle_many/bundle_many_bloc.dart';
 import 'package:go_delivery_frontend/application/BLoc/bundle/bundle_many/bundle_many_event.dart';
 import 'package:go_delivery_frontend/application/BLoc/bundle/bundle_many/bundle_many_state.dart';
+import 'package:go_delivery_frontend/presentation/widgets/homescreen/bundle_section_placeholder.dart';
 
 class ComboSection extends StatefulWidget {
   const ComboSection({super.key});
@@ -56,7 +57,7 @@ class _ComboSectionState extends State<ComboSection> {
           BlocBuilder<BundleListBloc, BundleListState>(
             builder: (context, state) {
               if (state is BundleListLoading) {
-                return const Center(child: CircularProgressIndicator());
+                return const BundleSectionPlaceholder();
               }
               if (state is BundleListFailed) {
                 return Center(
