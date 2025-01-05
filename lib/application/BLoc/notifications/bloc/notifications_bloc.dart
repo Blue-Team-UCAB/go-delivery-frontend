@@ -137,8 +137,4 @@ class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState> {
     }
   }
 
-  @override
-  Future<void> close() {
-    return super.close();
-  }
 }

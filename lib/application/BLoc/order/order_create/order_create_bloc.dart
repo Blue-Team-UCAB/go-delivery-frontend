@@ -1,14 +1,10 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_delivery_frontend/domain/entities/bundle/bundle.dart';
 
 import '../../../../domain/entities/cart/cartitem.dart';
-import '../../../../domain/entities/coupon/coupon.dart';
-import '../../../../domain/entities/product/product.dart';
 import '../../../../domain/repositories/cart/cart_local_storage_repository.dart';
 import '../../../core/bloc/ensure_bloc.dart';
 import '../../../use_cases/coupon/get_one_coupon.dart';
 import '../../../use_cases/order/create_order.dart';
-import '../../coupon/coupon_bloc.dart';
 import 'order_create_event.dart';
 import 'order_create_state.dart';
 

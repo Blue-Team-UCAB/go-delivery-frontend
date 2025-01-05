@@ -34,7 +34,7 @@ class ActiveOrderDetails extends StatelessWidget {
               location: state.location,
             ),
           ),
-          if (currentActiveState == 'SHIPPED' && state.courier!.name != null && state.courier!.id != null && state.courier!.phone != null)
+          if (currentActiveState == 'SHIPPED')
             FadeInDown(
               delay: const Duration(milliseconds: 100),
               child: DriverCard(
@@ -160,7 +160,7 @@ class OrderProgress extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
+              const Text(
                 'Entregando',
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_delivery_frontend/application/BLoc/blocs.dart';
 import 'package:go_delivery_frontend/presentation/screens/homescreen/category_tab.dart';
@@ -75,7 +74,6 @@ class HomeScreenState extends State<HomeScreen> {
       child: BlocBuilder<CurrentUserBloc, CurrentUserState>(
         builder: (context, state) {
           if (state is CurrentUserLoading) {
-
             //Aqui pones lo retornado en el loading de las siluetas de productos en el homescreen. Gustavo.
 
             return const Center(child: CircularProgressIndicator());
@@ -101,12 +99,12 @@ class HomeScreenState extends State<HomeScreen> {
       builder: (BuildContext context) {
         return AnimatedSuccessDialog(
           title: 'Sesión Expirada',
-          message: 'Tu sesión ha caducado. Por favor, inicia sesión nuevamente.',
+          message:
+              'Tu sesión ha caducado. Por favor, inicia sesión nuevamente.',
           buttonText: 'Iniciar Sesión',
           icon: Icons.warning_amber_rounded,
           iconColor: Colors.orange,
           onButtonPressed: () {
-            // Clear any existing routes and push to login
             context.go('/login');
           },
         );
@@ -151,7 +149,7 @@ class HomeScreenState extends State<HomeScreen> {
                         decoration: const BoxDecoration(
                             color: Color(0xFFFFFFFF),
                             borderRadius:
-                            BorderRadius.all(Radius.circular(12))),
+                                BorderRadius.all(Radius.circular(12))),
                         child: const LocationBar()),
                   ),
                 ],

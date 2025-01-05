@@ -81,7 +81,7 @@ class PastOrderDetails extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      state.totalAmount.toString()+"\$",
+                      "${state.totalAmount}\$",
                       style: const TextStyle(
                         fontFamily: 'Montserrat',
                         fontSize: 23,

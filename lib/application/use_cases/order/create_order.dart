@@ -1,8 +1,6 @@
-import '../../../common/failure.dart';
 import '../../../common/result.dart';
 import '../../../common/use_cases.dart';
 import '../../../domain/entities/bundle/bundle.dart';
-import '../../../domain/entities/order/order.dart';
 import '../../../domain/entities/product/product.dart';
 import '../../../domain/repositories/order/order_repository.dart';
 

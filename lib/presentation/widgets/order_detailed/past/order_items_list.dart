@@ -10,10 +10,10 @@ class OrderItemsList extends StatelessWidget {
   final List<OrderBundle> bundles;
 
   const OrderItemsList({
-    Key? key,
+    super.key,
     required this.products,
     required this.bundles,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

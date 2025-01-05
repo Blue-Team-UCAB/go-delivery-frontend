@@ -11,7 +11,6 @@ import 'application/BLoc/auth/register/register_bloc.dart';
 import 'application/BLoc/order/order_cancel/order_cancel_bloc.dart';
 import 'application/use_cases/notification/send_device_token_usecase.dart';
 import 'application/use_cases/order/create_order.dart';
-import 'domain/repositories/cart/cart_local_storage_repository.dart';
 import 'domain/repositories/notifications/notifications_repository.dart';
 import 'infrastructure/datasources/api/api_request_impl.dart';
 import 'infrastructure/datasources/cart/cart_isar_local_storage_datasource.dart';

@@ -1,7 +1,6 @@
 import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
 
 import '../../../../application/BLoc/order/order_detailed/order_detailed_bloc.dart';
 import '../../../../application/BLoc/order/order_detailed/order_detailed_event.dart';
@@ -13,7 +12,7 @@ import 'past/order_detailed_screen_past.dart';
 class OrderDetailScreen extends StatefulWidget {
   final String orderNumber;
 
-  const OrderDetailScreen({Key? key, required this.orderNumber}) : super(key: key);
+  const OrderDetailScreen({super.key, required this.orderNumber});
 
   @override
   State<OrderDetailScreen> createState() => _OrderDetailScreenState();

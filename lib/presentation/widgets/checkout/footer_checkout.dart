@@ -9,7 +9,6 @@ import '../../../application/BLoc/order/order_create/order_create_state.dart';
 import '../../../domain/entities/bundle/bundle.dart';
 import '../../../domain/entities/product/product.dart';
 import '../dialog_darken_window.dart';
-import 'coupon_section.dart';
 
 
 class ContinueButton extends StatelessWidget {

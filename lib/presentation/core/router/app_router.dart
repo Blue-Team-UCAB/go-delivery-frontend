@@ -36,6 +36,10 @@ class RoutesManager {
           pageBuilder: (context, state) => CustomTransitions.slideRight(
               key: state.pageKey, child: const CouponScreen())),
       GoRoute(
+          path: '/wallet',
+          pageBuilder: (context, state) => CustomTransitions.slideRight(
+              key: state.pageKey, child: const WalletScreen())),
+      GoRoute(
           path: '/login',
           pageBuilder: (context, state) => CustomTransitions.slideRight(
               key: state.pageKey, child: const LoginScreen())),
@@ -50,6 +54,12 @@ class RoutesManager {
           pageBuilder: (context, state) => CustomTransitions.slideRight(
                 key: state.pageKey,
                 child: const CatalogScreen(initialCounterNavbar: 1),
+              )),
+      GoRoute(
+          path: '/profile',
+          pageBuilder: (context, state) => CustomTransitions.slideRight(
+                key: state.pageKey,
+                child: const ProfileScreen(),
               )),
       GoRoute(
         path: '/checkout',

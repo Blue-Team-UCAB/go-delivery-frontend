@@ -6,33 +6,29 @@ import 'package:go_delivery_frontend/application/BLoc/payment/card_get/get_card_
 import 'package:go_delivery_frontend/application/BLoc/payment/get_wallet/get_wallet_bloc.dart';
 import 'package:go_delivery_frontend/application/BLoc/payment/get_wallet/get_wallet_event.dart';
 import 'package:go_delivery_frontend/application/BLoc/payment/get_wallet/get_wallet_state.dart';
-import 'package:go_delivery_frontend/presentation/screens/order/card_screen.dart';
 import 'package:go_delivery_frontend/application/BLoc/payment/pago_movil/pago_movil_bloc.dart';
 import 'package:go_delivery_frontend/application/BLoc/payment/pago_movil/pago_movil_event.dart';
 import 'package:go_delivery_frontend/application/BLoc/payment/pago_movil/pago_movil_state.dart';
 import 'package:go_delivery_frontend/application/BLoc/payment/zelle/zelle_bloc.dart';
-import 'package:go_delivery_frontend/application/BLoc/payment/zelle/zelle_state.dart';
 import 'package:go_delivery_frontend/application/BLoc/payment/zelle/zelle_event.dart';
+import 'package:go_delivery_frontend/application/BLoc/payment/zelle/zelle_state.dart';
+import 'package:go_delivery_frontend/presentation/screens/order/card_screen.dart';
+import 'package:go_router/go_router.dart';
 
-class PaymentMethodSection extends StatefulWidget {
-  final Function(String?)? onCardSelected;
-
-  const PaymentMethodSection({
-    super.key,
-    this.onCardSelected,
-  });
+class WalletScreen extends StatefulWidget {
+  const WalletScreen({super.key});
 
   @override
-  State<PaymentMethodSection> createState() => _PaymentMethodSectionState();
+  State<WalletScreen> createState() => _WalletScreenState();
 }
 
-class _PaymentMethodSectionState extends State<PaymentMethodSection> {
+class _WalletScreenState extends State<WalletScreen> {
+  bool isVisible = true;
   String? _selectedPaymentMethod;
   String? _selectedCardType;
   String? _selectedGoDelyOption;
   String? _referenceNumber;
   String? _selectedBank;
-  String? _selectedCardId;
   double userPoints = 0.00;
 
   TextEditingController referenceController = TextEditingController();
@@ -43,37 +39,125 @@ class _PaymentMethodSectionState extends State<PaymentMethodSection> {
   final TextEditingController _integerPartController = TextEditingController();
 
   @override
-  void initState() {
-    super.initState();
-    BlocProvider.of<GetWalletAmountBloc>(context).add(LoadWalletAmount());
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Text(
-            'Métodos de Pago',
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-          ),
-          const SizedBox(height: 16),
-          Column(
-            children: [
-              _buildSectionContainer(
-                'Tarjeta de Crédito',
-                _buildCreditCardOptions(),
+    return Scaffold(
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            Stack(
+              children: [
+                Container(
+                  height: 255,
+                  width: double.infinity,
+                  color: const Color(0xFF2000B1),
+                ),
+                SafeArea(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            IconButton(
+                              onPressed: () {
+                                context.go('/profile');
+                              },
+                              icon: const Icon(
+                                Icons.arrow_back,
+                                color: Colors.white,
+                              ),
+                            ),
+                            const SizedBox(width: 8),
+                            const Text(
+                              'GoDely Wallet',
+                              style: TextStyle(
+                                fontSize: 24,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 34),
+                        Center(
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              RichText(
+                                text: TextSpan(
+                                  children: [
+                                    if (isVisible)
+                                      const TextSpan(
+                                        text: "\$",
+                                        style: TextStyle(
+                                          fontSize: 30,
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.normal,
+                                        ),
+                                      ),
+                                    TextSpan(
+                                      text: isVisible ? '12.5' : '****',
+                                      style: const TextStyle(
+                                        fontSize: 82,
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              IconButton(
+                                onPressed: () {
+                                  setState(() {
+                                    isVisible = !isVisible;
+                                  });
+                                },
+                                icon: Icon(
+                                  isVisible
+                                      ? Icons.visibility
+                                      : Icons.visibility_off,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 16),
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    'Recargas',
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(height: 16),
+                  Column(
+                    children: [
+                      _buildSectionContainer(
+                        'Tarjeta de Crédito',
+                        _buildCreditCardOptions(),
+                      ),
+                      const SizedBox(height: 16),
+                      _buildSectionContainer(
+                        'GoDely Points',
+                        _buildGoDelyOptions(),
+                      ),
+                    ],
+                  ),
+                ],
               ),
-              const SizedBox(height: 16),
-              _buildSectionContainer(
-                'GoDely Points',
-                _buildGoDelyOptions(),
-              ),
-            ],
-          ),
-        ],
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -175,25 +259,12 @@ class _PaymentMethodSectionState extends State<PaymentMethodSection> {
                     // Identificar tarjeta única
                     final cardIdentifier =
                         "${card.brand ?? ''}-${card.last4 ?? ''}-${card.expMonth ?? ''}-${card.expYear ?? ''}";
-                    final selectedcardId = card.idCard;
 
                     return GestureDetector(
                       onTap: () {
                         setState(() {
-                          _selectedCardId = selectedcardId;
                           _selectedCardType = cardIdentifier;
                         });
-
-                        // Debugging print
-                        print('Selected Card ID: $selectedcardId');
-                        print('Callback: ${widget.onCardSelected}');
-
-                        // Ensure the callback is not null before calling
-                        if (widget.onCardSelected != null) {
-                          widget.onCardSelected!(selectedcardId);
-                        } else {
-                          print('onCardSelected callback is null');
-                        }
                       },
                       child: Container(
                         margin: const EdgeInsets.only(bottom: 12.0),
@@ -201,7 +272,7 @@ class _PaymentMethodSectionState extends State<PaymentMethodSection> {
                           horizontal: 12.0,
                           vertical: 8.0,
                         ),
-                        width: double.infinity, // Toma todo el ancho disponible
+                        width: double.infinity,
                         decoration: BoxDecoration(
                           border: Border.all(
                             color: _selectedCardType == cardIdentifier

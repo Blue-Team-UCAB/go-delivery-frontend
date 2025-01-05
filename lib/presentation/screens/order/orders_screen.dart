@@ -28,8 +28,8 @@ class _OrdersPageState extends State<OrdersPage>
   final List<String> activeStatuses = ['CREATED', 'IN PROCESS', 'SHIPPED'];
   final List<String> pastStatuses = ['DELIVERED', 'CANCELLED'];
 
-  List<OrderManyItem> _allActiveOrders = [];
-  List<OrderManyItem> _allPastOrders = [];
+  final List<OrderManyItem> _allActiveOrders = [];
+  final List<OrderManyItem> _allPastOrders = [];
 
   int _currentActivePage = 1;
   int _currentPastPage = 1;
