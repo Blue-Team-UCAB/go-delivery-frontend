@@ -1,5 +1,5 @@
-import '../../../common/result.dart';
-import '../../../infrastructure/models/user_model.dart';
+import 'package:go_delivery_frontend/common/result.dart';
+import 'package:go_delivery_frontend/infrastructure/models/user_model.dart';
 
 abstract class UserRepository {
   Future<Result<bool>> register(

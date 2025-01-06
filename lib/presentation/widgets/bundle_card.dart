@@ -3,8 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_delivery_frontend/application/BLoc/blocs.dart';
 import 'package:go_delivery_frontend/domain/entities/bundle/bundle.dart';
 import 'package:go_router/go_router.dart';
-import '../../application/BLoc/cart/cart_bloc.dart';
-import '../../infrastructure/mappers/cart/cart_item_mapper.dart';
+import 'package:go_delivery_frontend/application/BLoc/cart/cart_bloc.dart';
+import 'package:go_delivery_frontend/infrastructure/mappers/cart/cart_item_mapper.dart';
 
 class BundleCard extends StatelessWidget {
   final Bundle bundle;

@@ -1,8 +1,8 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../../common/result.dart';
-import '../../../core/bloc/ensure_bloc.dart';
+import 'package:go_delivery_frontend/common/result.dart';
+import 'package:go_delivery_frontend/application/core/bloc/ensure_bloc.dart';
 
 part 'register_event.dart';
 part 'register_state.dart';

@@ -1,5 +1,5 @@
-import '../../../../domain/entities/cart/cartitem.dart';
-import '../../../../domain/entities/coupon/coupon.dart';
+import 'package:go_delivery_frontend/domain/entities/cart/cartitem.dart';
+import 'package:go_delivery_frontend/domain/entities/coupon/coupon.dart';
 
 class CheckoutState {
   final List<CartItem> cartItems;
@@ -19,7 +19,7 @@ class CheckoutState {
     this.cartItems = const [],
     this.productItems = const [],
     this.bundleItems = const [],
-    this.cardid = null,
+    this.cardid,
     this.total = 0.0,
     this.productTotal = 0.0,
     this.bundleTotal = 0.0,
@@ -71,7 +71,7 @@ class CheckoutCouponLoading extends CheckoutState {
     double? total,
     double? productTotal,
     double? bundleTotal,
-    Coupon? appliedCoupon,
+    super.appliedCoupon,
   }) : super(
     cartItems: cartItems ?? const [],
     productItems: productItems ?? const [],
@@ -79,7 +79,6 @@ class CheckoutCouponLoading extends CheckoutState {
     total: total ?? 0.0,
     productTotal: productTotal ?? 0.0,
     bundleTotal: bundleTotal ?? 0.0,
-    appliedCoupon: appliedCoupon,
   );
 }
 

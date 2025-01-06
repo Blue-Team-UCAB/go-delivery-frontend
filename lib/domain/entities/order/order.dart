@@ -1,8 +1,8 @@
 import 'package:go_delivery_frontend/domain/entities/courier/courier.dart';
 
-import '../bundle/bundle.dart';
-import '../direction/direction.dart';
-import '../product/product.dart';
+import 'package:go_delivery_frontend/domain/entities/bundle/bundle.dart';
+import 'package:go_delivery_frontend/domain/entities/direction/direction.dart';
+import 'package:go_delivery_frontend/domain/entities/product/product.dart';
 
 class Order {
   String id;

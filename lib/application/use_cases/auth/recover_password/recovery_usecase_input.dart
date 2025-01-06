@@ -1,6 +1,6 @@
-import '../../../../common/result.dart';
-import '../../../../common/use_cases.dart';
-import '../../../../domain/repositories/user/user_repository.dart';
+import 'package:go_delivery_frontend/common/result.dart';
+import 'package:go_delivery_frontend/common/use_cases.dart';
+import 'package:go_delivery_frontend/domain/repositories/user/user_repository.dart';
 
 class SendRecoveryCodeInput extends IUseCaseInput {
   final String email;

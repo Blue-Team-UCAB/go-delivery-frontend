@@ -107,7 +107,7 @@ class PaymentRepositoryImpl extends PaymentRepository {
         body: {'idCard': card.idCard},
       );
 
-      if (response == true) {
+      if (response.isSuccess) {
         return Result.success('Funciono');
       } else {
         return Result.fail(

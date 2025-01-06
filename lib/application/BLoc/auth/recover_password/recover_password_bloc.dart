@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../use_cases/auth/recover_password/recovery_usecase_input.dart';
+import 'package:go_delivery_frontend/application/use_cases/auth/recover_password/recovery_usecase_input.dart';
 
 part 'recover_password_event.dart';
 part 'recover_password_state.dart';

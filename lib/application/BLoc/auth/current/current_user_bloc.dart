@@ -1,10 +1,10 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_delivery_frontend/application/use_cases/auth/current/current_user_usecase_input.dart';
 
-import '../../../../infrastructure/models/user_model.dart';
-import '../../../core/bloc/ensure_bloc.dart';
-import 'current_user_event.dart';
-import 'current_user_state.dart';
+import 'package:go_delivery_frontend/infrastructure/models/user_model.dart';
+import 'package:go_delivery_frontend/application/core/bloc/ensure_bloc.dart';
+import 'package:go_delivery_frontend/application/BLoc/auth/current/current_user_event.dart';
+import 'package:go_delivery_frontend/application/BLoc/auth/current/current_user_state.dart';
 
 class CurrentUserBloc extends SafeBloc<CurrentUserEvent, CurrentUserState> {
   final CurrentUserUseCase currentUserUseCase;
@@ -30,12 +30,12 @@ class CurrentUserBloc extends SafeBloc<CurrentUserEvent, CurrentUserState> {
         email: user.email,
         name: user.name,
         phone: user.phone,
-        image: user.image ?? '',
+        image: user.image,
         type: User.userTypeToString(user.type),
       ));
     } else {
       final error = userResult.getError();
-      emit(CurrentUserError(error.message ?? 'Unknown error occurred'));
+      emit(CurrentUserError(error.message));
     }
   }
 }

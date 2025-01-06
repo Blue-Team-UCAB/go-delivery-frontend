@@ -1,7 +1,7 @@
 
 
-import '../../../common/result.dart';
-import '../../entities/notifications/notification.dart';
+import 'package:go_delivery_frontend/common/result.dart';
+import 'package:go_delivery_frontend/domain/entities/notifications/notification.dart';
 
 abstract class NotificationsRepository {
   Future<Result<List<Notification>>> getNotificationsPaginated(

@@ -1,19 +1,17 @@
-import 'dart:convert';
-
 import 'package:go_delivery_frontend/infrastructure/mappers/order/checkout/bundlecheckout_mapper.dart';
 import 'package:go_delivery_frontend/infrastructure/mappers/order/checkout/productcheckout_mapper.dart';
 
-import '../../../application/api/api_request.dart';
-import '../../../application/key_value_storage/key_value.dart';
-import '../../../common/failure.dart';
-import '../../../common/result.dart';
-import '../../../domain/entities/bundle/bundle.dart';
-import '../../../domain/entities/order/order.dart';
-import '../../../domain/entities/product/product.dart';
-import '../../../domain/repositories/order/order_repository.dart';
-import '../../mappers/order/many/many_order_mapper.dart';
-import '../../mappers/order/order_mapper.dart';
-import '../../models/order_many_model.dart';
+import 'package:go_delivery_frontend/application/api/api_request.dart';
+import 'package:go_delivery_frontend/application/key_value_storage/key_value.dart';
+import 'package:go_delivery_frontend/common/failure.dart';
+import 'package:go_delivery_frontend/common/result.dart';
+import 'package:go_delivery_frontend/domain/entities/bundle/bundle.dart';
+import 'package:go_delivery_frontend/domain/entities/order/order.dart';
+import 'package:go_delivery_frontend/domain/entities/product/product.dart';
+import 'package:go_delivery_frontend/domain/repositories/order/order_repository.dart';
+import 'package:go_delivery_frontend/infrastructure/mappers/order/many/many_order_mapper.dart';
+import 'package:go_delivery_frontend/infrastructure/mappers/order/order_mapper.dart';
+import 'package:go_delivery_frontend/infrastructure/models/order_many_model.dart';
 
 class OrderRepositoryImpl extends OrderRepository {
   final IApiRequestManager _apiRequestManager;
@@ -70,45 +68,45 @@ class OrderRepositoryImpl extends OrderRepository {
     }
   }
 
-  Future<Result<bool>> createOrder({
-    required String direction,
-    required double longitude,
-    required double latitude,
-    String? tokenStripe,
-    String? idCoupon,
-    required List<CheckoutProduct> products,
-    List<CheckoutBundle>? bundles
-  }) async {
+  @override
+  Future<Result<bool>> createOrder(
+      {required String direction,
+      required double longitude,
+      required double latitude,
+      String? tokenStripe,
+      String? idCoupon,
+      required List<CheckoutProduct> products,
+      List<CheckoutBundle>? bundles}) async {
     await _addAuthorizationHeader();
 
-      // Prepare the body
-      final body = {
-        'direction': direction,
-        'longitude': longitude,
-        'latitude': latitude,
-        if (tokenStripe != null) 'token_stripe': tokenStripe,
-        if (idCoupon != null) 'id_coupon': idCoupon,
-        'products': CheckoutProductMapper.toJsonList(products),
-        if (bundles != null && bundles.isNotEmpty)
-          'bundles': CheckoutBundleMapper.toJsonList(bundles),
-      };
-      var message;
+    // Prepare the body
+    final body = {
+      'direction': direction,
+      'longitude': longitude,
+      'latitude': latitude,
+      if (tokenStripe != null) 'token_stripe': tokenStripe,
+      if (idCoupon != null) 'id_coupon': idCoupon,
+      'products': CheckoutProductMapper.toJsonList(products),
+      if (bundles != null && bundles.isNotEmpty)
+        'bundles': CheckoutBundleMapper.toJsonList(bundles),
+    };
+    var message = '';
 
-      print("APPLIED COUPON: ${body["id_coupon"]}");
+    print("APPLIED COUPON: ${body["id_coupon"]}");
 
-      final response = await _apiRequestManager.request(
-        '/order',
-        'POST',
-            (data) {
-              if (data['errorCode'] != 200) {
-                message = data["message"];
-                return false;
-              } else {
-                return true;
-              }
-        },
-        body: body,
-      );
+    final response = await _apiRequestManager.request(
+      '/order',
+      'POST',
+      (data) {
+        if (data['errorCode'] != 200) {
+          message = data["message"];
+          return false;
+        } else {
+          return true;
+        }
+      },
+      body: body,
+    );
     if (response.value == true) {
       return response;
     } else {
@@ -120,21 +118,19 @@ class OrderRepositoryImpl extends OrderRepository {
   Future<Result<bool>> cancelOrder(String orderId) async {
     var message;
     await _addAuthorizationHeader();
-      final response = await _apiRequestManager.request(
-        '/order/cancel',
-        'POST',
-            (data) {
-              if (data['errorCode'] != 200) {
-                message = data["message"];
-                return false;
-              } else {
-                return true;
-              }
-            },
-        body: {
-          'orderId': orderId
-        },
-      );
+    final response = await _apiRequestManager.request(
+      '/order/cancel',
+      'POST',
+      (data) {
+        if (data['errorCode'] != 200) {
+          message = data["message"];
+          return false;
+        } else {
+          return true;
+        }
+      },
+      body: {'orderId': orderId},
+    );
     if (response.value == true) {
       return response;
     } else {

@@ -6,9 +6,9 @@ import 'package:go_delivery_frontend/application/BLoc/themes/themes_bloc.dart';
 import 'package:go_delivery_frontend/presentation/screens/auth/login/login_validators.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../../application/BLoc/auth/login/login_bloc.dart';
-import '../../../../injector.dart';
-import 'inputDecorationLogin.dart';
+import 'package:go_delivery_frontend/application/BLoc/auth/login/login_bloc.dart';
+import 'package:go_delivery_frontend/injector.dart';
+import 'package:go_delivery_frontend/presentation/screens/auth/login/inputDecorationLogin.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});

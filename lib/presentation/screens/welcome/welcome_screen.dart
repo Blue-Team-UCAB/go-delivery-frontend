@@ -3,8 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../application/BLoc/themes/themes_bloc.dart';
-import '../../../infrastructure/datasources/localstorage/localstorage_impl.dart';
+import 'package:go_delivery_frontend/application/BLoc/themes/themes_bloc.dart';
+import 'package:go_delivery_frontend/infrastructure/datasources/localstorage/localstorage_impl.dart';
 
 class WelcomeScreen extends StatefulWidget {
   const WelcomeScreen({super.key, this.onPressSkip});

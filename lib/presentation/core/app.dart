@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'router/app_router.dart';
-import 'theme/theme.dart';
-
-import '../../application/BLoc/themes/themes_bloc.dart';
-import '../../infrastructure/datasources/localstorage/localstorage_impl.dart';
+import 'package:go_delivery_frontend/presentation/core/router/app_router.dart';
+import 'package:go_delivery_frontend/presentation/core/theme/theme.dart';
+import 'package:go_delivery_frontend/application/BLoc/themes/themes_bloc.dart';
+import 'package:go_delivery_frontend/infrastructure/datasources/localstorage/localstorage_impl.dart';
 
 class GoDelyApp extends StatelessWidget {
   const GoDelyApp({super.key});

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../infrastructure/datasources/localstorage/localstorage_impl.dart';
-import '../../widgets/dialog_darken_window.dart';
+import 'package:go_delivery_frontend/infrastructure/datasources/localstorage/localstorage_impl.dart';
+import 'package:go_delivery_frontend/presentation/widgets/dialog_darken_window.dart';
 
 void showLogoutDialog(BuildContext context) {
   showDialog(

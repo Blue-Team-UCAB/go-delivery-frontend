@@ -1,4 +1,4 @@
-import '../../../domain/entities/client/client.dart';
+import 'package:go_delivery_frontend/domain/entities/client/client.dart';
 
 class ClientMapper {
   static Client fromJson(Map<String, dynamic> json) {

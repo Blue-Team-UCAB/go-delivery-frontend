@@ -1,16 +1,12 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_delivery_frontend/domain/entities/bundle/bundle.dart';
 
-import '../../../../domain/entities/cart/cartitem.dart';
-import '../../../../domain/entities/coupon/coupon.dart';
-import '../../../../domain/entities/product/product.dart';
-import '../../../../domain/repositories/cart/cart_local_storage_repository.dart';
-import '../../../core/bloc/ensure_bloc.dart';
-import '../../../use_cases/coupon/get_one_coupon.dart';
-import '../../../use_cases/order/create_order.dart';
-import '../../coupon/coupon_bloc.dart';
-import 'order_create_event.dart';
-import 'order_create_state.dart';
+import 'package:go_delivery_frontend/domain/entities/cart/cartitem.dart';
+import 'package:go_delivery_frontend/domain/repositories/cart/cart_local_storage_repository.dart';
+import 'package:go_delivery_frontend/application/core/bloc/ensure_bloc.dart';
+import 'package:go_delivery_frontend/application/use_cases/coupon/get_one_coupon.dart';
+import 'package:go_delivery_frontend/application/use_cases/order/create_order.dart';
+import 'package:go_delivery_frontend/application/BLoc/order/order_create/order_create_event.dart';
+import 'package:go_delivery_frontend/application/BLoc/order/order_create/order_create_state.dart';
 
 class CheckoutBloc extends SafeBloc<CheckoutEvent, CheckoutState> {
   final CartLocalStorageRepository cartRepository;
@@ -18,11 +14,10 @@ class CheckoutBloc extends SafeBloc<CheckoutEvent, CheckoutState> {
   final GetOneCouponUseCase _getOneCouponUseCase;
 
   CheckoutBloc({
-    required CartLocalStorageRepository cartRepository,
+    required this.cartRepository,
     required CheckoutUseCase checkoutUseCase,
     required GetOneCouponUseCase getOneCouponUseCase,
-  })  : cartRepository = cartRepository,
-        _checkoutUseCase = checkoutUseCase,
+  })  : _checkoutUseCase = checkoutUseCase,
         _getOneCouponUseCase = getOneCouponUseCase,
         super(CheckoutInitial()) {
     on<LoadCartItemsEvent>(_onLoadCartItems);
@@ -31,22 +26,20 @@ class CheckoutBloc extends SafeBloc<CheckoutEvent, CheckoutState> {
   }
 
   Future<void> _onLoadCartItems(
-      LoadCartItemsEvent event,
-      Emitter<CheckoutState> emit,
-      ) async {
+    LoadCartItemsEvent event,
+    Emitter<CheckoutState> emit,
+  ) async {
     try {
       emit(CheckoutLoading());
 
       final cartItems = await cartRepository.loadCartItems();
 
       // Segregate items by type
-      final List<CartItem> productItems = cartItems
-          .where((item) => item.type == 'product')
-          .toList();
+      final List<CartItem> productItems =
+          cartItems.where((item) => item.type == 'product').toList();
 
-      final List<CartItem> bundleItems = cartItems
-          .where((item) => item.type == 'bundle')
-          .toList();
+      final List<CartItem> bundleItems =
+          cartItems.where((item) => item.type == 'bundle').toList();
 
       // Calculate total for product items
       double productTotal = 0.0;
@@ -79,13 +72,13 @@ class CheckoutBloc extends SafeBloc<CheckoutEvent, CheckoutState> {
   }
 
   Future<void> _onApplyCoupon(
-      ApplyCouponEvent event,
-      Emitter<CheckoutState> emit,
-      ) async {
+    ApplyCouponEvent event,
+    Emitter<CheckoutState> emit,
+  ) async {
     try {
-
       // Fetch coupon
-      final input = GetOneCouponUseCaseInput(couponId: event.couponId.toUpperCase());
+      final input =
+          GetOneCouponUseCaseInput(couponId: event.couponId.toUpperCase());
       final result = await _getOneCouponUseCase.execute(input);
 
       if (result.isSuccessful()) {
@@ -130,11 +123,10 @@ class CheckoutBloc extends SafeBloc<CheckoutEvent, CheckoutState> {
     }
   }
 
-
   Future<void> _onProcessCheckout(
-      ProcessCheckoutEvent event,
-      Emitter<CheckoutState> emit,
-      ) async {
+    ProcessCheckoutEvent event,
+    Emitter<CheckoutState> emit,
+  ) async {
     try {
       // Emit loading state at the start of checkout
       emit(CheckoutLoading());
@@ -156,7 +148,8 @@ class CheckoutBloc extends SafeBloc<CheckoutEvent, CheckoutState> {
       // Handle order creation result
       if (!orderResult.isSuccessful()) {
         emit(state.copyWith(
-          errorMessage: orderResult.getError().message ?? 'Failed to create order',
+          errorMessage:
+              orderResult.getError().message ?? 'Failed to create order',
         ));
       } else {
         // Clear cart after successful order
