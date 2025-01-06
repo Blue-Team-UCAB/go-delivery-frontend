@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_delivery_frontend/application/BLoc/blocs.dart';
@@ -5,6 +6,7 @@ import 'package:go_delivery_frontend/domain/entities/bundle/bundle.dart';
 import 'package:go_router/go_router.dart';
 import 'package:go_delivery_frontend/application/BLoc/cart/cart_bloc.dart';
 import 'package:go_delivery_frontend/infrastructure/mappers/cart/cart_item_mapper.dart';
+import 'package:shimmer/shimmer.dart';
 
 class BundleCard extends StatelessWidget {
   final Bundle bundle;
@@ -30,11 +32,16 @@ class BundleCard extends StatelessWidget {
                 topLeft: Radius.circular(12.0),
                 topRight: Radius.circular(12.0),
               ),
-              child: Image.network(
-                bundle.imageUrl,
+              child: CachedNetworkImage(
+                imageUrl: bundle.imageUrl,
                 height: 94,
                 width: double.infinity,
                 fit: BoxFit.cover,
+                placeholder: (context,url) => Shimmer.fromColors(
+                  baseColor: const Color(0xFFd8d5dd),
+                  highlightColor: const Color(0xFFF4F4F4),
+                  child: Container(height: 94,width: double.infinity,color: Color(0xFFd8d5dd),)
+                ),
               ),
             ),
             Padding(
