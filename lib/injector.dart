@@ -74,7 +74,7 @@ class InjectManager {
     getIt.registerSingleton<NotificationsRepository>(notificationRepository);
 
     final sendDeviceTokenUseCase =
-    SendDeviceTokenUseCase(notificationsRepository: notificationRepository);
+        SendDeviceTokenUseCase(notificationsRepository: notificationRepository);
 
     getIt.registerSingleton<SendDeviceTokenUseCase>(sendDeviceTokenUseCase);
 
@@ -174,8 +174,7 @@ class InjectManager {
         GetOneOrderUseCase(orderRepository: orderRepository);
     final getManyOrderUseCase =
         GetManyOrdersUseCase(orderRepository: orderRepository);
-    final checkoutUseCase =
-        CheckoutUseCase(orderRepository: orderRepository);
+    final checkoutUseCase = CheckoutUseCase(orderRepository: orderRepository);
     final cancelOneOrderUseCase =
         CancelOneOrderUseCase(orderRepository: orderRepository);
 
@@ -189,10 +188,10 @@ class InjectManager {
         OrderDetailBloc(getOneOrderUseCase: getOneOrderUseCase));
     getIt.registerSingleton(
         ManyOrdersBloc(getManyOrdersUseCase: getManyOrderUseCase));
-    getIt.registerSingleton(
-        CheckoutBloc(cartRepository: cartLocalStorageRepo,
-                     checkoutUseCase: checkoutUseCase,
-                     getOneCouponUseCase: getOneCouponUseCase));
+    getIt.registerSingleton(CheckoutBloc(
+        cartRepository: cartLocalStorageRepo,
+        checkoutUseCase: checkoutUseCase,
+        getOneCouponUseCase: getOneCouponUseCase));
     getIt.registerSingleton(
         OrderCancelBloc(cancelOrderUseCase: cancelOneOrderUseCase));
 
@@ -259,5 +258,28 @@ class InjectManager {
 
     //Bloc
     getIt.registerSingleton(GetWalletAmountBloc(getWalletAmountUseCase));
+
+    // ============================= DIRECTIONS =================================== //
+
+    //Repositorio
+    final directionRepository = DirectionRepositoryImpl(
+        apiRequestManager: apiRequestManagerImpl,
+        localStorage: localStorageService);
+
+    //Casos de uso
+    final getDirectionsUseCase =
+        GetDirectionsUseCase(directionRepository: directionRepository);
+
+    final addDirectionUseCase =
+        AddDirectionUseCase(directionRepository: directionRepository);
+
+    getIt.registerSingleton<GetDirectionsUseCase>(getDirectionsUseCase);
+
+    getIt.registerSingleton<AddDirectionUseCase>(addDirectionUseCase);
+
+    //Blocs
+    getIt.registerSingleton(DirectionListBloc(getDirectionsUseCase));
+
+    getIt.registerSingleton(AddDirectionBloc(addDirectionUseCase));
   }
 }

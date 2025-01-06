@@ -13,4 +13,6 @@ export 'package:go_delivery_frontend/application/use_cases/payment/post_card.dar
 export 'package:go_delivery_frontend/application/use_cases/payment/get_cards.dart';
 export 'package:go_delivery_frontend/application/use_cases/order/get_many_order.dart';
 export 'package:go_delivery_frontend/application/use_cases/order/get_one_order.dart';
+export 'package:go_delivery_frontend/application/use_cases/direction/get_many/get_directions.dart';
+export 'package:go_delivery_frontend/application/use_cases/direction/add/add_direction.dart';
 export 'package:go_delivery_frontend/application/use_cases/wallet/get_wallet.dart';
