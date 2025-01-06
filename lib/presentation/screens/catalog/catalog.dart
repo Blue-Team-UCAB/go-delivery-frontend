@@ -8,7 +8,7 @@ import 'package:go_delivery_frontend/application/BLoc/product/product_many/produ
 import 'package:go_delivery_frontend/application/BLoc/product/product_many/product_many_state.dart';
 import 'package:go_delivery_frontend/application/BLoc/product/product_many/product_many_event.dart';
 import 'package:go_router/go_router.dart';
-import '../../../domain/entities/product/product.dart';
+import 'package:go_delivery_frontend/domain/entities/product/product.dart';
 
 class CatalogScreen extends StatefulWidget {
   final int initialCounterNavbar;

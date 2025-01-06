@@ -1,4 +1,4 @@
-import '../../../core/common/validator.dart';
+import 'package:go_delivery_frontend/presentation/core/common/validator.dart';
 
 class loginValidator {
 

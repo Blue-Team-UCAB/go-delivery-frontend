@@ -75,7 +75,7 @@ class OrderSummary extends StatelessWidget {
           const SizedBox(height: 4),
           Text(
             '\$$amount',
-            style: TextStyle(
+            style: const TextStyle(
                 fontFamily: "Montserrat",
                 color: Colors.black,
                 fontSize: 20,

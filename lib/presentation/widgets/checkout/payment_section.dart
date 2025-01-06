@@ -125,7 +125,7 @@ class _PaymentMethodSectionState extends State<PaymentMethodSection> {
                           return const CircularProgressIndicator();
                         } else if (state is WalletAmountLoaded) {
                           return Text(
-                            '\$${(state.walletAmount.amount*100).truncateToDouble()/100}',
+                            '\$${(state.walletAmount.amount * 100).truncateToDouble() / 100}',
                             style: const TextStyle(
                               fontSize: 14,
                               fontWeight: FontWeight.w500,
@@ -175,22 +175,22 @@ class _PaymentMethodSectionState extends State<PaymentMethodSection> {
                     // Identificar tarjeta única
                     final cardIdentifier =
                         "${card.brand ?? ''}-${card.last4 ?? ''}-${card.expMonth ?? ''}-${card.expYear ?? ''}";
-                    final selectedCard_id = card.idCard;
+                    final selectedcardId = card.idCard;
 
                     return GestureDetector(
                       onTap: () {
                         setState(() {
-                          _selectedCardId = selectedCard_id;
+                          _selectedCardId = selectedcardId;
                           _selectedCardType = cardIdentifier;
                         });
 
                         // Debugging print
-                        print('Selected Card ID: $selectedCard_id');
+                        print('Selected Card ID: $selectedcardId');
                         print('Callback: ${widget.onCardSelected}');
 
                         // Ensure the callback is not null before calling
                         if (widget.onCardSelected != null) {
-                          widget.onCardSelected!(selectedCard_id);
+                          widget.onCardSelected!(selectedcardId);
                         } else {
                           print('onCardSelected callback is null');
                         }
@@ -437,15 +437,20 @@ class _PaymentMethodSectionState extends State<PaymentMethodSection> {
                               maxLength: 6,
                               cursorColor: const Color(0xFF2000B1),
                               decoration: const InputDecoration(
-                                labelStyle: TextStyle(fontFamily: 'Inter',fontSize: 16, color: Color(0xFF858597)),
+                                labelStyle: TextStyle(
+                                    fontFamily: 'Inter',
+                                    fontSize: 16,
+                                    color: Color(0xFF858597)),
                                 focusedBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(color: Color(0xFF2000B1),width: 1),
-                                  borderRadius: BorderRadius.all(Radius.circular(12))
-                                ),
+                                    borderSide: BorderSide(
+                                        color: Color(0xFF2000B1), width: 1),
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(12))),
                                 border: OutlineInputBorder(
-                                  borderSide: BorderSide(color: Color(0xFFB8B8D2),width: 0.5),
-                                  borderRadius: BorderRadius.all(Radius.circular(12))
-                                ),
+                                    borderSide: BorderSide(
+                                        color: Color(0xFFB8B8D2), width: 0.5),
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(12))),
                                 labelText: 'Nro. Referencia',
                               ),
                             ),
@@ -455,16 +460,24 @@ class _PaymentMethodSectionState extends State<PaymentMethodSection> {
                                   const TextInputType.numberWithOptions(
                                       decimal: true),
                               decoration: const InputDecoration(
-                                labelStyle: TextStyle(fontFamily: 'Inter',fontSize: 16, color: Color(0xFF858597)),
+                                labelStyle: TextStyle(
+                                    fontFamily: 'Inter',
+                                    fontSize: 16,
+                                    color: Color(0xFF858597)),
                                 focusedBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(color: Color(0xFF2000B1),width: 1),
-                                  borderRadius: BorderRadius.all(Radius.circular(12))
-                                ),
+                                    borderSide: BorderSide(
+                                        color: Color(0xFF2000B1), width: 1),
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(12))),
                                 border: OutlineInputBorder(
-                                  borderSide: BorderSide(color: Color(0xFFB8B8D2),width: 0.5),
-                                  borderRadius: BorderRadius.all(Radius.circular(12))
-                                ),
-                                hintStyle: TextStyle(fontFamily: 'Inter',fontSize: 16, color: Color(0xFF858597)),
+                                    borderSide: BorderSide(
+                                        color: Color(0xFFB8B8D2), width: 0.5),
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(12))),
+                                hintStyle: TextStyle(
+                                    fontFamily: 'Inter',
+                                    fontSize: 16,
+                                    color: Color(0xFF858597)),
                                 labelText: 'Monto',
                                 hintText: 'Ej. 1200.00',
                               ),
@@ -474,16 +487,24 @@ class _PaymentMethodSectionState extends State<PaymentMethodSection> {
                               controller: emailController,
                               keyboardType: TextInputType.emailAddress,
                               decoration: const InputDecoration(
-                                labelStyle: TextStyle(fontFamily: 'Inter',fontSize: 16, color: Color(0xFF858597)),
+                                labelStyle: TextStyle(
+                                    fontFamily: 'Inter',
+                                    fontSize: 16,
+                                    color: Color(0xFF858597)),
                                 focusedBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(color: Color(0xFF2000B1),width: 1),
-                                  borderRadius: BorderRadius.all(Radius.circular(12))
-                                ),
+                                    borderSide: BorderSide(
+                                        color: Color(0xFF2000B1), width: 1),
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(12))),
                                 border: OutlineInputBorder(
-                                  borderSide: BorderSide(color: Color(0xFFB8B8D2),width: 0.5),
-                                  borderRadius: BorderRadius.all(Radius.circular(12))
-                                ),
-                                hintStyle: TextStyle(fontFamily: 'Inter',fontSize: 16, color: Color(0xFF858597)),
+                                    borderSide: BorderSide(
+                                        color: Color(0xFFB8B8D2), width: 0.5),
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(12))),
+                                hintStyle: TextStyle(
+                                    fontFamily: 'Inter',
+                                    fontSize: 16,
+                                    color: Color(0xFF858597)),
                                 labelText: 'Email',
                                 hintText: 'Ej. usuario@dominio.com',
                               ),
@@ -672,15 +693,20 @@ class _PaymentMethodSectionState extends State<PaymentMethodSection> {
                                 keyboardType: TextInputType.text,
                                 maxLength: 6,
                                 decoration: const InputDecoration(
-                                labelStyle: TextStyle(fontFamily: 'Inter',fontSize: 16, color: Color(0xFF858597)),
-                                focusedBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(color: Color(0xFF2000B1),width: 1),
-                                  borderRadius: BorderRadius.all(Radius.circular(12))
-                                ),
-                                border: OutlineInputBorder(
-                                  borderSide: BorderSide(color: Color(0xFFB8B8D2),width: 0.5),
-                                  borderRadius: BorderRadius.all(Radius.circular(12))
-                                ),
+                                  labelStyle: TextStyle(
+                                      fontFamily: 'Inter',
+                                      fontSize: 16,
+                                      color: Color(0xFF858597)),
+                                  focusedBorder: OutlineInputBorder(
+                                      borderSide: BorderSide(
+                                          color: Color(0xFF2000B1), width: 1),
+                                      borderRadius: BorderRadius.all(
+                                          Radius.circular(12))),
+                                  border: OutlineInputBorder(
+                                      borderSide: BorderSide(
+                                          color: Color(0xFFB8B8D2), width: 0.5),
+                                      borderRadius: BorderRadius.all(
+                                          Radius.circular(12))),
                                   labelText: 'Nro. Referencia',
                                 ),
                               ),
@@ -690,16 +716,24 @@ class _PaymentMethodSectionState extends State<PaymentMethodSection> {
                                     const TextInputType.numberWithOptions(
                                         decimal: true),
                                 decoration: const InputDecoration(
-                                labelStyle: TextStyle(fontFamily: 'Inter',fontSize: 16, color: Color(0xFF858597)),
-                                focusedBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(color: Color(0xFF2000B1),width: 1),
-                                  borderRadius: BorderRadius.all(Radius.circular(12))
-                                ),
-                                border: OutlineInputBorder(
-                                  borderSide: BorderSide(color: Color(0xFFB8B8D2),width: 0.5),
-                                  borderRadius: BorderRadius.all(Radius.circular(12))
-                                ),
-                                hintStyle: TextStyle(fontFamily: 'Inter',fontSize: 16, color: Color(0xFF858597)),
+                                  labelStyle: TextStyle(
+                                      fontFamily: 'Inter',
+                                      fontSize: 16,
+                                      color: Color(0xFF858597)),
+                                  focusedBorder: OutlineInputBorder(
+                                      borderSide: BorderSide(
+                                          color: Color(0xFF2000B1), width: 1),
+                                      borderRadius: BorderRadius.all(
+                                          Radius.circular(12))),
+                                  border: OutlineInputBorder(
+                                      borderSide: BorderSide(
+                                          color: Color(0xFFB8B8D2), width: 0.5),
+                                      borderRadius: BorderRadius.all(
+                                          Radius.circular(12))),
+                                  hintStyle: TextStyle(
+                                      fontFamily: 'Inter',
+                                      fontSize: 16,
+                                      color: Color(0xFF858597)),
                                   labelText: 'Monto',
                                   hintText: 'Ej. 1200.00 BS',
                                 ),
@@ -710,15 +744,20 @@ class _PaymentMethodSectionState extends State<PaymentMethodSection> {
                                 keyboardType: TextInputType.number,
                                 maxLength: 8,
                                 decoration: const InputDecoration(
-                                labelStyle: TextStyle(fontFamily: 'Inter',fontSize: 16, color: Color(0xFF858597)),
-                                focusedBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(color: Color(0xFF2000B1),width: 1),
-                                  borderRadius: BorderRadius.all(Radius.circular(12))
-                                ),
-                                border: OutlineInputBorder(
-                                  borderSide: BorderSide(color: Color(0xFFB8B8D2),width: 0.5),
-                                  borderRadius: BorderRadius.all(Radius.circular(12))
-                                ),
+                                  labelStyle: TextStyle(
+                                      fontFamily: 'Inter',
+                                      fontSize: 16,
+                                      color: Color(0xFF858597)),
+                                  focusedBorder: OutlineInputBorder(
+                                      borderSide: BorderSide(
+                                          color: Color(0xFF2000B1), width: 1),
+                                      borderRadius: BorderRadius.all(
+                                          Radius.circular(12))),
+                                  border: OutlineInputBorder(
+                                      borderSide: BorderSide(
+                                          color: Color(0xFFB8B8D2), width: 0.5),
+                                      borderRadius: BorderRadius.all(
+                                          Radius.circular(12))),
                                   labelText: 'Cédula',
                                 ),
                               ),
@@ -727,16 +766,24 @@ class _PaymentMethodSectionState extends State<PaymentMethodSection> {
                                 keyboardType: TextInputType.number,
                                 maxLength: 10,
                                 decoration: const InputDecoration(
-                                  labelStyle: TextStyle(fontFamily: 'Inter',fontSize: 16, color: Color(0xFF858597)),
+                                  labelStyle: TextStyle(
+                                      fontFamily: 'Inter',
+                                      fontSize: 16,
+                                      color: Color(0xFF858597)),
                                   focusedBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(color: Color(0xFF2000B1),width: 1),
-                                    borderRadius: BorderRadius.all(Radius.circular(12))
-                                  ),
+                                      borderSide: BorderSide(
+                                          color: Color(0xFF2000B1), width: 1),
+                                      borderRadius: BorderRadius.all(
+                                          Radius.circular(12))),
                                   border: OutlineInputBorder(
-                                    borderSide: BorderSide(color: Color(0xFFB8B8D2),width: 0.5),
-                                    borderRadius: BorderRadius.all(Radius.circular(12))
-                                  ),
-                                  hintStyle: TextStyle(fontFamily: 'Inter',fontSize: 16, color: Color(0xFF858597)),
+                                      borderSide: BorderSide(
+                                          color: Color(0xFFB8B8D2), width: 0.5),
+                                      borderRadius: BorderRadius.all(
+                                          Radius.circular(12))),
+                                  hintStyle: TextStyle(
+                                      fontFamily: 'Inter',
+                                      fontSize: 16,
+                                      color: Color(0xFF858597)),
                                   hintText: '4141231212 sin el cero',
                                   labelText: 'Teléfono +58',
                                 ),
@@ -759,15 +806,20 @@ class _PaymentMethodSectionState extends State<PaymentMethodSection> {
                                   });
                                 },
                                 decoration: const InputDecoration(
-                                  labelStyle: TextStyle(fontFamily: 'Inter',fontSize: 16, color: Color(0xFF858597)),
+                                  labelStyle: TextStyle(
+                                      fontFamily: 'Inter',
+                                      fontSize: 16,
+                                      color: Color(0xFF858597)),
                                   focusedBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(color: Color(0xFF2000B1),width: 1),
-                                    borderRadius: BorderRadius.all(Radius.circular(12))
-                                  ),
+                                      borderSide: BorderSide(
+                                          color: Color(0xFF2000B1), width: 1),
+                                      borderRadius: BorderRadius.all(
+                                          Radius.circular(12))),
                                   border: OutlineInputBorder(
-                                    borderSide: BorderSide(color: Color(0xFFB8B8D2),width: 0.5),
-                                    borderRadius: BorderRadius.all(Radius.circular(12))
-                                  ),
+                                      borderSide: BorderSide(
+                                          color: Color(0xFFB8B8D2), width: 0.5),
+                                      borderRadius: BorderRadius.all(
+                                          Radius.circular(12))),
                                   labelText: 'Banco',
                                 ),
                               ),

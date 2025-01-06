@@ -1,4 +1,4 @@
-import '../../../../domain/entities/bundle/bundle.dart';
+import 'package:go_delivery_frontend/domain/entities/bundle/bundle.dart';
 
 class CheckoutBundleMapper {
   static CheckoutBundle fromJson(Map<String, dynamic> json) {

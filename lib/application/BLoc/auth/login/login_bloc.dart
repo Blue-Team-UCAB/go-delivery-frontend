@@ -2,7 +2,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_delivery_frontend/application/use_cases/auth/login/login_usecase_input.dart';
 
-import '../../../core/bloc/ensure_bloc.dart';
+import 'package:go_delivery_frontend/application/core/bloc/ensure_bloc.dart';
 
 part 'login_event.dart';
 part 'login_state.dart';

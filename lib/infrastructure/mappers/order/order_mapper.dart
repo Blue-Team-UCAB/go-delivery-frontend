@@ -1,9 +1,9 @@
 import 'package:go_delivery_frontend/infrastructure/mappers/courier/courier_mapper.dart';
 import 'package:go_delivery_frontend/infrastructure/mappers/product/orderproduct_mapper.dart';
 
-import '../../../domain/entities/order/order.dart';
-import '../direction/direction_mapper.dart';
-import 'many/many_orderbundle_mapper.dart';
+import 'package:go_delivery_frontend/domain/entities/order/order.dart';
+import 'package:go_delivery_frontend/infrastructure/mappers/direction/direction_mapper.dart';
+import 'package:go_delivery_frontend/infrastructure/mappers/order/many/many_orderbundle_mapper.dart';
 
 class OrderMapper {
   static Order fromJson(Map<String, dynamic> json) {

@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_delivery_frontend/application/BLoc/blocs.dart';
 import 'package:go_delivery_frontend/presentation/screens/homescreen/category_tab.dart';
@@ -10,11 +9,11 @@ import 'package:go_delivery_frontend/presentation/screens/homescreen/homescreen_
 import 'package:go_delivery_frontend/presentation/screens/homescreen/sidebar_screen.dart';
 import 'package:go_delivery_frontend/presentation/widgets/random_products/random_popular_section.dart';
 import 'package:go_router/go_router.dart';
-import '../../../application/BLoc/auth/current/current_user_event.dart';
-import '../../../application/BLoc/auth/current/current_user_state.dart';
-import '../../widgets/dialog_darken_window.dart';
-import '../../widgets/navbar.dart';
-import 'homescreen_locationbar.dart';
+import 'package:go_delivery_frontend/application/BLoc/auth/current/current_user_event.dart';
+import 'package:go_delivery_frontend/application/BLoc/auth/current/current_user_state.dart';
+import 'package:go_delivery_frontend/presentation/widgets/dialog_darken_window.dart';
+import 'package:go_delivery_frontend/presentation/widgets/navbar.dart';
+import 'package:go_delivery_frontend/presentation/screens/homescreen/homescreen_locationbar.dart';
 
 class HomeScreenParentView extends StatelessWidget {
   static const name = 'home-screen';
@@ -80,7 +79,7 @@ class HomeScreenState extends State<HomeScreen> {
           if (state is CurrentUserLoading) {
             // HomescreenPlaceholder();
             //Aqui pones lo retornado en el loading de las siluetas de productos en el homescreen. Gustavo.
-            
+
             return const HomescreenPlaceholder();
           }
           if (state is CurrentUserInitial || state is CurrentUserError) {
@@ -104,12 +103,12 @@ class HomeScreenState extends State<HomeScreen> {
       builder: (BuildContext context) {
         return AnimatedSuccessDialog(
           title: 'Sesión Expirada',
-          message: 'Tu sesión ha caducado. Por favor, inicia sesión nuevamente.',
+          message:
+              'Tu sesión ha caducado. Por favor, inicia sesión nuevamente.',
           buttonText: 'Iniciar Sesión',
           icon: Icons.warning_amber_rounded,
           iconColor: Colors.orange,
           onButtonPressed: () {
-            // Clear any existing routes and push to login
             context.go('/login');
           },
         );
@@ -154,7 +153,7 @@ class HomeScreenState extends State<HomeScreen> {
                         decoration: const BoxDecoration(
                             color: Color(0xFFFFFFFF),
                             borderRadius:
-                            BorderRadius.all(Radius.circular(12))),
+                                BorderRadius.all(Radius.circular(12))),
                         child: const LocationBar()),
                   ),
                 ],

@@ -3,9 +3,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../../application/BLoc/auth/recover_password/recover_password_bloc.dart';
-import '../login/inputDecorationLogin.dart';
-import '../login/login_validators.dart';
+import 'package:go_delivery_frontend/application/BLoc/auth/recover_password/recover_password_bloc.dart';
+import 'package:go_delivery_frontend/presentation/screens/auth/login/inputDecorationLogin.dart';
+import 'package:go_delivery_frontend/presentation/screens/auth/login/login_validators.dart';
 
 class ForgotPasswordScreen extends StatefulWidget {
   const ForgotPasswordScreen({super.key});

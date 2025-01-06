@@ -17,15 +17,13 @@ class _ComboSectionState extends State<ComboSection> {
   @override
   void initState() {
     super.initState();
-    BlocProvider.of<BundleListBloc>(context).add(
-        const LoadBundleList(page: 1, perpage: 4)
-    );
+    BlocProvider.of<BundleListBloc>(context)
+        .add(const LoadBundleList(page: 1, perpage: 4));
   }
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -77,16 +75,14 @@ class _ComboSectionState extends State<ComboSection> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       for (var bundle in bundles)
-                        Row(
-                          children: [
+                        Row(children: [
                           SizedBox(
-                              width: 200,
-                              height: 280,
-                              child: BundleCard(bundle: bundle),
+                            width: 200,
+                            height: 280,
+                            child: BundleCard(bundle: bundle),
                           ),
                           const SizedBox(width: 20)
-                          ]
-                        ),
+                        ]),
                     ],
                   ),
                 );

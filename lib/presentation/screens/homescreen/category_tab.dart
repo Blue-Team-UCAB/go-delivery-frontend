@@ -4,10 +4,10 @@ class CategoryTabs extends StatefulWidget {
   const CategoryTabs({super.key});
 
   @override
-  _CategoryTabsState createState() => _CategoryTabsState();
+  CategoryTabsState createState() => CategoryTabsState();
 }
 
-class _CategoryTabsState extends State<CategoryTabs> {
+class CategoryTabsState extends State<CategoryTabs> {
   int _selectedIndex = 0;
   final List<String> _categories = ['Todo', 'Hogar', 'Niños'];
 

@@ -1,11 +1,11 @@
 import 'package:go_delivery_frontend/common/failure.dart';
 import 'package:go_delivery_frontend/infrastructure/mappers/user/user_mapper.dart';
 
-import '../../../application/api/api_request.dart';
+import 'package:go_delivery_frontend/application/api/api_request.dart';
 import 'package:go_delivery_frontend/application/key_value_storage/key_value.dart';
-import '../../../common/result.dart';
-import '../../../domain/repositories/user/user_repository.dart';
-import '../../models/user_model.dart';
+import 'package:go_delivery_frontend/common/result.dart';
+import 'package:go_delivery_frontend/domain/repositories/user/user_repository.dart';
+import 'package:go_delivery_frontend/infrastructure/models/user_model.dart';
 
 enum UserType { CLIENT, ADMIN }
 

@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_delivery_frontend/application/BLoc/blocs.dart';
 
-import '../../../application/BLoc/order/order_create/order_create_bloc.dart';
-import '../../../application/BLoc/order/order_create/order_create_event.dart';
+import 'package:go_delivery_frontend/application/BLoc/order/order_create/order_create_bloc.dart';
+import 'package:go_delivery_frontend/application/BLoc/order/order_create/order_create_event.dart';
 
 class ApplyCouponSection extends StatefulWidget {
   const ApplyCouponSection({super.key});

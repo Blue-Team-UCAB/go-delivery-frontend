@@ -1,10 +1,8 @@
-import '../../../common/failure.dart';
-import '../../../common/result.dart';
-import '../../../common/use_cases.dart';
-import '../../../domain/entities/bundle/bundle.dart';
-import '../../../domain/entities/order/order.dart';
-import '../../../domain/entities/product/product.dart';
-import '../../../domain/repositories/order/order_repository.dart';
+import 'package:go_delivery_frontend/common/result.dart';
+import 'package:go_delivery_frontend/common/use_cases.dart';
+import 'package:go_delivery_frontend/domain/entities/bundle/bundle.dart';
+import 'package:go_delivery_frontend/domain/entities/product/product.dart';
+import 'package:go_delivery_frontend/domain/repositories/order/order_repository.dart';
 
 class CheckoutUseCaseInput extends IUseCaseInput {
   final String direction;

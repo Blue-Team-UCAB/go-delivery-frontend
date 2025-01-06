@@ -1,9 +1,9 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_delivery_frontend/application/core/bloc/ensure_bloc.dart';
 
-import '../../../use_cases/order/get_many_order.dart';
-import 'order_many_event.dart';
-import 'order_many_state.dart';
+import 'package:go_delivery_frontend/application/use_cases/order/get_many_order.dart';
+import 'package:go_delivery_frontend/application/BLoc/order/order_many/order_many_event.dart';
+import 'package:go_delivery_frontend/application/BLoc/order/order_many/order_many_state.dart';
 
 class ManyOrdersBloc extends SafeBloc<ManyOrdersEvent, ManyOrdersState> {
   final GetManyOrdersUseCase getManyOrdersUseCase;

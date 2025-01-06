@@ -1,9 +1,9 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../../domain/entities/notifications/notification.dart';
-import '../../../../domain/repositories/notifications/notifications_repository.dart';
-import '../../../core/bloc/ensure_bloc.dart';
+import 'package:go_delivery_frontend/domain/entities/notifications/notification.dart';
+import 'package:go_delivery_frontend/domain/repositories/notifications/notifications_repository.dart';
+import 'package:go_delivery_frontend/application/core/bloc/ensure_bloc.dart';
 
 
 part 'notification_list_event.dart';
