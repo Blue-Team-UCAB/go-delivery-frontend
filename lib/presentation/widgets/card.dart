@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_delivery_frontend/application/BLoc/blocs.dart';
@@ -5,7 +6,7 @@ import 'package:go_delivery_frontend/domain/entities/product/product.dart';
 import 'package:go_router/go_router.dart';
 import 'package:go_delivery_frontend/application/BLoc/cart/cart_bloc.dart';
 import 'package:go_delivery_frontend/infrastructure/mappers/cart/cart_item_mapper.dart';
-import 'package:go_delivery_frontend/presentation/core/common/image-loader.dart';
+import 'package:shimmer/shimmer.dart';
 
 class ProductCard extends StatelessWidget {
   final Product product;
@@ -31,11 +32,15 @@ class ProductCard extends StatelessWidget {
                 topLeft: Radius.circular(12.0),
                 topRight: Radius.circular(12.0),
               ),
-              child: FastLoadingImage(
+              child: CachedNetworkImage(
                 imageUrl: product.imageUrl,
                 height: 100,
-                width: 100,
-                fit: BoxFit.cover,
+                fit: BoxFit.fill,
+                placeholder: (context,url) => Shimmer.fromColors(
+                  baseColor: const Color(0xFFd8d5dd),
+                  highlightColor: const Color(0xFFF4F4F4),
+                  child: Container(height: 100,width: double.infinity,color: Color(0xFFd8d5dd),)
+                ),        
               ),
             ),
             Padding(
@@ -43,16 +48,14 @@ class ProductCard extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  SizedBox(
-                    child: Text( 
-                      product.name,
-                      maxLines: 2,
-                      style: const TextStyle(
-                          fontFamily: 'Inter',
-                          fontSize: 14.0,
-                          fontWeight: FontWeight.w400,
-                          color: Color(0xFF000000)),
-                    ),
+                  Text( 
+                    product.name,
+                    maxLines: 2,
+                    style: const TextStyle(
+                        fontFamily: 'Inter',
+                        fontSize: 14.0,
+                        fontWeight: FontWeight.w400,
+                        color: Color(0xFF000000)),
                   ),
                   Text(
                     '\$${product.price.toStringAsFixed(2)}',
