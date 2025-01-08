@@ -167,7 +167,7 @@ class _OrderCardState extends State<OrderCard> {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
                     content: Text('Orden ${widget.order.id} cancelada exitosamente'),
-                    backgroundColor: Colors.green,
+                    backgroundColor: Colors.greenAccent[600],
                   ),
                 );
               }
@@ -223,7 +223,7 @@ class _OrderCardState extends State<OrderCard> {
                 );
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.redAccent,
+                backgroundColor: Colors.deepOrange[600],
               ),
               child: const Text('Reportar problema',
                   style: TextStyle(

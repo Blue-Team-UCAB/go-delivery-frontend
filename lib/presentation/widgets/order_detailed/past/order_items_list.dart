@@ -26,14 +26,14 @@ class OrderItemsList extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const Text(
-          'Items',
+          'Items Ordenados',
           style: TextStyle(
             fontFamily: 'Montserrat',
             fontSize: 20,
             fontWeight: FontWeight.w700,
           ),
         ),
-        const SizedBox(height: 16),
+        const SizedBox(height: 10),
         ListView.separated(
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),

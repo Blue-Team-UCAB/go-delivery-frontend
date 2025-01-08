@@ -103,20 +103,16 @@ class _ReorderOrderWidgetState extends State<ReorderOrderWidget> {
   }
 
   void _checkCartCompletion(BuildContext context) {
-    print('Checking Cart Completion');
-    print('Products to load: $_productIdsToLoad');
-    print('Loaded Product IDs: $_loadedProductIds');
-    print('Bundles to load: $_bundleIdsToLoad');
-    print('Loaded Bundle IDs: $_loadedBundleIds');
+    print('Productos a cargar: $_productIdsToLoad');
+    print('Cargados los Productos: $_loadedProductIds');
+    print('Bundles a cargar: $_bundleIdsToLoad');
+    print('Cargados los Bundles: $_loadedBundleIds');
 
     // Check if all required items are loaded
     bool allProductsLoaded = _loadedProductIds.containsAll(_productIdsToLoad);
     bool allBundlesLoaded = _loadedBundleIds.containsAll(_bundleIdsToLoad);
 
-    print('All Products Loaded: $allProductsLoaded');
-    print('All Bundles Loaded: $allBundlesLoaded');
-
-    if (allProductsLoaded && allBundlesLoaded) {
+    if ((allProductsLoaded == false) || (allBundlesLoaded == false)) {
       _forceLoadRemainingItems();
     }
   }
@@ -124,7 +120,6 @@ class _ReorderOrderWidgetState extends State<ReorderOrderWidget> {
   void _forceLoadRemainingItems() {
     final orderDetailBloc = context.read<OrderDetailBloc>();
     final bundleDetailBloc = context.read<BundleDetailBloc>();
-    final cartBloc = context.read<CartBloc>();
 
     if (orderDetailBloc.state is OrderDetailLoadedState) {
       final orderState = orderDetailBloc.state as OrderDetailLoadedState;
@@ -138,7 +133,7 @@ class _ReorderOrderWidgetState extends State<ReorderOrderWidget> {
       }
 
       // Final completion check with a slight delay
-      Future.delayed(Duration(milliseconds: 500), () {
+      Future.delayed(Duration(milliseconds: 600), () {
         _finalizeCartCompletion();
       });
     }
@@ -158,15 +153,12 @@ class _ReorderOrderWidgetState extends State<ReorderOrderWidget> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Reordering'),
-        backgroundColor: const Color(0xFF2000B1),
-      ),
       body: MultiBlocListener(
         listeners: [
           // Order Detail Listener
           BlocListener<OrderDetailBloc, OrderDetailState>(
             listener: (context, orderState) {
+
               if (orderState is OrderDetailLoadedState) {
                 final bundleDetailBloc = context.read<BundleDetailBloc>();
                 final productDetailBloc = context.read<ProductDetailBloc>();
@@ -182,6 +174,8 @@ class _ReorderOrderWidgetState extends State<ReorderOrderWidget> {
                   _loadedProductIds.clear();
                   _loadedBundleIds.clear();
                 });
+
+                print(orderState.bundles.length);
 
                 // Process products
                 for (var orderProduct in orderState.products) {
@@ -259,7 +253,6 @@ class _ReorderOrderWidgetState extends State<ReorderOrderWidget> {
           // Bundle Detail Listener
           BlocListener<BundleDetailBloc, BundleDetailState>(
             listener: (context, bundleState) {
-              print('Bundle State Received: $bundleState');
 
               if (bundleState is BundleDetailLoaded) {
                 final cartBloc = context.read<CartBloc>();
@@ -278,9 +271,7 @@ class _ReorderOrderWidgetState extends State<ReorderOrderWidget> {
                         }
                     );
 
-                    print('Processing Bundle: ${bundleState.bundle!.id}');
-                    print('Bundle Name: ${bundleState.bundle!.name}');
-                    print('Bundle Price: ${bundleState.bundle!.price}');
+                    print('Bundle: ${bundleState.bundle!.id}');
 
                     // Add only the bundle
                     cartBloc.add(AddCartItem(CartItem(

@@ -1,6 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_delivery_frontend/application/BLoc/cart/cart_bloc.dart';
 import 'package:go_delivery_frontend/presentation/screens/notification/notification_detail_screen.dart';
+import 'package:go_delivery_frontend/presentation/screens/order/ordersParentView.dart';
 import 'package:go_delivery_frontend/presentation/screens/order/orders_screen.dart';
 import 'package:go_delivery_frontend/presentation/screens/screens.dart';
 import 'package:go_router/go_router.dart';
@@ -105,7 +106,7 @@ class RoutesManager {
           path: '/order',
           pageBuilder: (context, state) => CustomTransitions.slideRight(
                 key: state.pageKey,
-                child: const OrdersPage(initialCounterNavbar: 2),
+                child: const OrdersParentView(initialCounterNavbar: 2),
               )),
       GoRoute(
           path: '/orderdetail/:id',
