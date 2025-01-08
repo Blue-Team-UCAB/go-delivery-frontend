@@ -1,19 +1,19 @@
 import 'package:flutter/cupertino.dart';
 import 'package:go_delivery_frontend/domain/entities/product/product.dart';
 
-import '../../../../domain/entities/bundle/bundle.dart';
-import '../../bundle_stacked_card.dart';
-import '../../product_stacked_card.dart';
+import 'package:go_delivery_frontend/domain/entities/bundle/bundle.dart';
+import 'package:go_delivery_frontend/presentation/widgets/bundle_stacked_card.dart';
+import 'package:go_delivery_frontend/presentation/widgets/product_stacked_card.dart';
 
 class OrderItemsList extends StatelessWidget {
   final List<OrderProduct> products;
   final List<OrderBundle> bundles;
 
   const OrderItemsList({
-    Key? key,
+    super.key,
     required this.products,
     required this.bundles,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

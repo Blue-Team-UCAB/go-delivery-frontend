@@ -1,13 +1,12 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import '../../domain/entities/bundle/bundle.dart';
-import '../core/common/image-loader.dart';
+import 'package:go_delivery_frontend/domain/entities/bundle/bundle.dart';
+import 'package:go_delivery_frontend/presentation/core/common/image-loader.dart';
 
 class BundleStackedCard extends StatelessWidget {
   final OrderBundle bundleData;
 
-  const BundleStackedCard({Key? key, required this.bundleData}) : super(key: key);
+  const BundleStackedCard({super.key, required this.bundleData});
 
   @override
   Widget build(BuildContext context) {
@@ -56,7 +55,7 @@ class BundleStackedCard extends StatelessWidget {
                       fit: BoxFit.cover,
                       imageUrl: bundleData.imageUrl
                   )
-                      : Icon(
+                      : const Icon(
                     Icons.inventory_2_outlined,
                     color: Colors.grey,
                     size: 40,

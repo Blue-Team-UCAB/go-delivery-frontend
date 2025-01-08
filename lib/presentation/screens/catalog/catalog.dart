@@ -2,13 +2,14 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_delivery_frontend/presentation/widgets/catalog/catalog_product_grid_placeholder.dart';
 import 'package:go_delivery_frontend/presentation/widgets/navbar.dart';
 import 'package:go_delivery_frontend/presentation/widgets/card.dart';
 import 'package:go_delivery_frontend/application/BLoc/product/product_many/product_many_bloc.dart';
 import 'package:go_delivery_frontend/application/BLoc/product/product_many/product_many_state.dart';
 import 'package:go_delivery_frontend/application/BLoc/product/product_many/product_many_event.dart';
 import 'package:go_router/go_router.dart';
-import '../../../domain/entities/product/product.dart';
+import 'package:go_delivery_frontend/domain/entities/product/product.dart';
 
 class CatalogScreen extends StatefulWidget {
   final int initialCounterNavbar;
@@ -246,7 +247,7 @@ class CatalogScreenState extends State<CatalogScreen>
             child: BlocBuilder<ProductListBloc, ProductListState>(
               builder: (context, state) {
                 if (state is ProductListInitial && _products.isEmpty) {
-                  return const Center(child: CircularProgressIndicator());
+                  return CatalogProductGridPlaceholder();
                 } else if (state is ProductListLoading) {
                   return _productGrid(state.products, isLoading: true);
                 } else if (state is ProductListLoaded) {

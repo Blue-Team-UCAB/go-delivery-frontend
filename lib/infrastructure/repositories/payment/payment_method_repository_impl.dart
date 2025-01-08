@@ -107,7 +107,7 @@ class PaymentRepositoryImpl extends PaymentRepository {
         body: {'idCard': card.idCard},
       );
 
-      if (response == true) {
+      if (response.isSuccess) {
         return Result.success('Funciono');
       } else {
         return Result.fail(
@@ -134,10 +134,10 @@ class PaymentRepositoryImpl extends PaymentRepository {
       );
 
       if (result.isSuccessful()) {
-        final cards = result.getValue(); // Extrae la lista de tarjetas
+        final cards = result.getValue();
         return Result.success(cards);
       } else {
-        return Result.fail(result.getError()); // Propaga el error
+        return Result.fail(result.getError());
       }
     } catch (e) {
       print('Error in PaymentMethodRepositoryImpl.getCard: $e');

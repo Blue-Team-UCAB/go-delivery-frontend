@@ -12,14 +12,12 @@ class CustomNavBar extends StatelessWidget {
     required this.onItemTapped,
   });
 
-  Widget _buildNavItem(IconData icon, String label, int index,BuildContext context, String direccion) {
+  Widget _buildNavItem(IconData icon, String label, int index,
+      BuildContext context, String direccion) {
     return GestureDetector(
-      onTap: ()
-      {
-        print(direccion);
-
+      onTap: () {
         onItemTapped(index);
-        if(direccion.isNotEmpty) {
+        if (direccion.isNotEmpty) {
           context.go(direccion);
         }
       },
@@ -50,14 +48,13 @@ class CustomNavBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 80, // Increase the overall height for padding
+      height: 80,
       child: Stack(
-        clipBehavior: Clip.none, // Allow overflow for the FAB
+        clipBehavior: Clip.none,
         children: [
           ClipRRect(
             borderRadius: const BorderRadius.only(
-                topLeft: Radius.circular(30),
-                topRight: Radius.circular(30)), // Set the border radius here
+                topLeft: Radius.circular(30), topRight: Radius.circular(30)),
             child: BottomAppBar(
               color: const Color(0xFFFFFFFF),
               shape: const CircularNotchedRectangle(),
@@ -70,11 +67,14 @@ class CustomNavBar extends StatelessWidget {
                   children: <Widget>[
                     _buildNavItem(Icons.home, "Home", 0, context, '/'),
                     const SizedBox(width: 10),
-                    _buildNavItem(Icons.search, "Buscar", 1, context, '/Catalog'),
-                    const SizedBox(width: 60), // Space for the center button
-                    _buildNavItem(Icons.receipt, "Ordenes", 2, context, '/order'),
+                    _buildNavItem(
+                        Icons.search, "Buscar", 1, context, '/Catalog'),
+                    const SizedBox(width: 60),
+                    _buildNavItem(
+                        Icons.receipt, "Ordenes", 2, context, '/order'),
                     const SizedBox(width: 10),
-                    _buildNavItem(Icons.person, "Perfil", 3, context, ''),
+                    _buildNavItem(
+                        Icons.person, "Perfil", 3, context, '/profile'),
                   ],
                 ),
               ),

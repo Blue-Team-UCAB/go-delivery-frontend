@@ -8,10 +8,10 @@ class DeliveryMap extends StatelessWidget {
   final LatLng destinationLocation;
 
   const DeliveryMap({
-    Key? key,
+    super.key,
     required this.driverLocation,
     required this.destinationLocation,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -25,20 +25,20 @@ class DeliveryMap extends StatelessWidget {
         // Use a regular TileLayer with a dark, minimalist style
         TileLayer(
           urlTemplate: 'https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}.png',
-          subdomains: ['a', 'b', 'c'],
+          subdomains: const ['a', 'b', 'c'],
         ),
         PolylineLayer(
           polylines: [
             Polyline(
               points: [driverLocation, destinationLocation],
               strokeWidth: 3.0,
-              color: Color(0xFF2000B1),
+              color: const Color(0xFF2000B1),
             ),
           ],
         ),
         MarkerLayer(
           markers: [
-            _buildMarker(driverLocation, Color(0xFF2000B1)),
+            _buildMarker(driverLocation, const Color(0xFF2000B1)),
             _buildMarker(destinationLocation, Colors.red),
           ],
         ),

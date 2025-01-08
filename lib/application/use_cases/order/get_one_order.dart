@@ -1,8 +1,8 @@
-import '../../../common/result.dart';
-import '../../../common/use_cases.dart';
+import 'package:go_delivery_frontend/common/result.dart';
+import 'package:go_delivery_frontend/common/use_cases.dart';
 //import '../../../domain/entities/category/category.dart';
-import '../../../domain/entities/order/order.dart';
-import '../../../domain/repositories/order/order_repository.dart';
+import 'package:go_delivery_frontend/domain/entities/order/order.dart';
+import 'package:go_delivery_frontend/domain/repositories/order/order_repository.dart';
 
 class GetOneOrderUseCaseInput extends IUseCaseInput {
   final String orderId;

@@ -1,11 +1,8 @@
-import 'package:go_delivery_frontend/common/failure.dart';
 import 'package:go_delivery_frontend/infrastructure/models/order_many_model.dart';
 
-import '../../../common/result.dart';
-import '../../../common/use_cases.dart';
-import '../../../domain/entities/order/order.dart';
-import '../../../domain/entities/product/product.dart';
-import '../../../domain/repositories/order/order_repository.dart';
+import 'package:go_delivery_frontend/common/result.dart';
+import 'package:go_delivery_frontend/common/use_cases.dart';
+import 'package:go_delivery_frontend/domain/repositories/order/order_repository.dart';
 
 class GetManyOrdersUseCaseInput extends IUseCaseInput {
   final int page;

@@ -1,6 +1,6 @@
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
-import '../../application/BLoc/notifications/notifications_manager.dart';
+import 'package:go_delivery_frontend/application/BLoc/notifications/notifications_manager.dart';
 
 class LocalNotifications extends LocalNotificationsManager {
   @override

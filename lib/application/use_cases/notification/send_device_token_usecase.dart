@@ -1,7 +1,7 @@
 import 'package:go_delivery_frontend/domain/repositories/notifications/notifications_repository.dart';
 
-import '../../../../common/result.dart';
-import '../../../../common/use_cases.dart';
+import 'package:go_delivery_frontend/common/result.dart';
+import 'package:go_delivery_frontend/common/use_cases.dart';
 
 class SendDeviceTokenUseCaseInput extends IUseCaseInput {
   final String token;

@@ -1,4 +1,4 @@
-import '../../../common/failure.dart';
+import 'package:go_delivery_frontend/common/failure.dart';
 
 class Result<T> {
   final T? value;

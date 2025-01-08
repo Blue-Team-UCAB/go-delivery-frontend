@@ -6,17 +6,16 @@ import 'package:go_delivery_frontend/application/use_cases/order/cancel_order.da
 import 'package:go_delivery_frontend/application/use_cases/use_cases.dart';
 import 'package:go_delivery_frontend/domain/repositories/repositories.dart';
 import 'package:go_delivery_frontend/infrastructure/repositories/repositories_impl.dart';
-import 'application/BLoc/auth/recover_password/recover_password_bloc.dart';
-import 'application/BLoc/auth/register/register_bloc.dart';
-import 'application/BLoc/order/order_cancel/order_cancel_bloc.dart';
-import 'application/use_cases/notification/send_device_token_usecase.dart';
-import 'application/use_cases/order/create_order.dart';
-import 'domain/repositories/cart/cart_local_storage_repository.dart';
-import 'domain/repositories/notifications/notifications_repository.dart';
-import 'infrastructure/datasources/api/api_request_impl.dart';
-import 'infrastructure/datasources/cart/cart_isar_local_storage_datasource.dart';
-import 'infrastructure/datasources/localstorage/localstorage_impl.dart';
-import 'infrastructure/repositories/notifications/notifications_repository_impl.dart';
+import 'package:go_delivery_frontend/application/BLoc/auth/recover_password/recover_password_bloc.dart';
+import 'package:go_delivery_frontend/application/BLoc/auth/register/register_bloc.dart';
+import 'package:go_delivery_frontend/application/BLoc/order/order_cancel/order_cancel_bloc.dart';
+import 'package:go_delivery_frontend/application/use_cases/notification/send_device_token_usecase.dart';
+import 'package:go_delivery_frontend/application/use_cases/order/create_order.dart';
+import 'package:go_delivery_frontend/domain/repositories/notifications/notifications_repository.dart';
+import 'package:go_delivery_frontend/infrastructure/datasources/api/api_request_impl.dart';
+import 'package:go_delivery_frontend/infrastructure/datasources/cart/cart_isar_local_storage_datasource.dart';
+import 'package:go_delivery_frontend/infrastructure/datasources/localstorage/localstorage_impl.dart';
+import 'package:go_delivery_frontend/infrastructure/repositories/notifications/notifications_repository_impl.dart';
 
 final getIt = GetIt.instance;
 
@@ -75,7 +74,7 @@ class InjectManager {
     getIt.registerSingleton<NotificationsRepository>(notificationRepository);
 
     final sendDeviceTokenUseCase =
-    SendDeviceTokenUseCase(notificationsRepository: notificationRepository);
+        SendDeviceTokenUseCase(notificationsRepository: notificationRepository);
 
     getIt.registerSingleton<SendDeviceTokenUseCase>(sendDeviceTokenUseCase);
 
@@ -175,8 +174,7 @@ class InjectManager {
         GetOneOrderUseCase(orderRepository: orderRepository);
     final getManyOrderUseCase =
         GetManyOrdersUseCase(orderRepository: orderRepository);
-    final checkoutUseCase =
-        CheckoutUseCase(orderRepository: orderRepository);
+    final checkoutUseCase = CheckoutUseCase(orderRepository: orderRepository);
     final cancelOneOrderUseCase =
         CancelOneOrderUseCase(orderRepository: orderRepository);
 
@@ -190,10 +188,10 @@ class InjectManager {
         OrderDetailBloc(getOneOrderUseCase: getOneOrderUseCase));
     getIt.registerSingleton(
         ManyOrdersBloc(getManyOrdersUseCase: getManyOrderUseCase));
-    getIt.registerSingleton(
-        CheckoutBloc(cartRepository: cartLocalStorageRepo,
-                     checkoutUseCase: checkoutUseCase,
-                     getOneCouponUseCase: getOneCouponUseCase));
+    getIt.registerSingleton(CheckoutBloc(
+        cartRepository: cartLocalStorageRepo,
+        checkoutUseCase: checkoutUseCase,
+        getOneCouponUseCase: getOneCouponUseCase));
     getIt.registerSingleton(
         OrderCancelBloc(cancelOrderUseCase: cancelOneOrderUseCase));
 
@@ -260,5 +258,28 @@ class InjectManager {
 
     //Bloc
     getIt.registerSingleton(GetWalletAmountBloc(getWalletAmountUseCase));
+
+    // ============================= DIRECTIONS =================================== //
+
+    //Repositorio
+    final directionRepository = DirectionRepositoryImpl(
+        apiRequestManager: apiRequestManagerImpl,
+        localStorage: localStorageService);
+
+    //Casos de uso
+    final getDirectionsUseCase =
+        GetDirectionsUseCase(directionRepository: directionRepository);
+
+    final addDirectionUseCase =
+        AddDirectionUseCase(directionRepository: directionRepository);
+
+    getIt.registerSingleton<GetDirectionsUseCase>(getDirectionsUseCase);
+
+    getIt.registerSingleton<AddDirectionUseCase>(addDirectionUseCase);
+
+    //Blocs
+    getIt.registerSingleton(DirectionListBloc(getDirectionsUseCase));
+
+    getIt.registerSingleton(AddDirectionBloc(addDirectionUseCase));
   }
 }

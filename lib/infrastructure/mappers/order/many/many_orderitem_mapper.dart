@@ -1,7 +1,7 @@
 
 
-import '../../../models/order_many_model.dart';
-import '../order_mapper.dart';
+import 'package:go_delivery_frontend/infrastructure/models/order_many_model.dart';
+import 'package:go_delivery_frontend/infrastructure/mappers/order/order_mapper.dart';
 
 class OrderManyItemMapper {
   static OrderManyItem fromJson(Map<String, dynamic> json) {

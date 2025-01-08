@@ -8,11 +8,11 @@ import 'package:go_delivery_frontend/injector.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:go_delivery_frontend/presentation/core/app.dart';
-import 'application/BLoc/auth/recover_password/recover_password_bloc.dart';
-import 'application/BLoc/order/order_create/order_create_bloc.dart';
-import 'firebase_options.dart';
-import 'infrastructure/firebase/firebase_notifications_manager.dart';
-import 'infrastructure/mappers/local_notifications.dart';
+import 'package:go_delivery_frontend/application/BLoc/auth/recover_password/recover_password_bloc.dart';
+import 'package:go_delivery_frontend/application/BLoc/order/order_create/order_create_bloc.dart';
+import 'package:go_delivery_frontend/firebase_options.dart';
+import 'package:go_delivery_frontend/infrastructure/firebase/firebase_notifications_manager.dart';
+import 'package:go_delivery_frontend/infrastructure/mappers/local_notifications.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -27,6 +27,8 @@ void main() async {
   runApp(
     MultiBlocProvider(
       providers: [
+        BlocProvider(create: (_) => getIt<AddDirectionBloc>()),
+        BlocProvider(create: (_) => getIt<DirectionListBloc>()),
         BlocProvider(create: (_) => getIt<GetWalletAmountBloc>()),
         BlocProvider(create: (_) => getIt<CardListBloc>()),
         BlocProvider(create: (_) => getIt<CardBloc>()),

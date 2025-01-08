@@ -1,4 +1,4 @@
-import '../../domain/entities/order/order.dart';
+import 'package:go_delivery_frontend/domain/entities/order/order.dart';
 
 class OrderMany {
   List<OrderManyItem> orders;

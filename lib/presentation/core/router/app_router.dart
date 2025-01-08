@@ -5,10 +5,10 @@ import 'package:go_delivery_frontend/presentation/screens/order/ordersParentView
 import 'package:go_delivery_frontend/presentation/screens/order/orders_screen.dart';
 import 'package:go_delivery_frontend/presentation/screens/screens.dart';
 import 'package:go_router/go_router.dart';
-import '../../../infrastructure/datasources/localstorage/localstorage_impl.dart';
-import '../../screens/auth/password_recovery/reset_pass_screen.dart';
-import '../../screens/detail/order/order_detailed_screen.dart';
-import '../transition/transitions.dart';
+import 'package:go_delivery_frontend/infrastructure/datasources/localstorage/localstorage_impl.dart';
+import 'package:go_delivery_frontend/presentation/screens/auth/password_recovery/reset_pass_screen.dart';
+import 'package:go_delivery_frontend/presentation/screens/detail/order/order_detailed_screen.dart';
+import 'package:go_delivery_frontend/presentation/core/transition/transitions.dart';
 
 class RoutesManager {
   static GoRouter appRouter = GoRouter(
@@ -37,6 +37,14 @@ class RoutesManager {
           pageBuilder: (context, state) => CustomTransitions.slideRight(
               key: state.pageKey, child: const CouponScreen())),
       GoRoute(
+          path: '/wallet',
+          pageBuilder: (context, state) => CustomTransitions.slideRight(
+              key: state.pageKey, child: const WalletScreen())),
+      GoRoute(
+          path: '/addresses',
+          pageBuilder: (context, state) => CustomTransitions.slideRight(
+              key: state.pageKey, child: const DirectionScreen())),
+      GoRoute(
           path: '/login',
           pageBuilder: (context, state) => CustomTransitions.slideRight(
               key: state.pageKey, child: const LoginScreen())),
@@ -51,6 +59,12 @@ class RoutesManager {
           pageBuilder: (context, state) => CustomTransitions.slideRight(
                 key: state.pageKey,
                 child: const CatalogScreen(initialCounterNavbar: 1),
+              )),
+      GoRoute(
+          path: '/profile',
+          pageBuilder: (context, state) => CustomTransitions.slideRight(
+                key: state.pageKey,
+                child: const ProfileScreen(),
               )),
       GoRoute(
         path: '/checkout',

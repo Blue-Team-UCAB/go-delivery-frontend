@@ -1,7 +1,7 @@
 import 'package:dio/dio.dart';
-import '../../../application/api/api_request.dart';
-import '../../../common/failure.dart';
-import '../../../common/result.dart';
+import 'package:go_delivery_frontend/application/api/api_request.dart';
+import 'package:go_delivery_frontend/common/failure.dart';
+import 'package:go_delivery_frontend/common/result.dart';
 
 class ApiRequestManagerImpl extends IApiRequestManager {
   final Dio _dio;

@@ -6,7 +6,7 @@ import 'package:go_delivery_frontend/presentation/widgets/cart/cart_item.dart';
 import 'package:go_delivery_frontend/presentation/widgets/cart/cart_footer_box.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../application/BLoc/cart/cart_bloc.dart';
+import 'package:go_delivery_frontend/application/BLoc/cart/cart_bloc.dart';
 
 class CartScreen extends StatelessWidget {
   static const name = 'cart-screen';
@@ -17,9 +17,9 @@ class CartScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final cartBloc = context.watch<CartBloc>();
     return Scaffold(
-      backgroundColor: Color(0xFFFFFFFF),
+      backgroundColor: const Color(0xFFFFFFFF),
       appBar: AppBar(
-        backgroundColor: Color(0xFFFFFFFF),
+        backgroundColor: const Color(0xFFFFFFFF),
         leading: Padding(
           padding: const EdgeInsets.all(4.0),
           child: IconButton(

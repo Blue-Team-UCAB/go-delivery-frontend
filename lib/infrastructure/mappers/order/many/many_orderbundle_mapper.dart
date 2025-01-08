@@ -1,6 +1,5 @@
 import 'package:go_delivery_frontend/domain/entities/bundle/bundle.dart';
 
-import '../../../../domain/entities/product/product.dart';
 
 class OrderBundleMapper {
   static OrderBundle fromJson(Map<String, dynamic> json) {

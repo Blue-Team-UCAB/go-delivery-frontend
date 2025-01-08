@@ -2,12 +2,12 @@ import 'dart:math';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../../../common/failure.dart';
-import '../../../../../common/result.dart';
-import '../../../../../domain/entities/product/product.dart';
-import '../../../../use_cases/product/get_many_product.dart';
-import '../../product_many/product_many_event.dart';
-import '../../product_many/product_many_state.dart';
+import 'package:go_delivery_frontend/common/failure.dart';
+import 'package:go_delivery_frontend/common/result.dart';
+import 'package:go_delivery_frontend/domain/entities/product/product.dart';
+import 'package:go_delivery_frontend/application/use_cases/product/get_many_product.dart';
+import 'package:go_delivery_frontend/application/BLoc/product/product_many/product_many_event.dart';
+import 'package:go_delivery_frontend/application/BLoc/product/product_many/product_many_state.dart';
 
 class ProductRandomListBloc extends Bloc<ProductListEvent, ProductListState> {
   final GetProductsUseCase _getProductsUseCase;

@@ -1,39 +1,39 @@
 {
-  "project_info": {
-    "project_number": "182448470852",
-    "project_id": "godelyapp-ce58d",
-    "storage_bucket": "godelyapp-ce58d.firebasestorage.app"
-  },
-  "client": [
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:182448470852:android:5ae7f31f65935950b27511",
-        "android_client_info": {
-          "package_name": "godely.front"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "182448470852-oradieqod8rm3gm4mvh95k0thpe2784s.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyDn7axQp58jMr08Ml7NOfP1XOBqIjo8OVk"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "182448470852-oradieqod8rm3gm4mvh95k0thpe2784s.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
+    "project_info": {
+      "project_number": "182448470852",
+      "project_id": "godelyapp-ce58d",
+      "storage_bucket": "godelyapp-ce58d.firebasestorage.app"
+    },
+    "client": [
+      {
+        "client_info": {
+          "mobilesdk_app_id": "1:182448470852:android:5ae7f31f65935950b27511",
+          "android_client_info": {
+            "package_name": "godely.front"
+          }
+        },
+        "oauth_client": [
+          {
+            "client_id": "182448470852-oradieqod8rm3gm4mvh95k0thpe2784s.apps.googleusercontent.com",
+            "client_type": 3
+          }
+        ],
+        "api_key": [
+          {
+            "current_key": "AIzaSyDn7axQp58jMr08Ml7NOfP1XOBqIjo8OVk"
+          }
+        ],
+        "services": {
+          "appinvite_service": {
+            "other_platform_oauth_client": [
+              {
+                "client_id": "182448470852-oradieqod8rm3gm4mvh95k0thpe2784s.apps.googleusercontent.com",
+                "client_type": 3
+              }
+            ]
+          }
         }
       }
-    }
-  ],
-  "configuration_version": "1"
-}
+    ],
+    "configuration_version": "1"
+  }
