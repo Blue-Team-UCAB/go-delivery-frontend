@@ -58,38 +58,53 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
             ),
           ),
         ),
-        body: BlocBuilder<OrderDetailBloc, OrderDetailState>(
-          builder: (context, state) {
-            if (state is OrderDetailLoadingState) {
-              return const Center(child: CircularProgressIndicator());
-            }
-            if (state is OrderDetailErrorState) {
-              return Center(
-                child: FadeInUp(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(state.error),
-                      ElevatedButton(
-                        onPressed: _clearAndLoadOrderDetail,
-                        child: const Text('Reintentar'),
-                      )
-                    ],
-                  ),
-                ),
-              );
-            }
-
-            if (state is OrderDetailLoadedState) {
-              return state.last_state != 'DELIVERED' && state.last_state != 'CANCELED'
-                  ? ActiveOrderDetails(state: state)
-                  : PastOrderDetails(state: state);
-            }
-
-            return const SizedBox.shrink();
+        body: RefreshIndicator(
+          onRefresh: () async {
+            _clearAndLoadOrderDetail();
           },
+          child: BlocBuilder<OrderDetailBloc, OrderDetailState>(
+            builder: (context, state) {
+              if (state is OrderDetailLoadingState) {
+                return const Center(child: CircularProgressIndicator());
+              }
+
+              if (state is OrderDetailErrorState) {
+                return Center(
+                  child: FadeInUp(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(state.error),
+                        ElevatedButton(
+                          onPressed: _clearAndLoadOrderDetail,
+                          child: const Text('Reintentar'),
+                        )
+                      ],
+                    ),
+                  ),
+                );
+              }
+
+              if (state is OrderDetailLoadedState) {
+                return CustomScrollView(
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  slivers: [
+                    SliverToBoxAdapter(
+                      child: state.last_state != 'DELIVERED' && state.last_state != 'CANCELLED'
+                          ? ActiveOrderDetails(state: state)
+                          : PastOrderDetails(state: state),
+                    ),
+                  ],
+                );
+              }
+
+              return const SizedBox.shrink();
+            },
+          ),
         ),
       ),
     );
   }
+
+
 }

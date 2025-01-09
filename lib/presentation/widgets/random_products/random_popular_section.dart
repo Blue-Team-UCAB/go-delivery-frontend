@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_delivery_frontend/presentation/widgets/homescreen/popular_product_section_placeholder.dart';
@@ -9,7 +10,6 @@ import 'package:go_delivery_frontend/application/BLoc/product/product_many/produ
 import 'package:go_delivery_frontend/application/BLoc/product/product_many/product_many_state.dart';
 import 'package:go_delivery_frontend/domain/entities/product/product.dart';
 import 'package:go_delivery_frontend/infrastructure/mappers/cart/cart_item_mapper.dart';
-import 'package:go_delivery_frontend/presentation/core/common/image-loader.dart';
 
 //THIS IS A PLACEHOLDER. Pronto estará el Popular list definitivo despues de tener casi listo la app
 
@@ -119,10 +119,12 @@ class RandomItem extends StatelessWidget {
             onTap: () {
               context.push('/productdetail/${product.id}');
             },
-            leading: FastLoadingImage(
+            leading: CachedNetworkImage(
               imageUrl: product.imageUrl,
               width: 60,
               fit: BoxFit.contain,
+              placeholder: (context, url) =>
+                  Center(child: CircularProgressIndicator()),
             ),
             title: Text(
               product.name,

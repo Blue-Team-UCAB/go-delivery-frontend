@@ -90,9 +90,11 @@ class OrderRepositoryImpl extends OrderRepository {
       if (bundles != null && bundles.isNotEmpty)
         'bundles': CheckoutBundleMapper.toJsonList(bundles),
     };
-    var message = '';
+    var message;
 
     print("APPLIED COUPON: ${body["id_coupon"]}");
+
+    print(body);
 
     final response = await _apiRequestManager.request(
       '/order',

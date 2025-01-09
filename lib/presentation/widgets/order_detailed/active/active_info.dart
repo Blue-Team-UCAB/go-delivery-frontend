@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 
 class OrderHeaderInfo extends StatelessWidget {
-  final String time;
+  final String id;
   final String location;
 
   const OrderHeaderInfo({
     super.key,
-    required this.time,
+    required this.id,
     required this.location,
   });
 
@@ -19,11 +19,11 @@ class OrderHeaderInfo extends StatelessWidget {
         children: [
           Row(
             children: [
-              const Icon(Icons.access_time_outlined,
+              const Icon(Icons.abc,
                   size: 16, color: Colors.grey),
               const SizedBox(width: 4),
               Text(
-                'Ordenada a las $time',
+                'id: $id',
                 style: const TextStyle(color: Colors.grey, fontSize: 14),
               ),
             ],
@@ -63,12 +63,12 @@ class OrderSummary extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.all(16),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Text(
-            'Orden $orderNumber',
+            'Orden efectuada a las $orderNumber',
             style: const TextStyle(
-              fontSize: 18,
+              fontSize: 22,
               fontWeight: FontWeight.bold,
             ),
           ),
@@ -78,7 +78,7 @@ class OrderSummary extends StatelessWidget {
             style: const TextStyle(
                 fontFamily: "Montserrat",
                 color: Colors.black,
-                fontSize: 20,
+                fontSize: 24,
                 fontWeight: FontWeight.w700),
           ),
         ],
@@ -86,3 +86,5 @@ class OrderSummary extends StatelessWidget {
     );
   }
 }
+
+

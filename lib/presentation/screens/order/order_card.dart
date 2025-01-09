@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_delivery_frontend/application/BLoc/order/order_cancel/order_cancel_bloc.dart';
 import 'package:go_delivery_frontend/infrastructure/models/order_many_model.dart';
+import 'package:go_delivery_frontend/presentation/widgets/order_detailed/past/report_problem_window.dart';
 import 'package:go_router/go_router.dart';
 
 //import '../../../domain/entities/order/order.dart';
@@ -21,10 +22,10 @@ class OrderCard extends StatefulWidget {
   });
 
   @override
-  OrderCardState createState() => OrderCardState();
+  _OrderCardState createState() => _OrderCardState();
 }
 
-class OrderCardState extends State<OrderCard> {
+class _OrderCardState extends State<OrderCard> {
   late String status;
 
   @override
@@ -54,90 +55,99 @@ class OrderCardState extends State<OrderCard> {
 
   @override
   Widget build(BuildContext context) {
-    // Format the first state's date (order creation date)
     String orderDate = widget.order.lastState.date.isNotEmpty
         ? widget.order.lastState.date
         : 'Fecha no disponible';
 
-    // Create items string from products
+    DateTime orderDateTime = DateTime.parse(widget.order.lastState.date);
+    String formattedDate =
+        "${orderDateTime.day}-${orderDateTime.month}-${orderDateTime.year}";
+    String formattedTime =
+        "${orderDateTime.hour.toString().padLeft(2, '0')}:${orderDateTime.minute.toString().padLeft(2, '0')}";
+
     String itemsDescription = widget.order.summaryOrder;
 
-    return Card(
-      margin: const EdgeInsets.all(8),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(8),
-        side: BorderSide(color: Colors.grey[300]!, width: 1),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Expanded(
-                  child: Row(
-                    children: [
-                      Flexible(
-                        child: Text(
-                          widget.order.id,
-                          style: const TextStyle(
-                            fontFamily: 'Inter',
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black,
+    return GestureDetector(
+      onDoubleTap: () {
+        context.push('/orderdetail/${widget.order.id}');
+      },
+      child: Card(
+        margin: const EdgeInsets.all(8),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(8),
+          side: BorderSide(color: Colors.grey[300]!, width: 1),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded(
+                    child: Row(
+                      children: [
+                        Flexible(
+                          child: Text(
+                            "$formattedDate a las $formattedTime",
+                            style: const TextStyle(
+                              fontFamily: 'Inter',
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black,
+                            ),
+                            overflow: TextOverflow.ellipsis,
                           ),
-                          overflow: TextOverflow.ellipsis,
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
+                ],
+              ),
+              const SizedBox(height: 4),
+              Text(
+                widget.order.id,
+                style: TextStyle(
+                  fontFamily: 'Inter',
+                  fontSize: 12,
+                  color: Colors.grey[600],
                 ),
-              ],
-            ),
-            const SizedBox(height: 4),
-            Text(
-              orderDate,
-              style: TextStyle(
-                fontFamily: 'Inter',
-                fontSize: 12,
-                color: Colors.grey[600],
               ),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              itemsDescription,
-              style: const TextStyle(
-                fontFamily: 'Inter',
-                fontSize: 14,
+              const SizedBox(height: 8),
+              Text(
+                itemsDescription,
+                style: const TextStyle(
+                  fontFamily: 'Inter',
+                  fontSize: 14,
+                ),
               ),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              '\$${widget.order.totalAmount.toStringAsFixed(2)}',
-              style: const TextStyle(
-                fontFamily: 'Inter',
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-                color: Colors.black,
+              const SizedBox(height: 8),
+              Text(
+                '\$${widget.order.totalAmount.toStringAsFixed(2)}',
+                style: const TextStyle(
+                  fontFamily: 'Inter',
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black,
+                ),
               ),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              _getReadableStatus(status),
-              style: TextStyle(
-                fontFamily: 'Inter',
-                fontSize: 14,
-                fontWeight: FontWeight.bold,
-                color: status == 'Cancelada'
-                    ? Colors.grey[400]
-                    : const Color(0xFF2000B1),
+              const SizedBox(height: 8),
+              Text(
+                _getReadableStatus(status),
+                style: TextStyle(
+                  fontFamily: 'Inter',
+                  fontSize: 14,
+                  fontWeight: FontWeight.bold,
+                  color: status == 'Cancelada'
+                      ? Colors.grey[400]
+                      : const Color(0xFF2000B1),
+                ),
               ),
-            ),
-            const SizedBox(height: 16),
-            _buildButtons(widget.order.id),
-          ],
+              const SizedBox(height: 16),
+              _buildButtons(widget.order.id),
+            ],
+          ),
         ),
       ),
     );
@@ -154,27 +164,18 @@ class OrderCardState extends State<OrderCard> {
           child: BlocConsumer<OrderCancelBloc, OrderCancelState>(
             listener: (context, state) {
               if (state is OrderCancelSuccessState) {
-                // Close the dialog
                 Navigator.of(context).pop();
-
-                // Navigate to orders page or show success message
                 context.go('/order');
-
-                // Optionally show a success snackbar
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
                     content:
                         Text('Orden ${widget.order.id} cancelada exitosamente'),
-                    backgroundColor: Colors.green,
+                    backgroundColor: Colors.greenAccent[600],
                   ),
                 );
               }
-
               if (state is OrderCancelErrorState) {
-                // Close the dialog
                 Navigator.of(context).pop();
-
-                // Show error dialog or snackbar
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
                     content: Text('Error al cancelar la orden: ${state.error}'),
@@ -197,7 +198,6 @@ class OrderCardState extends State<OrderCard> {
                 rejectButtonText: 'Cancelar Orden',
                 rejectButtonColor: Colors.red,
                 onRejectPressed: () {
-                  // Dispatch cancel order event
                   context.read<OrderCancelBloc>().add(
                         CancelOrderEvent(orderId: widget.order.id),
                       );
@@ -217,18 +217,26 @@ class OrderCardState extends State<OrderCard> {
       return Row(children: [
         Expanded(
           child: ElevatedButton(
-              onPressed: () {},
+              onPressed: () {
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return ReportProblemDialog(orderId: orderid);
+                  },
+                );
+              },
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.deepOrangeAccent,
+                backgroundColor: Colors.deepOrange[600],
               ),
-              child: const Text('Reportar un problema',
+              child: const Text('Reportar problema',
                   style: TextStyle(
                     color: Colors.white,
                     fontFamily: 'Inter',
-                    fontSize: 14,
+                    fontSize: 13,
                     fontWeight: FontWeight.bold,
                   ))),
         ),
+        SizedBox(width: 8),
         Expanded(
           child: OutlinedButton(
             onPressed: () {
@@ -271,7 +279,7 @@ class OrderCardState extends State<OrderCard> {
           Expanded(
             child: ElevatedButton(
               onPressed: () {
-                showReorderPopupDialog(context);
+                showReorderPopupDialog(context, orderid);
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFF2000B1),

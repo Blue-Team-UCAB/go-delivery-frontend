@@ -3,6 +3,8 @@ import 'package:go_delivery_frontend/domain/entities/bundle/bundle.dart';
 
 class OrderBundleMapper {
   static OrderBundle fromJson(Map<String, dynamic> json) {
+    print(json.keys);
+
     return OrderBundle(
       id: json['id'] as String,
       name: json['name'] as String,

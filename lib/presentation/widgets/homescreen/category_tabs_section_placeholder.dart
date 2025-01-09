@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_delivery_frontend/presentation/widgets/placeholders/category_tab_placeholder.dart';
 
+
 class CategoryTabsSectionPlaceholder extends StatelessWidget {
   const CategoryTabsSectionPlaceholder({
     super.key,
@@ -15,6 +16,10 @@ class CategoryTabsSectionPlaceholder extends StatelessWidget {
         child: Row(
           children: [
             SizedBox(width: 16),
+            CategoryTabPlaceholder(),
+            SizedBox(width: 8),
+            CategoryTabPlaceholder(),
+            SizedBox(width: 8),
             CategoryTabPlaceholder(),
           ],
         ),

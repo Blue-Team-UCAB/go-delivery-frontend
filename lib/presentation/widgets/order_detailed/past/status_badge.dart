@@ -12,20 +12,20 @@ class StatusBadge extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         color: color.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(10),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
           Icon(icon, color: color, size: 18),
-          const SizedBox(width: 8),
+          const SizedBox(width: 10),
           Text(
             status,
             style: TextStyle(
               fontFamily: 'Inter',
               color: color,
               fontWeight: FontWeight.w500,
-              fontSize: 14,
+              fontSize: 16,
             ),
           ),
         ],
@@ -35,10 +35,10 @@ class StatusBadge extends StatelessWidget {
 
   (Color, IconData) _getBadgeConfig() {
     switch (status) {
-      case 'Entregada':
+      case 'DELIVERED':
         return (Colors.green, Icons.check_circle_outline);
-      case 'Cancelada':
-        return (Colors.red, Icons.cancel_outlined);
+      case 'CANCELLED':
+        return (Colors.redAccent, Icons.cancel_outlined);
       default:
         return (Colors.grey, Icons.info_outline);
     }

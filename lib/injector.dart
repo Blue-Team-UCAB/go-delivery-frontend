@@ -33,7 +33,7 @@ class InjectManager {
 
     // ============================= AUTH ==================================== //
 
-    final userRepository = UserRepositoryImpl(
+    final userRepository = AuthRepositoryImpl(
         apiRequestManager: apiRequestManagerImpl,
         localStorage: localStorageService);
 

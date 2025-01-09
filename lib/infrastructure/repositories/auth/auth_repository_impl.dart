@@ -9,11 +9,11 @@ import 'package:go_delivery_frontend/infrastructure/models/user_model.dart';
 
 enum UserType { CLIENT, ADMIN }
 
-class UserRepositoryImpl implements UserRepository {
+class AuthRepositoryImpl implements UserRepository {
   final IApiRequestManager _apiRequestManager;
   final LocalStorage _localStorage;
 
-  UserRepositoryImpl({
+  AuthRepositoryImpl({
     required IApiRequestManager apiRequestManager,
     required LocalStorage localStorage,
   })  : _apiRequestManager = apiRequestManager,
@@ -141,11 +141,11 @@ class UserRepositoryImpl implements UserRepository {
 
     final response = await _apiRequestManager.request<bool>(
       '/auth/change/password',
-      'POST',
+      'PUT',
       (data) {
         return true;
       },
-      body: {'email': email, 'password': password, 'code': code},
+      body: {'email': email, 'code': code, 'password': password},
     );
 
     print(response.value);
