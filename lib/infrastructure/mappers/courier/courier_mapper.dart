@@ -2,6 +2,8 @@ import 'package:go_delivery_frontend/domain/entities/courier/courier.dart';
 
 class CourierMapper {
   static Courier fromJson(Map<String, dynamic> json) {
+    print(json);
+
     return Courier(
       id: json['id'] as String? ?? '',
       name: json['name'] as String? ?? 'Unknown Driver',

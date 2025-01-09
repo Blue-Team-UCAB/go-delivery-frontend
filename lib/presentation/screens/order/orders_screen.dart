@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 
-import 'package:go_delivery_frontend/application/BLoc/order/order_many/order_many_bloc.dart';
-import 'package:go_delivery_frontend/application/BLoc/order/order_many/order_many_event.dart';
-import 'package:go_delivery_frontend/application/BLoc/order/order_many/order_many_state.dart';
-import 'package:go_delivery_frontend/infrastructure/models/order_many_model.dart';
-import 'package:go_delivery_frontend/presentation/widgets/navbar.dart';
-import 'package:go_delivery_frontend/presentation/screens/order/order_card.dart';
+import '../../../application/BLoc/order/order_many/order_many_bloc.dart';
+import '../../../application/BLoc/order/order_many/order_many_event.dart';
+import '../../../application/BLoc/order/order_many/order_many_state.dart';
+import '../../../infrastructure/models/order_many_model.dart';
+import '../../widgets/navbar.dart';
+import 'order_card.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -17,10 +17,10 @@ class OrdersPage extends StatefulWidget {
   const OrdersPage({super.key, required this.initialCounterNavbar});
 
   @override
-  OrdersPageState createState() => OrdersPageState();
+  _OrdersPageState createState() => _OrdersPageState();
 }
 
-class OrdersPageState extends State<OrdersPage>
+class _OrdersPageState extends State<OrdersPage>
     with SingleTickerProviderStateMixin, AutomaticKeepAliveClientMixin {
   late int counterNavbar = 2;
   late TabController _tabController;
@@ -28,8 +28,13 @@ class OrdersPageState extends State<OrdersPage>
   final List<String> activeStatuses = ['CREATED', 'IN PROCESS', 'SHIPPED'];
   final List<String> pastStatuses = ['DELIVERED', 'CANCELLED'];
 
-  final List<OrderManyItem> _allActiveOrders = [];
-  final List<OrderManyItem> _allPastOrders = [];
+  List<OrderManyItem> _allActiveOrders = [];
+  List<OrderManyItem> _allPastOrders = [];
+
+  bool isDrawerOpen = false;
+  double xOffset = 0;
+  double yOffset = 0;
+  double scaleFactor = 1;
 
   int _currentActivePage = 1;
   int _currentPastPage = 1;
@@ -115,124 +120,157 @@ class OrdersPageState extends State<OrdersPage>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          'Ordenes',
-          style: TextStyle(
-            fontSize: 24,
-            fontFamily: 'Montserrat',
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.notifications_none),
-            onPressed: () {
-              context.push('/notification');
-            },
-          ),
-          IconButton(
-            icon: const Icon(Icons.menu),
-            onPressed: () {},
-          ),
-        ],
-        bottom: PreferredSize(
-          preferredSize: const Size.fromHeight(kToolbarHeight),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            child: Container(
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: Colors.grey[300]!, width: 1),
+    return AnimatedContainer(
+      transform: Matrix4.translationValues(xOffset, yOffset, 0)
+        ..scale(scaleFactor)
+        ..rotateY(isDrawerOpen ? 0 : 0),
+      duration: const Duration(milliseconds: 250),
+      child: ClipRRect(
+        borderRadius: BorderRadius.all(Radius.circular(isDrawerOpen ? 16 : 0)),
+        child: Scaffold(
+          appBar: AppBar(
+            leading: IconButton(
+              icon: isDrawerOpen
+                  ? const Icon(Icons.arrow_back_ios)
+                  : const Icon(Icons.menu),
+              onPressed: () {
+                setState(() {
+                  if (isDrawerOpen) {
+                    // Close drawer
+                    xOffset = 0;
+                    yOffset = 0;
+                    scaleFactor = 1;
+                    isDrawerOpen = false;
+                  } else {
+                    // Open drawer
+                    xOffset = 288;
+                    scaleFactor = 0.8;
+                    yOffset = MediaQuery.of(context).size.height *
+                        ((1 - scaleFactor) / 2);
+                    isDrawerOpen = true;
+                  }
+                });
+              },
+            ),
+            title: const Text(
+              'Ordenes',
+              style: TextStyle(
+                fontSize: 24,
+                fontFamily: 'Montserrat',
+                fontWeight: FontWeight.bold,
               ),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(12),
-                child: TabBar(
-                  controller: _tabController,
-                  tabs: const [
-                    Tab(text: 'Activas'),
-                    Tab(text: 'Ordenes Pasadas'),
-                  ],
-                  labelStyle: const TextStyle(
-                    fontFamily: 'Inter',
-                    fontWeight: FontWeight.bold,
-                    fontSize: 14,
+            ),
+            actions: [
+              IconButton(
+                icon: const Icon(Icons.notifications_none),
+                onPressed: () {
+                  context.push('/notification');
+                },
+              ),
+            ],
+            bottom: PreferredSize(
+              preferredSize: const Size.fromHeight(kToolbarHeight),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: Colors.grey[300]!, width: 1),
                   ),
-                  unselectedLabelStyle: const TextStyle(
-                    fontFamily: 'Inter',
-                    fontWeight: FontWeight.normal,
-                    fontSize: 14,
-                  ),
-                  labelColor: const Color(0xFF2000B1),
-                  unselectedLabelColor: Colors.grey[600],
-                  indicator: BoxDecoration(
-                    border: const Border(
-                      bottom: BorderSide(
-                        color: Color(0xFF2000B1),
-                        width: 3,
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(12),
+                    child: TabBar(
+                      controller: _tabController,
+                      tabs: const [
+                        Tab(text: 'Activas'),
+                        Tab(text: 'Ordenes Pasadas'),
+                      ],
+                      labelStyle: const TextStyle(
+                        fontFamily: 'Inter',
+                        fontWeight: FontWeight.bold,
+                        fontSize: 14,
+                      ),
+                      unselectedLabelStyle: const TextStyle(
+                        fontFamily: 'Inter',
+                        fontWeight: FontWeight.normal,
+                        fontSize: 14,
+                      ),
+                      labelColor: const Color(0xFF2000B1),
+                      unselectedLabelColor: Colors.grey[600],
+                      indicator: BoxDecoration(
+                        border: const Border(
+                          bottom: BorderSide(
+                            color: Color(0xFF2000B1),
+                            width: 3,
+                          ),
+                        ),
+                        color: Colors.purpleAccent.withOpacity(0.13),
+                      ),
+                      indicatorSize: TabBarIndicatorSize.tab,
+                      labelPadding: const EdgeInsets.symmetric(horizontal: 16),
+                      overlayColor: WidgetStateProperty.resolveWith<Color?>(
+                            (Set<WidgetState> states) {
+                          if (states.contains(WidgetState.pressed)) {
+                            return Colors.purpleAccent.withOpacity(0.1);
+                          }
+                          return null;
+                        },
                       ),
                     ),
-                    color: Colors.purpleAccent.withOpacity(0.13),
-                  ),
-                  indicatorSize: TabBarIndicatorSize.tab,
-                  labelPadding: const EdgeInsets.symmetric(horizontal: 16),
-                  overlayColor: WidgetStateProperty.resolveWith<Color?>(
-                    (Set<WidgetState> states) {
-                      if (states.contains(WidgetState.pressed)) {
-                        return Colors.purpleAccent.withOpacity(0.1);
-                      }
-                      return null;
-                    },
                   ),
                 ),
               ),
             ),
           ),
-        ),
-      ),
-      body: MultiBlocListener(
-        listeners: [
-          BlocListener<ManyOrdersBloc, ManyOrdersState>(
-            listener: (context, state) {
-              if (state is ManyOrdersLoadedState) {
-                setState(() {
-                  if (state.status == 'active') {
-                    _isLoadingMoreActive = false;
-                    if (state.orders.isEmpty) {
-                      _hasMoreActiveOrders = false;
-                    } else {
-                      _allActiveOrders.addAll(state.orders);
-                    }
-                  } else if (state.status == 'past') {
-                    _isLoadingMorePast = false;
-                    if (state.orders.isEmpty) {
-                      _hasMorePastOrders = false;
-                    } else {
-                      _allPastOrders.addAll(state.orders);
-                    }
+          body: MultiBlocListener(
+            listeners: [
+              BlocListener<ManyOrdersBloc, ManyOrdersState>(
+                listener: (context, state) {
+                  if (state is ManyOrdersLoadedState) {
+                    setState(() {
+                      if (state.status == 'active') {
+                        _isLoadingMoreActive = false;
+                        if (state.orders.isEmpty) {
+                          _hasMoreActiveOrders = false;
+                        } else {
+                          _allActiveOrders.addAll(state.orders);
+                        }
+                      } else if (state.status == 'past') {
+                        _isLoadingMorePast = false;
+                        if (state.orders.isEmpty) {
+                          _hasMorePastOrders = false;
+                        } else {
+                          _allPastOrders.addAll(state.orders);
+                        }
+                      }
+                    });
                   }
-                });
-              }
+                  if (state is ManyOrdersErrorState) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text(state.error)),
+                    );
+                  }
+                },
+              ),
+            ],
+            child: TabBarView(
+              controller: _tabController,
+              children: [
+                _buildOrdersList(_allActiveOrders, true),
+                _buildOrdersList(_allPastOrders, false),
+              ],
+            ),
+          ),
+          bottomNavigationBar: CustomNavBar(
+            selectedIndex: counterNavbar,
+            onItemTapped: (index) {
+              setState(() {
+                counterNavbar = index;
+              });
             },
           ),
-        ],
-        child: TabBarView(
-          controller: _tabController,
-          children: [
-            _buildOrdersList(_allActiveOrders, true),
-            _buildOrdersList(_allPastOrders, false),
-          ],
         ),
-      ),
-      bottomNavigationBar: CustomNavBar(
-        selectedIndex: counterNavbar,
-        onItemTapped: (index) {
-          setState(() {
-            counterNavbar = index;
-          });
-        },
       ),
     );
   }
@@ -290,11 +328,9 @@ class OrdersPageState extends State<OrdersPage>
           );
         }
 
-        // Orders list with potential loading indicator
         return NotificationListener<ScrollNotification>(
           onNotification: (ScrollNotification scrollInfo) {
-            if (scrollInfo.metrics.pixels ==
-                scrollInfo.metrics.maxScrollExtent) {
+            if (scrollInfo.metrics.pixels == scrollInfo.metrics.maxScrollExtent) {
               if (isActiveTab && _hasMoreActiveOrders) {
                 _loadMoreActiveOrders();
               } else if (!isActiveTab && _hasMorePastOrders) {
@@ -307,9 +343,8 @@ class OrdersPageState extends State<OrdersPage>
             onRefresh: () async => _onRefresh(isActiveTab),
             child: ListView.builder(
               itemCount: orders.length +
-                  (isActiveTab
-                      ? (_isLoadingMoreActive ? 1 : 0)
-                      : (_isLoadingMorePast ? 1 : 0)),
+                  (isActiveTab ? (_isLoadingMoreActive ? 1 : 0) :
+                  (_isLoadingMorePast ? 1 : 0)),
               itemBuilder: (context, index) {
                 // Loading indicator for pagination
                 if (index == orders.length &&
