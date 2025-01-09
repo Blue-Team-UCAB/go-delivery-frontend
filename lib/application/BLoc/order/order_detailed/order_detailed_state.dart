@@ -17,7 +17,7 @@ class OrderDetailLoadedState extends OrderDetailState {
   final List<OrderState> state;
   final double totalAmount;
   final double subtotalAmount;
-  final Direction direction;
+  final DirectionOrder direction;
   final Courier? courier;
   final List<OrderProduct> products;
   final List<OrderBundle> bundles;

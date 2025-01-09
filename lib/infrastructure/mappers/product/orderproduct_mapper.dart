@@ -2,6 +2,8 @@ import 'package:go_delivery_frontend/domain/entities/product/product.dart';
 
 class OrderProductMapper {
   static OrderProduct fromJson(Map<String, dynamic> json) {
+    print(json.keys);
+
     return OrderProduct(
       id: json['id'] as String,
       name: json['name'] as String,

@@ -7,7 +7,7 @@ import '../../../../widgets/order_detailed/past/order_items_list.dart';
 import '../../../../widgets/order_detailed/past/order_past_header.dart';
 import '../../../../widgets/order_detailed/past/reorder_button.dart';
 import '../../../../widgets/order_detailed/past/show_reorder_darken_window.dart';
-import '../../../../widgets/order_detailed/past/statusBadge.dart';
+import '../../../../widgets/order_detailed/past/status_badge.dart';
 
 class PastOrderDetails extends StatelessWidget {
   final OrderDetailLoadedState state;

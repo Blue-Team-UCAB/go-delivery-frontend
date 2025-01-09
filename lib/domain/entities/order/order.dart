@@ -9,7 +9,7 @@ class Order {
   List<OrderState> state;
   double totalAmount;
   double subtotalAmount;
-  Direction direction;
+  DirectionOrder direction;
   Courier? courier;
   List<OrderProduct> products;
   List<OrderBundle> bundles;
