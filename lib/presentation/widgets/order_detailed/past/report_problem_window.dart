@@ -1,10 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'package:go_delivery_frontend/application/BLoc/order/order_report/order_report_bloc.dart';
+import 'package:go_delivery_frontend/application/BLoc/order/order_report/order_report_event.dart';
+import 'package:go_delivery_frontend/application/BLoc/order/order_report/order_report_state.dart';
 
 class ReportProblemDialog extends StatefulWidget {
   final String orderId;
 
-  const ReportProblemDialog({Key? key, required this.orderId}) : super(key: key);
+  const ReportProblemDialog({
+    Key? key,
+    required this.orderId
+  }) : super(key: key);
 
   @override
   _ReportProblemDialogState createState() => _ReportProblemDialogState();
@@ -12,6 +19,7 @@ class ReportProblemDialog extends StatefulWidget {
 
 class _ReportProblemDialogState extends State<ReportProblemDialog> {
   final TextEditingController _reasonController = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
 
   @override
   void dispose() {
@@ -19,139 +27,169 @@ class _ReportProblemDialogState extends State<ReportProblemDialog> {
     super.dispose();
   }
 
-  void _showSuccessSnackBar(BuildContext context) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(
-          'Reporte enviado exitosamente',
-          style: TextStyle(
-            fontFamily: 'Inter',
-            color: Colors.white,
-          ),
-        ),
-        backgroundColor: Colors.green,
-        duration: Duration(seconds: 3),
-      ),
-    );
+  void _submitReport(BuildContext context) {
+    if (_formKey.currentState!.validate()) {
+      final description = _reasonController.text.trim();
+
+      // Dispatch event to BLoC
+      context.read<OrderReportBloc>().add(
+          ReportOrderEvent(
+              orderId: widget.orderId,
+              desc: description
+          )
+      );
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Dialog(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(8.0),
-      ),
-      elevation: 0,
-      backgroundColor: Colors.transparent,
-      child: contentBox(context),
-    );
-  }
+    return BlocListener<OrderReportBloc, OrderReportState>(
+      listener: (context, state) {
+        if (state is OrderReportSuccessState) {
+          ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text('Problema reportado para la orden #${widget.orderId}'),
+                backgroundColor: Colors.green,
+              )
+          );
 
-  Widget contentBox(context) {
-    return Container(
-      padding: EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        shape: BoxShape.rectangle,
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: <Widget>[
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(Icons.report_problem, color: Colors.redAccent),
-              SizedBox(width: 8),
-              Text(
-                'Reportar Problema',
-                style: TextStyle(
-                  fontFamily: 'Montserrat',
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.redAccent,
-                ),
+          Navigator.of(context).pop();
+        } else if (state is OrderReportErrorState) {
+          ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(state.error),
+                backgroundColor: Colors.red,
+              )
+          );
+        }
+      },
+      child: Dialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Form(
+              key: _formKey,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  // Header
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.report_problem, color: Colors.deepOrange[500]),
+                      SizedBox(width: 10),
+                      Text(
+                        'Reportar Problema',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.deepOrange[500],
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 10),
+
+                  // Order Number
+                  Text(
+                    'Orden #${widget.orderId}',
+                    style: TextStyle(
+                      color: Colors.grey,
+                      fontSize: 14,
+                    ),
+                  ),
+                  SizedBox(height: 16),
+
+                  // Problem Description TextField
+                  TextFormField(
+                    controller: _reasonController,
+                    decoration: InputDecoration(
+                      hintText: 'Razón del problema',
+                      hintStyle: TextStyle(
+                        fontFamily: 'Inter',
+                        color: Colors.grey[400],
+                      ),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(4),
+                        borderSide: BorderSide(color: Colors.deepOrange),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(4),
+                        borderSide: BorderSide(color: Colors.deepOrange, width: 2),
+                      ),
+                      contentPadding: EdgeInsets.symmetric(vertical: 20, horizontal: 10),
+                      alignLabelWithHint: true,
+                    ),
+                    style: TextStyle(fontFamily: 'Inter'),
+                    textAlign: TextAlign.center,
+                    maxLines: 4,
+                    validator: (value) {
+                      if (value == null || value.trim().isEmpty) {
+                        return 'Por favor describe el problema';
+                      }
+                      if (value.trim().length < 10) {
+                        return 'La descripción es muy corta';
+                      }
+                      return null;
+                    },
+                  ),
+                  SizedBox(height: 16),
+
+                  // Action Buttons
+                  BlocBuilder<OrderReportBloc, OrderReportState>(
+                    builder: (context, state) {
+                      return Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          // Cancel Button
+                          TextButton(
+                            onPressed: state is! OrderReportLoadingState
+                                ? () => Navigator.of(context).pop()
+                                : null,
+                            child: Text(
+                              'Cancelar',
+                              style: TextStyle(color: Colors.deepOrange[500]),
+                            ),
+                          ),
+                          SizedBox(width: 10),
+
+                          // Submit Button
+                          ElevatedButton(
+                            onPressed: state is! OrderReportLoadingState
+                                ? () => _submitReport(context)
+                                : null,
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.deepOrange[500],
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                            ),
+                            child: state is OrderReportLoadingState
+                                ? SizedBox(
+                              width: 20,
+                              height: 20,
+                              child: CircularProgressIndicator(
+                                color: Colors.white,
+                                strokeWidth: 2,
+                              ),
+                            )
+                                : Text(
+                              'Enviar Reporte',
+                              style: TextStyle(color: Colors.white),
+                            ),
+                          ),
+                        ],
+                      );
+                    },
+                  ),
+                ],
               ),
-            ],
-          ),
-          SizedBox(height: 4),
-          Text(
-            'Orden #${widget.orderId}',
-            style: TextStyle(
-              fontFamily: 'Inter',
-              fontSize: 14,
-              color: Colors.grey[400],
             ),
           ),
-          SizedBox(height: 16),
-          TextField(
-            controller: _reasonController,
-            decoration: InputDecoration(
-              hintText: 'Razón del problema',
-              hintStyle: TextStyle(
-                fontFamily: 'Inter',
-                color: Colors.grey[400],
-              ),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(4),
-                borderSide: BorderSide(color: Colors.redAccent),
-              ),
-              focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(4),
-                borderSide: BorderSide(color: Colors.redAccent, width: 2),
-              ),
-              contentPadding: EdgeInsets.symmetric(vertical: 20, horizontal: 10),
-              alignLabelWithHint: true,
-            ),
-            style: TextStyle(fontFamily: 'Inter'),
-            textAlign: TextAlign.center,
-            maxLines: 4,
-          ),
-          SizedBox(height: 24),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              TextButton(
-                child: Text(
-                  'Cancelar',
-                  style: TextStyle(
-                    fontFamily: 'Inter',
-                    color: Colors.redAccent,
-                  ),
-                ),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-              ),
-              SizedBox(width: 8),
-              ElevatedButton(
-                child: Text(
-                  'Enviar',
-                  style: TextStyle(
-                    fontFamily: 'Inter',
-                    color: Colors.white,
-                  ),
-                ),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.redAccent,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(4),
-                  ),
-                ),
-                onPressed: () {
-                  // Handle the submission of the report
-                  final reason = _reasonController.text;
-                  print('Order ID: ${widget.orderId}');
-                  print('Reason: $reason');
-
-                  _showSuccessSnackBar(context);
-
-                  Navigator.of(context).pop();
-                },
-              ),
-            ],
-          ),
-        ],
+        ),
       ),
     );
   }

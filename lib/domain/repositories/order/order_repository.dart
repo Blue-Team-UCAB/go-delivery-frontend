@@ -25,4 +25,9 @@ abstract class OrderRepository {
     required List<CheckoutProduct> products,
     List<CheckoutBundle>? bundles
   });
+
+  Future<Result<bool>> reportOrder({
+    required String orderId,
+    required String desc
+   });
 }

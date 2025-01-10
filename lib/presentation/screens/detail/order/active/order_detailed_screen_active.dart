@@ -1,15 +1,11 @@
 import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
-import 'package:latlong2/latlong.dart';
-
-import '../../../../../application/BLoc/order/order_detailed/order_detailed_state.dart';
-import '../../../../../domain/entities/order/order.dart';
-import '../../../../widgets/order_detailed/active/OrderProgress.dart';
-import '../../../../widgets/order_detailed/active/active_info.dart';
-import '../../../../widgets/order_detailed/active/add_instructions_dialog.dart';
-import '../../../../widgets/order_detailed/active/delivery_map_order.dart';
-import '../../../../widgets/order_detailed/active/driver_card.dart';
-import '../../../../widgets/order_detailed/past/order_items_list.dart';
+import 'package:go_delivery_frontend/application/BLoc/order/order_detailed/order_detailed_state.dart';
+import 'package:go_delivery_frontend/presentation/widgets/order_detailed/active/order_progress.dart';
+import 'package:go_delivery_frontend/presentation/widgets/order_detailed/active/active_info.dart';
+import 'package:go_delivery_frontend/presentation/widgets/order_detailed/active/add_instructions_dialog.dart';
+import 'package:go_delivery_frontend/presentation/widgets/order_detailed/active/driver_card.dart';
+import 'package:go_delivery_frontend/presentation/widgets/order_detailed/past/order_items_list.dart';
 
 class ActiveOrderDetails extends StatelessWidget {
   final OrderDetailLoadedState state;
@@ -61,14 +57,13 @@ class ActiveOrderDetails extends StatelessWidget {
               ),
             ),
           ),
-          if (currentActiveState == 'SHIPPED' && state.courier!.name != null && state.courier!.id != null && state.courier!.phone != null)
+          if (currentActiveState == 'SHIPPED')
             FadeInDown(
               delay: const Duration(milliseconds: 100),
               child: DriverCard(
                 driverName: state.courier!.name,
                 phoneNumber: state.courier!.phone,
-                onCallPressed: () {
-                },
+                onCallPressed: () {},
               ),
             ),
           FadeInDown(
@@ -81,13 +76,10 @@ class ActiveOrderDetails extends StatelessWidget {
           FadeInDown(
               delay: const Duration(milliseconds: 1600),
               child: Padding(
-                  padding: const EdgeInsets.all(14.0), // Adds 16 pixels of padding on all sides
+                  padding: const EdgeInsets.all(
+                      14.0), // Adds 16 pixels of padding on all sides
                   child: OrderItemsList(
-                      products: state.products,
-                      bundles: state.bundles
-                  )
-              )
-          ),
+                      products: state.products, bundles: state.bundles))),
           const SizedBox(height: 18),
         ],
       ),

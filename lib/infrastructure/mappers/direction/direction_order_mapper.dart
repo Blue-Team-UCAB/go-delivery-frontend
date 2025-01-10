@@ -1,4 +1,4 @@
-import '../../../domain/entities/direction/direction.dart';
+import 'package:go_delivery_frontend/domain/entities/direction/direction.dart';
 
 class DirectionOrderMapper {
   static Map<String, dynamic> toJson(DirectionOrder direction) {
@@ -8,8 +8,6 @@ class DirectionOrderMapper {
       'latitude': direction.latitude.toString(),
     };
   }
-
-
 
   static DirectionOrder fromJson(Map<String, dynamic> json) {
     return DirectionOrder(

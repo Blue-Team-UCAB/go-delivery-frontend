@@ -5,14 +5,14 @@ abstract class CouponState extends Equatable {
 
   const CouponState({this.coupon = const Coupon(id: '', porcentage: 0)});
 
-  double get howMuchDiscount => coupon.porcentage/100;
+  double get howMuchDiscount => coupon.porcentage / 100;
 
   @override
   List<Object?> get props => [coupon];
 }
 
 class CouponInitial extends CouponState {
-  CouponInitial() : super(){}
+  const CouponInitial() : super();
 }
 
 class CouponLoading extends CouponState {

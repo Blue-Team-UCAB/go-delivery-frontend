@@ -1,12 +1,11 @@
 import 'package:animate_do/animate_do.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go_delivery_frontend/presentation/widgets/order_detailed/active/timeLine_painter.dart';
 import 'package:latlong2/latlong.dart';
 
-import '../../../../application/BLoc/order/order_detailed/order_detailed_state.dart';
-import '../../../../domain/entities/order/order.dart';
-import 'delivery_map_order.dart';
+import 'package:go_delivery_frontend/application/BLoc/order/order_detailed/order_detailed_state.dart';
+import 'package:go_delivery_frontend/domain/entities/order/order.dart';
+import 'package:go_delivery_frontend/presentation/widgets/order_detailed/active/delivery_map_order.dart';
 
 class OrderProgress extends StatefulWidget {
   final OrderDetailLoadedState state;
@@ -19,13 +18,19 @@ class OrderProgress extends StatefulWidget {
   });
 
   @override
-  _OrderProgressState createState() => _OrderProgressState();
+  OrderProgressState createState() => OrderProgressState();
 }
 
-class _OrderProgressState extends State<OrderProgress> with SingleTickerProviderStateMixin {
+class OrderProgressState extends State<OrderProgress>
+    with SingleTickerProviderStateMixin {
   late AnimationController _animationController;
   late Animation<double> _animation;
-  final List<String> _stateOrder = ['CREATED', 'IN PROCESS', 'SHIPPED', 'DELIVERED'];
+  final List<String> _stateOrder = [
+    'CREATED',
+    'IN PROCESS',
+    'SHIPPED',
+    'DELIVERED'
+  ];
 
   @override
   void initState() {
@@ -93,28 +98,33 @@ class _OrderProgressState extends State<OrderProgress> with SingleTickerProvider
     );
   }
 
-  Widget _buildAnimatedStatusItem(String title, String subtitle, bool isCompleted) {
+  Widget _buildAnimatedStatusItem(
+      String title, String subtitle, bool isCompleted) {
     if (isCompleted) {
       switch (title) {
         case 'Orden realizada':
           return FadeIn(
             delay: const Duration(milliseconds: 200),
-            child: _buildTimelineItem(title, subtitle, isCompleted: isCompleted),
+            child:
+                _buildTimelineItem(title, subtitle, isCompleted: isCompleted),
           );
         case 'En proceso':
           return FadeIn(
             delay: const Duration(milliseconds: 600),
-            child: _buildTimelineItem(title, subtitle, isCompleted: isCompleted),
+            child:
+                _buildTimelineItem(title, subtitle, isCompleted: isCompleted),
           );
         case 'Enviando':
           return FadeIn(
             delay: const Duration(milliseconds: 800),
-            child: _buildTimelineItem(title, subtitle, isCompleted: isCompleted),
+            child:
+                _buildTimelineItem(title, subtitle, isCompleted: isCompleted),
           );
         case 'Orden entregada':
           return FadeIn(
             delay: const Duration(milliseconds: 1400),
-            child: _buildTimelineItem(title, subtitle, isCompleted: isCompleted),
+            child:
+                _buildTimelineItem(title, subtitle, isCompleted: isCompleted),
           );
         default:
           return _buildTimelineItem(title, subtitle, isCompleted: isCompleted);
@@ -125,22 +135,26 @@ class _OrderProgressState extends State<OrderProgress> with SingleTickerProvider
         case 'Orden realizada':
           return FadeIn(
             delay: const Duration(milliseconds: 400),
-            child: _buildTimelineItem(title, subtitle, isCompleted: isCompleted),
+            child:
+                _buildTimelineItem(title, subtitle, isCompleted: isCompleted),
           );
         case 'En proceso':
           return FadeIn(
             delay: const Duration(milliseconds: 1000),
-            child: _buildTimelineItem(title, subtitle, isCompleted: isCompleted),
+            child:
+                _buildTimelineItem(title, subtitle, isCompleted: isCompleted),
           );
         case 'Enviando':
           return FadeIn(
             delay: const Duration(milliseconds: 1200),
-            child: _buildTimelineItem(title, subtitle, isCompleted: isCompleted),
+            child:
+                _buildTimelineItem(title, subtitle, isCompleted: isCompleted),
           );
         case 'Orden entregada':
           return FadeIn(
             delay: const Duration(milliseconds: 2200),
-            child: _buildTimelineItem(title, subtitle, isCompleted: isCompleted),
+            child:
+                _buildTimelineItem(title, subtitle, isCompleted: isCompleted),
           );
         default:
           return _buildTimelineItem(title, subtitle, isCompleted: isCompleted);
@@ -174,10 +188,17 @@ class _OrderProgressState extends State<OrderProgress> with SingleTickerProvider
               children: [
                 Text(
                   'Enviando Entrega',
-                  style: TextStyle(fontFamily: "Inter",fontWeight: FontWeight.bold, fontSize: 16),
+                  style: TextStyle(
+                      fontFamily: "Inter",
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16),
                 ),
-                Text('Tu conductor va en camino',
-                  style: TextStyle(fontFamily: "Inter",color: Colors.grey[600], fontSize: 14),
+                Text(
+                  'Tu conductor va en camino',
+                  style: TextStyle(
+                      fontFamily: "Inter",
+                      color: Colors.grey[600],
+                      fontSize: 14),
                 ),
                 const SizedBox(height: 8),
                 ClipRRect(
@@ -201,7 +222,7 @@ class _OrderProgressState extends State<OrderProgress> with SingleTickerProvider
 
   String _getStateDateByType(String stateType) {
     final matchingState = widget.state.state.firstWhere(
-          (orderState) => orderState.state == stateType,
+      (orderState) => orderState.state == stateType,
       orElse: () => OrderState(state: stateType, date: 'Pendiente'),
     );
 
@@ -216,14 +237,15 @@ class _OrderProgressState extends State<OrderProgress> with SingleTickerProvider
   }
 
   bool _shouldShowDeliveryItem() {
-    return widget.currentActiveState == 'SHIPPED' || widget.currentActiveState == 'DELIVERED';
+    return widget.currentActiveState == 'SHIPPED' ||
+        widget.currentActiveState == 'DELIVERED';
   }
 
   Widget _buildTimelineItem(
-      String title,
-      String subtitle, {
-        bool isCompleted = false,
-      }) {
+    String title,
+    String subtitle, {
+    bool isCompleted = false,
+  }) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -260,7 +282,7 @@ class _OrderProgressState extends State<OrderProgress> with SingleTickerProvider
                 ),
               ),
               Text(
-                "${subtitle}",
+                subtitle,
                 style: TextStyle(
                   fontFamily: "Inter",
                   color: Colors.grey[600],

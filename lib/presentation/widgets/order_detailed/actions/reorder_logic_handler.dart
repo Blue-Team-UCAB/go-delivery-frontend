@@ -4,26 +4,23 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../../application/BLoc/bundle/bundle_detail/bundle_detail_bloc.dart';
-import '../../../../application/BLoc/bundle/bundle_detail/bundle_detail_event.dart';
-import '../../../../application/BLoc/bundle/bundle_detail/bundle_detail_state.dart';
-import '../../../../application/BLoc/cart/cart_bloc.dart';
-import '../../../../application/BLoc/order/order_detailed/order_detailed_bloc.dart';
-import '../../../../application/BLoc/order/order_detailed/order_detailed_event.dart';
-import '../../../../application/BLoc/order/order_detailed/order_detailed_state.dart';
-import '../../../../application/BLoc/product/product_detail/product_detail_bloc.dart';
-import '../../../../application/BLoc/product/product_detail/product_detail_event.dart';
-import '../../../../application/BLoc/product/product_detail/product_detail_state.dart';
-import '../../../../domain/entities/cart/cartitem.dart';
-import '../../dialog_darken_window.dart';
+import 'package:go_delivery_frontend/application/BLoc/bundle/bundle_detail/bundle_detail_bloc.dart';
+import 'package:go_delivery_frontend/application/BLoc/bundle/bundle_detail/bundle_detail_event.dart';
+import 'package:go_delivery_frontend/application/BLoc/bundle/bundle_detail/bundle_detail_state.dart';
+import 'package:go_delivery_frontend/application/BLoc/cart/cart_bloc.dart';
+import 'package:go_delivery_frontend/application/BLoc/order/order_detailed/order_detailed_bloc.dart';
+import 'package:go_delivery_frontend/application/BLoc/order/order_detailed/order_detailed_event.dart';
+import 'package:go_delivery_frontend/application/BLoc/order/order_detailed/order_detailed_state.dart';
+import 'package:go_delivery_frontend/application/BLoc/product/product_detail/product_detail_bloc.dart';
+import 'package:go_delivery_frontend/application/BLoc/product/product_detail/product_detail_event.dart';
+import 'package:go_delivery_frontend/application/BLoc/product/product_detail/product_detail_state.dart';
+import 'package:go_delivery_frontend/domain/entities/cart/cartitem.dart';
+import 'package:go_delivery_frontend/presentation/widgets/dialog_darken_window.dart';
 
 class ReorderOrderWidget extends StatefulWidget {
   final String orderNumber;
 
-  const ReorderOrderWidget({
-    Key? key,
-    required this.orderNumber
-  }) : super(key: key);
+  const ReorderOrderWidget({super.key, required this.orderNumber});
 
   @override
   _ReorderOrderWidgetState createState() => _ReorderOrderWidgetState();
@@ -33,8 +30,8 @@ class _ReorderOrderWidgetState extends State<ReorderOrderWidget> {
   bool _isProcessing = true;
   Set<String> _productIdsToLoad = {};
   Set<String> _bundleIdsToLoad = {};
-  Set<String> _loadedProductIds = {};
-  Set<String> _loadedBundleIds = {};
+  final Set<String> _loadedProductIds = {};
+  final Set<String> _loadedBundleIds = {};
   Timer? _loadingTimeout;
 
   @override
@@ -47,7 +44,9 @@ class _ReorderOrderWidgetState extends State<ReorderOrderWidget> {
       }
     });
 
-    context.read<OrderDetailBloc>().add(LoadOrderDetailEvent(widget.orderNumber));
+    context
+        .read<OrderDetailBloc>()
+        .add(LoadOrderDetailEvent(widget.orderNumber));
   }
 
   @override
@@ -63,7 +62,8 @@ class _ReorderOrderWidgetState extends State<ReorderOrderWidget> {
       builder: (BuildContext context) {
         return AnimatedSuccessDialog(
           title: 'Tiempo de espera agotado',
-          message: 'La carga del pedido está tomando más tiempo del esperado. ¿Desea continuar esperando o intentar de nuevo?',
+          message:
+              'La carga del pedido está tomando más tiempo del esperado. ¿Desea continuar esperando o intentar de nuevo?',
           buttonText: 'Reintentar',
           icon: Icons.access_time,
           iconColor: const Color(0xFF2000B1),
@@ -80,7 +80,9 @@ class _ReorderOrderWidgetState extends State<ReorderOrderWidget> {
             });
 
             // Restart the reordering process
-            context.read<OrderDetailBloc>().add(LoadOrderDetailEvent(widget.orderNumber));
+            context
+                .read<OrderDetailBloc>()
+                .add(LoadOrderDetailEvent(widget.orderNumber));
 
             // Reset timeout
             _loadingTimeout?.cancel();
@@ -158,7 +160,6 @@ class _ReorderOrderWidgetState extends State<ReorderOrderWidget> {
           // Order Detail Listener
           BlocListener<OrderDetailBloc, OrderDetailState>(
             listener: (context, orderState) {
-
               if (orderState is OrderDetailLoadedState) {
                 final bundleDetailBloc = context.read<BundleDetailBloc>();
                 final productDetailBloc = context.read<ProductDetailBloc>();
@@ -169,8 +170,10 @@ class _ReorderOrderWidgetState extends State<ReorderOrderWidget> {
 
                 // Prepare sets of IDs to load
                 setState(() {
-                  _productIdsToLoad = orderState.products.map((p) => p.id).toSet();
-                  _bundleIdsToLoad = orderState.bundles.map((b) => b.id).toSet();
+                  _productIdsToLoad =
+                      orderState.products.map((p) => p.id).toSet();
+                  _bundleIdsToLoad =
+                      orderState.bundles.map((b) => b.id).toSet();
                   _loadedProductIds.clear();
                   _loadedBundleIds.clear();
                 });
@@ -180,13 +183,15 @@ class _ReorderOrderWidgetState extends State<ReorderOrderWidget> {
                 // Process products
                 for (var orderProduct in orderState.products) {
                   print('Loading Product Detail for: ${orderProduct.id}');
-                  productDetailBloc.add(LoadProductDetail(productId: orderProduct.id));
+                  productDetailBloc
+                      .add(LoadProductDetail(productId: orderProduct.id));
                 }
 
                 // Process bundles
                 for (var orderBundle in orderState.bundles) {
                   print('Loading Bundle Detail for: ${orderBundle.id}');
-                  bundleDetailBloc.add(LoadBundleDetail(bundleId: orderBundle.id));
+                  bundleDetailBloc
+                      .add(LoadBundleDetail(bundleId: orderBundle.id));
                 }
 
                 // If no products or bundles, force completion
@@ -213,17 +218,19 @@ class _ReorderOrderWidgetState extends State<ReorderOrderWidget> {
                 if (orderState is OrderDetailLoadedState) {
                   try {
                     final orderProduct = orderState.products.firstWhere(
-                            (op) => op.id == productState.product!.id,
-                        orElse: () => throw Exception('Order product not found')
-                    );
+                        (op) => op.id == productState.product!.id,
+                        orElse: () =>
+                            throw Exception('Order product not found'));
 
-                    print('Adding Product to Cart: ${productState.product!.id}');
+                    print(
+                        'Adding Product to Cart: ${productState.product!.id}');
                     cartBloc.add(AddCartItem(CartItem(
                       id: productState.product!.id,
                       name: productState.product!.name,
                       imgUrl: productState.product!.imageUrl,
                       price: productState.product!.price,
-                      presentation: 'peso: ${productState.product!.weight} medidas: ${productState.product!.measurement}',
+                      presentation:
+                          'peso: ${productState.product!.weight} medidas: ${productState.product!.measurement}',
                       quantity: orderProduct.quantity,
                       type: 'product',
                     )));
@@ -240,7 +247,8 @@ class _ReorderOrderWidgetState extends State<ReorderOrderWidget> {
                   }
                 }
               } else if (productState is ProductDetailFailed) {
-                print('Product Detail Error for ID: ${productState.product!.id}');
+                print(
+                    'Product Detail Error for ID: ${productState.product!.id}');
                 // Optionally mark as loaded to prevent getting stuck
                 setState(() {
                   _loadedProductIds.add(productState.product!.id);
@@ -253,7 +261,6 @@ class _ReorderOrderWidgetState extends State<ReorderOrderWidget> {
           // Bundle Detail Listener
           BlocListener<BundleDetailBloc, BundleDetailState>(
             listener: (context, bundleState) {
-
               if (bundleState is BundleDetailLoaded) {
                 final cartBloc = context.read<CartBloc>();
                 final orderDetailBloc = context.read<OrderDetailBloc>();
@@ -263,13 +270,13 @@ class _ReorderOrderWidgetState extends State<ReorderOrderWidget> {
                 if (orderState is OrderDetailLoadedState) {
                   try {
                     final orderBundle = orderState.bundles.firstWhere(
-                            (ob) => ob.id == bundleState.bundle!.id,
-                        orElse: () {
-                          print('No matching order bundle found for ID: ${bundleState.bundle!.id}');
-                          print('Available bundle IDs: ${orderState.bundles.map((b) => b.id).toList()}');
-                          return throw Exception('Order bundle not found');
-                        }
-                    );
+                        (ob) => ob.id == bundleState.bundle!.id, orElse: () {
+                      print(
+                          'No matching order bundle found for ID: ${bundleState.bundle!.id}');
+                      print(
+                          'Available bundle IDs: ${orderState.bundles.map((b) => b.id).toList()}');
+                      return throw Exception('Order bundle not found');
+                    });
 
                     print('Bundle: ${bundleState.bundle!.id}');
 
@@ -280,7 +287,8 @@ class _ReorderOrderWidgetState extends State<ReorderOrderWidget> {
                       imgUrl: bundleState.bundle!.imageUrl,
                       price: bundleState.bundle!.price,
                       presentation: 'Bundle',
-                      quantity: orderBundle.quantity, // Use original order quantity
+                      quantity:
+                          orderBundle.quantity, // Use original order quantity
                       type: 'bundle',
                     )));
 
@@ -317,21 +325,21 @@ class _ReorderOrderWidgetState extends State<ReorderOrderWidget> {
         child: Center(
           child: _isProcessing
               ? Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              CircularProgressIndicator(
-                color: const Color(0xFF2000B1),
-              ),
-              SizedBox(height: 16),
-              Text(
-                'Preparando su pedido...',
-                style: TextStyle(
-                  color: const Color(0xFF2000B1),
-                  fontSize: 16,
-                ),
-              ),
-            ],
-          )
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    CircularProgressIndicator(
+                      color: const Color(0xFF2000B1),
+                    ),
+                    SizedBox(height: 16),
+                    Text(
+                      'Preparando su pedido...',
+                      style: TextStyle(
+                        color: const Color(0xFF2000B1),
+                        fontSize: 16,
+                      ),
+                    ),
+                  ],
+                )
               : SizedBox.shrink(),
         ),
       ),

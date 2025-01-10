@@ -10,7 +10,6 @@ import 'package:go_delivery_frontend/application/BLoc/product/product_many/produ
 import 'package:go_delivery_frontend/application/BLoc/product/product_many/product_many_state.dart';
 import 'package:go_delivery_frontend/domain/entities/product/product.dart';
 import 'package:go_delivery_frontend/infrastructure/mappers/cart/cart_item_mapper.dart';
-import 'package:shimmer/shimmer.dart';
 
 //THIS IS A PLACEHOLDER. Pronto estará el Popular list definitivo despues de tener casi listo la app
 
@@ -124,7 +123,8 @@ class RandomItem extends StatelessWidget {
               imageUrl: product.imageUrl,
               width: 60,
               fit: BoxFit.contain,
-              placeholder: (context,url) => Center(child: CircularProgressIndicator()),
+              placeholder: (context, url) =>
+                  Center(child: CircularProgressIndicator()),
             ),
             title: Text(
               product.name,

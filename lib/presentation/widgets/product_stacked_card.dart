@@ -49,7 +49,7 @@ class ProductStackedCard extends StatelessWidget {
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(12),
                   ),
-                  child: productData.imageUrl != null
+                  child: productData.imageUrl.isNotEmpty
                       ? FastLoadingImage(
                           fit: BoxFit.cover, imageUrl: productData.imageUrl)
                       : const Icon(

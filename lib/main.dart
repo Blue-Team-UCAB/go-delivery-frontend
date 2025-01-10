@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_delivery_frontend/application/BLoc/blocs.dart';
 import 'package:go_delivery_frontend/application/BLoc/category/category_bloc.dart';
 import 'package:go_delivery_frontend/application/BLoc/order/order_cancel/order_cancel_bloc.dart';
+import 'package:go_delivery_frontend/application/BLoc/order/order_report/order_report_bloc.dart';
 import 'package:go_delivery_frontend/injector.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
@@ -48,6 +49,7 @@ void main() async {
         BlocProvider(create: (_) => getIt<ProductDetailBloc>()),
         BlocProvider(create: (_) => getIt<BundleListBloc>()),
         BlocProvider(create: (_) => getIt<BundleDetailBloc>()),
+        BlocProvider(create: (_) => getIt<OrderReportBloc>()),
         BlocProvider(create: (_) => getIt<ProductPopularListBloc>()),
         BlocProvider(
             create: (_) => getIt<
