@@ -29,7 +29,7 @@ class PaymentRepositoryImpl extends PaymentRepository {
     try {
       // Realizamos la solicitud al servidor
       final response = await _apiRequestManager.request(
-        '/pay/pago-movil',
+        '/api/pay/pago-movil',
         'POST',
         (data) => PaymentMethodMapper.parseApiResponse(data),
         body: PaymentMethodMapper.toJson(pagoMovil),

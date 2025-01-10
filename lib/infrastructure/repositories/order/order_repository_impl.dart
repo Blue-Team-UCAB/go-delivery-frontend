@@ -44,7 +44,7 @@ class OrderRepositoryImpl extends OrderRepository {
     };
 
     final response = await _apiRequestManager.request(
-        '/order?status=$status', 'GET', queryParameters: queryParameters,
+        '/api/order?status=$status', 'GET', queryParameters: queryParameters,
         (data) {
       return OrderManyMapper.fromJson(data['value']).orders;
     });
@@ -56,7 +56,7 @@ class OrderRepositoryImpl extends OrderRepository {
     await _addAuthorizationHeader();
     try {
       final response = await _apiRequestManager.request(
-        '/order/$orderId',
+        '/api/order/$orderId',
         'GET',
         (data) {
           final order = OrderMapper.fromJson(data["value"]);
@@ -123,7 +123,7 @@ class OrderRepositoryImpl extends OrderRepository {
     var message;
     await _addAuthorizationHeader();
       final response = await _apiRequestManager.request(
-        '/order/cancel',
+        '/api/order/cancel',
         'POST',
             (data) {
               if (data['errorCode'] != 200) {

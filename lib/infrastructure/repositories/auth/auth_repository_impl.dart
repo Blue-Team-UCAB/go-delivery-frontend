@@ -28,7 +28,7 @@ class AuthRepositoryImpl implements UserRepository {
   Future<Result<bool>> login(String email, String password) async {
     var message;
     final response = await _apiRequestManager.request<bool>(
-      '/auth/login',
+      '/api/auth/login',
       'POST',
       (data) {
         if (data['errorCode'] != 200) {
@@ -65,7 +65,7 @@ class AuthRepositoryImpl implements UserRepository {
   }) async {
     var message;
     final response = await _apiRequestManager.request<bool>(
-      '/auth/register',
+      '/api/auth/register',
       'POST',
       (data) {
         if (data['errorCode'] != 200) {
@@ -94,7 +94,7 @@ class AuthRepositoryImpl implements UserRepository {
   Future<Result<bool>> sendRecoveryCode(String email) async {
     var message;
     final response = await _apiRequestManager.request<bool>(
-      '/auth/forgot/password',
+      '/api/auth/forgot/password',
       'POST',
       (data) {
         if (data['errorCode'] != 200) {
@@ -118,7 +118,7 @@ class AuthRepositoryImpl implements UserRepository {
     var message;
 
     final response = await _apiRequestManager.request<bool>(
-      '/auth/code/validate',
+      '/api/auth/code/validate',
       'POST',
       (data) {
         print(data);
@@ -140,7 +140,7 @@ class AuthRepositoryImpl implements UserRepository {
       String email, String code, String password) async {
 
     final response = await _apiRequestManager.request<bool>(
-      '/auth/change/password',
+      '/api/auth/change/password',
       'PUT',
       (data) {
         return true;
@@ -158,7 +158,7 @@ class AuthRepositoryImpl implements UserRepository {
     await _addAuthorizationHeader();
     final response =
         await _apiRequestManager.request(
-            '/auth/current',
+            '/api/auth/current',
             'GET',
                 (data) {
                   return UserMapper.fromJson(data);
