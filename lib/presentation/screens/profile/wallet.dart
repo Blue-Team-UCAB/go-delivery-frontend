@@ -427,7 +427,7 @@ class _WalletScreenState extends State<WalletScreen> {
       context: context,
       isScrollControlled: true,
       builder: (context) {
-        final zelleBloc = context.read<ZelleBloc>(); // Aquí usas ZelleBloc
+        final zelleBloc = context.read<ZelleBloc>();
         return BlocProvider.value(
           value: zelleBloc,
           child: WillPopScope(
