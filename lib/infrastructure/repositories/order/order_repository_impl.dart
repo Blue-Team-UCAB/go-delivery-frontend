@@ -97,7 +97,7 @@ class OrderRepositoryImpl extends OrderRepository {
     print(body);
 
     final response = await _apiRequestManager.request(
-      '/order',
+      '/api/order',
       'POST',
       (data) {
         if (data['errorCode'] != 200) {
