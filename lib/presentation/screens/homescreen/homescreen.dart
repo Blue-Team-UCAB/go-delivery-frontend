@@ -249,15 +249,26 @@ class HomeScreenState extends State<HomeScreen> {
   Widget _buildContent() {
     return SingleChildScrollView(
       controller: _scrollController, // Aquí agregamos el ScrollController
-      child: const Padding(
-        padding: EdgeInsets.only(top: 30),
+      child: Padding(
+        padding: const EdgeInsets.only(top: 30),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            CategoryTabs(),
-            ComboSection(),
-            SizedBox(height: 14),
-            RandomSection(), // Este widget sigue siendo el mismo
+            CategoryTabs(
+              onCategorySelected: (String? categoryId) {
+                // Manejar la selección de categoría
+                if (categoryId == null) {
+                  // Se seleccionó "Todo"
+                  print('Mostrando todas las categorías');
+                } else {
+                  // Se seleccionó una categoría específica
+                  print('Categoría seleccionada: $categoryId');
+                }
+              },
+            ),
+            const ComboSection(),
+            const SizedBox(height: 14),
+            const RandomSection(), // Este widget sigue siendo el mismo
           ],
         ),
       ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_delivery_frontend/presentation/screens/homescreen/category_tab.dart';
 
 class FilterSheet extends StatefulWidget {
   @override
@@ -23,6 +24,7 @@ class _FilterSheetState extends State<FilterSheet> {
             children: [
               Text('Filtro de Búsqueda',
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+              SizedBox(height: 32),
               IconButton(
                 icon: Icon(Icons.close),
                 onPressed: () {
@@ -32,35 +34,43 @@ class _FilterSheetState extends State<FilterSheet> {
             ],
           ),
 
+          SizedBox(height: 32),
           // Discount Switch
-          SwitchListTile(
-            title: Text('Con descuento'),
-            value: hasDiscount,
-            onChanged: (value) => setState(() => hasDiscount = value),
-          ),
-
-          // Categories
-          Text('Categorías',
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
-          Wrap(
-            spacing: 8,
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              FilterChip(
-                label: Text('Todo'),
-                selected: true,
-                onSelected: (bool selected) {},
+              Text('Con descuento',
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
+              Switch(
+                value: hasDiscount,
+                onChanged: (value) => setState(() => hasDiscount = value),
+                activeColor: const Color(0xFF2000B1), // Change the active color
+                inactiveThumbColor: const Color(0xFF2000B1)
+                    .withOpacity(0.3), // Change the inactive thumb color
+                inactiveTrackColor: const Color(0xFF2000B1)
+                    .withOpacity(0.1), // Change the inactive track color
               ),
-              FilterChip(
-                label: Text('Hogar'),
-                selected: false,
-                onSelected: (bool selected) {},
-              ),
-              // Add more chips...
             ],
           ),
 
+          SizedBox(height: 32),
+          // Categories
+          Text('Categorías',
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
+          CategoryTabs(
+            onCategorySelected: (String? categoryId) {
+              // Manejar la selección de categoría
+              if (categoryId == null) {
+                // Se seleccionó "Todo"
+                print('Mostrando todas las categorías');
+              } else {
+                // Se seleccionó una categoría específica
+                print('Categoría seleccionada: $categoryId');
+              }
+            },
+          ),
           // Price Range
-          SizedBox(height: 16),
+          SizedBox(height: 32),
           Text('Precio',
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
           RangeSlider(
@@ -73,28 +83,41 @@ class _FilterSheetState extends State<FilterSheet> {
             onChanged: (RangeValues values) {
               setState(() => priceRange = values);
             },
+            activeColor: const Color(0xFF2000B1), // Change the active color
+            inactiveColor: const Color(0xFF2000B1)
+                .withOpacity(0.3), // Change the inactive color
           ),
 
           // Buttons
-          SizedBox(height: 16),
+          SizedBox(height: 40),
           Row(
             children: [
               OutlinedButton(
-                child: Text('Limpiar'),
                 onPressed: () {},
+                style: OutlinedButton.styleFrom(
+                  side: BorderSide(color: const Color(0xFF2000B1)),
+                ),
+                child: Text(
+                  'Limpiar',
+                  style: TextStyle(color: const Color(0xFF2000B1)),
+                ),
               ),
               SizedBox(width: 8),
               Expanded(
                 child: ElevatedButton(
-                  child: Text('Aplicar filtros'),
                   onPressed: () {},
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFF2000B1),
+                  ),
+                  child: Text(
+                    'Aplicar filtros',
+                    style: TextStyle(color: Colors.white),
                   ),
                 ),
               ),
             ],
           ),
+          SizedBox(height: 32),
         ],
       ),
     );

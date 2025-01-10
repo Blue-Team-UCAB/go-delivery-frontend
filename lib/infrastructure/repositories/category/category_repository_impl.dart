@@ -1,11 +1,10 @@
-import 'package:go_delivery_frontend/common/failure.dart';
 import 'package:go_delivery_frontend/domain/repositories/category/category_repository.dart';
 import 'package:go_delivery_frontend/infrastructure/mappers/category/category_mapper.dart';
 import 'package:go_delivery_frontend/application/key_value_storage/key_value.dart';
 import 'package:go_delivery_frontend/common/result.dart';
 
-import '../../../application/api/api_request.dart';
-import '../../../domain/entities/category/category.dart';
+import 'package:go_delivery_frontend/application/api/api_request.dart';
+import 'package:go_delivery_frontend/domain/entities/category/category.dart';
 
 class CategoryRepositoryImpl extends CategoryRepository {
   final IApiRequestManager _apiRequestManager;
@@ -50,16 +49,22 @@ class CategoryRepositoryImpl extends CategoryRepository {
         'GET',
         queryParameters: queryParameters,
         (data) {
-          List<Category> categories = (data['category'] as List)
-              .map((categoryData) => CategoryMapper.fromJson(categoryData))
-              .toList();
-          return categories;
+          // Verificar si data['value'] existe y contiene 'categories'
+          if (data['value'] != null && data['value']['categories'] != null) {
+            List<dynamic> categoriesData = data['value']['categories'] as List;
+            List<Category> categories = categoriesData
+                .map((categoryData) => CategoryMapper.fromJson(categoryData))
+                .toList();
+            return categories;
+          }
+          return <Category>[]; // Retornar lista vacía si no hay datos
         },
       );
       return response;
     } catch (e) {
       print('Error in CategoryRepositoryImpl.getCategories: $e');
-      return Result.fail(Exception('Failed to fetch categores: $e') as Failure);
+      // return Result.fail(Failure(message: 'Failed to fetch categories: $e'));
+      rethrow;
     }
   }
 }

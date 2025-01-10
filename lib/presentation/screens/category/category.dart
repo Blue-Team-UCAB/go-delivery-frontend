@@ -1,6 +1,8 @@
 import 'package:go_delivery_frontend/application/BLoc/category/category_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_delivery_frontend/presentation/widgets/navbar.dart';
+import 'package:go_router/go_router.dart';
 
 // categories_screen.dart
 class CategoriesScreen extends StatefulWidget {
@@ -18,6 +20,14 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
     context.read<CategoryBloc>().add(LoadCategories());
   }
 
+  int _counter = 0;
+  // Función para manejar el cambio de tab
+  void _onNavItemTapped(int valueIndex) {
+    setState(() {
+      _counter = valueIndex;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -25,12 +35,10 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
         title: const Text('Todas las categorías'),
         actions: [
           IconButton(
-            icon: const Icon(Icons.notifications),
-            onPressed: () {},
-          ),
-          IconButton(
-            icon: const Icon(Icons.menu),
-            onPressed: () {},
+            icon: const Icon(Icons.notifications_none),
+            onPressed: () {
+              context.push('/notification');
+            },
           ),
         ],
       ),
@@ -41,19 +49,45 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
           }
 
           if (state is CategoryError) {
-            return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(state.message),
-                  ElevatedButton(
-                    onPressed: () {
-                      context.read<CategoryBloc>().add(LoadCategories());
-                    },
-                    child: const Text('Reintentar'),
+            final fakeCategories = [
+              {'imageUrl': '', 'name': 'Fake Category 1'},
+              {'imageUrl': '', 'name': 'Fake Category 2'},
+              {'imageUrl': '', 'name': 'Fake Category 3'},
+            ];
+            return Stack(
+              children: [
+                GridView.builder(
+                  padding: const EdgeInsets.all(16),
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 3,
+                    mainAxisSpacing: 16,
+                    crossAxisSpacing: 16,
+                    childAspectRatio: 0.9,
                   ),
-                ],
-              ),
+                  itemCount: fakeCategories.length,
+                  itemBuilder: (context, index) {
+                    final category = fakeCategories[index];
+                    return CategoryCard(
+                      imageUrl: category['imageUrl']!,
+                      title: category['name']!,
+                    );
+                  },
+                ),
+                Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(state.message),
+                      ElevatedButton(
+                        onPressed: () {
+                          context.read<CategoryBloc>().add(LoadCategories());
+                        },
+                        child: const Text('Reintentar'),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
             );
           }
 
@@ -80,19 +114,9 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
           return Container();
         },
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: 0, // Ajusta según necesites
-        items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
-          BottomNavigationBarItem(icon: Icon(Icons.search), label: 'Buscar'),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.shopping_cart), label: 'Carrito'),
-          BottomNavigationBarItem(icon: Icon(Icons.receipt), label: 'Órdenes'),
-          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Perfil'),
-        ],
-        onTap: (index) {
-          // Implementar navegación
-        },
+      bottomNavigationBar: CustomNavBar(
+        selectedIndex: _counter,
+        onItemTapped: _onNavItemTapped,
       ),
     );
   }

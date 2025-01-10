@@ -3,12 +3,11 @@ import 'package:go_delivery_frontend/domain/entities/category/category.dart';
 class CategoryMapper {
   static Category fromJson(Map<String, dynamic> json) {
     try {
+      final String imageUrl = json['imageUrl'] as String? ?? '';
       return Category(
-        id: json['id'] as String? ?? '', // Mapeamos el ID de la categoría
-        imageUrl:
-            json['imageUrl'] as String? ?? '', // Mapeamos la URL de la imagen
-        name:
-            json['name'] as String? ?? '', // Mapeamos el nombre de la categoría
+        id: json['id'] as String? ?? '',
+        imageUrl: imageUrl,
+        name: json['name'] as String? ?? '',
       );
     } catch (e) {
       print('Error in CategoryMapper.fromJson: $e');
