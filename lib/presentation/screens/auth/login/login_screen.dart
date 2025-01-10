@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_delivery_frontend/application/BLoc/notifications/bloc/notifications_bloc.dart';
-import 'package:go_delivery_frontend/application/BLoc/themes/themes_bloc.dart';
+//import 'package:go_delivery_frontend/application/BLoc/themes/themes_bloc.dart';
 import 'package:go_delivery_frontend/presentation/screens/auth/login/login_validators.dart';
 import 'package:go_router/go_router.dart';
 
@@ -67,7 +67,7 @@ class LoginFormState extends State<LoginForm> {
 
   @override
   Widget build(BuildContext context) {
-    bool isDarkMode = context.watch<ThemesBloc>().isDarkMode;
+    //bool isDarkMode = context.watch<ThemesBloc>().isDarkMode;
     return BlocConsumer<LoginBloc, LoginState>(
         listenWhen: (previous, current) =>
             previous.formStatus != current.formStatus,

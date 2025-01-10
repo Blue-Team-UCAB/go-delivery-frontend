@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 import 'package:go_delivery_frontend/domain/entities/bundle/bundle.dart';
 import 'package:go_delivery_frontend/presentation/core/common/image-loader.dart';
 
@@ -50,16 +49,16 @@ class BundleStackedCard extends StatelessWidget {
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(12),
                   ),
-                  child: bundleData.imageUrl != null
+                  child: bundleData.imageUrl.isNotEmpty
                       ? FastLoadingImage(
-                      fit: BoxFit.cover,
-                      imageUrl: bundleData.imageUrl
-                  )
+                          fit: BoxFit.cover,
+                          imageUrl: bundleData.imageUrl,
+                        )
                       : const Icon(
-                    Icons.inventory_2_outlined,
-                    color: Colors.grey,
-                    size: 40,
-                  ),
+                          Icons.inventory_2_outlined,
+                          color: Colors.grey,
+                          size: 40,
+                        ),
                 ),
                 const SizedBox(width: 16),
                 Expanded(

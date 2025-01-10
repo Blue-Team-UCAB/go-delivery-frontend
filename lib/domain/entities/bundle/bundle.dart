@@ -1,4 +1,3 @@
-
 class Bundle {
   String id;
   String name;
@@ -41,7 +40,7 @@ class OrderBundle {
   });
 }
 
-class CheckoutBundle{
+class CheckoutBundle {
   final String id;
   final int quantity;
 
@@ -50,4 +49,3 @@ class CheckoutBundle{
     required this.quantity,
   });
 }
-

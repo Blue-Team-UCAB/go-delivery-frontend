@@ -153,8 +153,6 @@ class RoutesManager {
     ],
     redirect: (context, state) async {
       final isGoingTo = state.matchedLocation;
-      final isAdmin =
-          await LocalStorageService().getValue<bool>('isAdmin') != null;
       final isAutorized =
           await LocalStorageService().getValue<String>('appToken') != null;
       final hasSeenWelcome =

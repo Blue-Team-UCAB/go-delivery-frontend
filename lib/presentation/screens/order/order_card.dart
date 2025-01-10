@@ -22,10 +22,10 @@ class OrderCard extends StatefulWidget {
   });
 
   @override
-  _OrderCardState createState() => _OrderCardState();
+  OrderCardState createState() => OrderCardState();
 }
 
-class _OrderCardState extends State<OrderCard> {
+class OrderCardState extends State<OrderCard> {
   late String status;
 
   @override
@@ -55,9 +55,9 @@ class _OrderCardState extends State<OrderCard> {
 
   @override
   Widget build(BuildContext context) {
-    String orderDate = widget.order.lastState.date.isNotEmpty
-        ? widget.order.lastState.date
-        : 'Fecha no disponible';
+    //String orderDate = widget.order.lastState.date.isNotEmpty
+    //? widget.order.lastState.date
+    //: 'Fecha no disponible';
 
     DateTime orderDateTime = DateTime.parse(widget.order.lastState.date);
     String formattedDate =

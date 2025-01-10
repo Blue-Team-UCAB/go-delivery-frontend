@@ -27,7 +27,7 @@ class PastOrderDetails extends StatelessWidget {
                 ),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 14.0),
-                  child: StatusBadge(status: state.last_state),
+                  child: StatusBadge(status: state.lastState),
                 ),
                 Padding(
                     padding: const EdgeInsets.all(14.0),
@@ -100,7 +100,7 @@ class PastOrderDetails extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 24),
-                if (state.last_state == 'DELIVERED')
+                if (state.lastState == 'DELIVERED')
                   Padding(
                     padding: const EdgeInsets.all(14.0),
                     child: ReorderButton(
