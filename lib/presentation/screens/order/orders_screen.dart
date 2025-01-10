@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../application/BLoc/order/order_many/order_many_bloc.dart';
-import '../../../application/BLoc/order/order_many/order_many_event.dart';
-import '../../../application/BLoc/order/order_many/order_many_state.dart';
-import '../../../infrastructure/models/order_many_model.dart';
-import '../../widgets/navbar.dart';
-import 'order_card.dart';
+import 'package:go_delivery_frontend/application/BLoc/order/order_many/order_many_bloc.dart';
+import 'package:go_delivery_frontend/application/BLoc/order/order_many/order_many_event.dart';
+import 'package:go_delivery_frontend/application/BLoc/order/order_many/order_many_state.dart';
+import 'package:go_delivery_frontend/infrastructure/models/order_many_model.dart';
+import 'package:go_delivery_frontend/presentation/widgets/navbar.dart';
+import 'package:go_delivery_frontend/presentation/screens/order/order_card.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -28,8 +28,8 @@ class _OrdersPageState extends State<OrdersPage>
   final List<String> activeStatuses = ['CREATED', 'IN PROCESS', 'SHIPPED'];
   final List<String> pastStatuses = ['DELIVERED', 'CANCELLED'];
 
-  List<OrderManyItem> _allActiveOrders = [];
-  List<OrderManyItem> _allPastOrders = [];
+  final List<OrderManyItem> _allActiveOrders = [];
+  final List<OrderManyItem> _allPastOrders = [];
 
   bool isDrawerOpen = false;
   double xOffset = 0;
@@ -171,7 +171,8 @@ class _OrdersPageState extends State<OrdersPage>
             bottom: PreferredSize(
               preferredSize: const Size.fromHeight(kToolbarHeight),
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                 child: Container(
                   decoration: BoxDecoration(
                     color: Colors.white,
@@ -210,7 +211,7 @@ class _OrdersPageState extends State<OrdersPage>
                       indicatorSize: TabBarIndicatorSize.tab,
                       labelPadding: const EdgeInsets.symmetric(horizontal: 16),
                       overlayColor: WidgetStateProperty.resolveWith<Color?>(
-                            (Set<WidgetState> states) {
+                        (Set<WidgetState> states) {
                           if (states.contains(WidgetState.pressed)) {
                             return Colors.purpleAccent.withOpacity(0.1);
                           }
@@ -330,7 +331,8 @@ class _OrdersPageState extends State<OrdersPage>
 
         return NotificationListener<ScrollNotification>(
           onNotification: (ScrollNotification scrollInfo) {
-            if (scrollInfo.metrics.pixels == scrollInfo.metrics.maxScrollExtent) {
+            if (scrollInfo.metrics.pixels ==
+                scrollInfo.metrics.maxScrollExtent) {
               if (isActiveTab && _hasMoreActiveOrders) {
                 _loadMoreActiveOrders();
               } else if (!isActiveTab && _hasMorePastOrders) {
@@ -343,8 +345,9 @@ class _OrdersPageState extends State<OrdersPage>
             onRefresh: () async => _onRefresh(isActiveTab),
             child: ListView.builder(
               itemCount: orders.length +
-                  (isActiveTab ? (_isLoadingMoreActive ? 1 : 0) :
-                  (_isLoadingMorePast ? 1 : 0)),
+                  (isActiveTab
+                      ? (_isLoadingMoreActive ? 1 : 0)
+                      : (_isLoadingMorePast ? 1 : 0)),
               itemBuilder: (context, index) {
                 // Loading indicator for pagination
                 if (index == orders.length &&

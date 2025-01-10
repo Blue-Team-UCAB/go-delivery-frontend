@@ -1,16 +1,15 @@
 import 'package:flutter/material.dart';
 
-
 class ReportProblemDialog extends StatefulWidget {
   final String orderId;
 
-  const ReportProblemDialog({Key? key, required this.orderId}) : super(key: key);
+  const ReportProblemDialog({super.key, required this.orderId});
 
   @override
-  _ReportProblemDialogState createState() => _ReportProblemDialogState();
+  ReportProblemDialogState createState() => ReportProblemDialogState();
 }
 
-class _ReportProblemDialogState extends State<ReportProblemDialog> {
+class ReportProblemDialogState extends State<ReportProblemDialog> {
   final TextEditingController _reasonController = TextEditingController();
 
   @override
@@ -100,7 +99,8 @@ class _ReportProblemDialogState extends State<ReportProblemDialog> {
                 borderRadius: BorderRadius.circular(4),
                 borderSide: BorderSide(color: Colors.redAccent, width: 2),
               ),
-              contentPadding: EdgeInsets.symmetric(vertical: 20, horizontal: 10),
+              contentPadding:
+                  EdgeInsets.symmetric(vertical: 20, horizontal: 10),
               alignLabelWithHint: true,
             ),
             style: TextStyle(fontFamily: 'Inter'),
@@ -125,13 +125,6 @@ class _ReportProblemDialogState extends State<ReportProblemDialog> {
               ),
               SizedBox(width: 8),
               ElevatedButton(
-                child: Text(
-                  'Enviar',
-                  style: TextStyle(
-                    fontFamily: 'Inter',
-                    color: Colors.white,
-                  ),
-                ),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.redAccent,
                   shape: RoundedRectangleBorder(
@@ -148,6 +141,13 @@ class _ReportProblemDialogState extends State<ReportProblemDialog> {
 
                   Navigator.of(context).pop();
                 },
+                child: Text(
+                  'Enviar',
+                  style: TextStyle(
+                    fontFamily: 'Inter',
+                    color: Colors.white,
+                  ),
+                ),
               ),
             ],
           ),

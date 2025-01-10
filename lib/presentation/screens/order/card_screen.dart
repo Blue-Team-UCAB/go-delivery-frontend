@@ -10,10 +10,10 @@ class AddCardScreen extends StatefulWidget {
   const AddCardScreen({super.key});
 
   @override
-  _AddCardScreenState createState() => _AddCardScreenState();
+  AddCardScreenState createState() => AddCardScreenState();
 }
 
-class _AddCardScreenState extends State<AddCardScreen> {
+class AddCardScreenState extends State<AddCardScreen> {
   CardFieldInputDetails? _cardDetails;
   Future<void> _saveCard(BuildContext context) async {
     if (_cardDetails == null || !_cardDetails!.complete) {
@@ -75,7 +75,6 @@ class _AddCardScreenState extends State<AddCardScreen> {
                         const Center(child: CircularProgressIndicator()),
                   );
                 } else {
-                  // Cerrar el diálogo de carga
                   Navigator.pop(context);
 
                   if (state is PaymentSuccess) {

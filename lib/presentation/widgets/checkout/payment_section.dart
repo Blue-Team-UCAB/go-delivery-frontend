@@ -172,36 +172,30 @@ class _PaymentMethodSectionState extends State<PaymentMethodSection> {
               } else if (state is CardListLoaded) {
                 return Column(
                   children: state.cards.map((card) {
-                    // Identificar tarjeta única
                     final cardIdentifier =
                         "${card.brand ?? ''}-${card.last4 ?? ''}-${card.expMonth ?? ''}-${card.expYear ?? ''}";
-                    final selectedcardId = card.idCard;
+                    final selectedCardId = card.idCard;
 
                     return GestureDetector(
                       onTap: () {
                         setState(() {
-                          _selectedCardId = selectedcardId;
+                          _selectedCardId = selectedCardId;
                           _selectedCardType = cardIdentifier;
                         });
 
-                        // Debugging print
-                        print('Selected Card ID: $selectedcardId');
-                        print('Callback: ${widget.onCardSelected}');
-
-                        // Ensure the callback is not null before calling
                         if (widget.onCardSelected != null) {
-                          widget.onCardSelected!(selectedcardId);
-                        } else {
-                          print('onCardSelected callback is null');
+                          widget.onCardSelected!(selectedCardId);
                         }
+                        debugPrint("Selected Card ID: $_selectedCardId");
                       },
                       child: Container(
+                        key: ValueKey(_selectedCardId), // Uso alternativo
                         margin: const EdgeInsets.only(bottom: 12.0),
                         padding: const EdgeInsets.symmetric(
                           horizontal: 12.0,
                           vertical: 8.0,
                         ),
-                        width: double.infinity, // Toma todo el ancho disponible
+                        width: double.infinity,
                         decoration: BoxDecoration(
                           border: Border.all(
                             color: _selectedCardType == cardIdentifier
@@ -213,7 +207,6 @@ class _PaymentMethodSectionState extends State<PaymentMethodSection> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            // Marca en mayúsculas
                             Text(
                               (card.brand ?? 'Desconocido').toUpperCase(),
                               style: const TextStyle(
@@ -222,7 +215,6 @@ class _PaymentMethodSectionState extends State<PaymentMethodSection> {
                               ),
                             ),
                             const SizedBox(height: 4),
-                            // Últimos 4 dígitos de la tarjeta
                             Text(
                               "XXXX XXXX XXXX ${card.last4 ?? '0000'}",
                               style: const TextStyle(

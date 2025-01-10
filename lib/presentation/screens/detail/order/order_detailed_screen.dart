@@ -90,7 +90,8 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                   physics: const AlwaysScrollableScrollPhysics(),
                   slivers: [
                     SliverToBoxAdapter(
-                      child: state.last_state != 'DELIVERED' && state.last_state != 'CANCELLED'
+                      child: state.lastState != 'DELIVERED' &&
+                              state.lastState != 'CANCELLED'
                           ? ActiveOrderDetails(state: state)
                           : PastOrderDetails(state: state),
                     ),
@@ -105,6 +106,4 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
       ),
     );
   }
-
-
 }
