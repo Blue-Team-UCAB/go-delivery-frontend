@@ -143,4 +143,38 @@ class OrderRepositoryImpl extends OrderRepository {
       return Result.fail(CustomFailure(message: message));
     }
   }
+
+  @override
+  Future<Result<bool>> reportOrder({
+    required String orderId,
+    required String desc
+  }) async {
+    var message;
+    await _addAuthorizationHeader();
+
+    print(orderId);
+    print(desc);
+
+    final response = await _apiRequestManager.request(
+      '/api/order/report',
+      'POST',
+          (data) {
+        if (data['errorCode'] != 200) {
+          message = data["message"];
+          return false;
+        } else {
+          return true;
+        }
+      },
+      body: {
+        'orderId': orderId,
+        'description': desc
+      },
+    );
+    if (response.value == true) {
+      return response;
+    } else {
+      return Result.fail(CustomFailure(message: message));
+    }
+  }
 }
