@@ -12,17 +12,16 @@ class CheckoutOrderScreen extends StatefulWidget {
   const CheckoutOrderScreen({super.key, required this.total});
 
   @override
-  State<CheckoutOrderScreen> createState() => _CheckoutOrderScreenState();
+  State<CheckoutOrderScreen> createState() => CheckoutOrderScreenState();
 }
 
-class _CheckoutOrderScreenState extends State<CheckoutOrderScreen> {
+class CheckoutOrderScreenState extends State<CheckoutOrderScreen> {
   Map<String, dynamic>? selectedAddress;
-  String? _selectedCardId; // Change to mutable variable
+  String? _selectedCardId;
 
   @override
   void initState() {
     super.initState();
-    // Load cart items when screen is first displayed
     WidgetsBinding.instance.addPostFrameCallback((_) {
       context.read<CheckoutBloc>().add(LoadCartItemsEvent());
     });
