@@ -2,10 +2,9 @@ import 'package:go_delivery_frontend/infrastructure/mappers/courier/courier_mapp
 import 'package:go_delivery_frontend/infrastructure/mappers/product/orderproduct_mapper.dart';
 
 import 'package:go_delivery_frontend/domain/entities/order/order.dart';
-import 'package:go_delivery_frontend/infrastructure/mappers/direction/direction_mapper.dart';
 import 'package:go_delivery_frontend/infrastructure/mappers/order/many/many_orderbundle_mapper.dart';
 
-import '../direction/direction_order_mapper.dart';
+import 'package:go_delivery_frontend/infrastructure/mappers/direction/direction_order_mapper.dart';
 
 class OrderMapper {
   static Order fromJson(Map<String, dynamic> json) {
@@ -38,14 +37,13 @@ class OrderMapper {
       'totalAmount': order.totalAmount,
       'subtotalAmount': order.subtotalAmount,
       'direction': DirectionOrderMapper.toJson(order.direction),
-      'courier': order.courier != null
-          ? CourierMapper.toJson(order.courier!)
-          : null,
-      'products': order.products.map((p) => OrderProductMapper.toJson(p)).toList(),
+      'courier':
+          order.courier != null ? CourierMapper.toJson(order.courier!) : null,
+      'products':
+          order.products.map((p) => OrderProductMapper.toJson(p)).toList(),
       'bundles': order.bundles.map((b) => OrderBundleMapper.toJson(b)).toList(),
     };
   }
-
 }
 
 class OrderStateMapper {
@@ -63,4 +61,3 @@ class OrderStateMapper {
     };
   }
 }
-

@@ -148,8 +148,7 @@ class CheckoutBloc extends SafeBloc<CheckoutEvent, CheckoutState> {
       // Handle order creation result
       if (!orderResult.isSuccessful()) {
         emit(state.copyWith(
-          errorMessage:
-              orderResult.getError().message ?? 'Failed to create order',
+          errorMessage: orderResult.getError().message,
         ));
       } else {
         // Clear cart after successful order

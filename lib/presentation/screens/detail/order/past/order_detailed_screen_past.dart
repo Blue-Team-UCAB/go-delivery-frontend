@@ -1,13 +1,12 @@
 import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
 
-import '../../../../../application/BLoc/order/order_detailed/order_detailed_state.dart';
-import '../../../../widgets/order_detailed/active/active_info.dart';
-import '../../../../widgets/order_detailed/past/order_items_list.dart';
-import '../../../../widgets/order_detailed/past/order_past_header.dart';
-import '../../../../widgets/order_detailed/past/reorder_button.dart';
-import '../../../../widgets/order_detailed/past/show_reorder_darken_window.dart';
-import '../../../../widgets/order_detailed/past/status_badge.dart';
+import 'package:go_delivery_frontend/application/BLoc/order/order_detailed/order_detailed_state.dart';
+import 'package:go_delivery_frontend/presentation/widgets/order_detailed/active/active_info.dart';
+import 'package:go_delivery_frontend/presentation/widgets/order_detailed/past/order_items_list.dart';
+import 'package:go_delivery_frontend/presentation/widgets/order_detailed/past/reorder_button.dart';
+import 'package:go_delivery_frontend/presentation/widgets/order_detailed/past/show_reorder_darken_window.dart';
+import 'package:go_delivery_frontend/presentation/widgets/order_detailed/past/status_badge.dart';
 
 class PastOrderDetails extends StatelessWidget {
   final OrderDetailLoadedState state;
@@ -18,8 +17,8 @@ class PastOrderDetails extends StatelessWidget {
   Widget build(BuildContext context) {
     return SingleChildScrollView(
         child: FadeInDown(
-          delay: const Duration(milliseconds: 20),
-          child: Column(
+            delay: const Duration(milliseconds: 20),
+            child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 OrderSummary(
@@ -27,52 +26,52 @@ class PastOrderDetails extends StatelessWidget {
                   amount: state.price,
                 ),
                 Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 14.0),
-                    child: StatusBadge(status: state.last_state),
+                  padding: const EdgeInsets.symmetric(horizontal: 14.0),
+                  child: StatusBadge(status: state.lastState),
                 ),
                 Padding(
                     padding: const EdgeInsets.all(14.0),
-                    child: OrderItemsList(products: state.products, bundles: state.bundles)
-                ),
+                    child: OrderItemsList(
+                        products: state.products, bundles: state.bundles)),
                 // Metadata section
                 Padding(
-                   padding: const EdgeInsets.symmetric(horizontal: 14.0),
-                    child: Row(
-                      children: [
-                        const Icon(Icons.access_time_outlined,
-                            size: 24, color: Color(0xFF2000B1)),
-                        const SizedBox(width: 8),
-                        Text(
-                          'Efectuada a las ${state.time}',
+                  padding: const EdgeInsets.symmetric(horizontal: 14.0),
+                  child: Row(
+                    children: [
+                      const Icon(Icons.access_time_outlined,
+                          size: 24, color: Color(0xFF2000B1)),
+                      const SizedBox(width: 8),
+                      Text(
+                        'Efectuada a las ${state.time}',
+                        style: const TextStyle(
+                          fontFamily: 'Inter',
+                          color: Colors.grey,
+                          fontSize: 14,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 12),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 14.0),
+                  child: Row(
+                    children: [
+                      const Icon(Icons.location_on_outlined,
+                          size: 24, color: Color(0xFF2000B1)),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: Text(
+                          state.location,
                           style: const TextStyle(
                             fontFamily: 'Inter',
                             color: Colors.grey,
                             fontSize: 14,
                           ),
                         ),
-                      ],
+                      ),
+                    ],
                   ),
-                ),
-                const SizedBox(height: 12),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 14.0),
-                   child: Row(
-                      children: [
-                        const Icon(Icons.location_on_outlined,
-                            size: 24, color: Color(0xFF2000B1)),
-                        const SizedBox(width: 8),
-                        Expanded(
-                          child: Text(
-                            state.location,
-                            style: const TextStyle(
-                              fontFamily: 'Inter',
-                              color: Colors.grey,
-                              fontSize: 14,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
                 ),
                 const SizedBox(height: 24),
                 // Total section
@@ -90,7 +89,7 @@ class PastOrderDetails extends StatelessWidget {
                         ),
                       ),
                       Text(
-                        state.totalAmount.toString()+"\$",
+                        "${state.totalAmount}\$",
                         style: const TextStyle(
                           fontFamily: 'Montserrat',
                           fontSize: 23,
@@ -101,17 +100,15 @@ class PastOrderDetails extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 24),
-                if (state.last_state == 'DELIVERED')
+                if (state.lastState == 'DELIVERED')
                   Padding(
-                    padding: const EdgeInsets.all( 14.0),
-                     child:
-                      ReorderButton(
-                        onReorder: () => showReorderPopupDialog(context, state.id),
-                      ),
+                    padding: const EdgeInsets.all(14.0),
+                    child: ReorderButton(
+                      onReorder: () =>
+                          showReorderPopupDialog(context, state.id),
+                    ),
                   ),
               ],
-          )
-        )
-    );
+            )));
   }
 }

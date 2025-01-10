@@ -1,8 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_delivery_frontend/application/BLoc/cart/cart_bloc.dart';
 import 'package:go_delivery_frontend/presentation/screens/notification/notification_detail_screen.dart';
-import 'package:go_delivery_frontend/presentation/screens/order/ordersParentView.dart';
-import 'package:go_delivery_frontend/presentation/screens/order/orders_screen.dart';
+import 'package:go_delivery_frontend/presentation/screens/order/orders_parent_view.dart';
 import 'package:go_delivery_frontend/presentation/screens/screens.dart';
 import 'package:go_router/go_router.dart';
 import 'package:go_delivery_frontend/infrastructure/datasources/localstorage/localstorage_impl.dart';
@@ -154,8 +153,6 @@ class RoutesManager {
     ],
     redirect: (context, state) async {
       final isGoingTo = state.matchedLocation;
-      final isAdmin =
-          await LocalStorageService().getValue<bool>('isAdmin') != null;
       final isAutorized =
           await LocalStorageService().getValue<String>('appToken') != null;
       final hasSeenWelcome =

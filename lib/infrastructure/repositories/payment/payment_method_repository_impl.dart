@@ -29,7 +29,7 @@ class PaymentRepositoryImpl extends PaymentRepository {
     try {
       // Realizamos la solicitud al servidor
       final response = await _apiRequestManager.request(
-        '/api/pay/pago-movil',
+        '/api/payment/method/recharge/pago-movil',
         'POST',
         (data) => PaymentMethodMapper.parseApiResponse(data),
         body: PaymentMethodMapper.toJson(pagoMovil),
@@ -64,7 +64,7 @@ class PaymentRepositoryImpl extends PaymentRepository {
     await _addAuthorizationHeader();
     try {
       final response = await _apiRequestManager.request(
-        '/pay/zelle',
+        '/api/payment/method/recharge/zelle',
         'POST',
         (data) => PaymentMethodMapper.parseApiResponse(data),
         body: PaymentMethodMapper.toJson(zelle),
@@ -101,7 +101,7 @@ class PaymentRepositoryImpl extends PaymentRepository {
     await _addAuthorizationHeader();
     try {
       final response = await _apiRequestManager.request(
-        '/pay/card',
+        '/api/payment/method/user/add/card',
         'POST',
         (data) => data,
         body: {'idCard': card.idCard},
@@ -126,7 +126,7 @@ class PaymentRepositoryImpl extends PaymentRepository {
 
     try {
       final result = await _apiRequestManager.request(
-        '/pay/card',
+        '/api/payment/method/user/card/many',
         'GET',
         (data) => (data as List)
             .map((item) => PaymentMethodMapper.cardFromJson(item))

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../../dialog_darken_window.dart';
-import '../actions/reorder_logic_handler.dart';
+import 'package:go_delivery_frontend/presentation/widgets/dialog_darken_window.dart';
+import 'package:go_delivery_frontend/presentation/widgets/order_detailed/actions/reorder_logic_handler.dart';
 
 void showReorderPopupDialog(BuildContext context, String orderId) {
   showDialog(
@@ -15,7 +15,6 @@ void showReorderPopupDialog(BuildContext context, String orderId) {
         iconColor: const Color(0xFF2000B1),
         buttonColor: const Color(0xFF2000B1),
         onButtonPressed: () {
-
           Navigator.of(context).pop();
 
           // Navigate to a new screen that will handle the reordering

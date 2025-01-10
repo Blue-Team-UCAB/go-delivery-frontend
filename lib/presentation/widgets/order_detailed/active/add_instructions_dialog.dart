@@ -1,18 +1,15 @@
-import 'dart:ui';
-
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class AddInstructionsDialog extends StatefulWidget {
   final String orderId;
 
-  const AddInstructionsDialog({Key? key, required this.orderId}) : super(key: key);
+  const AddInstructionsDialog({super.key, required this.orderId});
 
   @override
-  _AddInstructionsDialogState createState() => _AddInstructionsDialogState();
+  AddInstructionsDialogState createState() => AddInstructionsDialogState();
 }
 
-class _AddInstructionsDialogState extends State<AddInstructionsDialog> {
+class AddInstructionsDialogState extends State<AddInstructionsDialog> {
   final TextEditingController _instructionsController = TextEditingController();
 
   @override
@@ -102,7 +99,8 @@ class _AddInstructionsDialogState extends State<AddInstructionsDialog> {
                 borderRadius: BorderRadius.circular(4),
                 borderSide: BorderSide(color: Color(0xFF2000B1), width: 2),
               ),
-              contentPadding: EdgeInsets.symmetric(vertical: 20, horizontal: 10),
+              contentPadding:
+                  EdgeInsets.symmetric(vertical: 20, horizontal: 10),
               alignLabelWithHint: true,
             ),
             style: TextStyle(fontFamily: 'Inter'),
@@ -127,13 +125,6 @@ class _AddInstructionsDialogState extends State<AddInstructionsDialog> {
               ),
               SizedBox(width: 8),
               ElevatedButton(
-                child: Text(
-                  'Guardar',
-                  style: TextStyle(
-                    fontFamily: 'Inter',
-                    color: Colors.white,
-                  ),
-                ),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Color(0xFF2000B1),
                   shape: RoundedRectangleBorder(
@@ -150,6 +141,13 @@ class _AddInstructionsDialogState extends State<AddInstructionsDialog> {
 
                   Navigator.of(context).pop();
                 },
+                child: Text(
+                  'Guardar',
+                  style: TextStyle(
+                    fontFamily: 'Inter',
+                    color: Colors.white,
+                  ),
+                ),
               ),
             ],
           ),
