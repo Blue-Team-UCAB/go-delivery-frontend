@@ -27,7 +27,7 @@ class WalletRepositoryImpl extends WalletRepository {
 
     try {
       final response = await _apiRequestManager.request(
-        '/pay/wallet-amount',
+        '/api/payment/method/user/wallet-amount',
         'GET',
         (data) => WalletAmountMapper.fromJson(data),
       );
