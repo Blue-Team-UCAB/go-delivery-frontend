@@ -2,7 +2,9 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_delivery_frontend/application/BLoc/blocs.dart';
 import 'package:go_delivery_frontend/application/BLoc/order/order_create/order_create_bloc.dart';
+import 'package:go_delivery_frontend/application/BLoc/order/order_report/order_report_bloc.dart';
 import 'package:go_delivery_frontend/application/use_cases/order/cancel_order.dart';
+import 'package:go_delivery_frontend/application/use_cases/order/report_order.dart';
 import 'package:go_delivery_frontend/application/use_cases/use_cases.dart';
 import 'package:go_delivery_frontend/domain/repositories/repositories.dart';
 import 'package:go_delivery_frontend/infrastructure/repositories/repositories_impl.dart';
@@ -177,11 +179,14 @@ class InjectManager {
     final checkoutUseCase = CheckoutUseCase(orderRepository: orderRepository);
     final cancelOneOrderUseCase =
         CancelOneOrderUseCase(orderRepository: orderRepository);
+    final reportOneOrderUseCase =
+        ReportOneOrderUseCase(orderRepository: orderRepository);
 
     getIt.registerSingleton<GetOneOrderUseCase>(getOneOrderUseCase);
     getIt.registerSingleton<GetManyOrdersUseCase>(getManyOrderUseCase);
     getIt.registerSingleton<CheckoutUseCase>(checkoutUseCase);
     getIt.registerSingleton<CancelOneOrderUseCase>(cancelOneOrderUseCase);
+    getIt.registerFactory(() => OrderReportBloc(ReportOrderUseCase: reportOneOrderUseCase));
     // ======================================================================= //
 
     getIt.registerSingleton(
