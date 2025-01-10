@@ -36,34 +36,46 @@ class NotificationScreen extends StatelessWidget {
                 },
                 icon: const Icon(Icons.settings))
           ]),
-      body: ListView.builder(
-        physics: const BouncingScrollPhysics(),
-        itemCount: notifications.length,
-        itemBuilder: (context, index) {
-          final notification = notifications[notifications.length - 1 - index];
-          return Container(
-            decoration: const BoxDecoration(
-              borderRadius:
-                  BorderRadius.all(Radius.circular(12))),
-            child: ListTile(
-              title: Text(
-                notification.title,
-                style: const TextStyle(fontFamily: 'Inter',fontSize: 16, fontWeight: FontWeight.w600,color: Color(0xFF000000)),
-              ),
-              subtitle: Text(
-                notification.body,
-                style: const TextStyle(fontFamily: 'Inter',fontSize: 14, color: Color(0xFF000000)),
-              ),
-              leading: notification.imageUrl != null
-                  ? Image.network(notification.imageUrl!)
-                  : null,
-              onTap: () {
-                context.push(
-                    '/push-details/${Uri.encodeComponent(notification.messageId)}');
-              },
-            ),
-          );
-        },
+      body: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: ListView.builder(
+          physics: const BouncingScrollPhysics(),
+          itemCount: notifications.length,
+          itemBuilder: (context, index) {
+            final notification = notifications[notifications.length - 1 - index];
+            return Column(
+              children: [
+                Container(
+                  decoration: const BoxDecoration(
+                    color: Color(0xFFFFFFFF),
+                    borderRadius:
+                        BorderRadius.all(Radius.circular(12))),
+                  child: ListTile(
+                    title: Text(
+                      notification.title,
+                      style: const TextStyle(fontFamily: 'Inter',fontSize: 16, fontWeight: FontWeight.w600,color: Color(0xFF000000)),
+                    ),
+                    subtitle: Text(
+                      notification.body,
+                      style: const TextStyle(fontFamily: 'Inter',fontSize: 14, color: Color(0xFF000000)),
+                    ),
+                    leading: 
+                    Container(width: 50,
+                      child:  notification.imageUrl != null
+                        ? Image.network(notification.imageUrl!)
+                        : Icon(Icons.notifications_active_outlined,color: Color(0xFF02066F),)
+                    ),
+                    onTap: () {
+                      context.push(
+                          '/push-details/${Uri.encodeComponent(notification.messageId)}');
+                    },
+                  ),
+                ),
+                SizedBox(height: 8,)
+              ],
+            );
+          },
+        ),
       ),
     );
   }
