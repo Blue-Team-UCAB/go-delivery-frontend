@@ -1,5 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_delivery_frontend/application/BLoc/cart/cart_bloc.dart';
+import 'package:go_delivery_frontend/presentation/screens/category/category.dart';
 import 'package:go_delivery_frontend/presentation/screens/notification/notification_detail_screen.dart';
 import 'package:go_delivery_frontend/presentation/screens/order/orders_parent_view.dart';
 import 'package:go_delivery_frontend/presentation/screens/screens.dart';
@@ -53,6 +54,10 @@ class RoutesManager {
                 key: state.pageKey,
                 child: const RegisterScreen(),
               )),
+      GoRoute(
+          path: '/category',
+          pageBuilder: (context, state) => CustomTransitions.slideRight(
+              key: state.pageKey, child: const CategoriesScreen())),
       GoRoute(
           path: '/catalog',
           pageBuilder: (context, state) => CustomTransitions.slideRight(

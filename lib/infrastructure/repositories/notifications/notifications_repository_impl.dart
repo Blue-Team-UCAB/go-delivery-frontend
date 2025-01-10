@@ -79,4 +79,3 @@ class NotificationsRepositoryImpl implements NotificationsRepository {
     throw UnimplementedError();
   }
 }
-
