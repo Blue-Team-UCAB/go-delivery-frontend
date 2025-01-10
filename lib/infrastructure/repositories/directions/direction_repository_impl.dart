@@ -27,7 +27,7 @@ class DirectionRepositoryImpl extends DirectionRepository {
     await _addAuthorizationHeader();
     try {
       final response = await _apiRequestManager.request(
-        '/customer/directions',
+        '/api/customer/directions',
         'GET',
         (data) => DirectionMapper.fromJsonList(data['value']),
       );
@@ -53,7 +53,7 @@ class DirectionRepositoryImpl extends DirectionRepository {
 
     try {
       final response = await _apiRequestManager.request(
-        '/customer/add-direction',
+        '/api/customer/add-direction',
         'POST',
         (data) =>
             null, // No necesitamos un retorno específico, solo un estado de éxito

@@ -46,7 +46,7 @@ class ProductRepositoryImpl extends ProductRepository {
       }
 
       final response = await _apiRequestManager.request(
-        '/product',
+        '/api/product',
         'GET',
         queryParameters: queryParameters,
         (data) {
@@ -68,7 +68,7 @@ class ProductRepositoryImpl extends ProductRepository {
     await _addAuthorizationHeader();
     try {
       final response = await _apiRequestManager.request(
-        '/product/$productId',
+        '/api/product/$productId',
         'GET',
         (data) {
           final product = ProductMapper.fromJson(data);

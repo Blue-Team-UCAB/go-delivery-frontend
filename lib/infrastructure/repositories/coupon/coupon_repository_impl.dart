@@ -26,7 +26,7 @@ class CouponRepositoryImpl extends CouponRepository {
     await _addAuthorizationHeader();
     try {
       final response = await _apiRequestManager.request(
-        '/coupon/validate-coupon',
+        '/api/coupon/validate-coupon',
         'POST',
         body: CouponMapper.toJson(couponId),
         (data) {
