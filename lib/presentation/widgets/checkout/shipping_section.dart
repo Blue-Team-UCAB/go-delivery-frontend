@@ -22,7 +22,7 @@ class AddressSectionState extends State<AddressSection> {
   @override
   void initState() {
     super.initState();
-    _selectedAddressIndex = 0;
+    _selectedAddressIndex = 99;
     context.read<DirectionListBloc>().add(LoadDirectionList());
   }
 
