@@ -4,10 +4,11 @@ class CategoryMapper {
   static Category fromJson(Map<String, dynamic> json) {
     try {
       return Category(
-        id: '', // Como solo necesitas el nombre, inicializamos id como vacío
-        icon: '', // Inicializamos icon como vacío
-        name: json['category'] as String? ??
-            '', // Solo tomamos el nombre de la categoría
+        id: json['id'] as String? ?? '', // Mapeamos el ID de la categoría
+        imageUrl:
+            json['imageUrl'] as String? ?? '', // Mapeamos la URL de la imagen
+        name:
+            json['name'] as String? ?? '', // Mapeamos el nombre de la categoría
       );
     } catch (e) {
       print('Error in CategoryMapper.fromJson: $e');
@@ -17,7 +18,9 @@ class CategoryMapper {
 
   static Map<String, dynamic> toJson(Category category) {
     return {
-      'name': category.name, // Solo serializamos el nombre de la categoría
+      // 'id': category.id,
+      // 'imageUrl': category.imageUrl,
+      'name': category.name, // Serializamos el nombre de la categoría
     };
   }
 }

@@ -8,6 +8,7 @@ class Product {
   final String measurement;
   final String description;
   final List<String> categories;
+  // final List<Category> categories;
   String imageUrl;
   final String currency;
   final int stock;

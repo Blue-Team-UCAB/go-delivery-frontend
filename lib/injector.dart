@@ -1,10 +1,14 @@
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_delivery_frontend/application/BLoc/blocs.dart';
+import 'package:go_delivery_frontend/application/BLoc/category/category_bloc.dart';
 import 'package:go_delivery_frontend/application/BLoc/order/order_create/order_create_bloc.dart';
+import 'package:go_delivery_frontend/application/use_cases/category/get_many_category.dart';
 import 'package:go_delivery_frontend/application/use_cases/order/cancel_order.dart';
 import 'package:go_delivery_frontend/application/use_cases/use_cases.dart';
+import 'package:go_delivery_frontend/domain/repositories/category/category_repository.dart';
 import 'package:go_delivery_frontend/domain/repositories/repositories.dart';
+import 'package:go_delivery_frontend/infrastructure/repositories/category/category_repository_impl.dart';
 import 'package:go_delivery_frontend/infrastructure/repositories/repositories_impl.dart';
 import 'package:go_delivery_frontend/application/BLoc/auth/recover_password/recover_password_bloc.dart';
 import 'package:go_delivery_frontend/application/BLoc/auth/register/register_bloc.dart';
@@ -186,6 +190,25 @@ class InjectManager {
 
     getIt.registerSingleton(
         OrderDetailBloc(getOneOrderUseCase: getOneOrderUseCase));
+
+    // ============================= CATEGORIES ============================= //
+    // Repositorio
+    final categoryRepository = CategoryRepositoryImpl(
+      apiRequestManager: apiRequestManagerImpl,
+      localStorage: localStorageService,
+    );
+    // Registrar el repositorio de categorias
+    getIt.registerSingleton<CategoryRepository>(categoryRepository);
+
+    // Casos de Uso
+    final getCategoriesUseCase =
+        GetCategoriesUseCase(categoryRepository: categoryRepository);
+
+    // Registrar el caso de uso de obtención de productos
+    // getIt.registerSingleton<GetCategoriesUseCase>(getCategoriesUseCase);
+    getIt.registerSingleton(
+        CategoryBloc(getCategoriesUseCase: getCategoriesUseCase));
+    // ======================================================================= //
     getIt.registerSingleton(
         ManyOrdersBloc(getManyOrdersUseCase: getManyOrderUseCase));
     getIt.registerSingleton(CheckoutBloc(

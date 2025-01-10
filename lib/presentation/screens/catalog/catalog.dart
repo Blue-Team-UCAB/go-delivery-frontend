@@ -1,5 +1,5 @@
 import 'dart:async';
-
+import 'package:go_delivery_frontend/presentation/widgets/search/filter_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_delivery_frontend/presentation/widgets/catalog/catalog_product_grid_placeholder.dart';
@@ -234,6 +234,16 @@ class CatalogScreenState extends State<CatalogScreen>
                     icon: const Icon(Icons.filter_list, color: Colors.grey),
                     onPressed: () {
                       // Acción de filtros
+                      showModalBottomSheet(
+                        context: context,
+                        isScrollControlled:
+                            true, // Allows the modal to take more space
+                        shape: RoundedRectangleBorder(
+                          borderRadius:
+                              BorderRadius.vertical(top: Radius.circular(16)),
+                        ),
+                        builder: (context) => FilterSheet(),
+                      );
                     },
                   ),
                 ],

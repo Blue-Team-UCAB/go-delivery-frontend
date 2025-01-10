@@ -3,6 +3,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_delivery_frontend/application/BLoc/blocs.dart';
+import 'package:go_delivery_frontend/application/BLoc/category/category_bloc.dart';
 import 'package:go_delivery_frontend/application/BLoc/order/order_cancel/order_cancel_bloc.dart';
 import 'package:go_delivery_frontend/injector.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -53,6 +54,7 @@ void main() async {
                 ProductRandomListBloc>()), //THIS IS A PLACEHOLDER. Pronto estará el Popular list definitivo despues de tener casi listo la app //THIS IS A PLACEHOLDER. Pronto estará el Popular list definitivo despues de tener casi listo la app
         BlocProvider(create: (_) => getIt<OrderDetailBloc>()),
         BlocProvider(create: (_) => getIt<ManyOrdersBloc>()),
+        BlocProvider(create: (_) => getIt<CategoryBloc>()),
       ],
       child: const GoDelyApp(),
     ),
