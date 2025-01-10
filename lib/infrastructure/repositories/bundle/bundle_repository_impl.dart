@@ -29,7 +29,7 @@ class BundleRepositoryImpl extends BundleRepository {
     await _addAuthorizationHeader();
     try {
       final response = await _apiRequestManager.request(
-        '/bundle',
+        '/api/bundle',
         'GET',
         queryParameters: {
           'page': page.toString(),
@@ -54,7 +54,7 @@ class BundleRepositoryImpl extends BundleRepository {
     await _addAuthorizationHeader();
     try {
       final response = await _apiRequestManager.request(
-        '/bundle/$bundleId',
+        '/api/bundle/$bundleId',
         'GET',
         (data) {
           // Imprimir los datos recibidos de la API

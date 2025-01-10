@@ -21,7 +21,7 @@ class NotificationsRepositoryImpl implements NotificationsRepository {
     var message;
 
     final response = await _apiRequestManager.request<bool>(
-      '/auth/push-token',
+      '/api/Notifications/push-token',
       'POST',
       (data) {
         if (data['errorCode'] != 200) {
