@@ -1,21 +1,22 @@
-import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
 import 'package:go_delivery_frontend/presentation/widgets/order_detailed/active/timeLine_painter.dart';
-import 'package:latlong2/latlong.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:animate_do/animate_do.dart';
 
-import 'package:go_delivery_frontend/application/BLoc/order/order_detailed/order_detailed_state.dart';
-import 'package:go_delivery_frontend/domain/entities/order/order.dart';
-import 'package:go_delivery_frontend/presentation/widgets/order_detailed/active/delivery_map_order.dart';
+import '../../../../application/BLoc/order/order_detailed/order_detailed_state.dart';
+import '../../../../domain/entities/order/order.dart';
+import 'delivery_map_order.dart';
 
 class OrderProgress extends StatefulWidget {
   final OrderDetailLoadedState state;
   final String currentActiveState;
 
   const OrderProgress({
-    super.key,
+    Key? key,
     required this.state,
     required this.currentActiveState,
-  });
+  }) : super(key: key);
 
   @override
   OrderProgressState createState() => OrderProgressState();
@@ -47,7 +48,6 @@ class OrderProgressState extends State<OrderProgress>
       ),
     );
 
-    // Start the animation immediately when the widget is first created
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _animationController.forward();
     });
@@ -100,65 +100,46 @@ class OrderProgressState extends State<OrderProgress>
 
   Widget _buildAnimatedStatusItem(
       String title, String subtitle, bool isCompleted) {
+    Duration delay;
     if (isCompleted) {
-      switch (title) {
-        case 'Orden realizada':
-          return FadeIn(
-            delay: const Duration(milliseconds: 200),
-            child:
-                _buildTimelineItem(title, subtitle, isCompleted: isCompleted),
-          );
-        case 'En proceso':
-          return FadeIn(
-            delay: const Duration(milliseconds: 600),
-            child:
-                _buildTimelineItem(title, subtitle, isCompleted: isCompleted),
-          );
-        case 'Enviando':
-          return FadeIn(
-            delay: const Duration(milliseconds: 800),
-            child:
-                _buildTimelineItem(title, subtitle, isCompleted: isCompleted),
-          );
-        case 'Orden entregada':
-          return FadeIn(
-            delay: const Duration(milliseconds: 1400),
-            child:
-                _buildTimelineItem(title, subtitle, isCompleted: isCompleted),
-          );
-        default:
-          return _buildTimelineItem(title, subtitle, isCompleted: isCompleted);
-      }
+      delay = Duration(milliseconds: _getDelayForCompletedStatus(title));
     } else {
-      // Add delays for pending (gray) statuses
-      switch (title) {
-        case 'Orden realizada':
-          return FadeIn(
-            delay: const Duration(milliseconds: 400),
-            child:
-                _buildTimelineItem(title, subtitle, isCompleted: isCompleted),
-          );
-        case 'En proceso':
-          return FadeIn(
-            delay: const Duration(milliseconds: 1000),
-            child:
-                _buildTimelineItem(title, subtitle, isCompleted: isCompleted),
-          );
-        case 'Enviando':
-          return FadeIn(
-            delay: const Duration(milliseconds: 1200),
-            child:
-                _buildTimelineItem(title, subtitle, isCompleted: isCompleted),
-          );
-        case 'Orden entregada':
-          return FadeIn(
-            delay: const Duration(milliseconds: 2200),
-            child:
-                _buildTimelineItem(title, subtitle, isCompleted: isCompleted),
-          );
-        default:
-          return _buildTimelineItem(title, subtitle, isCompleted: isCompleted);
-      }
+      delay = Duration(milliseconds: _getDelayForPendingStatus(title));
+    }
+
+    return FadeIn(
+      delay: delay,
+      child: _buildTimelineItem(title, subtitle, isCompleted: isCompleted),
+    );
+  }
+
+  int _getDelayForCompletedStatus(String title) {
+    switch (title) {
+      case 'Orden realizada':
+        return 200;
+      case 'En proceso':
+        return 600;
+      case 'Enviando':
+        return 800;
+      case 'Orden entregada':
+        return 1400;
+      default:
+        return 0;
+    }
+  }
+
+  int _getDelayForPendingStatus(String title) {
+    switch (title) {
+      case 'Orden realizada':
+        return 400;
+      case 'En proceso':
+        return 1000;
+      case 'Enviando':
+        return 1200;
+      case 'Orden entregada':
+        return 2200;
+      default:
+        return 0;
     }
   }
 
@@ -186,19 +167,21 @@ class OrderProgressState extends State<OrderProgress>
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
+                const Text(
                   'Enviando Entrega',
                   style: TextStyle(
-                      fontFamily: "Inter",
-                      fontWeight: FontWeight.bold,
-                      fontSize: 16),
+                    fontFamily: "Inter",
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                  ),
                 ),
                 Text(
                   'Tu conductor va en camino',
                   style: TextStyle(
-                      fontFamily: "Inter",
-                      color: Colors.grey[600],
-                      fontSize: 14),
+                    fontFamily: "Inter",
+                    color: Colors.grey[600],
+                    fontSize: 14,
+                  ),
                 ),
                 const SizedBox(height: 8),
                 ClipRRect(
@@ -207,7 +190,7 @@ class OrderProgressState extends State<OrderProgress>
                     height: 220,
                     child: DeliveryMap(
                       driverLocation: const LatLng(10.48801, -66.87919),
-                      destinationLocation: widget.state.coordinates,
+                      destinationLocation:  LatLng(widget.state.direction.latitude,widget.state.direction.longitude),
                     ),
                   ),
                 ),
@@ -222,7 +205,7 @@ class OrderProgressState extends State<OrderProgress>
 
   String _getStateDateByType(String stateType) {
     final matchingState = widget.state.state.firstWhere(
-      (orderState) => orderState.state == stateType,
+          (orderState) => orderState.state == stateType,
       orElse: () => OrderState(state: stateType, date: 'Pendiente'),
     );
 
@@ -242,10 +225,10 @@ class OrderProgressState extends State<OrderProgress>
   }
 
   Widget _buildTimelineItem(
-    String title,
-    String subtitle, {
-    bool isCompleted = false,
-  }) {
+      String title,
+      String subtitle, {
+        bool isCompleted = false,
+      }) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [

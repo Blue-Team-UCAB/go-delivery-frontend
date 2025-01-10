@@ -1,61 +1,92 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_map/flutter_map.dart';
-import 'package:latlong2/latlong.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
-
-class DeliveryMap extends StatelessWidget {
+class DeliveryMap extends StatefulWidget {
   final LatLng driverLocation;
   final LatLng destinationLocation;
 
   const DeliveryMap({
-    super.key,
+    Key? key,
     required this.driverLocation,
     required this.destinationLocation,
-  });
+  }) : super(key: key);
+
+  @override
+  _DeliveryMapState createState() => _DeliveryMapState();
+}
+
+class _DeliveryMapState extends State<DeliveryMap> {
+  late GoogleMapController mapController;
+  late Set<Marker> _markers;
+  late Set<Polyline> _polylines;
+  String apiKey = dotenv.env['GOOGLE_MAPS_API_KEY'] ?? '';
+
+  @override
+  void initState() {
+    super.initState();
+    _markers = {
+      Marker(
+        markerId: MarkerId('driver'),
+        position: widget.driverLocation,
+        icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue),
+      ),
+      Marker(
+        markerId: MarkerId('destination'),
+        position: widget.destinationLocation,
+        icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
+      ),
+    };
+
+    _polylines = {
+      Polyline(
+        polylineId: PolylineId('route'),
+        points: [widget.driverLocation, widget.destinationLocation],
+        color: Color(0xFF2000B1),
+        width: 3,
+      ),
+    };
+  }
 
   @override
   Widget build(BuildContext context) {
-    return FlutterMap(
-      options: MapOptions(
-        initialCenter: driverLocation,
-        initialZoom: 15.0,
-        backgroundColor: Colors.grey.shade900,
+    return GoogleMap(
+      initialCameraPosition: CameraPosition(
+        target: widget.driverLocation,
+        zoom: 15,
       ),
-      children: [
-        // Use a regular TileLayer with a dark, minimalist style
-        TileLayer(
-          urlTemplate: 'https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}.png',
-          subdomains: const ['a', 'b', 'c'],
-        ),
-        PolylineLayer(
-          polylines: [
-            Polyline(
-              points: [driverLocation, destinationLocation],
-              strokeWidth: 3.0,
-              color: const Color(0xFF2000B1),
-            ),
-          ],
-        ),
-        MarkerLayer(
-          markers: [
-            _buildMarker(driverLocation, const Color(0xFF2000B1)),
-            _buildMarker(destinationLocation, Colors.red),
-          ],
-        ),
-      ],
+      markers: _markers,
+      polylines: _polylines,
+      mapType: MapType.normal,
+      myLocationEnabled: true,
+      zoomControlsEnabled: true,
+      onMapCreated: (GoogleMapController controller) {
+        mapController = controller;
+        _fitBounds();
+      },
     );
   }
 
-  Marker _buildMarker(LatLng position, Color color) {
-    return Marker(
-      point: position,
-      width: 40.0,
-      height: 40.0,
-      child: Icon(
-        Icons.location_on,
-        color: color,
-        size: 40.0,
+  void _fitBounds() {
+    LatLngBounds bounds = LatLngBounds(
+      southwest: LatLng(
+        widget.driverLocation.latitude < widget.destinationLocation.latitude
+            ? widget.driverLocation.latitude
+            : widget.destinationLocation.latitude,
+        widget.driverLocation.longitude < widget.destinationLocation.longitude
+            ? widget.driverLocation.longitude
+            : widget.destinationLocation.longitude,
+      ),
+      northeast: LatLng(
+        widget.driverLocation.latitude > widget.destinationLocation.latitude
+            ? widget.driverLocation.latitude
+            : widget.destinationLocation.latitude,
+        widget.driverLocation.longitude > widget.destinationLocation.longitude
+            ? widget.driverLocation.longitude
+            : widget.destinationLocation.longitude,
       ),
     );
+
+    mapController.animateCamera(CameraUpdate.newLatLngBounds(bounds, 50));
   }
 }
