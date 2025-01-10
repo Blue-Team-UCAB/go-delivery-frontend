@@ -4,7 +4,7 @@
         android:label="Go Dely"
         android:name="${applicationName}"
         android:icon="@mipmap/launcher_icon">
-        
+
         <activity
             android:name=".MainActivity"
             android:exported="true"
@@ -14,11 +14,11 @@
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
             android:hardwareAccelerated="true"
             android:windowSoftInputMode="adjustResize">
-            
+
             <meta-data
                 android:name="io.flutter.embedding.android.NormalTheme"
                 android:resource="@style/NormalTheme" />
-            
+
             <meta-data android:name="flutter-deeplink" android:value="true" />
 
             <!-- Intent filter for app launch -->
@@ -46,6 +46,10 @@
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyC1rbw0WItY-_93PSQGY0ilpHr8G3RWEdM"/>
     </application>
 
     <!-- Required to query activities that can process text, see:
