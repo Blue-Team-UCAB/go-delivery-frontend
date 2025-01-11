@@ -8,4 +8,5 @@ abstract class PaymentRepository {
   Future<Result<void>> processZelle(Zelle zelle);
   Future<Result<void>> processCard(Card card);
   Future<Result<List<Card>>> getCard();
+  Future<Result<void>> deleteCard(String cardId);
 }

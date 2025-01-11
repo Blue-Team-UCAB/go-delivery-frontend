@@ -24,7 +24,7 @@ class PaymentRepositoryImpl extends PaymentRepository {
   }
 
   @override
-  Future<Result<void>> processPagoMovil(PagoMovil pagoMovil) async {
+  Future<Result<dynamic>> processPagoMovil(PagoMovil pagoMovil) async {
     await _addAuthorizationHeader();
     try {
       // Realizamos la solicitud al servidor
@@ -60,7 +60,7 @@ class PaymentRepositoryImpl extends PaymentRepository {
   }
 
   @override
-  Future<Result<void>> processZelle(Zelle zelle) async {
+  Future<Result<dynamic>> processZelle(Zelle zelle) async {
     await _addAuthorizationHeader();
     try {
       final response = await _apiRequestManager.request(
@@ -97,7 +97,7 @@ class PaymentRepositoryImpl extends PaymentRepository {
   }
 
   @override
-  Future<Result<void>> processCard(Card card) async {
+  Future<Result<dynamic>> processCard(Card card) async {
     await _addAuthorizationHeader();
     try {
       final response = await _apiRequestManager.request(
@@ -142,6 +142,29 @@ class PaymentRepositoryImpl extends PaymentRepository {
     } catch (e) {
       print('Error in PaymentMethodRepositoryImpl.getCard: $e');
       return Result.fail(Exception('Failed to fetch cards: $e') as Failure);
+    }
+  }
+
+  @override
+  Future<Result<dynamic>> deleteCard(String cardId) async {
+    await _addAuthorizationHeader();
+    try {
+      final response = await _apiRequestManager.request(
+        '/api/payment/method/user/card/delete/$cardId',
+        'DELETE',
+        (data) => data,
+      );
+
+      if (response.isSuccessful()) {
+        return Result.success(true);
+      } else {
+        return Result.fail(
+            const ServerFailure(message: 'Error al eliminar la tarjeta'));
+      }
+    } catch (e) {
+      print('Error en PaymentRepositoryImpl.deleteCard: $e');
+      return Result.fail(
+          ServerFailure(message: 'Fallo al eliminar la tarjeta: $e'));
     }
   }
 }

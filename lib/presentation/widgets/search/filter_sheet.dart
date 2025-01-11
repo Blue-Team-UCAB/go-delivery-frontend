@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:go_delivery_frontend/presentation/screens/homescreen/category_tab.dart';
 
 class FilterSheet extends StatefulWidget {
+  const FilterSheet({super.key});
+
   @override
   _FilterSheetState createState() => _FilterSheetState();
 }

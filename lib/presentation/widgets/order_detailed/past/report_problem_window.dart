@@ -9,9 +9,9 @@ class ReportProblemDialog extends StatefulWidget {
   final String orderId;
 
   const ReportProblemDialog({
-    Key? key,
+    super.key,
     required this.orderId
-  }) : super(key: key);
+  });
 
   @override
   _ReportProblemDialogState createState() => _ReportProblemDialogState();

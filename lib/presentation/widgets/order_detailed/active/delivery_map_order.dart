@@ -7,10 +7,10 @@ class DeliveryMap extends StatefulWidget {
   final LatLng destinationLocation;
 
   const DeliveryMap({
-    Key? key,
+    super.key,
     required this.driverLocation,
     required this.destinationLocation,
-  }) : super(key: key);
+  });
 
   @override
   _DeliveryMapState createState() => _DeliveryMapState();

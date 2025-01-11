@@ -3,6 +3,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_delivery_frontend/application/BLoc/payment/card_get/get_card_bloc.dart';
 import 'package:go_delivery_frontend/application/BLoc/payment/card_get/get_card_event.dart';
 import 'package:go_delivery_frontend/application/BLoc/payment/card_get/get_card_state.dart';
+import 'package:go_delivery_frontend/application/BLoc/payment/delete_card/delete_card_bloc.dart';
+import 'package:go_delivery_frontend/application/BLoc/payment/delete_card/delete_card_event.dart';
+import 'package:go_delivery_frontend/application/BLoc/payment/delete_card/delete_card_state.dart';
 import 'package:go_delivery_frontend/application/BLoc/payment/get_wallet/get_wallet_bloc.dart';
 import 'package:go_delivery_frontend/application/BLoc/payment/get_wallet/get_wallet_event.dart';
 import 'package:go_delivery_frontend/application/BLoc/payment/get_wallet/get_wallet_state.dart';
@@ -47,6 +50,7 @@ class _WalletScreenState extends State<WalletScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SingleChildScrollView(
+        // Se agrega para habilitar el desplazamiento
         child: Column(
           children: [
             Stack(
@@ -256,7 +260,6 @@ class _WalletScreenState extends State<WalletScreen> {
               } else if (state is CardListLoaded) {
                 return Column(
                   children: state.cards.map((card) {
-                    // Identificar tarjeta única
                     final cardIdentifier =
                         "${card.brand ?? ''}-${card.last4 ?? ''}-${card.expMonth ?? ''}-${card.expYear ?? ''}";
 
@@ -281,31 +284,69 @@ class _WalletScreenState extends State<WalletScreen> {
                           ),
                           borderRadius: BorderRadius.circular(8.0),
                         ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                        child: Row(
                           children: [
-                            // Marca en mayúsculas
-                            Text(
-                              (card.brand ?? 'Desconocido').toUpperCase(),
-                              style: const TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    (card.brand ?? 'Desconocido').toUpperCase(),
+                                    style: const TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    "XXXX XXXX XXXX ${card.last4 ?? '0000'}",
+                                    style: const TextStyle(
+                                      fontSize: 14,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    "Fecha: ${card.expMonth?.toString().padLeft(2, '0') ?? '00'}/${card.expYear?.toString().substring(2, 4) ?? '00'}",
+                                    style: const TextStyle(
+                                      fontSize: 14,
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
-                            const SizedBox(height: 4),
-                            // Últimos 4 dígitos de la tarjeta
-                            Text(
-                              "XXXX XXXX XXXX ${card.last4 ?? '0000'}",
-                              style: const TextStyle(
-                                fontSize: 14,
+                            IconButton(
+                              onPressed: () {
+                                BlocProvider.of<DeleteCardBloc>(context)
+                                    .add(DeleteCardRequested(cardId: card.id!));
+                              },
+                              icon: const Icon(
+                                Icons.delete,
+                                color: Colors.red,
                               ),
                             ),
-                            const SizedBox(height: 4),
-                            Text(
-                              "Fecha: ${card.expMonth?.toString().padLeft(2, '0') ?? '00'}/${card.expYear?.toString().substring(2, 4) ?? '00'}",
-                              style: const TextStyle(
-                                fontSize: 14,
-                              ),
+                            BlocListener<DeleteCardBloc, DeleteCardState>(
+                              listener: (context, state) {
+                                if (state is DeleteCardSuccess) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                        content: Text(
+                                            'Tarjeta eliminada con éxito')),
+                                  );
+                                  BlocProvider.of<CardListBloc>(context)
+                                      .add(LoadCardList());
+                                  BlocProvider.of<DeleteCardBloc>(context)
+                                      .add(ResetDeleteCardStateEvent());
+                                } else if (state is DeleteCardFailure) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                        content: Text(
+                                            'Error al eliminar la tarjeta')),
+                                  );
+                                  BlocProvider.of<DeleteCardBloc>(context)
+                                      .add(ResetDeleteCardStateEvent());
+                                }
+                              },
+                              child: Container(),
                             ),
                           ],
                         ),
@@ -427,7 +468,7 @@ class _WalletScreenState extends State<WalletScreen> {
       context: context,
       isScrollControlled: true,
       builder: (context) {
-        final zelleBloc = context.read<ZelleBloc>(); // Aquí usas ZelleBloc
+        final zelleBloc = context.read<ZelleBloc>();
         return BlocProvider.value(
           value: zelleBloc,
           child: WillPopScope(

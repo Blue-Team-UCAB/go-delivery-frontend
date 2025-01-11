@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:go_delivery_frontend/application/BLoc/auth/current/current_user_bloc.dart';
-import 'package:go_delivery_frontend/application/BLoc/auth/current/current_user_event.dart';
-import 'package:go_delivery_frontend/application/BLoc/auth/current/current_user_state.dart';
+import 'package:go_delivery_frontend/application/BLoc/user/current/current_user_bloc.dart';
+import 'package:go_delivery_frontend/application/BLoc/user/current/current_user_event.dart';
+import 'package:go_delivery_frontend/application/BLoc/user/current/current_user_state.dart';
 import 'package:go_delivery_frontend/presentation/widgets/dialog_darken_window.dart';
 
 class TokenLoginStateChecker extends StatefulWidget {

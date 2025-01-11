@@ -1,11 +1,9 @@
-import 'package:bloc/bloc.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_delivery_frontend/application/use_cases/category/get_many_category.dart';
 import 'package:go_delivery_frontend/domain/entities/category/category.dart';
-
 part 'category_event.dart';
 part 'category_state.dart';
 
-// category_bloc.dart
 class CategoryBloc extends Bloc<CategoryEvent, CategoryState> {
   final GetCategoriesUseCase _getCategoriesUseCase;
 

@@ -1,7 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_delivery_frontend/application/BLoc/payment/get_wallet/get_wallet_event.dart';
 import 'package:go_delivery_frontend/application/BLoc/payment/get_wallet/get_wallet_state.dart';
-import 'package:go_delivery_frontend/application/use_cases/wallet/get_wallet.dart';
+import 'package:go_delivery_frontend/application/use_cases/user/wallet/get_wallet.dart';
 import 'package:go_delivery_frontend/common/failure.dart';
 import 'package:go_delivery_frontend/common/result.dart';
 

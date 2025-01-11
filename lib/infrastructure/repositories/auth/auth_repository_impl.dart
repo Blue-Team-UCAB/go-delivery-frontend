@@ -1,3 +1,8 @@
+// ignore_for_file: constant_identifier_names
+
+import 'dart:io';
+
+import 'package:dio/dio.dart';
 import 'package:go_delivery_frontend/common/failure.dart';
 import 'package:go_delivery_frontend/infrastructure/mappers/user/user_mapper.dart';
 
@@ -26,7 +31,7 @@ class AuthRepositoryImpl implements UserRepository {
 
   @override
   Future<Result<bool>> login(String email, String password) async {
-    var message;
+    var message = '';
     final response = await _apiRequestManager.request<bool>(
       '/api/auth/login',
       'POST',
@@ -63,7 +68,7 @@ class AuthRepositoryImpl implements UserRepository {
     required String name,
     required String phone,
   }) async {
-    var message;
+    var message = '';
     final response = await _apiRequestManager.request<bool>(
       '/api/auth/register',
       'POST',
@@ -92,7 +97,7 @@ class AuthRepositoryImpl implements UserRepository {
 
   @override
   Future<Result<bool>> sendRecoveryCode(String email) async {
-    var message;
+    var message = '';
     final response = await _apiRequestManager.request<bool>(
       '/api/auth/forgot/password',
       'POST',
@@ -115,19 +120,16 @@ class AuthRepositoryImpl implements UserRepository {
 
   @override
   Future<Result<bool>> validateRecoveryCode(String email, String code) async {
-    var message;
+    var message = '';
 
     final response = await _apiRequestManager.request<bool>(
       '/api/auth/code/validate',
       'POST',
       (data) {
-        print(data);
         return true;
       },
       body: {'email': email, 'code': code},
     );
-    print(response.value);
-
     if (response.value == true) {
       return response;
     } else {
@@ -138,7 +140,6 @@ class AuthRepositoryImpl implements UserRepository {
   @override
   Future<Result<bool>> changePassword(
       String email, String code, String password) async {
-
     final response = await _apiRequestManager.request<bool>(
       '/api/auth/change/password',
       'PUT',
@@ -147,25 +148,41 @@ class AuthRepositoryImpl implements UserRepository {
       },
       body: {'email': email, 'code': code, 'password': password},
     );
-
-    print(response.value);
-
     return response;
   }
 
   @override
   Future<Result<User>> getCurrent() async {
     await _addAuthorizationHeader();
-    final response =
-        await _apiRequestManager.request(
-            '/api/auth/current',
-            'GET',
-                (data) {
-                  return UserMapper.fromJson(data);
-                }
-         );
-    print("GETCURRENT");
-
+    final response = await _apiRequestManager.request(
+      '/api/auth/current',
+      'GET',
+      (data) {
+        if (data['value'] != null) {
+          return UserMapper.fromJson(data['value']);
+        } else {
+          throw Exception('No se encontró el campo "value" en la respuesta');
+        }
+      },
+    );
     return response;
+  }
+
+  @override
+  Future<Result<bool>> updateUserImage(File image) async {
+    await _addAuthorizationHeader();
+    final response = await _apiRequestManager
+        .request<bool>('/api/user/update/image', 'PATCH', (data) {
+      return data['errorCode'] == 200;
+    },
+            body: FormData.fromMap(
+                {'image': MultipartFile.fromFileSync(image.path)}));
+
+    if (response.value == true) {
+      return Result.success(true);
+    } else {
+      return Result.fail(
+          CustomFailure(message: 'Error al actualizar la imagen'));
+    }
   }
 }

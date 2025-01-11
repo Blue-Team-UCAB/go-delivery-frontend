@@ -1,4 +1,4 @@
-export 'package:go_delivery_frontend/application/use_cases/auth/current/current_user_usecase_input.dart';
+export 'package:go_delivery_frontend/application/use_cases/user/current/current_user_usecase_input.dart';
 export 'package:go_delivery_frontend/application/use_cases/auth/recover_password/recovery_usecase_input.dart';
 export 'package:go_delivery_frontend/application/use_cases/auth/register/register_usecase_input.dart';
 export 'package:go_delivery_frontend/application/use_cases/bundle/get_many_bundle.dart';
@@ -11,8 +11,10 @@ export 'package:go_delivery_frontend/application/use_cases/payment/post_pago_mov
 export 'package:go_delivery_frontend/application/use_cases/payment/post_zelle.dart';
 export 'package:go_delivery_frontend/application/use_cases/payment/post_card.dart';
 export 'package:go_delivery_frontend/application/use_cases/payment/get_cards.dart';
+export 'package:go_delivery_frontend/application/use_cases/payment/delete_card.dart';
 export 'package:go_delivery_frontend/application/use_cases/order/get_many_order.dart';
 export 'package:go_delivery_frontend/application/use_cases/order/get_one_order.dart';
 export 'package:go_delivery_frontend/application/use_cases/direction/get_many/get_directions.dart';
 export 'package:go_delivery_frontend/application/use_cases/direction/add/add_direction.dart';
-export 'package:go_delivery_frontend/application/use_cases/wallet/get_wallet.dart';
+export 'package:go_delivery_frontend/application/use_cases/user/update_image/update_image_usecase.dart';
+export 'package:go_delivery_frontend/application/use_cases/user/wallet/get_wallet.dart';
