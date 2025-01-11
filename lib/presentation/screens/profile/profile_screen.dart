@@ -47,22 +47,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
     final pickedFile = await picker.pickImage(source: ImageSource.gallery);
 
     if (pickedFile != null) {
-      // Llamar al método de recorte de imagen
       final croppedFile = await _cropImage(pickedFile.path);
 
       if (croppedFile != null) {
         final prefs = await SharedPreferences.getInstance();
-        await prefs.setString('profile_image',
-            croppedFile.path); // Guardamos la ruta de la imagen recortada
+        await prefs.setString('profile_image', croppedFile.path);
 
         if (!mounted) return;
 
         setState(() {
-          // Asignamos la imagen recortada
           _profileImage = File(croppedFile.path);
         });
-
-        // Actualizar la imagen en el backend o bloc si es necesario
         context
             .read<UserImageBloc>()
             .add(UpdateUserImage(image: _profileImage!));
@@ -84,7 +79,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       uiSettings: [
         AndroidUiSettings(
           toolbarTitle: 'Recortar imagen',
-          toolbarColor: Colors.deepOrange,
+          toolbarColor: const Color(0xFF2000B1),
           toolbarWidgetColor: Colors.white,
           initAspectRatio: CropAspectRatioPreset.square,
           lockAspectRatio: true,
@@ -195,7 +190,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
           if (state is CurrentUserLoading) {
             return const Center(child: CircularProgressIndicator());
           } else if (state is CurrentUserLoaded) {
-            // Asignamos la imagen local del estado si no se ha seleccionado una.
             _nameController.text = state.name;
             _phoneController.text = state.phone;
             _profileImage ??= state.image.isNotEmpty ? File(state.image) : null;

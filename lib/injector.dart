@@ -270,12 +270,17 @@ class InjectManager {
     final getCardUseCase =
         GetUserCardsUseCase(paymentRepository: paymentRepository);
 
+    final deleteCardUseCase =
+        DeleteCardUseCase(paymentRepository: paymentRepository);
+
     getIt.registerSingleton<ProcessCardPaymentUseCase>(processCardUseCase);
     getIt.registerSingleton<GetUserCardsUseCase>(getCardUseCase);
+    getIt.registerSingleton<DeleteCardUseCase>(deleteCardUseCase);
 
     //Bloc
     getIt.registerSingleton(CardBloc(processCardUseCase));
     getIt.registerSingleton(CardListBloc(getCardUseCase));
+    getIt.registerSingleton(DeleteCardBloc(deleteCardUseCase));
 
     // ============================= WALLET =================================== //
 

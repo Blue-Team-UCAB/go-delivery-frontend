@@ -33,6 +33,7 @@ void main() async {
         BlocProvider(create: (_) => getIt<AddDirectionBloc>()),
         BlocProvider(create: (_) => getIt<DirectionListBloc>()),
         BlocProvider(create: (_) => getIt<GetWalletAmountBloc>()),
+        BlocProvider(create: (_) => getIt<DeleteCardBloc>()),
         BlocProvider(create: (_) => getIt<CardListBloc>()),
         BlocProvider(create: (_) => getIt<CardBloc>()),
         BlocProvider(create: (_) => getIt<ZelleBloc>()),
