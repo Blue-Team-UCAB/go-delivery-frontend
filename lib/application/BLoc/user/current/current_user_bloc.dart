@@ -1,10 +1,10 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_delivery_frontend/application/use_cases/auth/current/current_user_usecase_input.dart';
+import 'package:go_delivery_frontend/application/use_cases/user/current/current_user_usecase_input.dart';
 
 import 'package:go_delivery_frontend/infrastructure/models/user_model.dart';
 import 'package:go_delivery_frontend/application/core/bloc/ensure_bloc.dart';
-import 'package:go_delivery_frontend/application/BLoc/auth/current/current_user_event.dart';
-import 'package:go_delivery_frontend/application/BLoc/auth/current/current_user_state.dart';
+import 'package:go_delivery_frontend/application/BLoc/user/current/current_user_event.dart';
+import 'package:go_delivery_frontend/application/BLoc/user/current/current_user_state.dart';
 
 class CurrentUserBloc extends SafeBloc<CurrentUserEvent, CurrentUserState> {
   final CurrentUserUseCase currentUserUseCase;

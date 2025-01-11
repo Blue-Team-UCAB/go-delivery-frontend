@@ -15,4 +15,7 @@
     <style name="NormalTheme" parent="Theme.MaterialComponents">
         <item name="android:windowBackground">?android:colorBackground</item>
     </style>
+
+    <style name="UCropTheme" parent="Theme.AppCompat.Light.NoActionBar">
+    </style>
 </resources>

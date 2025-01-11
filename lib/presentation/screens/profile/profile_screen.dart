@@ -1,6 +1,13 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_delivery_frontend/application/BLoc/user/current/current_user_bloc.dart';
+import 'package:go_delivery_frontend/application/BLoc/user/current/current_user_event.dart';
+import 'package:go_delivery_frontend/application/BLoc/user/current/current_user_state.dart';
+import 'package:go_delivery_frontend/application/BLoc/user/update_image/update_image_bloc.dart';
+import 'package:go_delivery_frontend/application/BLoc/user/update_image/update_image_event.dart';
 import 'package:go_router/go_router.dart';
+import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:go_delivery_frontend/presentation/widgets/navbar.dart';
@@ -14,19 +21,21 @@ class ProfileScreen extends StatefulWidget {
 
 class _ProfileScreenState extends State<ProfileScreen> {
   File? _profileImage;
-  final _phoneController = TextEditingController(text: "414 990 2172");
-  final _nameController = TextEditingController(text: "Nombre de Usuario");
+  final _phoneController = TextEditingController();
+  final _nameController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
     _loadProfileImage();
+    context.read<CurrentUserBloc>().add(FetchCurrentUser());
   }
 
-  Future<void> _loadProfileImage() async {
+  void _loadProfileImage() async {
     final prefs = await SharedPreferences.getInstance();
     final imagePath = prefs.getString('profile_image');
-    if (imagePath != null && File(imagePath).existsSync()) {
+
+    if (imagePath != null && imagePath.isNotEmpty) {
       setState(() {
         _profileImage = File(imagePath);
       });
@@ -36,17 +45,56 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Future<void> _pickImage() async {
     final picker = ImagePicker();
     final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+
     if (pickedFile != null) {
-      final prefs = await SharedPreferences.getInstance();
-      await prefs.setString('profile_image', pickedFile.path);
-      setState(() {
-        _profileImage = File(pickedFile.path);
-      });
+      final croppedFile = await _cropImage(pickedFile.path);
+
+      if (croppedFile != null) {
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.setString('profile_image', croppedFile.path);
+
+        if (!mounted) return;
+
+        setState(() {
+          _profileImage = File(croppedFile.path);
+        });
+        context
+            .read<UserImageBloc>()
+            .add(UpdateUserImage(image: _profileImage!));
+      }
     }
   }
 
+  Future<CroppedFile?> _cropImage(String imagePath) async {
+    final croppedFile = await ImageCropper().cropImage(
+      sourcePath: imagePath,
+      aspectRatio: CropAspectRatio(
+        ratioX: 1.0,
+        ratioY: 1.0,
+      ),
+      maxWidth: 800,
+      maxHeight: 800,
+      compressFormat: ImageCompressFormat.jpg,
+      compressQuality: 80,
+      uiSettings: [
+        AndroidUiSettings(
+          toolbarTitle: 'Recortar imagen',
+          toolbarColor: const Color(0xFF2000B1),
+          toolbarWidgetColor: Colors.white,
+          initAspectRatio: CropAspectRatioPreset.square,
+          lockAspectRatio: true,
+        ),
+        IOSUiSettings(
+          minimumAspectRatio: 1.0,
+          aspectRatioLockEnabled: true,
+        ),
+      ],
+    );
+    return croppedFile;
+  }
+
   Widget _buildEditableField(String title, TextEditingController controller,
-      {Widget? prefix}) {
+      {Widget? prefix, String? hintText, TextInputType? keyboardType}) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0),
       child: Container(
@@ -73,10 +121,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ),
                   TextField(
                     controller: controller,
-                    style: const TextStyle(fontSize: 16, color: Colors.grey),
-                    decoration: const InputDecoration(
+                    keyboardType: keyboardType,
+                    style: const TextStyle(fontSize: 16, color: Colors.black),
+                    decoration: InputDecoration(
                       border: InputBorder.none,
-                      contentPadding: EdgeInsets.only(top: 8),
+                      contentPadding: const EdgeInsets.only(top: 8),
+                      hintText: hintText,
+                      hintStyle: const TextStyle(color: Colors.grey),
                     ),
                   ),
                 ],
@@ -84,22 +135,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ),
           ],
         ),
-      ),
-    );
-  }
-
-  Widget _buildPhoneField() {
-    return _buildEditableField(
-      'Teléfono',
-      _phoneController,
-      prefix: Row(
-        children: const [
-          Text(
-            '+58',
-            style: TextStyle(fontSize: 16, color: Colors.grey),
-          ),
-          SizedBox(width: 8),
-        ],
       ),
     );
   }
@@ -150,58 +185,90 @@ class _ProfileScreenState extends State<ProfileScreen> {
         elevation: 1,
         iconTheme: const IconThemeData(color: Colors.black),
       ),
-      body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(vertical: 16.0),
-          child: Center(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                const SizedBox(height: 20),
-                Stack(
-                  alignment: Alignment.center,
-                  children: [
-                    CircleAvatar(
-                      radius: 60,
-                      backgroundColor: Colors.grey[300],
-                      backgroundImage: _profileImage != null
-                          ? FileImage(_profileImage!) as ImageProvider
-                          : const NetworkImage(
-                              'https://via.placeholder.com/150'),
-                    ),
-                    Positioned(
-                      bottom: 10,
-                      right: 10,
-                      child: InkWell(
-                        onTap: _pickImage,
-                        child: Container(
-                          width: 36,
-                          height: 36,
-                          decoration: const BoxDecoration(
-                            color: Colors.orange,
-                            shape: BoxShape.circle,
+      body: BlocBuilder<CurrentUserBloc, CurrentUserState>(
+        builder: (context, state) {
+          if (state is CurrentUserLoading) {
+            return const Center(child: CircularProgressIndicator());
+          } else if (state is CurrentUserLoaded) {
+            _nameController.text = state.name;
+            _phoneController.text = state.phone;
+            _profileImage ??= state.image.isNotEmpty ? File(state.image) : null;
+
+            return SafeArea(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.symmetric(vertical: 16.0),
+                child: Center(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      const SizedBox(height: 20),
+                      Stack(
+                        alignment: Alignment.center,
+                        children: [
+                          CircleAvatar(
+                            radius: 80,
+                            backgroundColor: Colors.grey[300],
+                            backgroundImage: _profileImage != null
+                                ? FileImage(_profileImage!)
+                                : (state.image.isNotEmpty
+                                    ? NetworkImage(state.image)
+                                    : const AssetImage(
+                                            'assets/icon/user_150x150.png')
+                                        as ImageProvider),
                           ),
-                          child: const Icon(Icons.edit,
-                              color: Colors.white, size: 20),
-                        ),
+                          Positioned(
+                            bottom: 10,
+                            right: 10,
+                            child: InkWell(
+                              onTap: _pickImage,
+                              child: Container(
+                                width: 36,
+                                height: 36,
+                                decoration: const BoxDecoration(
+                                  color: Colors.orange,
+                                  shape: BoxShape.circle,
+                                ),
+                                child: const Icon(Icons.edit,
+                                    color: Colors.white, size: 20),
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
-                    ),
-                  ],
+                      const SizedBox(height: 20),
+                      _buildEditableField(
+                        'Nombre de Usuario',
+                        _nameController,
+                        hintText: 'Ingrese su nombre',
+                      ),
+                      const SizedBox(height: 20),
+                      _buildEditableField(
+                        'Número de Teléfono',
+                        _phoneController,
+                        hintText: 'Ingrese su número de teléfono',
+                        keyboardType: TextInputType.phone,
+                      ),
+                      const SizedBox(height: 20),
+                      _buildButton(context, "Preferencias",
+                          route: "/preferences"),
+                      const SizedBox(height: 20),
+                      _buildButton(context, "GoDely Wallet", route: "/wallet"),
+                      const SizedBox(height: 20),
+                      _buildButton(context, "Direcciones", route: "/addresses"),
+                    ],
+                  ),
                 ),
-                const SizedBox(height: 20),
-                _buildEditableField('Nombre de Usuario', _nameController),
-                const SizedBox(height: 20),
-                _buildPhoneField(),
-                const SizedBox(height: 20),
-                _buildButton(context, "Preferencias", route: "/preferences"),
-                const SizedBox(height: 20),
-                _buildButton(context, "GoDely Wallet", route: "/wallet"),
-                const SizedBox(height: 20),
-                _buildButton(context, "Direcciones", route: "/addresses"),
-              ],
-            ),
-          ),
-        ),
+              ),
+            );
+          } else if (state is CurrentUserError) {
+            return Center(
+              child: Text('Error: ${state.message}'),
+            );
+          }
+
+          return const Center(
+              child: Text('No se han cargado los datos del usuario.'));
+        },
       ),
       bottomNavigationBar: CustomNavBar(
         selectedIndex: 3,
