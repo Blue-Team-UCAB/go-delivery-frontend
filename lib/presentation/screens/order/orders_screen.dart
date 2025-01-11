@@ -281,6 +281,7 @@ class _OrdersPageState extends State<OrdersPage>
       builder: (context, state) {
         if (orders.isEmpty && state is ManyOrdersLoadingState) {
           return const Center(
+            //todo: AQUI EL PLACEHOLDER
             child: CircularProgressIndicator(),
           );
         }
