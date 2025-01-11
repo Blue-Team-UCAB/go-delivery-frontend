@@ -61,10 +61,10 @@ class OrderCardState extends State<OrderCard> {
 
     DateTime orderDateTime = DateTime.parse(widget.order.lastState.date);
     String formattedDate =
-        "${orderDateTime.day}-${orderDateTime.month}-${orderDateTime.year}";
+        "${orderDateTime.day}/${orderDateTime.month}/${orderDateTime.year}";
     String formattedTime =
         "${orderDateTime.hour.toString().padLeft(2, '0')}:${orderDateTime.minute.toString().padLeft(2, '0')}";
-
+    String readableStatus = _getReadableStatus(status);
     String itemsDescription = widget.order.summaryOrder;
 
     return GestureDetector(
@@ -72,10 +72,11 @@ class OrderCardState extends State<OrderCard> {
         context.push('/orderdetail/${widget.order.id}');
       },
       child: Card(
+        color: Color(0xFFFFFFFF),
         margin: const EdgeInsets.all(8),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(8),
-          side: BorderSide(color: Colors.grey[300]!, width: 1),
+          
         ),
         child: Padding(
           padding: const EdgeInsets.all(16),
@@ -90,7 +91,7 @@ class OrderCardState extends State<OrderCard> {
                       children: [
                         Flexible(
                           child: Text(
-                            "$formattedDate a las $formattedTime",
+                            "Orden #${widget.order.id.substring(widget.order.id.length -4)}",
                             style: const TextStyle(
                               fontFamily: 'Inter',
                               fontSize: 18,
@@ -107,22 +108,26 @@ class OrderCardState extends State<OrderCard> {
               ),
               const SizedBox(height: 4),
               Text(
-                widget.order.id,
+                "$formattedDate a las $formattedTime",
                 style: TextStyle(
                   fontFamily: 'Inter',
                   fontSize: 12,
                   color: Colors.grey[600],
                 ),
               ),
-              const SizedBox(height: 8),
-              Text(
-                itemsDescription,
-                style: const TextStyle(
-                  fontFamily: 'Inter',
-                  fontSize: 14,
+              const SizedBox(height: 20),
+              Container(
+                height: 60,
+                child: Text(
+                  maxLines: 3,
+                  itemsDescription,
+                  style: const TextStyle(
+                    fontFamily: 'Inter',
+                    fontSize: 14,
+                  ),
                 ),
               ),
-              const SizedBox(height: 8),
+              const SizedBox(height: 10),
               Text(
                 '\$${widget.order.totalAmount.toStringAsFixed(2)}',
                 style: const TextStyle(
@@ -134,12 +139,12 @@ class OrderCardState extends State<OrderCard> {
               ),
               const SizedBox(height: 8),
               Text(
-                _getReadableStatus(status),
+                readableStatus,
                 style: TextStyle(
                   fontFamily: 'Inter',
                   fontSize: 14,
                   fontWeight: FontWeight.bold,
-                  color: status == 'Cancelada'
+                  color:  readableStatus == 'Cancelada'
                       ? Colors.grey[400]
                       : const Color(0xFF2000B1),
                 ),
@@ -214,31 +219,33 @@ class OrderCardState extends State<OrderCard> {
     String readableStatus = _getReadableStatus(status);
 
     if (readableStatus == 'Cancelada') {
-      return Row(children: [
-        Expanded(
-          child: ElevatedButton(
-              onPressed: () {
-                showDialog(
-                  context: context,
-                  builder: (BuildContext context) {
-                    return ReportProblemDialog(orderId: orderid);
-                  },
-                );
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.deepOrange[600],
-              ),
-              child: const Text('Reportar problema',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontFamily: 'Inter',
-                    fontSize: 13,
-                    fontWeight: FontWeight.bold,
-                  ))),
-        ),
-        SizedBox(width: 8),
-        Expanded(
-          child: OutlinedButton(
+      return Row(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          
+          ElevatedButton(
+            onPressed: () {
+              showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return ReportProblemDialog(orderId: orderid);
+                },
+              );
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Color(0xFFED4B00),
+            ),
+            child: const Text('Reportar un problema',
+              style: TextStyle(
+                color: Colors.white,
+                fontFamily: 'Inter',
+                fontSize: 13,
+                fontWeight: FontWeight.bold,
+              )
+            )
+          ),
+          SizedBox(width: 8),
+          OutlinedButton(
             onPressed: () {
               context.push('/orderdetail/$orderid');
             },
@@ -252,47 +259,44 @@ class OrderCardState extends State<OrderCard> {
                   fontWeight: FontWeight.bold,
                 )),
           ),
-        ),
-      ]);
+        ]);
     }
 
     if (readableStatus == 'Entregada') {
       return Row(
+        mainAxisAlignment: MainAxisAlignment.end,
         children: [
-          Expanded(
-            child: OutlinedButton(
-              onPressed: () {
-                context.push('/orderdetail/$orderid');
-              },
-              style: OutlinedButton.styleFrom(
-                foregroundColor: const Color(0xFF2000B1),
-              ),
-              child: const Text('Ver',
-                  style: TextStyle(
-                    fontFamily: 'Inter',
-                    fontSize: 14,
-                    fontWeight: FontWeight.bold,
-                  )),
+          ElevatedButton(
+            onPressed: () {
+              showReorderPopupDialog(context, orderid);
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: const Color(0xFF2000B1),
             ),
+            child: const Text('Reordenar',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontFamily: 'Inter',
+                  fontSize: 14,
+                  fontWeight: FontWeight.bold,
+                )),
           ),
           const SizedBox(width: 8),
-          Expanded(
-            child: ElevatedButton(
-              onPressed: () {
-                showReorderPopupDialog(context, orderid);
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF2000B1),
-              ),
-              child: const Text('Reordenar',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontFamily: 'Inter',
-                    fontSize: 14,
-                    fontWeight: FontWeight.bold,
-                  )),
+          OutlinedButton(
+            onPressed: () {
+              context.push('/orderdetail/$orderid');
+            },
+            style: OutlinedButton.styleFrom(
+              foregroundColor: const Color(0xFF2000B1),
             ),
+            child: const Text('Ver',
+                style: TextStyle(
+                  fontFamily: 'Inter',
+                  fontSize: 14,
+                  fontWeight: FontWeight.bold,
+                )),
           ),
+          
         ],
       );
     }
@@ -300,40 +304,37 @@ class OrderCardState extends State<OrderCard> {
         (readableStatus == "En Camino") ||
         (readableStatus == "En Proceso")) {
       return Row(
+        mainAxisAlignment: MainAxisAlignment.end,
         children: [
-          Expanded(
-            child: OutlinedButton(
-              onPressed: () {
-                _showCancelMenu(context);
-              },
-              style: OutlinedButton.styleFrom(
-                foregroundColor: Colors.grey,
-              ),
-              child: const Text('Cancelar',
-                  style: TextStyle(
-                    fontFamily: 'Inter',
-                    fontSize: 14,
-                    fontWeight: FontWeight.bold,
-                  )),
+          OutlinedButton(
+            onPressed: () {
+              _showCancelMenu(context);
+            },
+            style: OutlinedButton.styleFrom(
+              foregroundColor: Colors.grey,
             ),
+            child: const Text('Cancelar',
+                style: TextStyle(
+                  fontFamily: 'Inter',
+                  fontSize: 14,
+                  fontWeight: FontWeight.bold,
+                )),
           ),
           const SizedBox(width: 8),
-          Expanded(
-            child: ElevatedButton(
-              onPressed: () {
-                context.push('/orderdetail/$orderid');
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF2000B1),
-              ),
-              child: const Text('Ver',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontFamily: 'Inter',
-                    fontSize: 14,
-                    fontWeight: FontWeight.bold,
-                  )),
+          ElevatedButton(
+            onPressed: () {
+              context.push('/orderdetail/$orderid');
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: const Color(0xFF2000B1),
             ),
+            child: const Text('Ver',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontFamily: 'Inter',
+                  fontSize: 14,
+                  fontWeight: FontWeight.bold,
+                )),
           ),
         ],
       );
