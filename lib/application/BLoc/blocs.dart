@@ -1,4 +1,4 @@
-export 'package:go_delivery_frontend/application/BLoc/auth/current/current_user_bloc.dart';
+export 'package:go_delivery_frontend/application/BLoc/user/current/current_user_bloc.dart';
 export 'package:go_delivery_frontend/application/BLoc/bundle/bundle_detail/bundle_detail_bloc.dart';
 export 'package:go_delivery_frontend/application/BLoc/bundle/bundle_many/bundle_many_bloc.dart';
 export 'package:go_delivery_frontend/application/BLoc/order/order_detailed/order_detailed_bloc.dart';
@@ -17,5 +17,6 @@ export 'package:go_delivery_frontend/application/BLoc/order/order_many/order_man
 export 'package:go_delivery_frontend/application/BLoc/directions/many/direction_many_bloc.dart';
 export 'package:go_delivery_frontend/application/BLoc/directions/add/add_direction_bloc.dart';
 export 'package:go_delivery_frontend/application/BLoc/notifications/bloc/notifications_bloc.dart';
+export 'package:go_delivery_frontend/application/BLoc/user/update_image/update_image_bloc.dart';
 export 'package:go_delivery_frontend/application/BLoc/themes/themes_bloc.dart';
 export 'package:go_delivery_frontend/application/BLoc/coupon/coupon_bloc.dart';

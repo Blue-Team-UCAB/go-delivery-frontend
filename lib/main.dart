@@ -29,6 +29,7 @@ void main() async {
   runApp(
     MultiBlocProvider(
       providers: [
+        BlocProvider(create: (_) => getIt<UserImageBloc>()),
         BlocProvider(create: (_) => getIt<AddDirectionBloc>()),
         BlocProvider(create: (_) => getIt<DirectionListBloc>()),
         BlocProvider(create: (_) => getIt<GetWalletAmountBloc>()),

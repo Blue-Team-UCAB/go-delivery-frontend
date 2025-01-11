@@ -60,7 +60,7 @@ class NotificationScreen extends StatelessWidget {
                       style: const TextStyle(fontFamily: 'Inter',fontSize: 14, color: Color(0xFF000000)),
                     ),
                     leading: 
-                    Container(width: 50,
+                    SizedBox(width: 50,
                       child:  notification.imageUrl != null
                         ? Image.network(notification.imageUrl!)
                         : Icon(Icons.notifications_active_outlined,color: Color(0xFF02066F),)
