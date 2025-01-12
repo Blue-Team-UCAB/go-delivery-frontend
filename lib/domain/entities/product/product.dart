@@ -43,7 +43,7 @@ class OrderProduct {
   });
 }
 
-class CheckoutProduct{
+class CheckoutProduct {
   final String id;
   final int quantity;
 
