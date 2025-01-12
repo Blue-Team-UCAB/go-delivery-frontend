@@ -51,10 +51,10 @@ class AuthRepositoryImpl implements UserRepository {
       if (response.value == true) {
         return Result.success(true);
       } else {
-        return Result.fail(CustomFailure(message: 'Login failed'));
+        return Result.fail(CustomFailure(message: 'Login Fallido'));
       }
     } else {
-      return response as Result<bool>;
+      return Result.fail(CustomFailure(message: 'Login Fallido'));
     }
   }
 
@@ -70,12 +70,14 @@ class AuthRepositoryImpl implements UserRepository {
       '/api/auth/register',
       'POST',
       (data) {
-        if (data['errorCode'] != 200) {
-          message = data["message"];
-          return false;
-        } else {
-          return true;
+        if (data is Map<String, dynamic>) {
+          if (data.containsKey('error')) {
+            return false;
+          } else {
+            return true;
+          }
         }
+        return false;
       },
       body: {
         'email': email,
@@ -85,10 +87,14 @@ class AuthRepositoryImpl implements UserRepository {
       },
     );
 
-    if (response.value == true) {
-      return response;
+    if (response.isSuccess) {
+      if (response.value == true) {
+        return Result.success(true);
+      } else {
+        return Result.fail(CustomFailure(message: 'Registro Fallido!'));
+      }
     } else {
-      return Result.fail(CustomFailure(message: message));
+      return Result.fail(CustomFailure(message: 'Registro Fallido!'));
     }
   }
 
@@ -99,17 +105,24 @@ class AuthRepositoryImpl implements UserRepository {
       '/api/auth/forgot/password',
       'POST',
       (data) {
-        if (data['errorCode'] != 200) {
-          message = data["message"];
-          return false;
-        } else {
-          return true;
+        if (data is Map<String, dynamic>) {
+          if (data.containsKey('error')) {
+            return false;
+          } else {
+            return true;
+          }
         }
+        return false;
       },
       body: {'email': email},
     );
-    if (response.value == true) {
-      return response;
+
+    if (response.isSuccess) {
+      if (response.value == true) {
+        return Result.success(true);
+      } else {
+        return Result.fail(CustomFailure(message: message));
+      }
     } else {
       return Result.fail(CustomFailure(message: message));
     }
@@ -124,14 +137,17 @@ class AuthRepositoryImpl implements UserRepository {
       'POST',
       (data) {
         print(data);
-        return true;
+          return true;
       },
       body: {'email': email, 'code': code},
     );
-    print(response.value);
 
-    if (response.value == true) {
-      return response;
+    if (response.isSuccess) {
+      if (response.value == true) {
+        return Result.success(true);
+      } else {
+        return Result.fail(CustomFailure(message: message));
+      }
     } else {
       return Result.fail(CustomFailure(message: message));
     }
@@ -150,7 +166,6 @@ class AuthRepositoryImpl implements UserRepository {
       body: {'email': email, 'code': code, 'password': password},
     );
 
-    print(response.value);
 
     return response;
   }
