@@ -49,6 +49,8 @@ class InjectManager {
     final recoveryUseCase = RecoveryUseCase(userRepository: userRepository);
     final getCurrentUseCase =
         CurrentUserUseCase(userRepository: userRepository);
+    final updateUserImageUseCase =
+        UpdateUserImageUseCase(userRepository: userRepository);
 
     // Registrar
     getIt.registerFactory(() => LoginBloc(loginUseCase: loginUseCase));
@@ -57,12 +59,15 @@ class InjectManager {
         RecoverPasswordBloc(recoveryUseCase: recoveryUseCase));
     getIt.registerSingleton(
         CurrentUserBloc(currentUserUseCase: getCurrentUseCase));
+    getIt.registerSingleton(UserImageBloc(updateUserImageUseCase));
 
     //registrar caso de uso
     getIt.registerSingleton<LoginUseCase>(loginUseCase);
     getIt.registerSingleton<RegisterUseCase>(registerUseCase);
     getIt.registerSingleton<RecoveryUseCase>(recoveryUseCase);
     getIt.registerSingleton<CurrentUserUseCase>(getCurrentUseCase);
+    getIt.registerSingleton<UpdateUserImageUseCase>(updateUserImageUseCase);
+
     // ======================================================================= //
 
     // ============================= CART ==================================== //
@@ -265,12 +270,17 @@ class InjectManager {
     final getCardUseCase =
         GetUserCardsUseCase(paymentRepository: paymentRepository);
 
+    final deleteCardUseCase =
+        DeleteCardUseCase(paymentRepository: paymentRepository);
+
     getIt.registerSingleton<ProcessCardPaymentUseCase>(processCardUseCase);
     getIt.registerSingleton<GetUserCardsUseCase>(getCardUseCase);
+    getIt.registerSingleton<DeleteCardUseCase>(deleteCardUseCase);
 
     //Bloc
     getIt.registerSingleton(CardBloc(processCardUseCase));
     getIt.registerSingleton(CardListBloc(getCardUseCase));
+    getIt.registerSingleton(DeleteCardBloc(deleteCardUseCase));
 
     // ============================= WALLET =================================== //
 

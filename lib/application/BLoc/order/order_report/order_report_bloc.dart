@@ -2,9 +2,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:go_delivery_frontend/application/core/bloc/ensure_bloc.dart';
 
-import '../../../use_cases/order/report_order.dart';
-import 'order_report_event.dart';
-import 'order_report_state.dart';
+import 'package:go_delivery_frontend/application/use_cases/order/report_order.dart';
+import 'package:go_delivery_frontend/application/BLoc/order/order_report/order_report_event.dart';
+import 'package:go_delivery_frontend/application/BLoc/order/order_report/order_report_state.dart';
 
 class OrderReportBloc extends SafeBloc<OrderReportEvent, OrderReportState> {
   final ReportOneOrderUseCase ReportOrderUseCase;

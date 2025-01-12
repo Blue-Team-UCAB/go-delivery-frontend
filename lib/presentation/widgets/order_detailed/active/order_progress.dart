@@ -1,22 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:go_delivery_frontend/presentation/widgets/order_detailed/active/timeLine_painter.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:animate_do/animate_do.dart';
-
-import '../../../../application/BLoc/order/order_detailed/order_detailed_state.dart';
-import '../../../../domain/entities/order/order.dart';
-import 'delivery_map_order.dart';
+import 'package:go_delivery_frontend/application/BLoc/order/order_detailed/order_detailed_state.dart';
+import 'package:go_delivery_frontend/domain/entities/order/order.dart';
+import 'package:go_delivery_frontend/presentation/widgets/order_detailed/active/delivery_map_order.dart';
 
 class OrderProgress extends StatefulWidget {
   final OrderDetailLoadedState state;
   final String currentActiveState;
 
   const OrderProgress({
-    Key? key,
+    super.key,
     required this.state,
     required this.currentActiveState,
-  }) : super(key: key);
+  });
 
   @override
   OrderProgressState createState() => OrderProgressState();
@@ -190,7 +188,9 @@ class OrderProgressState extends State<OrderProgress>
                     height: 220,
                     child: DeliveryMap(
                       driverLocation: const LatLng(10.48801, -66.87919),
-                      destinationLocation:  LatLng(widget.state.direction.latitude,widget.state.direction.longitude),
+                      destinationLocation: LatLng(
+                          widget.state.direction.latitude,
+                          widget.state.direction.longitude),
                     ),
                   ),
                 ),
@@ -205,7 +205,7 @@ class OrderProgressState extends State<OrderProgress>
 
   String _getStateDateByType(String stateType) {
     final matchingState = widget.state.state.firstWhere(
-          (orderState) => orderState.state == stateType,
+      (orderState) => orderState.state == stateType,
       orElse: () => OrderState(state: stateType, date: 'Pendiente'),
     );
 
@@ -225,10 +225,10 @@ class OrderProgressState extends State<OrderProgress>
   }
 
   Widget _buildTimelineItem(
-      String title,
-      String subtitle, {
-        bool isCompleted = false,
-      }) {
+    String title,
+    String subtitle, {
+    bool isCompleted = false,
+  }) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
