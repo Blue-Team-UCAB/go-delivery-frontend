@@ -8,10 +8,7 @@ import 'package:go_delivery_frontend/application/BLoc/order/order_report/order_r
 class ReportProblemDialog extends StatefulWidget {
   final String orderId;
 
-  const ReportProblemDialog({
-    super.key,
-    required this.orderId
-  });
+  const ReportProblemDialog({super.key, required this.orderId});
 
   @override
   _ReportProblemDialogState createState() => _ReportProblemDialogState();
@@ -32,12 +29,9 @@ class _ReportProblemDialogState extends State<ReportProblemDialog> {
       final description = _reasonController.text.trim();
 
       // Dispatch event to BLoC
-      context.read<OrderReportBloc>().add(
-          ReportOrderEvent(
-              orderId: widget.orderId,
-              desc: description
-          )
-      );
+      context
+          .read<OrderReportBloc>()
+          .add(ReportOrderEvent(orderId: widget.orderId, desc: description));
     }
   }
 
@@ -46,21 +40,18 @@ class _ReportProblemDialogState extends State<ReportProblemDialog> {
     return BlocListener<OrderReportBloc, OrderReportState>(
       listener: (context, state) {
         if (state is OrderReportSuccessState) {
-          ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text('Problema reportado para la orden #${widget.orderId}'),
-                backgroundColor: Colors.green,
-              )
-          );
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content:
+                Text('Problema reportado para la orden #${widget.orderId}'),
+            backgroundColor: Colors.green,
+          ));
 
           Navigator.of(context).pop();
         } else if (state is OrderReportErrorState) {
-          ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(state.error),
-                backgroundColor: Colors.red,
-              )
-          );
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text(state.error),
+            backgroundColor: Colors.red,
+          ));
         }
       },
       child: Dialog(
@@ -104,7 +95,7 @@ class _ReportProblemDialogState extends State<ReportProblemDialog> {
                   SizedBox(height: 10),
                   // Order Number
                   Text(
-                    '${widget.orderId}',
+                    widget.orderId,
                     style: TextStyle(
                       color: Colors.grey,
                       fontSize: 12,
@@ -127,9 +118,11 @@ class _ReportProblemDialogState extends State<ReportProblemDialog> {
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(4),
-                        borderSide: BorderSide(color: Colors.deepOrange, width: 2),
+                        borderSide:
+                            BorderSide(color: Colors.deepOrange, width: 2),
                       ),
-                      contentPadding: EdgeInsets.symmetric(vertical: 20, horizontal: 10),
+                      contentPadding:
+                          EdgeInsets.symmetric(vertical: 20, horizontal: 10),
                       alignLabelWithHint: true,
                     ),
                     style: TextStyle(fontFamily: 'Inter'),
@@ -178,17 +171,17 @@ class _ReportProblemDialogState extends State<ReportProblemDialog> {
                             ),
                             child: state is OrderReportLoadingState
                                 ? SizedBox(
-                              width: 20,
-                              height: 20,
-                              child: CircularProgressIndicator(
-                                color: Colors.white,
-                                strokeWidth: 2,
-                              ),
-                            )
+                                    width: 20,
+                                    height: 20,
+                                    child: CircularProgressIndicator(
+                                      color: Colors.white,
+                                      strokeWidth: 2,
+                                    ),
+                                  )
                                 : Text(
-                              'Enviar Reporte',
-                              style: TextStyle(color: Colors.white),
-                            ),
+                                    'Enviar Reporte',
+                                    style: TextStyle(color: Colors.white),
+                                  ),
                           ),
                         ],
                       );
