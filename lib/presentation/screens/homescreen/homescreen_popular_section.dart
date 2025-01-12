@@ -125,7 +125,7 @@ class PopularItem extends StatelessWidget {
               context.push('/productdetail/${product.id}');
             },
             leading: FastLoadingImage(
-              imageUrl: product.imageUrl,
+              imageUrl: product.images.first,
               height: 100,
               width: 100,
               fit: BoxFit.contain,

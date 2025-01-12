@@ -22,33 +22,38 @@ const IsarCartitemSchema = CollectionSchema(
       name: r'id',
       type: IsarType.string,
     ),
-    r'imgUrl': PropertySchema(
+    r'images': PropertySchema(
       id: 1,
+      name: r'images',
+      type: IsarType.stringList,
+    ),
+    r'imgUrl': PropertySchema(
+      id: 2,
       name: r'imgUrl',
       type: IsarType.string,
     ),
     r'name': PropertySchema(
-      id: 2,
+      id: 3,
       name: r'name',
       type: IsarType.string,
     ),
     r'presentation': PropertySchema(
-      id: 3,
+      id: 4,
       name: r'presentation',
       type: IsarType.string,
     ),
     r'price': PropertySchema(
-      id: 4,
+      id: 5,
       name: r'price',
       type: IsarType.double,
     ),
     r'quantity': PropertySchema(
-      id: 5,
+      id: 6,
       name: r'quantity',
       type: IsarType.long,
     ),
     r'type': PropertySchema(
-      id: 6,
+      id: 7,
       name: r'type',
       type: IsarType.string,
     )
@@ -74,7 +79,24 @@ int _isarCartitemEstimateSize(
 ) {
   var bytesCount = offsets.last;
   bytesCount += 3 + object.id.length * 3;
-  bytesCount += 3 + object.imgUrl.length * 3;
+  {
+    final list = object.images;
+    if (list != null) {
+      bytesCount += 3 + list.length * 3;
+      {
+        for (var i = 0; i < list.length; i++) {
+          final value = list[i];
+          bytesCount += value.length * 3;
+        }
+      }
+    }
+  }
+  {
+    final value = object.imgUrl;
+    if (value != null) {
+      bytesCount += 3 + value.length * 3;
+    }
+  }
   bytesCount += 3 + object.name.length * 3;
   bytesCount += 3 + object.presentation.length * 3;
   bytesCount += 3 + object.type.length * 3;
@@ -88,12 +110,13 @@ void _isarCartitemSerialize(
   Map<Type, List<int>> allOffsets,
 ) {
   writer.writeString(offsets[0], object.id);
-  writer.writeString(offsets[1], object.imgUrl);
-  writer.writeString(offsets[2], object.name);
-  writer.writeString(offsets[3], object.presentation);
-  writer.writeDouble(offsets[4], object.price);
-  writer.writeLong(offsets[5], object.quantity);
-  writer.writeString(offsets[6], object.type);
+  writer.writeStringList(offsets[1], object.images);
+  writer.writeString(offsets[2], object.imgUrl);
+  writer.writeString(offsets[3], object.name);
+  writer.writeString(offsets[4], object.presentation);
+  writer.writeDouble(offsets[5], object.price);
+  writer.writeLong(offsets[6], object.quantity);
+  writer.writeString(offsets[7], object.type);
 }
 
 IsarCartitem _isarCartitemDeserialize(
@@ -104,12 +127,13 @@ IsarCartitem _isarCartitemDeserialize(
 ) {
   final object = IsarCartitem(
     id: reader.readString(offsets[0]),
-    imgUrl: reader.readString(offsets[1]),
-    name: reader.readString(offsets[2]),
-    presentation: reader.readString(offsets[3]),
-    price: reader.readDouble(offsets[4]),
-    quantity: reader.readLong(offsets[5]),
-    type: reader.readString(offsets[6]),
+    images: reader.readStringList(offsets[1]),
+    imgUrl: reader.readStringOrNull(offsets[2]),
+    name: reader.readString(offsets[3]),
+    presentation: reader.readString(offsets[4]),
+    price: reader.readDouble(offsets[5]),
+    quantity: reader.readLong(offsets[6]),
+    type: reader.readString(offsets[7]),
   );
   object.isarId = id;
   return object;
@@ -125,16 +149,18 @@ P _isarCartitemDeserializeProp<P>(
     case 0:
       return (reader.readString(offset)) as P;
     case 1:
-      return (reader.readString(offset)) as P;
+      return (reader.readStringList(offset)) as P;
     case 2:
-      return (reader.readString(offset)) as P;
+      return (reader.readStringOrNull(offset)) as P;
     case 3:
       return (reader.readString(offset)) as P;
     case 4:
-      return (reader.readDouble(offset)) as P;
+      return (reader.readString(offset)) as P;
     case 5:
-      return (reader.readLong(offset)) as P;
+      return (reader.readDouble(offset)) as P;
     case 6:
+      return (reader.readLong(offset)) as P;
+    case 7:
       return (reader.readString(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -368,8 +394,269 @@ extension IsarCartitemQueryFilter
     });
   }
 
-  QueryBuilder<IsarCartitem, IsarCartitem, QAfterFilterCondition> imgUrlEqualTo(
+  QueryBuilder<IsarCartitem, IsarCartitem, QAfterFilterCondition>
+      imagesIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'images',
+      ));
+    });
+  }
+
+  QueryBuilder<IsarCartitem, IsarCartitem, QAfterFilterCondition>
+      imagesIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'images',
+      ));
+    });
+  }
+
+  QueryBuilder<IsarCartitem, IsarCartitem, QAfterFilterCondition>
+      imagesElementEqualTo(
     String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'images',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<IsarCartitem, IsarCartitem, QAfterFilterCondition>
+      imagesElementGreaterThan(
+    String value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'images',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<IsarCartitem, IsarCartitem, QAfterFilterCondition>
+      imagesElementLessThan(
+    String value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'images',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<IsarCartitem, IsarCartitem, QAfterFilterCondition>
+      imagesElementBetween(
+    String lower,
+    String upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'images',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<IsarCartitem, IsarCartitem, QAfterFilterCondition>
+      imagesElementStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'images',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<IsarCartitem, IsarCartitem, QAfterFilterCondition>
+      imagesElementEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'images',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<IsarCartitem, IsarCartitem, QAfterFilterCondition>
+      imagesElementContains(String value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'images',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<IsarCartitem, IsarCartitem, QAfterFilterCondition>
+      imagesElementMatches(String pattern, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'images',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<IsarCartitem, IsarCartitem, QAfterFilterCondition>
+      imagesElementIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'images',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<IsarCartitem, IsarCartitem, QAfterFilterCondition>
+      imagesElementIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'images',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<IsarCartitem, IsarCartitem, QAfterFilterCondition>
+      imagesLengthEqualTo(int length) {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'images',
+        length,
+        true,
+        length,
+        true,
+      );
+    });
+  }
+
+  QueryBuilder<IsarCartitem, IsarCartitem, QAfterFilterCondition>
+      imagesIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'images',
+        0,
+        true,
+        0,
+        true,
+      );
+    });
+  }
+
+  QueryBuilder<IsarCartitem, IsarCartitem, QAfterFilterCondition>
+      imagesIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'images',
+        0,
+        false,
+        999999,
+        true,
+      );
+    });
+  }
+
+  QueryBuilder<IsarCartitem, IsarCartitem, QAfterFilterCondition>
+      imagesLengthLessThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'images',
+        0,
+        true,
+        length,
+        include,
+      );
+    });
+  }
+
+  QueryBuilder<IsarCartitem, IsarCartitem, QAfterFilterCondition>
+      imagesLengthGreaterThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'images',
+        length,
+        include,
+        999999,
+        true,
+      );
+    });
+  }
+
+  QueryBuilder<IsarCartitem, IsarCartitem, QAfterFilterCondition>
+      imagesLengthBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'images',
+        lower,
+        includeLower,
+        upper,
+        includeUpper,
+      );
+    });
+  }
+
+  QueryBuilder<IsarCartitem, IsarCartitem, QAfterFilterCondition>
+      imgUrlIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'imgUrl',
+      ));
+    });
+  }
+
+  QueryBuilder<IsarCartitem, IsarCartitem, QAfterFilterCondition>
+      imgUrlIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'imgUrl',
+      ));
+    });
+  }
+
+  QueryBuilder<IsarCartitem, IsarCartitem, QAfterFilterCondition> imgUrlEqualTo(
+    String? value, {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -383,7 +670,7 @@ extension IsarCartitemQueryFilter
 
   QueryBuilder<IsarCartitem, IsarCartitem, QAfterFilterCondition>
       imgUrlGreaterThan(
-    String value, {
+    String? value, {
     bool include = false,
     bool caseSensitive = true,
   }) {
@@ -399,7 +686,7 @@ extension IsarCartitemQueryFilter
 
   QueryBuilder<IsarCartitem, IsarCartitem, QAfterFilterCondition>
       imgUrlLessThan(
-    String value, {
+    String? value, {
     bool include = false,
     bool caseSensitive = true,
   }) {
@@ -414,8 +701,8 @@ extension IsarCartitemQueryFilter
   }
 
   QueryBuilder<IsarCartitem, IsarCartitem, QAfterFilterCondition> imgUrlBetween(
-    String lower,
-    String upper, {
+    String? lower,
+    String? upper, {
     bool includeLower = true,
     bool includeUpper = true,
     bool caseSensitive = true,
@@ -1303,6 +1590,12 @@ extension IsarCartitemQueryWhereDistinct
     });
   }
 
+  QueryBuilder<IsarCartitem, IsarCartitem, QDistinct> distinctByImages() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'images');
+    });
+  }
+
   QueryBuilder<IsarCartitem, IsarCartitem, QDistinct> distinctByImgUrl(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
@@ -1358,7 +1651,13 @@ extension IsarCartitemQueryProperty
     });
   }
 
-  QueryBuilder<IsarCartitem, String, QQueryOperations> imgUrlProperty() {
+  QueryBuilder<IsarCartitem, List<String>?, QQueryOperations> imagesProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'images');
+    });
+  }
+
+  QueryBuilder<IsarCartitem, String?, QQueryOperations> imgUrlProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'imgUrl');
     });

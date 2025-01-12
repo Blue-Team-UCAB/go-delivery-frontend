@@ -284,7 +284,7 @@ class _ReorderOrderWidgetState extends State<ReorderOrderWidget> {
                     cartBloc.add(AddCartItem(CartItem(
                       id: bundleState.bundle!.id,
                       name: bundleState.bundle!.name,
-                      imgUrl: bundleState.bundle!.imageUrl,
+                      imgUrl: bundleState.bundle!.images.first,
                       price: bundleState.bundle!.price,
                       presentation: 'Bundle',
                       quantity:

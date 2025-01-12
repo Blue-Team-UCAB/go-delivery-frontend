@@ -122,8 +122,8 @@ class ProductCard extends StatelessWidget {
   }
 
   String _getImageUrl() {
-    if (product is Product) return (product as Product).imageUrl;
-    if (product is BundleProduct) return (product as BundleProduct).imageUrl;
+    if (product is Product) return (product as Product).images.first;
+    if (product is BundleProduct) return (product as BundleProduct).images.first;
     throw ArgumentError('Unsupported product type');
   }
 

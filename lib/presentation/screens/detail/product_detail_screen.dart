@@ -54,7 +54,7 @@ class ProductDetailScreen extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Image.network(
-                      product!.imageUrl,
+                      product!.images.first,
                       fit: BoxFit.fill,
                       alignment: Alignment.center,
                       height: 400,

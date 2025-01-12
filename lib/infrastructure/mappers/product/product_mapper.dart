@@ -29,7 +29,7 @@ class ProductMapper {
         measurement: json['measurement'] as String? ?? '',
 
         // Image handling (flexible for both structures)
-        imageUrl: _parseImageUrl(json['images'] ?? json['imageUrl']),
+        images: _parseImageUrl(json['images'] ?? json['imageUrl']),
 
         // Category handling (optional)
         categories: _parseCategories(json['category']),
@@ -47,14 +47,29 @@ class ProductMapper {
   }
 
   // Utility parsing methods
-  static String _parseImageUrl(dynamic images) {
-    if (images is List && images.isNotEmpty) {
-      return images.first ?? 'https://via.placeholder.com/150';
+  static List<String> _parseImageUrl(dynamic images) {
+    if (images == null) return [];
+
+    // If images is a list of strings
+    if (images is List<String>) {
+      return images.where((image) => image.isNotEmpty).toList();
     }
+
+    // If images is a list of dynamic (from JSON)
+    if (images is List) {
+      return images
+          .map((image) => image.toString())
+          .where((image) => image.isNotEmpty)
+          .toList();
+    }
+
+    // If images is a single string
     if (images is String && images.isNotEmpty) {
-      return images;
+      return [images];
     }
-    return 'https://via.placeholder.com/150';
+
+    // Default placeholder if no valid images
+    return ['https://via.placeholder.com/150'];
   }
 
   static List<Category> _parseCategories(dynamic categoryData) {

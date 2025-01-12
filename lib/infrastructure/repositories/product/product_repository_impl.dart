@@ -32,7 +32,9 @@ class ProductRepositoryImpl extends ProductRepository {
     required int page,
     required int perpage,
   }) async {
-    try {
+
+    print("______ PRODUCT MANY ______");
+
       final queryParameters = <String, dynamic>{
         'page': page.toString(),
         'perpage': perpage.toString(),
@@ -60,6 +62,8 @@ class ProductRepositoryImpl extends ProductRepository {
         queryParameters['popular'] = popular;
       }
 
+      print(queryParameters);
+
       // Perform the API request
       final response = await _apiRequestManager.request(
         '/api/product/many',
@@ -82,16 +86,15 @@ class ProductRepositoryImpl extends ProductRepository {
       );
 
       return response;
-    } catch (e) {
-      print('Error in ProductRepositoryImpl.getProducts: $e');
-      return Result.fail(Exception('Failed to fetch products: $e') as Failure);
-    }
   }
 
   @override
   Future<Result<Product>> getProductById(String productId) async {
     await _addAuthorizationHeader();
-    try {
+
+    print("______ PRODUCT BY ID ______");
+
+
       final response = await _apiRequestManager.request(
         '/api/product/$productId',
         'GET',
@@ -101,9 +104,6 @@ class ProductRepositoryImpl extends ProductRepository {
         },
       );
       return response;
-    } catch (e) {
-      print('Error in ProductRepositoryImpl.getProductById: $e');
-      rethrow;
-    }
+
   }
 }

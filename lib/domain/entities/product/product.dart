@@ -12,7 +12,8 @@ class Product {
   int stock;
   double weight;
   String measurement;
-  String imageUrl;
+  String? imageUrl;
+  List<String> images;
   List<Category> categories;
   List<Discount> discounts;
   DateTime caducityDate;
@@ -26,7 +27,8 @@ class Product {
     required this.stock,
     required this.weight,
     required this.measurement,
-    required this.imageUrl,
+    this.imageUrl,
+    required this.images,
     this.categories = const [],
     this.discounts = const [],
     DateTime? caducityDate,

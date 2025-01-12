@@ -120,7 +120,7 @@ class RandomItem extends StatelessWidget {
               context.push('/productdetail/${product.id}');
             },
             leading: CachedNetworkImage(
-              imageUrl: product.imageUrl,
+              imageUrl: product.images.first,
               width: 60,
               fit: BoxFit.contain,
               placeholder: (context, url) =>
