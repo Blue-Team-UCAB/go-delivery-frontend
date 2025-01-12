@@ -40,7 +40,7 @@ class ProductRandomListBloc extends Bloc<ProductListEvent, ProductListState> {
           products: randomProducts,
           hasReachedMax: true,
           page: event.page,
-          category: '',
+          categories: [''],
         ));
       } else {
         emit(ProductListFailed(result));

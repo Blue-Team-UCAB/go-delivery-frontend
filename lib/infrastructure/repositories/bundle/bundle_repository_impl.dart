@@ -23,20 +23,25 @@ class BundleRepositoryImpl extends BundleRepository {
 
   @override
   Future<Result<List<Bundle>>> getBundles({
+    String? category,
+    String? name,
+    String? number,
+    String? popular,
+    String? discount,
     required int page,
     required int perpage,
   }) async {
     await _addAuthorizationHeader();
     try {
       final response = await _apiRequestManager.request(
-        '/api/bundle',
+        '/api/bundle/many',
         'GET',
         queryParameters: {
           'page': page.toString(),
           'perpage': perpage.toString(),
         },
         (data) {
-          List<Bundle> bundles = (data['bundles'] as List)
+          List<Bundle> bundles = (data as List)
               .map((bundleData) => BundleMapper.fromJson(bundleData))
               .toList();
           return bundles;

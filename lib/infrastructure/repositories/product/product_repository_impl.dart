@@ -25,37 +25,62 @@ class ProductRepositoryImpl extends ProductRepository {
   @override
   Future<Result<List<Product>>> getProducts({
     String? search,
-    String? category,
+    List<String>? categories,
+    String? price,
+    String? discount,
+    String? popular,
     required int page,
     required int perpage,
   }) async {
-    await _addAuthorizationHeader();
-
     try {
-      Map<String, String> queryParameters = {
+      final queryParameters = <String, dynamic>{
         'page': page.toString(),
         'perpage': perpage.toString(),
       };
 
-      if (search != null && search.isNotEmpty) {
-        queryParameters['search'] = search;
+      // Add optional parameters conditionally
+      if (search != null && search.trim().isNotEmpty) {
+        queryParameters['search'] = search.trim();
       }
 
-      if (category?.isNotEmpty ?? false) {
-        queryParameters['category'] = category!;
+      if (categories != null && categories.isNotEmpty) {
+        // Join categories into a comma-separated string if the API expects it
+        queryParameters['category'] = categories.join(',');
       }
 
+      if (price != null && price.isNotEmpty) {
+        queryParameters['price'] = price;
+      }
+
+      if (discount != null && discount.isNotEmpty) {
+        queryParameters['discount'] = discount;
+      }
+
+      if (popular != null && popular.isNotEmpty) {
+        queryParameters['popular'] = popular;
+      }
+
+      // Perform the API request
       final response = await _apiRequestManager.request(
-        '/api/product',
+        '/api/product/many',
         'GET',
         queryParameters: queryParameters,
-        (data) {
-          List<Product> products = (data['products'] as List)
-              .map((productData) => ProductMapper.fromJson(productData))
-              .toList();
-          return products;
+            (data) {
+          // Robust parsing with error handling
+          if (data == null || data['products'] == null) {
+            throw FormatException('Invalid response format: products data is missing');
+          }
+
+          try {
+            return (data['products'] as List)
+                .map((productData) => ProductMapper.fromJson(productData))
+                .toList();
+          } catch (e) {
+            throw FormatException('Failed to parse products: ${e.toString()}');
+          }
         },
       );
+
       return response;
     } catch (e) {
       print('Error in ProductRepositoryImpl.getProducts: $e');

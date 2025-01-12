@@ -1,14 +1,21 @@
+import '../category/category.dart';
+import '../discount/discount.dart';
+import 'bundle_product.dart';
+
 class Bundle {
-  String id;
-  String name;
-  String description;
-  String currency;
-  double price;
-  int stock;
-  double weight;
-  String imageUrl;
-  DateTime caducityDate;
-  List<dynamic> products;
+  final String id;
+  final String name;
+  final String description;
+  final String currency;
+  final double price;
+  final int stock;
+  final double weight;
+  final String measurement;
+  final String imageUrl;
+  final DateTime caducityDate;
+  final List<BundleProduct> products;
+  final List<Category> categories;
+  final List<Discount> discounts;
 
   Bundle({
     required this.id,
@@ -18,9 +25,12 @@ class Bundle {
     required this.price,
     required this.stock,
     required this.weight,
+    required this.measurement,
     required this.imageUrl,
     required this.caducityDate,
     required this.products,
+    required this.categories,
+    required this.discounts,
   });
 }
 

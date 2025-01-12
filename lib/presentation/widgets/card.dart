@@ -2,14 +2,17 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_delivery_frontend/application/BLoc/blocs.dart';
+import 'package:go_delivery_frontend/domain/entities/cart/cartitem.dart';
 import 'package:go_delivery_frontend/domain/entities/product/product.dart';
 import 'package:go_router/go_router.dart';
 import 'package:go_delivery_frontend/application/BLoc/cart/cart_bloc.dart';
 import 'package:go_delivery_frontend/infrastructure/mappers/cart/cart_item_mapper.dart';
 import 'package:shimmer/shimmer.dart';
 
+import '../../domain/entities/bundle/bundle_product.dart';
+
 class ProductCard extends StatelessWidget {
-  final Product product;
+  final dynamic product;
 
   const ProductCard({super.key, required this.product});
 
@@ -17,7 +20,7 @@ class ProductCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        context.push('/productdetail/${product.id}');
+        context.push('/productdetail/${_getProductId()}');
       },
       child: Container(
         height: 280,
@@ -33,14 +36,14 @@ class ProductCard extends StatelessWidget {
                 topRight: Radius.circular(12.0),
               ),
               child: CachedNetworkImage(
-                imageUrl: product.imageUrl,
+                imageUrl: _getImageUrl(),
                 height: 100,
                 fit: BoxFit.fill,
                 placeholder: (context,url) => Shimmer.fromColors(
-                  baseColor: const Color(0xFFd8d5dd),
-                  highlightColor: const Color(0xFFF4F4F4),
-                  child: Container(height: 100,width: double.infinity,color: Color(0xFFd8d5dd),)
-                ),        
+                    baseColor: const Color(0xFFd8d5dd),
+                    highlightColor: const Color(0xFFF4F4F4),
+                    child: Container(height: 100,width: double.infinity,color: Color(0xFFd8d5dd),)
+                ),
               ),
             ),
             Padding(
@@ -48,8 +51,8 @@ class ProductCard extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  Text( 
-                    product.name,
+                  Text(
+                    _getName(),
                     maxLines: 2,
                     style: const TextStyle(
                         fontFamily: 'Inter',
@@ -58,7 +61,7 @@ class ProductCard extends StatelessWidget {
                         color: Color(0xFF000000)),
                   ),
                   Text(
-                    '\$${product.price.toStringAsFixed(2)}',
+                    '\$${_getPrice().toStringAsFixed(2)}',
                     style: const TextStyle(
                         fontFamily: 'Inter',
                         fontSize: 16,
@@ -69,14 +72,14 @@ class ProductCard extends StatelessWidget {
                   OutlinedButton.icon(
                     iconAlignment: IconAlignment.start,
                     onPressed: () {
-                      context.read<CartBloc>().addCartItem(
-                          CartItemMapper.fromProduct(product)
-                              .toCartItemEntity());
+                      final cartItem = CartItemMapper.fromProduct(product);
+
+                      context.read<CartBloc>().addCartItem(cartItem as CartItem);
                       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                           duration: Duration(seconds: 1),
                           behavior: SnackBarBehavior.floating,
                           margin:
-                              EdgeInsets.only(bottom: 25, right: 20, left: 20),
+                          EdgeInsets.only(bottom: 25, right: 20, left: 20),
                           backgroundColor: Color(0xfc009e4f),
                           content: Text('Agregado Satisfactoriamente')));
                     },
@@ -110,4 +113,30 @@ class ProductCard extends StatelessWidget {
       ),
     );
   }
+
+  // Helper methods to handle different product types
+  String _getProductId() {
+    if (product is Product) return (product as Product).id;
+    if (product is BundleProduct) return (product as BundleProduct).id;
+    throw ArgumentError('Unsupported product type');
+  }
+
+  String _getImageUrl() {
+    if (product is Product) return (product as Product).imageUrl;
+    if (product is BundleProduct) return (product as BundleProduct).imageUrl;
+    throw ArgumentError('Unsupported product type');
+  }
+
+  String _getName() {
+    if (product is Product) return (product as Product).name;
+    if (product is BundleProduct) return (product as BundleProduct).name;
+    throw ArgumentError('Unsupported product type');
+  }
+
+  double _getPrice() {
+    if (product is Product) return (product as Product).price;
+    if (product is BundleProduct) return (product as BundleProduct).price;
+    throw ArgumentError('Unsupported product type');
+  }
 }
+
