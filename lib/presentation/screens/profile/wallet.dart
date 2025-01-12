@@ -6,6 +6,8 @@ import 'package:go_delivery_frontend/application/BLoc/payment/card_get/get_card_
 import 'package:go_delivery_frontend/application/BLoc/payment/delete_card/delete_card_bloc.dart';
 import 'package:go_delivery_frontend/application/BLoc/payment/delete_card/delete_card_event.dart';
 import 'package:go_delivery_frontend/application/BLoc/payment/delete_card/delete_card_state.dart';
+import 'package:go_delivery_frontend/application/BLoc/payment/get_transactions/get_transactions_bloc.dart';
+import 'package:go_delivery_frontend/application/BLoc/payment/get_transactions/get_transactions_event.dart';
 import 'package:go_delivery_frontend/application/BLoc/payment/get_wallet/get_wallet_bloc.dart';
 import 'package:go_delivery_frontend/application/BLoc/payment/get_wallet/get_wallet_event.dart';
 import 'package:go_delivery_frontend/application/BLoc/payment/get_wallet/get_wallet_state.dart';
@@ -16,6 +18,7 @@ import 'package:go_delivery_frontend/application/BLoc/payment/zelle/zelle_bloc.d
 import 'package:go_delivery_frontend/application/BLoc/payment/zelle/zelle_event.dart';
 import 'package:go_delivery_frontend/application/BLoc/payment/zelle/zelle_state.dart';
 import 'package:go_delivery_frontend/presentation/screens/order/card_screen.dart';
+import 'package:go_delivery_frontend/presentation/widgets/wallet/transaction_widget.dart';
 import 'package:go_router/go_router.dart';
 
 class WalletScreen extends StatefulWidget {
@@ -44,13 +47,14 @@ class _WalletScreenState extends State<WalletScreen> {
   void initState() {
     super.initState();
     BlocProvider.of<GetWalletAmountBloc>(context).add(LoadWalletAmount());
+    BlocProvider.of<GetPaymentTransactionsBloc>(context)
+        .add(LoadPaymentTransactions());
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SingleChildScrollView(
-        // Se agrega para habilitar el desplazamiento
         child: Column(
           children: [
             Stack(
@@ -189,6 +193,8 @@ class _WalletScreenState extends State<WalletScreen> {
                         'Tus tarjetas',
                         _buildCreditCardOptions(),
                       ),
+                      const SizedBox(height: 16),
+                      PaymentTransactionsWidget()
                     ],
                   ),
                 ],

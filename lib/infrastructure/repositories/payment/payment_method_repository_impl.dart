@@ -24,146 +24,137 @@ class PaymentRepositoryImpl extends PaymentRepository {
   }
 
   @override
-  Future<Result<dynamic>> processPagoMovil(PagoMovil pagoMovil) async {
+  Future<Result<bool>> processPagoMovil(PagoMovil pagoMovil) async {
     await _addAuthorizationHeader();
-    try {
-      final response = await _apiRequestManager.request(
-        '/api/payment/method/recharge/pago-movil',
-        'POST',
-        (data) => PaymentMethodMapper.parseApiResponse(data),
-        body: PaymentMethodMapper.toJson(pagoMovil),
-      );
-
-      if (response.isSuccessful()) {
-        final responseData = response.getValue();
-
-        final errorCode = responseData['errorCode'];
-        final message = responseData['message'];
-        if (errorCode == 200 && message == null) {
-          return Result.success(responseData);
+    final response = await _apiRequestManager.request<bool>(
+      '/api/payment/method/recharge/pago-movil',
+      'POST',
+      (data) {
+        if (data is Map<String, dynamic>) {
+          if (data.containsKey('error') || data['errorCode'] != 200) {
+            return false; // Indica un fallo en el proceso
+          }
+          return true; // Proceso exitoso
         }
-        if (errorCode == 400 && message == 'Payment failed') {
-          return Result.fail(
-              BadReponseFailure(message: 'Pago fallido: $message'));
-        }
-        return Result.fail(BadReponseFailure(
-            message: 'Pago fallido: Respuesta inesperada del servidor'));
-      } else {
-        return Result.fail(const ServerFailure());
-      }
-    } catch (e) {
-      print('Error en PaymentRepositoryImpl.processPagoMovil: $e');
-      return Result.fail(
-          ServerFailure(message: 'Fallo al procesar PagoMovil: $e'));
-    }
-  }
+        return false;
+      },
+      body: PaymentMethodMapper.toJson(pagoMovil),
+    );
 
-  @override
-  Future<Result<dynamic>> processZelle(Zelle zelle) async {
-    await _addAuthorizationHeader();
-    try {
-      final response = await _apiRequestManager.request(
-        '/api/payment/method/recharge/zelle',
-        'POST',
-        (data) => PaymentMethodMapper.parseApiResponse(data),
-        body: PaymentMethodMapper.toJson(zelle),
-      );
-
-      if (response.isSuccessful()) {
-        final responseData = response.getValue();
-
-        final errorCode = responseData['errorCode'];
-        final message = responseData['message'];
-
-        if (errorCode == 200 && message == null) {
-          return Result.success(responseData);
-        }
-
-        if (errorCode == 400 && message == 'Payment failed') {
-          return Result.fail(
-              BadReponseFailure(message: 'Pago fallido: $message'));
-        }
-
-        return Result.fail(BadReponseFailure(
-            message: 'Pago fallido: Respuesta inesperada del servidor'));
-      } else {
-        return Result.fail(const ServerFailure());
-      }
-    } catch (e) {
-      print('Error en PaymentRepositoryImpl.processZelle: $e');
-      return Result.fail(ServerFailure(message: 'Fallo al procesar Zelle: $e'));
-    }
-  }
-
-  @override
-  Future<Result<dynamic>> processCard(Card card) async {
-    await _addAuthorizationHeader();
-    try {
-      final response = await _apiRequestManager.request(
-        '/api/payment/method/user/add/card',
-        'POST',
-        (data) => data,
-        body: {'idCard': card.idCard},
-      );
-
-      if (response.isSuccess) {
-        return Result.success('Funciono');
+    if (response.isSuccess) {
+      if (response.value == true) {
+        return Result.success(true);
       } else {
         return Result.fail(
-            const ServerFailure(message: 'Error al procesar la tarjeta'));
+            CustomFailure(message: 'Error al procesar PagoMovil'));
       }
-    } catch (e) {
-      print('Error en PaymentRepositoryImpl.processCard: $e');
-      return Result.fail(
-          ServerFailure(message: 'Fallo al procesar el pago con tarjeta: $e'));
+    } else {
+      return response; // Retorna el error gestionado por `IApiRequestManager`
+    }
+  }
+
+  @override
+  Future<Result<bool>> processZelle(Zelle zelle) async {
+    await _addAuthorizationHeader();
+    final response = await _apiRequestManager.request<bool>(
+      '/api/payment/method/recharge/zelle',
+      'POST',
+      (data) {
+        if (data is Map<String, dynamic>) {
+          if (data.containsKey('error') || data['errorCode'] != 200) {
+            return false; // Indica un fallo en el proceso
+          }
+          return true; // Proceso exitoso
+        }
+        return false;
+      },
+      body: PaymentMethodMapper.toJson(zelle),
+    );
+
+    if (response.isSuccess) {
+      if (response.value == true) {
+        return Result.success(true);
+      } else {
+        return Result.fail(CustomFailure(message: 'Error al procesar Zelle'));
+      }
+    } else {
+      return response; // Retorna el error gestionado por `IApiRequestManager`
+    }
+  }
+
+  @override
+  Future<Result<bool>> processCard(Card card) async {
+    await _addAuthorizationHeader();
+    final response = await _apiRequestManager.request<bool>(
+      '/api/payment/method/user/add/card',
+      'POST',
+      (data) {
+        if (data is Map<String, dynamic> && !data.containsKey('error')) {
+          return true;
+        }
+        return false;
+      },
+      body: {'idCard': card.idCard},
+    );
+
+    if (response.isSuccess) {
+      if (response.value == true) {
+        return Result.success(true);
+      } else {
+        return Result.fail(
+            CustomFailure(message: 'Error al agregar la tarjeta'));
+      }
+    } else {
+      return response;
     }
   }
 
   @override
   Future<Result<List<Card>>> getCard() async {
     await _addAuthorizationHeader();
+    final response = await _apiRequestManager.request<List<Card>>(
+      '/api/payment/method/user/card/many',
+      'GET',
+      (data) {
+        if (data is List) {
+          return data
+              .map((item) => PaymentMethodMapper.cardFromJson(item))
+              .toList();
+        }
+        throw Exception('Respuesta inesperada');
+      },
+    );
 
-    try {
-      final result = await _apiRequestManager.request(
-        '/api/payment/method/user/card/many',
-        'GET',
-        (data) => (data as List)
-            .map((item) => PaymentMethodMapper.cardFromJson(item))
-            .toList(),
-      );
-
-      if (result.isSuccessful()) {
-        final cards = result.getValue();
-        return Result.success(cards);
-      } else {
-        return Result.fail(result.getError());
-      }
-    } catch (e) {
-      print('Error in PaymentMethodRepositoryImpl.getCard: $e');
-      return Result.fail(Exception('Failed to fetch cards: $e') as Failure);
+    if (response.isSuccess) {
+      return Result.success(response.getValue());
+    } else {
+      return response;
     }
   }
 
   @override
-  Future<Result<dynamic>> deleteCard(String cardId) async {
+  Future<Result<bool>> deleteCard(String cardId) async {
     await _addAuthorizationHeader();
-    try {
-      final response = await _apiRequestManager.request(
-        '/api/payment/method/user/card/delete/$cardId',
-        'DELETE',
-        (data) => data,
-      );
+    final response = await _apiRequestManager.request<bool>(
+      '/api/payment/method/user/card/delete/$cardId',
+      'DELETE',
+      (data) {
+        if (data is Map<String, dynamic> && !data.containsKey('error')) {
+          return true;
+        }
+        return false;
+      },
+    );
 
-      if (response.isSuccessful()) {
+    if (response.isSuccess) {
+      if (response.value == true) {
         return Result.success(true);
       } else {
         return Result.fail(
-            const ServerFailure(message: 'Error al eliminar la tarjeta'));
+            CustomFailure(message: 'Error al eliminar la tarjeta'));
       }
-    } catch (e) {
-      print('Error en PaymentRepositoryImpl.deleteCard: $e');
-      return Result.fail(
-          ServerFailure(message: 'Fallo al eliminar la tarjeta: $e'));
+    } else {
+      return response;
     }
   }
 }

@@ -8,7 +8,7 @@ class PaymentMethodMapper {
     if (paymentMethod is PagoMovil) {
       return {
         'amount': paymentMethod.amount,
-        'date': paymentMethod.date!.toIso8601String(),
+        'date': paymentMethod.date?.toIso8601String(),
         'phone': paymentMethod.phone,
         'cedula': paymentMethod.cedula,
         'reference': paymentMethod.reference,
@@ -32,31 +32,22 @@ class PaymentMethodMapper {
     if (json.containsKey('cedula')) {
       return PagoMovil(
         amount: json['amount'],
-        date: DateTime.parse(json['date']),
+        date: json['date'] != null ? DateTime.parse(json['date']) : null,
         phone: json['phone'],
         cedula: json['cedula'],
         reference: json['reference'],
         bank: json['bank'],
       );
-    } else if (json['type'] == 'Zelle') {
+    } else if (json.containsKey('email')) {
       return Zelle(
         amount: json['amount'],
         email: json['email'],
         reference: json['reference'],
       );
-    } else if (json['type'] == 'Card') {
+    } else if (json.containsKey('idCard')) {
       return Card(idCard: json['idCard']);
     }
     throw Exception('Unsupported PaymentMethod type');
-  }
-
-  static Map<String, dynamic> parseApiResponse(Map<String, dynamic> json) {
-    return {
-      'errorCode': json['errorCode'],
-      'message': json['message'],
-      'value': json['value'],
-      'error': json['error'],
-    };
   }
 
   static Card cardFromJson(Map<String, dynamic> json) {

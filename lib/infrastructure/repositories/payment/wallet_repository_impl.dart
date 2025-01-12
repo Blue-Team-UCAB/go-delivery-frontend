@@ -27,23 +27,22 @@ class WalletRepositoryImpl extends WalletRepository {
   Future<Result<WalletAmount>> getWalletAmount() async {
     await _addAuthorizationHeader();
 
-    try {
-      final response = await _apiRequestManager.request(
-        '/api/payment/method/user/wallet-amount',
-        'GET',
-        (data) => WalletAmountMapper.fromJson(data),
-      );
+    final response = await _apiRequestManager.request<WalletAmount>(
+      '/api/payment/method/user/wallet-amount',
+      'GET',
+      (data) {
+        if (data is Map<String, dynamic>) {
+          return WalletAmountMapper.fromJson(data);
+        }
+        throw FormatException('Unexpected response format');
+      },
+    );
 
-      if (response.isSuccessful()) {
-        final walletAmount = response.getValue();
-        return Result.success(walletAmount);
-      } else {
-        return Result.fail(const ServerFailure());
-      }
-    } catch (e) {
-      print('Error in WalletRepositoryImpl.getWalletAmount: $e');
+    if (response.isSuccess) {
+      return Result.success(response.value!);
+    } else {
       return Result.fail(
-          ServerFailure(message: 'Fallo al obtener el monto del wallet: $e'));
+          ServerFailure(message: 'Error al obtener el wallet amount'));
     }
   }
 
@@ -51,23 +50,22 @@ class WalletRepositoryImpl extends WalletRepository {
   Future<Result<List<Payment>>> getPaymentTransactions() async {
     await _addAuthorizationHeader();
 
-    try {
-      final response = await _apiRequestManager.request(
-        '/api/payment/method/user/many/transaccion',
-        'GET',
-        (data) => PaymentMapper.fromJsonList(data),
-      );
+    final response = await _apiRequestManager.request<List<Payment>>(
+      '/api/payment/method/user/many/transaccion',
+      'GET',
+      (data) {
+        if (data is List) {
+          return PaymentMapper.fromJsonList(data);
+        }
+        throw FormatException('Unexpected response format');
+      },
+    );
 
-      if (response.isSuccessful()) {
-        final transactions = response.getValue();
-        return Result.success(transactions);
-      } else {
-        return Result.fail(const ServerFailure());
-      }
-    } catch (e) {
-      print('Error in WalletRepositoryImpl.getPaymentTransactions: $e');
+    if (response.isSuccess) {
+      return Result.success(response.value!);
+    } else {
       return Result.fail(
-          ServerFailure(message: 'Fallo al obtener las transacciones: $e'));
+          ServerFailure(message: 'Error al obtener las transacciones'));
     }
   }
 }
