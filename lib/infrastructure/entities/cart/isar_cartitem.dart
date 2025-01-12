@@ -9,8 +9,7 @@ class IsarCartitem {
 
   final String id;
   final String name;
-  final String? imgUrl;
-  final List<String>? images;
+  final String imgUrl;
   final double price;
   final String presentation;
   final int quantity;
@@ -19,8 +18,7 @@ class IsarCartitem {
   IsarCartitem({
     required this.id,
     required this.name, 
-    this.imgUrl,
-    this.images,
+    required this.imgUrl,
     required this.price, 
     required this.presentation,
     required this.quantity,
@@ -31,7 +29,6 @@ class IsarCartitem {
     String? id,
     String? name,
     String? imgUrl,
-    List<String>? images,
     double? price,
     String? presentation,
     int? quantity,
@@ -40,7 +37,6 @@ class IsarCartitem {
     id: id ?? this.id, 
     name: name ?? this.name, 
     imgUrl: imgUrl ?? this.imgUrl,
-    images: images ?? this.images,
     price: price ?? this.price, 
     presentation: presentation ?? this.presentation, 
     quantity: quantity ?? this.quantity,

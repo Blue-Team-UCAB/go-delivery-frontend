@@ -9,7 +9,7 @@ class LoadProductList extends ProductListEvent {
   final int perpage;
   final List<String>? categories;
   final String? name;
-  final String? price;
+  final int? price;
   final String? discount;
   final String? popular;
 
@@ -40,7 +40,7 @@ class SearchProductList extends ProductListEvent {
   final int perpage;
   final String name;
   final List<String>? categories;
-  final String? price;
+  final int? price;
   final String? discount;
   final String? popular;
 

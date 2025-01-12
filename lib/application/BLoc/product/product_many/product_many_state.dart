@@ -22,7 +22,7 @@ class ProductListLoaded extends ProductListState {
   final int page;
   final List<String>? categories;
   final String? name;
-  final String? price;
+  final int? price;
   final String? discount;
   final String? popular;
 
@@ -43,7 +43,7 @@ class ProductListLoaded extends ProductListState {
     int? page,
     List<String>? categories,
     String? name,
-    String? price,
+    int? price,
     String? discount,
     String? popular,
   }) {

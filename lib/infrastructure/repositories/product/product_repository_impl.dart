@@ -26,7 +26,7 @@ class ProductRepositoryImpl extends ProductRepository {
   Future<Result<List<Product>>> getProducts({
     String? name,
     List<String>? categories,
-    String? price,
+    int? price,
     String? discount,
     String? popular,
     required int page,
@@ -40,17 +40,15 @@ class ProductRepositoryImpl extends ProductRepository {
         'perpage': perpage.toString(),
       };
 
-      // Add optional parameters conditionally
       if (name != null && name.trim().isNotEmpty) {
         queryParameters['name'] = name.trim();
       }
 
       if (categories != null && categories.isNotEmpty) {
-        // Join categories into a comma-separated string if the API expects it
         queryParameters['category'] = categories.join(',');
       }
 
-      if (price != null && price.isNotEmpty) {
+      if (price != null && price > 0) {
         queryParameters['price'] = price;
       }
 
@@ -67,13 +65,11 @@ class ProductRepositoryImpl extends ProductRepository {
         print('  - $key: $value');
       });
 
-      // Perform the API request
       final response = await _apiRequestManager.request(
         '/api/product/many',
         'GET',
         queryParameters: queryParameters,
             (data) {
-          // Robust parsing with error handling
           if (data == null || data['products'] == null) {
             throw FormatException('Invalid response format: products data is missing');
           }
@@ -96,7 +92,6 @@ class ProductRepositoryImpl extends ProductRepository {
     await _addAuthorizationHeader();
 
     print("______ PRODUCT BY ID ______");
-
 
       final response = await _apiRequestManager.request(
         '/api/product/$productId',

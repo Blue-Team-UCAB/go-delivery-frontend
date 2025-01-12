@@ -5,7 +5,7 @@ abstract class ProductRepository {
   Future<Result<List<Product>>> getProducts({
     String? name,
     List<String>? categories,
-    String? price,
+    int? price,
     String? discount,
     String? popular,
     required int page,

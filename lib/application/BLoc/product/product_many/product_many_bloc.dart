@@ -22,7 +22,7 @@ class ProductListBloc extends SafeBloc<ProductListEvent, ProductListState> {
     await _loadProducts(
       name: event.name ?? '',
       categories: event.categories ?? [''],
-      price: event.price ?? '',
+      price: event.price ?? 0,
       discount: event.discount ?? '',
       popular: event.popular ?? '',
       page: event.page,
@@ -38,7 +38,7 @@ class ProductListBloc extends SafeBloc<ProductListEvent, ProductListState> {
     await _loadProducts(
       name: event.name,
       categories: event.categories ?? [''],
-      price: event.price ?? '',
+      price: event.price ?? 0,
       discount: event.discount ?? '',
       popular: event.popular ?? '',
       page: event.page,
@@ -50,7 +50,7 @@ class ProductListBloc extends SafeBloc<ProductListEvent, ProductListState> {
   Future<void> _loadProducts({
     String name = '',
     List<String> categories = const [''],
-    String price = '',
+    int price = 0,
     String discount = '',
     String popular = '',
     required int page,
