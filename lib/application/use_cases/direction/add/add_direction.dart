@@ -6,15 +6,16 @@ import 'package:go_delivery_frontend/domain/repositories/direction/direction_rep
 class AddDirectionInput extends IUseCaseInput {
   final String name;
   final String direction;
-  final double latitude;
-  final double longitude;
+  final double lat;
+  final double long;
+  final bool favorite;
 
-  AddDirectionInput({
-    required this.name,
-    required this.direction,
-    required this.latitude,
-    required this.longitude,
-  });
+  AddDirectionInput(
+      {required this.name,
+      required this.direction,
+      required this.lat,
+      required this.long,
+      required this.favorite});
 }
 
 class AddDirectionUseCase implements IUseCase<AddDirectionInput, void> {
@@ -26,7 +27,6 @@ class AddDirectionUseCase implements IUseCase<AddDirectionInput, void> {
   @override
   Future<Result<void>> execute(AddDirectionInput input) async {
     try {
-      // Llamar al repositorio para agregar la dirección
       await _directionRepository.addDirection(input);
       return Result.success(null);
     } catch (e) {

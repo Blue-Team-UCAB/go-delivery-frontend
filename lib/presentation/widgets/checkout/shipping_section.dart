@@ -82,8 +82,8 @@ class AddressSectionState extends State<AddressSection> {
                             widget.onAddressSelected({
                               'name': address.name,
                               'description': address.direction,
-                              'latitude': address.latitude,
-                              'longitude': address.longitude,
+                              'latitude': address.lat,
+                              'longitude': address.long,
                             });
                           });
                         },
