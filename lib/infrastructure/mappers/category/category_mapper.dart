@@ -6,7 +6,7 @@ class CategoryMapper {
       return Category(
         id: json['id'] as String? ?? '',
         name: json['name'] as String? ?? '',
-        image: json['image'] as String? ?? '',
+        imageUrl: json['image'] as String? ?? '',
       );
     } catch (e) {
       print('Error in CategoryMapper.fromJson: $e');

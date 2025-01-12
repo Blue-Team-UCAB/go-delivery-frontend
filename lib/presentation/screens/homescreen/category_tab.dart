@@ -110,7 +110,7 @@ class CategoryTabsState extends State<CategoryTabs> {
 
   Widget _buildLoadedTabs(List<Category> categories) {
     final allCategories = [
-      Category(id: '', name: 'Todo', image: ''),
+      Category(id: '', name: 'Todo', imageUrl: ''),
       ...categories,
     ];
 
