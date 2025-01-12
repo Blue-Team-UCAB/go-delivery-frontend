@@ -7,8 +7,9 @@ class DirectionMapper {
       'id': direction.id,
       'name': direction.name,
       'direction': direction.direction,
-      'longitude': direction.longitude.toString(),
-      'latitude': direction.latitude.toString(),
+      'long': direction.long.toString(),
+      'lat': direction.lat.toString(),
+      'favorite': direction.favorite,
     };
   }
 
@@ -16,8 +17,9 @@ class DirectionMapper {
     return {
       'name': input.name,
       'direction': input.direction,
-      'latitude': input.latitude.toString(),
-      'longitude': input.longitude.toString(),
+      'lat': input.lat.toString(),
+      'long': input.long.toString(),
+      'favorite': input.favorite,
     };
   }
 
@@ -26,8 +28,9 @@ class DirectionMapper {
       id: json['id'] as String,
       name: json['name'] as String,
       direction: json['direction'] as String,
-      longitude: double.parse(json['longitude']),
-      latitude: double.parse(json['latitude']),
+      long: double.parse(json['long']),
+      lat: double.parse(json['lat']),
+      favorite: json['favorite'] as bool,
     );
   }
 

@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:dio/dio.dart';
 import 'package:go_delivery_frontend/common/failure.dart';
 import 'package:go_delivery_frontend/infrastructure/mappers/user/user_mapper.dart';
@@ -9,6 +8,7 @@ import 'package:go_delivery_frontend/common/result.dart';
 import 'package:go_delivery_frontend/domain/repositories/user/user_repository.dart';
 import 'package:go_delivery_frontend/infrastructure/models/user_model.dart';
 
+// ignore: constant_identifier_names
 enum UserType { CLIENT, ADMIN }
 
 class AuthRepositoryImpl implements UserRepository {
@@ -56,7 +56,7 @@ class AuthRepositoryImpl implements UserRepository {
         return Result.fail(CustomFailure(message: 'Login failed'));
       }
     } else {
-      return response as Result<bool>;
+      return response;
     }
   }
 
@@ -67,7 +67,7 @@ class AuthRepositoryImpl implements UserRepository {
     required String name,
     required String phone,
   }) async {
-    var message;
+    var message = "";
     final response = await _apiRequestManager.request<bool>(
       '/api/auth/register',
       'POST',
@@ -96,7 +96,7 @@ class AuthRepositoryImpl implements UserRepository {
 
   @override
   Future<Result<bool>> sendRecoveryCode(String email) async {
-    var message;
+    var message = "";
     final response = await _apiRequestManager.request<bool>(
       '/api/auth/forgot/password',
       'POST',
@@ -119,7 +119,7 @@ class AuthRepositoryImpl implements UserRepository {
 
   @override
   Future<Result<bool>> validateRecoveryCode(String email, String code) async {
-    var message;
+    var message = "";
 
     final response = await _apiRequestManager.request<bool>(
       '/api/auth/code/validate',

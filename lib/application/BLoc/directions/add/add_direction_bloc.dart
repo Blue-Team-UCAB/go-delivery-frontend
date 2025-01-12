@@ -15,11 +15,11 @@ class AddDirectionBloc extends Bloc<DirectionEvent, DirectionState> {
     emit(DirectionLoading());
     try {
       final result = await _addDirectionUseCase.execute(AddDirectionInput(
-        name: event.name,
-        direction: event.direction,
-        latitude: event.latitude,
-        longitude: event.longitude,
-      ));
+          name: event.name,
+          direction: event.direction,
+          lat: event.lat,
+          long: event.long,
+          favorite: event.favorite));
 
       if (result.isSuccessful()) {
         emit(DirectionAdded());
