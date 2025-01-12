@@ -42,7 +42,7 @@ class CatalogScreenState extends State<CatalogScreen>
     _loadProducts();
 
     BlocProvider.of<ProductListBloc>(context).add(
-      LoadProductList(page: _currentPage, perpage: 6, category: ''),
+      LoadProductList(page: _currentPage, perpage: 6, categories: ['']),
     );
     _scrollController.addListener(_onScroll);
 
@@ -70,7 +70,7 @@ class CatalogScreenState extends State<CatalogScreen>
   // Función para cargar productos
   void _loadProducts() {
     BlocProvider.of<ProductListBloc>(context).add(
-      LoadProductList(page: _currentPage, perpage: 6, category: ''),
+      LoadProductList(page: _currentPage, perpage: 6, categories: ['']),
     );
   }
 
@@ -90,12 +90,12 @@ class CatalogScreenState extends State<CatalogScreen>
         _currentPage = state.page + 1;
         BlocProvider.of<ProductListBloc>(context).add(
           _searchQuery.isEmpty
-              ? LoadProductList(page: _currentPage, perpage: 6, category: '')
+              ? LoadProductList(page: _currentPage, perpage: 6, categories: [''])
               : SearchProductList(
-                  search: _searchQuery,
+                  name: _searchQuery,
                   page: _currentPage,
                   perpage: 6,
-                  category: ''),
+                  categories: ['']),
         );
       }
     }
@@ -110,7 +110,7 @@ class CatalogScreenState extends State<CatalogScreen>
     });
     BlocProvider.of<ProductListBloc>(context).add(
       SearchProductList(
-          search: query, page: _currentPage, perpage: 6, category: ''),
+          name: query, page: _currentPage, perpage: 6, categories: ['']),
     );
   }
 

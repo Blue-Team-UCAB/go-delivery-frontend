@@ -5,7 +5,9 @@ import 'package:go_delivery_frontend/application/use_cases/product/get_many_prod
 import 'package:go_delivery_frontend/application/BLoc/product/product_many/product_many_event.dart';
 import 'package:go_delivery_frontend/application/BLoc/product/product_many/product_many_state.dart';
 
-class ProductListBloc extends Bloc<ProductListEvent, ProductListState> {
+import '../../../core/bloc/ensure_bloc.dart';
+
+class ProductListBloc extends SafeBloc<ProductListEvent, ProductListState> {
   final GetProductsUseCase _getProductsUseCase;
 
   ProductListBloc(this._getProductsUseCase) : super(ProductListInitial()) {
@@ -14,60 +16,113 @@ class ProductListBloc extends Bloc<ProductListEvent, ProductListState> {
   }
 
   Future<void> _onLoadProductList(
-    LoadProductList event,
-    Emitter<ProductListState> emit,
-  ) async {
-    await _loadProducts('', event.category, event.page, event.perpage, emit);
+      LoadProductList event,
+      Emitter<ProductListState> emit,
+      ) async {
+    await _loadProducts(
+      name: event.name ?? '',
+      categories: event.categories ?? [''],
+      price: event.price ?? '',
+      discount: event.discount ?? '',
+      popular: event.popular ?? '',
+      page: event.page,
+      perPage: event.perpage,
+      emit: emit,
+    );
   }
 
   Future<void> _onSearchProductList(
-    SearchProductList event,
-    Emitter<ProductListState> emit,
-  ) async {
-    await _loadProducts(event.search, '', event.page, event.perpage, emit);
+      SearchProductList event,
+      Emitter<ProductListState> emit,
+      ) async {
+    await _loadProducts(
+      name: event.name,
+      categories: event.categories ?? [''],
+      price: event.price ?? '',
+      discount: event.discount ?? '',
+      popular: event.popular ?? '',
+      page: event.page,
+      perPage: event.perpage,
+      emit: emit,
+    );
   }
 
-  Future<void> _loadProducts(
-    String? search,
-    String? category,
-    int page,
-    int perpage,
-    Emitter<ProductListState> emit,
-  ) async {
+  Future<void> _loadProducts({
+    String name = '',
+    List<String> categories = const [''],
+    String price = '',
+    String discount = '',
+    String popular = '',
+    required int page,
+    required int perPage,
+    required Emitter<ProductListState> emit,
+  }) async {
     try {
+      // Determine the current state
       final currentState = state is ProductListLoaded
           ? state as ProductListLoaded
-          : const ProductListLoaded(
-              products: [], hasReachedMax: false, page: 1, category: '');
-      if (currentState.category != category) {
+          : ProductListLoaded(
+        products: [],
+        hasReachedMax: false,
+        page: 1,
+        name: name,
+        categories: categories,
+        price: price,
+        discount: discount,
+        popular: popular,
+      );
+
+      // Check if we need to reset the list
+      final shouldResetList =
+          (name != currentState.name) ||
+              (categories != currentState.categories) ||
+              (price != currentState.price) ||
+              (discount != currentState.discount) ||
+              (popular != currentState.popular);
+
+      // Prepare initial state if resetting
+      if (shouldResetList) {
         emit(ProductListLoaded(
-          products: const [],
+          products: [],
           hasReachedMax: false,
           page: 1,
-          category: category ?? '',
+          name: name,
+          categories: categories,
+          price: price,
+          discount: discount,
+          popular: popular,
         ));
       }
 
-      final result = await _getProductsUseCase.execute(
-        GetProductsUseCaseInput(
-          page: page,
-          perpage: perpage,
-          category: category,
-          search: search,
-        ),
+      // Prepare input for use case
+      final input = GetProductsUseCaseInput(
+        page: page,
+        perpage: perPage,
+        name: name,
+        categories: categories,
+        price: price,
+        discount: discount,
+        popular: popular,
       );
+
+      // Execute use case
+      final result = await _getProductsUseCase.execute(input);
 
       if (result.isSuccessful()) {
         final newProducts = result.getValue();
         final hasReachedMax = newProducts.isEmpty;
 
         emit(ProductListLoaded(
-          products: page == 1
+          products: page == 1 || shouldResetList
               ? newProducts
               : [...currentState.products, ...newProducts],
           hasReachedMax: hasReachedMax,
           page: page,
-          category: category ?? '',
+          name: name,
+          categories: categories,
+          price: price,
+          discount: discount,
+          popular: popular,
         ));
       } else {
         emit(ProductListFailed(result));

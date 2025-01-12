@@ -22,13 +22,17 @@ class ProductPopularListBloc extends Bloc<ProductListEvent, ProductListState> {
         final currentState = state is ProductListLoaded
             ? state
             : const ProductListLoaded(
-                products: [], hasReachedMax: false, page: 1, category: '');
+                products: [], hasReachedMax: false, page: 1);
 
         emit(ProductListLoading(currentState.products));
 
         final result = await _getProductsUseCase.execute(
           GetProductsUseCaseInput(
-            search: '',
+            name: '',
+            categories: [''],
+            price: '',
+            discount: '',
+            popular: '',
             page: event.page,
             perpage: event.perpage,
           ),
@@ -42,7 +46,7 @@ class ProductPopularListBloc extends Bloc<ProductListEvent, ProductListState> {
             products: [...newProducts],
             hasReachedMax: hasReachedMax,
             page: event.page,
-            category: '',
+            categories: [''],
           ));
         } else {
           emit(ProductListFailed(result));

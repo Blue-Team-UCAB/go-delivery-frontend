@@ -36,7 +36,7 @@ class RandomSectionState extends State<RandomSection> {
 
     context
         .read<ProductRandomListBloc>()
-        .add(LoadProductList(page: randomPage, perpage: 5, category: ''));
+        .add(LoadProductList(page: randomPage, perpage: 5));
   }
 
   @override
@@ -120,7 +120,7 @@ class RandomItem extends StatelessWidget {
               context.push('/productdetail/${product.id}');
             },
             leading: CachedNetworkImage(
-              imageUrl: product.imageUrl,
+              imageUrl: product.images.first,
               width: 60,
               fit: BoxFit.contain,
               placeholder: (context, url) =>

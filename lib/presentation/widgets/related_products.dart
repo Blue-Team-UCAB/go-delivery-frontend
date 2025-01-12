@@ -60,7 +60,7 @@ class RelatedProductsSectionState extends State<RelatedProductsSection> {
       LoadProductList(
         page: 1,
         perpage: 4,
-        category: _currentCategory,
+        categories: [_currentCategory],
       ),
     );
 

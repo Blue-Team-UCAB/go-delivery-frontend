@@ -26,7 +26,7 @@ class _PopularSectionState extends State<PopularSection> {
     super.initState();
     context
         .read<ProductPopularListBloc>()
-        .add(const LoadProductList(page: 1, perpage: 4, category: ''));
+        .add(const LoadProductList(page: 1, perpage: 4, categories: ['']));
   }
 
   @override
@@ -84,7 +84,7 @@ class _PopularSectionState extends State<PopularSection> {
               return Center(child: Text('Error: ${state.result}'));
             } else {
               context.read<ProductPopularListBloc>().add(
-                  const LoadProductList(page: 1, perpage: 4, category: ''));
+                  const LoadProductList(page: 1, perpage: 4, categories: ['']));
               return const Center(child: CircularProgressIndicator());
             }
           },
@@ -125,7 +125,7 @@ class PopularItem extends StatelessWidget {
               context.push('/productdetail/${product.id}');
             },
             leading: FastLoadingImage(
-              imageUrl: product.imageUrl,
+              imageUrl: product.images.first,
               height: 100,
               width: 100,
               fit: BoxFit.contain,

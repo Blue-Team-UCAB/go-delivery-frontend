@@ -1,30 +1,38 @@
 //import 'package:go_delivery_frontend/domain/entities/category/category.dart';
 
+import '../category/category.dart';
+import '../discount/discount.dart';
+
 class Product {
-  final String id;
-  final String name;
-  final double price;
-  final double weight;
-  final String measurement;
-  final String description;
-  final List<String> categories;
-  // final List<Category> categories;
-  String imageUrl;
-  final String currency;
-  final int stock;
+  String id;
+  String name;
+  String description;
+  String currency;
+  double price;
+  int stock;
+  double weight;
+  String measurement;
+  String? imageUrl;
+  List<String> images;
+  List<Category> categories;
+  List<Discount> discounts;
+  DateTime caducityDate;
 
   Product({
-    required this.id,
+    this.id = '',
     required this.name,
+    required this.description,
+    required this.currency,
     required this.price,
+    required this.stock,
     required this.weight,
     required this.measurement,
-    required this.description,
-    required this.categories,
-    required this.imageUrl,
-    required this.currency,
-    required this.stock,
-  });
+    this.imageUrl,
+    required this.images,
+    this.categories = const [],
+    this.discounts = const [],
+    DateTime? caducityDate,
+  }) : caducityDate = caducityDate ?? DateTime.now().add(Duration(days: 365));
 }
 
 class OrderProduct {

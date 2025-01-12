@@ -42,8 +42,8 @@ class BundleDetailScreen extends StatelessWidget {
             }
             if (state is BundleDetailLoaded) {
               final bundle = state.bundle;
-              String imageUrl = (bundle?.imageUrl.isNotEmpty ?? false)
-                  ? bundle!.imageUrl
+              String imageUrl = (bundle?.images.first.isNotEmpty ?? false)
+                  ? bundle!.images.first
                   : 'https://via.placeholder.com/150';
 
               return SingleChildScrollView(
@@ -151,7 +151,7 @@ class BundleDetailScreen extends StatelessWidget {
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               if (bundle?.products != null)
-                                ...bundle!.products.map((product) {
+                                ...bundle!.products!.map((product) {
                                   return Padding(
                                     padding: const EdgeInsets.only(right: 20.0),
                                     child: SizedBox(
