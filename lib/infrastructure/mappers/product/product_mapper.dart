@@ -1,7 +1,7 @@
 import 'package:go_delivery_frontend/domain/entities/product/product.dart';
 
-import '../../../domain/entities/category/category.dart';
-import '../../../domain/entities/discount/discount.dart';
+import 'package:go_delivery_frontend/domain/entities/category/category.dart';
+import 'package:go_delivery_frontend/domain/entities/discount/discount.dart';
 
 class ProductMapper {
   // Single product mapping with flexible parsing

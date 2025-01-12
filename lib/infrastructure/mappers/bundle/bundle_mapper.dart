@@ -1,7 +1,7 @@
-import '../../../domain/entities/bundle/bundle.dart';
-import '../../../domain/entities/bundle/bundle_product.dart';
-import '../../../domain/entities/category/category.dart';
-import '../../../domain/entities/discount/discount.dart';
+import 'package:go_delivery_frontend/domain/entities/bundle/bundle.dart';
+import 'package:go_delivery_frontend/domain/entities/bundle/bundle_product.dart';
+import 'package:go_delivery_frontend/domain/entities/category/category.dart';
+import 'package:go_delivery_frontend/domain/entities/discount/discount.dart';
 
 class BundleMapper {
   // Parse list of bundles

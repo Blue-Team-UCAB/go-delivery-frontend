@@ -1,7 +1,5 @@
-//import 'package:go_delivery_frontend/domain/entities/category/category.dart';
-
-import '../category/category.dart';
-import '../discount/discount.dart';
+import 'package:go_delivery_frontend/domain/entities/category/category.dart';
+import 'package:go_delivery_frontend/domain/entities/discount/discount.dart';
 
 class Product {
   String id;

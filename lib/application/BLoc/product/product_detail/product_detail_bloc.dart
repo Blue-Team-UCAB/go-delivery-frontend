@@ -36,7 +36,6 @@ class ProductDetailBloc extends Bloc<ProductDetailEvent, ProductDetailState> {
           emit(ProductDetailFailed(result));
         }
       } catch (e) {
-        print('Error in ProductDetailBloc: $e');
         emit(ProductDetailFailed(Result.fail(e.toString() as Failure)));
       }
     }

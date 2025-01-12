@@ -9,7 +9,7 @@ import 'package:go_delivery_frontend/application/BLoc/cart/cart_bloc.dart';
 import 'package:go_delivery_frontend/infrastructure/mappers/cart/cart_item_mapper.dart';
 import 'package:shimmer/shimmer.dart';
 
-import '../../domain/entities/bundle/bundle_product.dart';
+import 'package:go_delivery_frontend/domain/entities/bundle/bundle_product.dart';
 
 class ProductCard extends StatelessWidget {
   final dynamic product;

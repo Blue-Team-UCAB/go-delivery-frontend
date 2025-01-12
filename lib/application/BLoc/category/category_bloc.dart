@@ -29,13 +29,11 @@ class CategoryBloc extends Bloc<CategoryEvent, CategoryState> {
 
       if (result.isSuccessful()) {
         final categories = result.getValue();
-        print('Loaded categories: ${categories.length}'); // Debug print
         emit(CategoryLoaded(categories));
       } else {
         emit(CategoryError(result.getError().message));
       }
     } catch (e) {
-      print('Error loading categories: $e'); // Debug print
       emit(CategoryError(e.toString()));
     }
   }
