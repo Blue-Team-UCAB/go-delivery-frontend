@@ -92,13 +92,22 @@ class _ReportProblemDialogState extends State<ReportProblemDialog> {
                     ],
                   ),
                   SizedBox(height: 10),
-
+                  Text(
+                    'Quede en cuenta que reportando un problema, va a cancelar esta orden:',
+                    style: TextStyle(
+                      color: Colors.deepOrange[400],
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  SizedBox(height: 10),
                   // Order Number
                   Text(
-                    'Orden #${widget.orderId}',
+                    '${widget.orderId}',
                     style: TextStyle(
                       color: Colors.grey,
-                      fontSize: 14,
+                      fontSize: 12,
                     ),
                   ),
                   SizedBox(height: 16),

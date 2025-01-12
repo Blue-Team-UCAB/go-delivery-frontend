@@ -26,33 +26,35 @@ class AuthRepositoryImpl implements UserRepository {
 
   @override
   Future<Result<bool>> login(String email, String password) async {
-    var message;
     final response = await _apiRequestManager.request<bool>(
       '/api/auth/login',
       'POST',
-      (data) {
-        if (data['errorCode'] != 200) {
-          message = data["message"];
-
-          return false;
-        } else {
-          final userData = data['value'] as Map<String, dynamic>;
-          var user = UserMapper.fromJson(userData);
-
-          _apiRequestManager.setHeaders(
-              'Authorization', 'Bearer ${user.token}');
-
-          _localStorage.setKeyValue<bool>('isAdmin', true);
-          _localStorage.setKeyValue<String>('appToken', user.token);
+          (data) {
+        if (data is Map<String, dynamic>) {
+          if (data.containsKey('error')) {
+            return false;
+          } else {
+            var user = UserMapper.fromJson(data);
+            _apiRequestManager.setHeaders(
+                'Authorization', 'Bearer ${user.token}');
+            _localStorage.setKeyValue<bool>('isAdmin', true);
+            _localStorage.setKeyValue<String>('appToken', user.token);
+            return true;
+          }
         }
-        return true;
+        return false;
       },
       body: {"email": email, "password": password},
     );
-    if (response.value == true) {
-      return response;
+
+    if (response.isSuccess) {
+      if (response.value == true) {
+        return Result.success(true);
+      } else {
+        return Result.fail(CustomFailure(message: 'Login failed'));
+      }
     } else {
-      return Result.fail(CustomFailure(message: message));
+      return response as Result<bool>;
     }
   }
 
@@ -164,7 +166,6 @@ class AuthRepositoryImpl implements UserRepository {
                   return UserMapper.fromJson(data);
                 }
          );
-    print("GETCURRENT");
 
     return response;
   }
