@@ -1,11 +1,9 @@
 // ignore_for_file: constant_identifier_names
 
 import 'dart:io';
-
 import 'package:dio/dio.dart';
 import 'package:go_delivery_frontend/common/failure.dart';
 import 'package:go_delivery_frontend/infrastructure/mappers/user/user_mapper.dart';
-
 import 'package:go_delivery_frontend/application/api/api_request.dart';
 import 'package:go_delivery_frontend/application/key_value_storage/key_value.dart';
 import 'package:go_delivery_frontend/common/result.dart';
@@ -31,33 +29,35 @@ class AuthRepositoryImpl implements UserRepository {
 
   @override
   Future<Result<bool>> login(String email, String password) async {
-    var message = '';
     final response = await _apiRequestManager.request<bool>(
       '/api/auth/login',
       'POST',
       (data) {
-        if (data['errorCode'] != 200) {
-          message = data["message"];
-
-          return false;
-        } else {
-          final userData = data['value'] as Map<String, dynamic>;
-          var user = UserMapper.fromJson(userData);
-
-          _apiRequestManager.setHeaders(
-              'Authorization', 'Bearer ${user.token}');
-
-          _localStorage.setKeyValue<bool>('isAdmin', true);
-          _localStorage.setKeyValue<String>('appToken', user.token);
+        if (data is Map<String, dynamic>) {
+          if (data.containsKey('error')) {
+            return false;
+          } else {
+            var user = UserMapper.fromJson(data);
+            _apiRequestManager.setHeaders(
+                'Authorization', 'Bearer ${user.token}');
+            _localStorage.setKeyValue<bool>('isAdmin', true);
+            _localStorage.setKeyValue<String>('appToken', user.token);
+            return true;
+          }
         }
-        return true;
+        return false;
       },
       body: {"email": email, "password": password},
     );
-    if (response.value == true) {
-      return response;
+
+    if (response.isSuccess) {
+      if (response.value == true) {
+        return Result.success(true);
+      } else {
+        return Result.fail(CustomFailure(message: 'Login failed'));
+      }
     } else {
-      return Result.fail(CustomFailure(message: message));
+      return response;
     }
   }
 
@@ -158,8 +158,8 @@ class AuthRepositoryImpl implements UserRepository {
       '/api/auth/current',
       'GET',
       (data) {
-        if (data['value'] != null) {
-          return UserMapper.fromJson(data['value']);
+        if (data != null) {
+          return UserMapper.fromJson(data);
         } else {
           throw Exception('No se encontró el campo "value" en la respuesta');
         }

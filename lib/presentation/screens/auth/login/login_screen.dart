@@ -2,10 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_delivery_frontend/application/BLoc/notifications/bloc/notifications_bloc.dart';
-//import 'package:go_delivery_frontend/application/BLoc/themes/themes_bloc.dart';
 import 'package:go_delivery_frontend/presentation/screens/auth/login/login_validators.dart';
 import 'package:go_router/go_router.dart';
-
 import 'package:go_delivery_frontend/application/BLoc/auth/login/login_bloc.dart';
 import 'package:go_delivery_frontend/injector.dart';
 import 'package:go_delivery_frontend/presentation/screens/auth/login/inputDecorationLogin.dart';
@@ -21,8 +19,7 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return BlocProvider<LoginBloc>(
-      // BlocProvider in LoginScreen
-      create: (context) => getIt<LoginBloc>(), // Or your creation logic
+      create: (context) => getIt<LoginBloc>(),
       child: const LoginForm(),
     );
   }
@@ -38,7 +35,6 @@ class LoginForm extends StatefulWidget {
 }
 
 class LoginFormState extends State<LoginForm> {
-  // Corrected line
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   bool _obscurePassword = true;
@@ -67,7 +63,6 @@ class LoginFormState extends State<LoginForm> {
 
   @override
   Widget build(BuildContext context) {
-    //bool isDarkMode = context.watch<ThemesBloc>().isDarkMode;
     return BlocConsumer<LoginBloc, LoginState>(
         listenWhen: (previous, current) =>
             previous.formStatus != current.formStatus,
