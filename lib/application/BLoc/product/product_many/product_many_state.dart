@@ -21,7 +21,7 @@ class ProductListLoaded extends ProductListState {
   final bool hasReachedMax;
   final int page;
   final List<String>? categories;
-  final String? search;
+  final String? name;
   final String? price;
   final String? discount;
   final String? popular;
@@ -31,7 +31,7 @@ class ProductListLoaded extends ProductListState {
     required this.hasReachedMax,
     required this.page,
     this.categories,
-    this.search,
+    this.name,
     this.price,
     this.discount,
     this.popular,
@@ -42,7 +42,7 @@ class ProductListLoaded extends ProductListState {
     bool? hasReachedMax,
     int? page,
     List<String>? categories,
-    String? search,
+    String? name,
     String? price,
     String? discount,
     String? popular,
@@ -52,7 +52,7 @@ class ProductListLoaded extends ProductListState {
       hasReachedMax: hasReachedMax ?? this.hasReachedMax,
       page: page ?? this.page,
       categories: categories ?? this.categories,
-      search: search ?? this.search,
+      name: name ?? this.name,
       price: price ?? this.price,
       discount: discount ?? this.discount,
       popular: popular ?? this.popular,
@@ -65,7 +65,7 @@ class ProductListLoaded extends ProductListState {
     hasReachedMax,
     page,
     categories,
-    search,
+    name,
     price,
     discount,
     popular

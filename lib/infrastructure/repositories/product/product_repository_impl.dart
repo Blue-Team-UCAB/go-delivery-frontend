@@ -24,7 +24,7 @@ class ProductRepositoryImpl extends ProductRepository {
 
   @override
   Future<Result<List<Product>>> getProducts({
-    String? search,
+    String? name,
     List<String>? categories,
     String? price,
     String? discount,
@@ -41,8 +41,8 @@ class ProductRepositoryImpl extends ProductRepository {
       };
 
       // Add optional parameters conditionally
-      if (search != null && search.trim().isNotEmpty) {
-        queryParameters['search'] = search.trim();
+      if (name != null && name.trim().isNotEmpty) {
+        queryParameters['name'] = name.trim();
       }
 
       if (categories != null && categories.isNotEmpty) {
@@ -62,7 +62,10 @@ class ProductRepositoryImpl extends ProductRepository {
         queryParameters['popular'] = popular;
       }
 
-      print(queryParameters);
+      print('Query Parameters:');
+      queryParameters.forEach((key, value) {
+        print('  - $key: $value');
+      });
 
       // Perform the API request
       final response = await _apiRequestManager.request(
