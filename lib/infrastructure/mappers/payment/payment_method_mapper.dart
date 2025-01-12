@@ -24,6 +24,17 @@ class PaymentMethodMapper {
       return {
         'idCard': paymentMethod.idCard,
       };
+      // ignore: unnecessary_type_check
+    } else if (paymentMethod is PaymentMethod) {
+      return {
+        'id': paymentMethod.id,
+        'name': paymentMethod.name,
+        'amount': paymentMethod.amount,
+        'date': paymentMethod.date?.toIso8601String(),
+        'reference': paymentMethod.reference,
+        'state': paymentMethod.state,
+        'image': paymentMethod.image,
+      };
     }
     throw Exception('Unsupported PaymentMethod type');
   }
@@ -46,6 +57,16 @@ class PaymentMethodMapper {
       );
     } else if (json.containsKey('idCard')) {
       return Card(idCard: json['idCard']);
+    } else if (json.containsKey('name')) {
+      return PaymentMethod(
+        id: json['id'],
+        name: json['name'],
+        amount: json['amount'],
+        date: json['date'] != null ? DateTime.parse(json['date']) : null,
+        reference: json['reference'],
+        state: json['state'],
+        image: json['image'],
+      );
     }
     throw Exception('Unsupported PaymentMethod type');
   }

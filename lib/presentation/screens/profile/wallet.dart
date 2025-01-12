@@ -6,6 +6,9 @@ import 'package:go_delivery_frontend/application/BLoc/payment/card_get/get_card_
 import 'package:go_delivery_frontend/application/BLoc/payment/delete_card/delete_card_bloc.dart';
 import 'package:go_delivery_frontend/application/BLoc/payment/delete_card/delete_card_event.dart';
 import 'package:go_delivery_frontend/application/BLoc/payment/delete_card/delete_card_state.dart';
+import 'package:go_delivery_frontend/application/BLoc/payment/get_payment_methods/get_payment_methods_blocs.dart';
+import 'package:go_delivery_frontend/application/BLoc/payment/get_payment_methods/get_payment_methods_event.dart';
+import 'package:go_delivery_frontend/application/BLoc/payment/get_payment_methods/get_payment_methods_state.dart';
 import 'package:go_delivery_frontend/application/BLoc/payment/get_transactions/get_transactions_bloc.dart';
 import 'package:go_delivery_frontend/application/BLoc/payment/get_transactions/get_transactions_event.dart';
 import 'package:go_delivery_frontend/application/BLoc/payment/get_wallet/get_wallet_bloc.dart';
@@ -32,7 +35,6 @@ class _WalletScreenState extends State<WalletScreen> {
   bool isVisible = true;
   String? _selectedCardType;
   String? _selectedGoDelyOption;
-  String? _referenceNumber;
   String? _selectedBank;
   double userPoints = 0.00;
 
@@ -49,6 +51,7 @@ class _WalletScreenState extends State<WalletScreen> {
     BlocProvider.of<GetWalletAmountBloc>(context).add(LoadWalletAmount());
     BlocProvider.of<GetPaymentTransactionsBloc>(context)
         .add(LoadPaymentTransactions());
+    context.read<PaymentMethodBloc>().add(LoadPaymentMethods());
   }
 
   @override
@@ -401,64 +404,92 @@ class _WalletScreenState extends State<WalletScreen> {
   }
 
   Widget _buildGoDelyOptions() {
-    return Padding(
-      padding: const EdgeInsets.all(12.0),
-      child: Column(
-        children: [
-          const SizedBox(height: 16),
-          Column(
-            children: ['Pago Móvil', 'Zelle'].map((option) {
-              return GestureDetector(
-                behavior: HitTestBehavior.opaque,
-                onTap: () {
-                  setState(() {
-                    _selectedGoDelyOption = option;
-                  });
-                  if (option == 'Pago Móvil') {
-                    _showGoDelyForm(context);
-                  } else if (option == 'Zelle') {
-                    _showZelleForm(context);
-                  }
-                },
-                child: Container(
-                  width:
-                      double.infinity, // Botón ocupa todo el ancho disponible
-                  margin: const EdgeInsets.only(
-                      bottom: 8.0), // Espacio entre botones
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 16.0, vertical: 12.0),
-                  decoration: BoxDecoration(
-                    border: Border.all(
-                      color: _selectedGoDelyOption == option
-                          ? const Color(0xFF2000B1)
-                          : Colors.grey,
+    return BlocBuilder<PaymentMethodBloc, PaymentMethodState>(
+      builder: (context, state) {
+        if (state is PaymentMethodLoading) {
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        } else if (state is PaymentMethodLoaded) {
+          final activeMethods = state.paymentMethods
+              .where((method) => method.state == "active")
+              .toList();
+
+          if (activeMethods.isEmpty) {
+            return const Center(
+              child: Text(
+                'No hay métodos de pago disponibles',
+                style: TextStyle(color: Colors.grey),
+              ),
+            );
+          }
+          return Padding(
+            padding: const EdgeInsets.all(12.0),
+            child: Column(
+              children: activeMethods.map((method) {
+                return GestureDetector(
+                  behavior: HitTestBehavior.opaque,
+                  onTap: () {
+                    setState(() {
+                      _selectedGoDelyOption = method.name ?? '';
+                    });
+                    final methodName = method.name?.trim().toLowerCase();
+                    if (methodName == 'Pago Movil'.toLowerCase()) {
+                      _showGoDelyForm(context);
+                    } else if (methodName == 'zelle'.toLowerCase()) {
+                      _showZelleForm(context);
+                    }
+                  },
+                  child: Container(
+                    width: double.infinity,
+                    margin: const EdgeInsets.only(bottom: 8.0),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 16.0, vertical: 12.0),
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                        color: _selectedGoDelyOption == method.name
+                            ? const Color(0xFF2000B1)
+                            : Colors.grey,
+                      ),
+                      borderRadius: BorderRadius.circular(12.0),
                     ),
-                    borderRadius: BorderRadius.circular(12.0),
-                  ),
-                  child: Text(
-                    option,
-                    textAlign: TextAlign.left,
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: _selectedGoDelyOption == option
-                          ? const Color(0xFF2000B1)
-                          : Colors.black,
+                    child: Row(
+                      children: [
+                        Image.network(
+                          method.image!,
+                          height: 24,
+                          width: 24,
+                          errorBuilder: (context, error, stackTrace) =>
+                              const Icon(Icons.image_not_supported),
+                        ),
+                        const SizedBox(width: 8),
+                        Text(
+                          method.name!,
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: _selectedGoDelyOption == method.name
+                                ? const Color(0xFF2000B1)
+                                : Colors.black,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                ),
-              );
-            }).toList(),
-          ),
-          const SizedBox(height: 12),
-          if (_referenceNumber != null) ...[
-            const SizedBox(height: 4),
-            Text(
-              'Referencia: $_referenceNumber',
-              style: const TextStyle(color: Colors.grey, fontSize: 12),
+                );
+              }).toList(),
             ),
-          ],
-        ],
-      ),
+          );
+        } else if (state is PaymentMethodError) {
+          return const Center(
+            child: Text(
+              'Error al cargar métodos de pago',
+              style: TextStyle(color: Colors.red),
+            ),
+          );
+        } else {
+          return const SizedBox.shrink();
+        }
+      },
     );
   }
 
