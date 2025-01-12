@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
+import 'package:go_delivery_frontend/presentation/screens/order/order_screen_placeholder.dart';
+import 'package:go_delivery_frontend/presentation/widgets/order/order_empty_state_widget.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:go_delivery_frontend/application/BLoc/order/order_many/order_many_bloc.dart';
@@ -128,7 +129,9 @@ class _OrdersPageState extends State<OrdersPage>
       child: ClipRRect(
         borderRadius: BorderRadius.all(Radius.circular(isDrawerOpen ? 16 : 0)),
         child: Scaffold(
+          backgroundColor: Color(0xFFEBEAED),
           appBar: AppBar(
+            backgroundColor: Color(0xFFEBEAED),
             leading: IconButton(
               icon: isDrawerOpen
                   ? const Icon(Icons.arrow_back_ios)
@@ -206,14 +209,14 @@ class _OrdersPageState extends State<OrdersPage>
                             width: 3,
                           ),
                         ),
-                        color: Colors.purpleAccent.withOpacity(0.13),
+                        color: Color.fromARGB(100, 213, 204, 255),
                       ),
                       indicatorSize: TabBarIndicatorSize.tab,
                       labelPadding: const EdgeInsets.symmetric(horizontal: 16),
                       overlayColor: WidgetStateProperty.resolveWith<Color?>(
                         (Set<WidgetState> states) {
                           if (states.contains(WidgetState.pressed)) {
-                            return Colors.purpleAccent.withOpacity(0.1);
+                            return Color.fromARGB(100, 213, 204, 255);
                           }
                           return null;
                         },
@@ -281,7 +284,8 @@ class _OrdersPageState extends State<OrdersPage>
       builder: (context, state) {
         if (orders.isEmpty && state is ManyOrdersLoadingState) {
           return const Center(
-            child: CircularProgressIndicator(),
+            //todo: AQUI EL PLACEHOLDER
+            child: OrderScreenPlaceholder(),
           );
         }
 
@@ -306,27 +310,7 @@ class _OrdersPageState extends State<OrdersPage>
 
         // No orders
         if (orders.isEmpty) {
-          return Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                SvgPicture.asset(
-                  'assets/icon/order_not_found.svg',
-                  height: 200,
-                  width: 200,
-                ),
-                const SizedBox(height: 16),
-                const Text(
-                  'No Hay Ordenes',
-                  style: TextStyle(
-                    fontFamily: "Inter",
-                    fontSize: 16,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-              ],
-            ),
-          );
+          return OrderEmptyStateWidget();
         }
 
         return NotificationListener<ScrollNotification>(
@@ -354,7 +338,7 @@ class _OrdersPageState extends State<OrdersPage>
                     ((isActiveTab && _isLoadingMoreActive) ||
                         (!isActiveTab && _isLoadingMorePast))) {
                   return const Center(
-                    child: CircularProgressIndicator(),
+                    child: LinearProgressIndicator(),
                   );
                 }
 
