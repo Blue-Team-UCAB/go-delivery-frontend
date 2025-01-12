@@ -45,11 +45,11 @@ class ApiRequestManagerImpl extends IApiRequestManager {
       case DioExceptionType.receiveTimeout:
         return const NoInternetFailure();
       case DioExceptionType.badResponse:
-        if (e.response?.data['message'] is String) {
-          print("BadResponse!");
-          return BadReponseFailure();
+        if (e.response?.data is Map<String, dynamic>) {
+          String errorMessage = e.response?.data['message'] ?? 'Unknown error';
+          return BadReponseFailure(message: errorMessage);
         } else {
-          return const NoAuthorizeFailure(message: 'Error desconocido');
+          return const NoAuthorizeFailure(message: 'Unknown error');
         }
       case DioExceptionType.connectionError:
         if (e.message?.contains('SocketException') ?? false) {
