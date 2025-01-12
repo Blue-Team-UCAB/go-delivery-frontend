@@ -218,17 +218,12 @@ class OrderCardState extends State<OrderCard> {
         Expanded(
           child: ElevatedButton(
               onPressed: () {
-                showDialog(
-                  context: context,
-                  builder: (BuildContext context) {
-                    return ReportProblemDialog(orderId: orderid);
-                  },
-                );
+
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.deepOrange[600],
               ),
-              child: const Text('Reportar problema',
+              child: const Text('Ver Reporte',
                   style: TextStyle(
                     color: Colors.white,
                     fontFamily: 'Inter',

@@ -7,6 +7,8 @@ import 'package:go_delivery_frontend/presentation/widgets/order_detailed/active/
 import 'package:go_delivery_frontend/presentation/widgets/order_detailed/active/driver_card.dart';
 import 'package:go_delivery_frontend/presentation/widgets/order_detailed/past/order_items_list.dart';
 
+import '../../../../widgets/order_detailed/past/report_problem_window.dart';
+
 class ActiveOrderDetails extends StatelessWidget {
   final OrderDetailLoadedState state;
 
@@ -28,13 +30,6 @@ class ActiveOrderDetails extends StatelessWidget {
           ),
           FadeInDown(
             delay: const Duration(milliseconds: 20),
-            child: OrderHeaderInfo(
-              id: state.id,
-              location: state.location,
-            ),
-          ),
-          FadeInDown(
-            delay: const Duration(milliseconds: 100),
             child: Center(
               child: TextButton(
                 onPressed: () {
@@ -50,11 +45,18 @@ class ActiveOrderDetails extends StatelessWidget {
                   style: TextStyle(
                     fontFamily: "Montserrat",
                     color: Color(0xFF2000B1),
-                    fontSize: 14,
+                    fontSize: 16,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
               ),
+            ),
+          ),
+          FadeInDown(
+            delay: const Duration(milliseconds: 20),
+            child: OrderHeaderInfo(
+              id: state.id,
+              location: state.location,
             ),
           ),
           if (currentActiveState == 'SHIPPED')
@@ -67,6 +69,41 @@ class ActiveOrderDetails extends StatelessWidget {
               ),
             ),
           FadeInDown(
+            delay: const Duration(milliseconds: 150),
+            child: Center(
+              child: TextButton.icon(
+                onPressed: () {
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return ReportProblemDialog(orderId: state.id);
+                    },
+                  );
+                },
+                icon: Icon(Icons.warning, color: Colors.deepOrange[400], size: 16),
+                label: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      'Reportar problema',
+                      style: TextStyle(
+                        fontFamily: "Montserrat",
+                        color: Colors.deepOrange[400],
+                        fontSize: 12,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    SizedBox(width: 4),
+                    Icon(Icons.warning, color: Colors.deepOrange[400], size: 16),
+                  ],
+                ),
+                style: TextButton.styleFrom(
+                  padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                ),
+              ),
+            ),
+          ),
+          FadeInDown(
             delay: const Duration(milliseconds: 100),
             child: OrderProgress(
               state: state,
@@ -74,12 +111,15 @@ class ActiveOrderDetails extends StatelessWidget {
             ),
           ),
           FadeInDown(
-              delay: const Duration(milliseconds: 1600),
-              child: Padding(
-                  padding: const EdgeInsets.all(
-                      14.0), // Adds 16 pixels of padding on all sides
-                  child: OrderItemsList(
-                      products: state.products, bundles: state.bundles))),
+            delay: const Duration(milliseconds: 1600),
+            child: Padding(
+              padding: const EdgeInsets.all(14.0),
+              child: OrderItemsList(
+                products: state.products,
+                bundles: state.bundles,
+              ),
+            ),
+          ),
           const SizedBox(height: 18),
         ],
       ),
