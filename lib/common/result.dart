@@ -2,7 +2,7 @@ import 'package:go_delivery_frontend/common/failure.dart';
 
 class Result<T> {
   final T? value;
-  final Failure? error; // Cambiar de Exception a Failure
+  final Failure? error;
   late final bool isSuccess;
 
   Result._({this.value, this.error, required this.isSuccess})

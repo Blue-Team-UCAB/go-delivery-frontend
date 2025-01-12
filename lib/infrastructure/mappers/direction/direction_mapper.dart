@@ -1,4 +1,5 @@
 import 'package:go_delivery_frontend/application/use_cases/direction/add/add_direction.dart';
+import 'package:go_delivery_frontend/application/use_cases/direction/patch/patch_direction.dart';
 import 'package:go_delivery_frontend/domain/entities/direction/direction.dart';
 
 class DirectionMapper {
@@ -36,5 +37,16 @@ class DirectionMapper {
 
   static List<Direction> fromJsonList(List<dynamic> jsonList) {
     return jsonList.map((json) => fromJson(json)).toList();
+  }
+
+  static Map<String, dynamic> toJsonUpdate(UpdateDirectionInput input) {
+    return {
+      'directionId': input.directionId,
+      'name': input.name,
+      'direction': input.direction,
+      'lat': input.lat.toString(),
+      'long': input.long.toString(),
+      'favorite': input.favorite,
+    };
   }
 }

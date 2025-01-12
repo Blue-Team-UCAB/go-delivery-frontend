@@ -17,5 +17,7 @@ export 'package:go_delivery_frontend/application/use_cases/order/get_many_order.
 export 'package:go_delivery_frontend/application/use_cases/order/get_one_order.dart';
 export 'package:go_delivery_frontend/application/use_cases/direction/get_many/get_directions.dart';
 export 'package:go_delivery_frontend/application/use_cases/direction/add/add_direction.dart';
+export 'package:go_delivery_frontend/application/use_cases/direction/patch/patch_direction.dart';
+export 'package:go_delivery_frontend/application/use_cases/direction/delete/delete_direction.dart';
 export 'package:go_delivery_frontend/application/use_cases/user/update_image/update_image_usecase.dart';
 export 'package:go_delivery_frontend/application/use_cases/user/wallet/get_wallet.dart';

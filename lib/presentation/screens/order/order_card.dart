@@ -74,7 +74,6 @@ class OrderCardState extends State<OrderCard> {
         margin: const EdgeInsets.all(8),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(8),
-          
         ),
         child: Padding(
           padding: const EdgeInsets.all(16),
@@ -89,7 +88,7 @@ class OrderCardState extends State<OrderCard> {
                       children: [
                         Flexible(
                           child: Text(
-                            "Orden #${widget.order.id.substring(widget.order.id.length -4)}",
+                            "Orden #${widget.order.id.substring(widget.order.id.length - 4)}",
                             style: const TextStyle(
                               fontFamily: 'Inter',
                               fontSize: 18,
@@ -114,7 +113,7 @@ class OrderCardState extends State<OrderCard> {
                 ),
               ),
               const SizedBox(height: 20),
-              Container(
+              SizedBox(
                 height: 60,
                 child: Text(
                   maxLines: 3,
@@ -142,7 +141,7 @@ class OrderCardState extends State<OrderCard> {
                   fontFamily: 'Inter',
                   fontSize: 14,
                   fontWeight: FontWeight.bold,
-                  color:  readableStatus == 'Cancelada'
+                  color: readableStatus == 'Cancelada'
                       ? Colors.grey[400]
                       : const Color(0xFF2000B1),
                 ),
@@ -217,11 +216,8 @@ class OrderCardState extends State<OrderCard> {
     String readableStatus = _getReadableStatus(status);
 
     if (readableStatus == 'Cancelada') {
-      return Row(
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: [
-          
-          ElevatedButton(
+      return Row(mainAxisAlignment: MainAxisAlignment.end, children: [
+        ElevatedButton(
             onPressed: () {
               showDialog(
                 context: context,
@@ -234,30 +230,28 @@ class OrderCardState extends State<OrderCard> {
               backgroundColor: Color(0xFFED4B00),
             ),
             child: const Text('Reportar un problema',
-              style: TextStyle(
-                color: Colors.white,
-                fontFamily: 'Inter',
-                fontSize: 13,
-                fontWeight: FontWeight.bold,
-              )
-            )
-          ),
-          SizedBox(width: 8),
-          OutlinedButton(
-            onPressed: () {
-              context.push('/orderdetail/$orderid');
-            },
-            style: OutlinedButton.styleFrom(
-              foregroundColor: const Color(0xFF2000B1),
-            ),
-            child: const Text('Ver',
                 style: TextStyle(
+                  color: Colors.white,
                   fontFamily: 'Inter',
-                  fontSize: 14,
+                  fontSize: 13,
                   fontWeight: FontWeight.bold,
-                )),
+                ))),
+        SizedBox(width: 8),
+        OutlinedButton(
+          onPressed: () {
+            context.push('/orderdetail/$orderid');
+          },
+          style: OutlinedButton.styleFrom(
+            foregroundColor: const Color(0xFF2000B1),
           ),
-        ]);
+          child: const Text('Ver',
+              style: TextStyle(
+                fontFamily: 'Inter',
+                fontSize: 14,
+                fontWeight: FontWeight.bold,
+              )),
+        ),
+      ]);
     }
 
     if (readableStatus == 'Entregada') {
@@ -294,7 +288,6 @@ class OrderCardState extends State<OrderCard> {
                   fontWeight: FontWeight.bold,
                 )),
           ),
-          
         ],
       );
     }
