@@ -250,152 +250,152 @@ class _WalletScreenState extends State<WalletScreen> {
   }
 
   Widget _buildCreditCardOptions() {
-    return Padding(
-      padding: const EdgeInsets.all(12.0),
-      child: Column(
-        children: [
-          BlocBuilder<CardListBloc, CardListState>(
-            builder: (context, state) {
-              if (state is CardListInitial) {
-                BlocProvider.of<CardListBloc>(context).add(LoadCardList());
-                return const CircularProgressIndicator();
-              }
+    return BlocListener<DeleteCardBloc, DeleteCardState>(
+      listener: (context, state) {
+        if (state is DeleteCardSuccess) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Tarjeta eliminada con éxito')),
+          );
+          // Notificar a CardListBloc para recargar la lista de tarjetas
+          context.read<CardListBloc>().add(LoadCardList());
+        } else if (state is DeleteCardFailure) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(
+                  'Error al eliminar la tarjeta: ${state.result.getError()}'),
+            ),
+          );
+        }
+      },
+      child: Padding(
+        padding: const EdgeInsets.all(12.0),
+        child: Column(
+          children: [
+            BlocBuilder<CardListBloc, CardListState>(
+              builder: (context, state) {
+                if (state is CardListInitial) {
+                  context.read<CardListBloc>().add(LoadCardList());
+                  return const CircularProgressIndicator();
+                }
 
-              if (state is CardListLoading) {
-                return const CircularProgressIndicator();
-              } else if (state is CardListLoaded) {
-                return Column(
-                  children: state.cards.map((card) {
-                    final cardIdentifier =
-                        "${card.brand ?? ''}-${card.last4 ?? ''}-${card.expMonth ?? ''}-${card.expYear ?? ''}";
+                if (state is CardListLoading) {
+                  return const CircularProgressIndicator();
+                } else if (state is CardListLoaded) {
+                  return Column(
+                    children: state.cards.map((card) {
+                      final cardIdentifier =
+                          "${card.brand ?? ''}-${card.last4 ?? ''}-${card.expMonth ?? ''}-${card.expYear ?? ''}";
 
-                    return GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          _selectedCardType = cardIdentifier;
-                        });
-                      },
-                      child: Container(
-                        margin: const EdgeInsets.only(bottom: 12.0),
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 12.0,
-                          vertical: 8.0,
-                        ),
-                        width: double.infinity,
-                        decoration: BoxDecoration(
-                          border: Border.all(
-                            color: _selectedCardType == cardIdentifier
-                                ? const Color(0xFF2000B1)
-                                : Colors.grey,
+                      return GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            _selectedCardType = cardIdentifier;
+                          });
+                        },
+                        child: Container(
+                          margin: const EdgeInsets.only(bottom: 12.0),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 12.0,
+                            vertical: 8.0,
                           ),
-                          borderRadius: BorderRadius.circular(8.0),
-                        ),
-                        child: Row(
-                          children: [
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    (card.brand ?? 'Desconocido').toUpperCase(),
-                                    style: const TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.bold,
+                          width: double.infinity,
+                          decoration: BoxDecoration(
+                            border: Border.all(
+                              color: _selectedCardType == cardIdentifier
+                                  ? const Color(0xFF2000B1)
+                                  : Colors.grey,
+                            ),
+                            borderRadius: BorderRadius.circular(8.0),
+                          ),
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      (card.brand ?? 'Desconocido')
+                                          .toUpperCase(),
+                                      style: const TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold,
+                                      ),
                                     ),
-                                  ),
-                                  const SizedBox(height: 4),
-                                  Text(
-                                    "XXXX XXXX XXXX ${card.last4 ?? '0000'}",
-                                    style: const TextStyle(
-                                      fontSize: 14,
+                                    const SizedBox(height: 4),
+                                    Text(
+                                      "XXXX XXXX XXXX ${card.last4 ?? '0000'}",
+                                      style: const TextStyle(
+                                        fontSize: 14,
+                                      ),
                                     ),
-                                  ),
-                                  const SizedBox(height: 4),
-                                  Text(
-                                    "Fecha: ${card.expMonth?.toString().padLeft(2, '0') ?? '00'}/${card.expYear?.toString().substring(2, 4) ?? '00'}",
-                                    style: const TextStyle(
-                                      fontSize: 14,
+                                    const SizedBox(height: 4),
+                                    Text(
+                                      "Fecha: ${card.expMonth?.toString().padLeft(2, '0') ?? '00'}/${card.expYear?.toString().substring(2, 4) ?? '00'}",
+                                      style: const TextStyle(
+                                        fontSize: 14,
+                                      ),
                                     ),
-                                  ),
-                                ],
+                                  ],
+                                ),
                               ),
-                            ),
-                            IconButton(
-                              onPressed: () {
-                                BlocProvider.of<DeleteCardBloc>(context)
-                                    .add(DeleteCardRequested(cardId: card.id!));
-                              },
-                              icon: const Icon(
-                                Icons.delete,
-                                color: Colors.red,
+                              IconButton(
+                                onPressed: () {
+                                  BlocProvider.of<DeleteCardBloc>(context).add(
+                                      DeleteCardRequested(cardId: card.id!));
+                                },
+                                icon: const Icon(
+                                  Icons.delete,
+                                  color: Colors.red,
+                                ),
                               ),
-                            ),
-                            BlocListener<DeleteCardBloc, DeleteCardState>(
-                              listener: (context, state) {
-                                if (state is DeleteCardSuccess) {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(
-                                        content: Text(
-                                            'Tarjeta eliminada con éxito')),
-                                  );
-                                  BlocProvider.of<CardListBloc>(context)
-                                      .add(LoadCardList());
-                                } else if (state is DeleteCardFailure) {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(
-                                        content: Text(
-                                            'Error al eliminar la tarjeta')),
-                                  );
-                                }
-                              },
-                              child: Container(),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
-                      ),
-                    );
-                  }).toList(),
-                );
-              } else if (state is CardListFailed) {
-                return Text('Error: ${state.result.getError()}');
-              }
-              return Container();
-            },
-          ),
-          const SizedBox(height: 16),
-          GestureDetector(
-            onTap: () {
-              showModalBottomSheet(
-                context: context,
-                isScrollControlled: true,
-                shape: const RoundedRectangleBorder(
-                  borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
-                ),
-                builder: (context) => SizedBox(
-                  height: MediaQuery.of(context).size.height * 0.60,
-                  child: const AddCardScreen(),
-                ),
-              );
-            },
-            child: const Center(
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Icon(Icons.add, color: Color(0xFF2000B1)),
-                  SizedBox(width: 8),
-                  Text(
-                    'Añadir nueva tarjeta',
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.bold,
-                      color: Color(0xFF2000B1),
-                    ),
+                      );
+                    }).toList(),
+                  );
+                } else if (state is CardListFailed) {
+                  return Text('Error: ${state.result.getError()}');
+                }
+                return Container();
+              },
+            ),
+            const SizedBox(height: 16),
+            GestureDetector(
+              onTap: () {
+                showModalBottomSheet(
+                  context: context,
+                  isScrollControlled: true,
+                  shape: const RoundedRectangleBorder(
+                    borderRadius:
+                        BorderRadius.vertical(top: Radius.circular(16)),
                   ),
-                ],
+                  builder: (context) => SizedBox(
+                    height: MediaQuery.of(context).size.height * 0.60,
+                    child: const AddCardScreen(),
+                  ),
+                );
+              },
+              child: const Center(
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(Icons.add, color: Color(0xFF2000B1)),
+                    SizedBox(width: 8),
+                    Text(
+                      'Añadir nueva tarjeta',
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold,
+                        color: Color(0xFF2000B1),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

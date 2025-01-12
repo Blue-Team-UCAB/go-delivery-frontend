@@ -145,16 +145,12 @@ class PaymentRepositoryImpl extends PaymentRepository {
         return false;
       },
     );
-
     if (response.isSuccess) {
-      if (response.value == true) {
-        return Result.success(true);
-      } else {
-        return Result.fail(
-            CustomFailure(message: 'Error al eliminar la tarjeta'));
-      }
+      return Result.success(response.value ?? false);
     } else {
-      return response;
+      return Result.fail(
+        CustomFailure(message: 'Error desconocido al eliminar la tarjeta'),
+      );
     }
   }
 }
