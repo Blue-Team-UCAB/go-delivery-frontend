@@ -25,7 +25,11 @@ class ProductRandomListBloc extends Bloc<ProductListEvent, ProductListState> {
 
       final result = await _getProductsUseCase.execute(
         GetProductsUseCaseInput(
-          search: '',
+          name: '',
+          categories: [''],
+          price: '',
+          discount: '',
+          popular: '',
           page: event.page,
           perpage: event.perpage,
         ),

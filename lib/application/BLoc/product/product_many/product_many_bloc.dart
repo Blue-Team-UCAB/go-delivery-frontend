@@ -20,11 +20,11 @@ class ProductListBloc extends SafeBloc<ProductListEvent, ProductListState> {
       Emitter<ProductListState> emit,
       ) async {
     await _loadProducts(
-      search: event.search,
-      categories: event.categories,
-      price: event.price,
-      discount: event.discount,
-      popular: event.popular,
+      name: event.name ?? '',
+      categories: event.categories ?? [''],
+      price: event.price ?? '',
+      discount: event.discount ?? '',
+      popular: event.popular ?? '',
       page: event.page,
       perPage: event.perpage,
       emit: emit,
@@ -36,11 +36,11 @@ class ProductListBloc extends SafeBloc<ProductListEvent, ProductListState> {
       Emitter<ProductListState> emit,
       ) async {
     await _loadProducts(
-      search: event.search,
-      categories: event.categories,
-      price: event.price,
-      discount: event.discount,
-      popular: event.popular,
+      name: event.name,
+      categories: event.categories ?? [''],
+      price: event.price ?? '',
+      discount: event.discount ?? '',
+      popular: event.popular ?? '',
       page: event.page,
       perPage: event.perpage,
       emit: emit,
@@ -48,11 +48,11 @@ class ProductListBloc extends SafeBloc<ProductListEvent, ProductListState> {
   }
 
   Future<void> _loadProducts({
-    String? search,
-    List<String>? categories,
-    String? price,
-    String? discount,
-    String? popular,
+    String name = '',
+    List<String> categories = const [''],
+    String price = '',
+    String discount = '',
+    String popular = '',
     required int page,
     required int perPage,
     required Emitter<ProductListState> emit,
@@ -65,7 +65,7 @@ class ProductListBloc extends SafeBloc<ProductListEvent, ProductListState> {
         products: [],
         hasReachedMax: false,
         page: 1,
-        search: search,
+        name: name,
         categories: categories,
         price: price,
         discount: discount,
@@ -74,7 +74,7 @@ class ProductListBloc extends SafeBloc<ProductListEvent, ProductListState> {
 
       // Check if we need to reset the list
       final shouldResetList =
-          (search != currentState.search) ||
+          (name != currentState.name) ||
               (categories != currentState.categories) ||
               (price != currentState.price) ||
               (discount != currentState.discount) ||
@@ -86,7 +86,7 @@ class ProductListBloc extends SafeBloc<ProductListEvent, ProductListState> {
           products: [],
           hasReachedMax: false,
           page: 1,
-          search: search,
+          name: name,
           categories: categories,
           price: price,
           discount: discount,
@@ -98,7 +98,7 @@ class ProductListBloc extends SafeBloc<ProductListEvent, ProductListState> {
       final input = GetProductsUseCaseInput(
         page: page,
         perpage: perPage,
-        search: search,
+        name: name,
         categories: categories,
         price: price,
         discount: discount,
@@ -118,7 +118,7 @@ class ProductListBloc extends SafeBloc<ProductListEvent, ProductListState> {
               : [...currentState.products, ...newProducts],
           hasReachedMax: hasReachedMax,
           page: page,
-          search: search,
+          name: name,
           categories: categories,
           price: price,
           discount: discount,

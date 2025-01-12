@@ -9,13 +9,13 @@ class GetProductsUseCaseInput extends IUseCaseInput {
   final List<String>? categories;
   final String? price;
   final String? discount;
-  final String? search;
+  final String? name;
   final String? popular;
 
   GetProductsUseCaseInput({
     this.price,
     this.discount,
-    this.search,
+    this.name,
     this.popular,
     this.categories,
     required this.page,
@@ -30,8 +30,9 @@ class GetProductsUseCase {
       : _productRepository = productRepository;
 
   Future<Result<List<Product>>> execute(GetProductsUseCaseInput input) {
+
     return _productRepository.getProducts(
-      search: input.search!,
+      name: input.name!,
       categories: input.categories!,
       price: input.price!,
       discount: input.discount!,

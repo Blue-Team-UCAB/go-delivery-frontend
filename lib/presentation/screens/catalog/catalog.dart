@@ -92,7 +92,7 @@ class CatalogScreenState extends State<CatalogScreen>
           _searchQuery.isEmpty
               ? LoadProductList(page: _currentPage, perpage: 6, categories: [''])
               : SearchProductList(
-                  search: _searchQuery,
+                  name: _searchQuery,
                   page: _currentPage,
                   perpage: 6,
                   categories: ['']),
@@ -110,7 +110,7 @@ class CatalogScreenState extends State<CatalogScreen>
     });
     BlocProvider.of<ProductListBloc>(context).add(
       SearchProductList(
-          search: query, page: _currentPage, perpage: 6, categories: ['']),
+          name: query, page: _currentPage, perpage: 6, categories: ['']),
     );
   }
 

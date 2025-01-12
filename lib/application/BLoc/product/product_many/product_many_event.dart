@@ -8,7 +8,7 @@ class LoadProductList extends ProductListEvent {
   final int page;
   final int perpage;
   final List<String>? categories;
-  final String? search;
+  final String? name;
   final String? price;
   final String? discount;
   final String? popular;
@@ -17,7 +17,7 @@ class LoadProductList extends ProductListEvent {
     required this.page,
     required this.perpage,
     this.categories,
-    this.search,
+    this.name,
     this.price,
     this.discount,
     this.popular,
@@ -28,7 +28,7 @@ class LoadProductList extends ProductListEvent {
     page,
     perpage,
     categories,
-    search,
+    name,
     price,
     discount,
     popular
@@ -38,14 +38,14 @@ class LoadProductList extends ProductListEvent {
 class SearchProductList extends ProductListEvent {
   final int page;
   final int perpage;
-  final String search;
+  final String name;
   final List<String>? categories;
   final String? price;
   final String? discount;
   final String? popular;
 
   const SearchProductList({
-    required this.search,
+    required this.name,
     required this.page,
     required this.perpage,
     this.categories,
@@ -56,7 +56,7 @@ class SearchProductList extends ProductListEvent {
 
   @override
   List<Object?> get props => [
-    search,
+    name,
     page,
     perpage,
     categories,
