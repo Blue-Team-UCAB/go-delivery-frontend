@@ -2,6 +2,7 @@ import 'package:go_delivery_frontend/common/result.dart';
 import 'package:go_delivery_frontend/common/failure.dart';
 import 'package:go_delivery_frontend/application/api/api_request.dart';
 import 'package:go_delivery_frontend/application/key_value_storage/key_value.dart';
+import 'package:go_delivery_frontend/domain/entities/payment/payment_method.dart';
 import 'package:go_delivery_frontend/domain/entities/payment/payment_method_zelle.dart';
 import 'package:go_delivery_frontend/infrastructure/mappers/payment/payment_method_mapper.dart';
 import 'package:go_delivery_frontend/domain/entities/payment/payment_method_pago_movil.dart';
@@ -151,6 +152,28 @@ class PaymentRepositoryImpl extends PaymentRepository {
       return Result.fail(
         CustomFailure(message: 'Error desconocido al eliminar la tarjeta'),
       );
+    }
+  }
+
+  @override
+  Future<Result<List<PaymentMethod>>> getPaymentMethods() async {
+    final response = await _apiRequestManager.request<List<PaymentMethod>>(
+      '/api/payment/method/many',
+      'GET',
+      (data) {
+        if (data is List) {
+          return data
+              .map((item) => PaymentMethodMapper.fromJson(item))
+              .toList();
+        }
+        throw Exception('Unexpected response format');
+      },
+    );
+
+    if (response.isSuccess) {
+      return Result.success(response.getValue());
+    } else {
+      return response;
     }
   }
 }

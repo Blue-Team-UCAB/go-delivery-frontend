@@ -48,7 +48,7 @@ class ProductDetailScreen extends StatelessWidget {
 
               return SingleChildScrollView(
                 padding:
-                const EdgeInsets.only(right: 24.0, left: 24.0, bottom: 24),
+                    const EdgeInsets.only(right: 24.0, left: 24.0, bottom: 24),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -81,7 +81,7 @@ class ProductDetailScreen extends StatelessWidget {
                         ),
                         const SizedBox(height: 24),
                         Text(
-                          product.description ?? '',
+                          product.description,
                           maxLines: 2,
                           style: const TextStyle(
                             fontFamily: 'Inter',
@@ -123,19 +123,19 @@ class ProductDetailScreen extends StatelessWidget {
                         Row(
                           children: product.categories.isNotEmpty
                               ? product.categories
-                              .map((category) => Padding(
-                            padding:
-                            const EdgeInsets.only(right: 8.0),
-                            child: Text(
-                              category.name,
-                              style: const TextStyle(
-                                fontFamily: 'Inter',
-                                fontWeight: FontWeight.w400,
-                                fontSize: 16,
-                              ),
-                            ),
-                          ))
-                              .toList()
+                                  .map((category) => Padding(
+                                        padding:
+                                            const EdgeInsets.only(right: 8.0),
+                                        child: Text(
+                                          category.name,
+                                          style: const TextStyle(
+                                            fontFamily: 'Inter',
+                                            fontWeight: FontWeight.w400,
+                                            fontSize: 16,
+                                          ),
+                                        ),
+                                      ))
+                                  .toList()
                               : const [Text('Sin categorías')],
                         ),
                         const SizedBox(height: 10),

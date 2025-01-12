@@ -3,6 +3,7 @@ import 'package:get_it/get_it.dart';
 import 'package:go_delivery_frontend/application/BLoc/blocs.dart';
 import 'package:go_delivery_frontend/application/BLoc/category/category_bloc.dart';
 import 'package:go_delivery_frontend/application/BLoc/order/order_create/order_create_bloc.dart';
+import 'package:go_delivery_frontend/application/BLoc/payment/get_payment_methods/get_payment_methods_blocs.dart';
 import 'package:go_delivery_frontend/application/use_cases/category/get_many_category.dart';
 import 'package:go_delivery_frontend/application/BLoc/order/order_report/order_report_bloc.dart';
 import 'package:go_delivery_frontend/application/use_cases/order/cancel_order.dart';
@@ -238,6 +239,15 @@ class InjectManager {
 
     // Registrar el repositorio de payment
     getIt.registerSingleton<PaymentRepository>(paymentRepository);
+
+    //Caso de uso
+    final getPaymentMethodsUseCase =
+        GetPaymentMethodsUseCase(paymentRepository: paymentRepository);
+
+    getIt.registerSingleton<GetPaymentMethodsUseCase>(getPaymentMethodsUseCase);
+
+    //Bloc
+    getIt.registerSingleton(PaymentMethodBloc(getPaymentMethodsUseCase));
 
     // ============================= PAGO MOVIL =================================== //
 

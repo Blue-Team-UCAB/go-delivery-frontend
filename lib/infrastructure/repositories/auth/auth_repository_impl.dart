@@ -67,7 +67,6 @@ class AuthRepositoryImpl implements UserRepository {
     required String name,
     required String phone,
   }) async {
-    var message;
     final response = await _apiRequestManager.request<bool>(
       '/api/auth/register',
       'POST',
@@ -139,7 +138,7 @@ class AuthRepositoryImpl implements UserRepository {
       'POST',
       (data) {
         print(data);
-          return true;
+        return true;
       },
       body: {'email': email, 'code': code},
     );
@@ -166,7 +165,6 @@ class AuthRepositoryImpl implements UserRepository {
       },
       body: {'email': email, 'code': code, 'password': password},
     );
-
 
     return response;
   }

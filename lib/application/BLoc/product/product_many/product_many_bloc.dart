@@ -5,9 +5,7 @@ import 'package:go_delivery_frontend/application/use_cases/product/get_many_prod
 import 'package:go_delivery_frontend/application/BLoc/product/product_many/product_many_event.dart';
 import 'package:go_delivery_frontend/application/BLoc/product/product_many/product_many_state.dart';
 
-import '../../../core/bloc/ensure_bloc.dart';
-
-class ProductListBloc extends SafeBloc<ProductListEvent, ProductListState> {
+class ProductListBloc extends Bloc<ProductListEvent, ProductListState> {
   final GetProductsUseCase _getProductsUseCase;
 
   ProductListBloc(this._getProductsUseCase) : super(ProductListInitial()) {
@@ -16,9 +14,9 @@ class ProductListBloc extends SafeBloc<ProductListEvent, ProductListState> {
   }
 
   Future<void> _onLoadProductList(
-      LoadProductList event,
-      Emitter<ProductListState> emit,
-      ) async {
+    LoadProductList event,
+    Emitter<ProductListState> emit,
+  ) async {
     await _loadProducts(
       name: event.name ?? '',
       categories: event.categories ?? [''],
@@ -32,9 +30,9 @@ class ProductListBloc extends SafeBloc<ProductListEvent, ProductListState> {
   }
 
   Future<void> _onSearchProductList(
-      SearchProductList event,
-      Emitter<ProductListState> emit,
-      ) async {
+    SearchProductList event,
+    Emitter<ProductListState> emit,
+  ) async {
     await _loadProducts(
       name: event.name,
       categories: event.categories ?? [''],
@@ -62,23 +60,22 @@ class ProductListBloc extends SafeBloc<ProductListEvent, ProductListState> {
       final currentState = state is ProductListLoaded
           ? state as ProductListLoaded
           : ProductListLoaded(
-        products: [],
-        hasReachedMax: false,
-        page: 1,
-        name: name,
-        categories: categories,
-        price: price,
-        discount: discount,
-        popular: popular,
-      );
+              products: [],
+              hasReachedMax: false,
+              page: 1,
+              name: name,
+              categories: categories,
+              price: price,
+              discount: discount,
+              popular: popular,
+            );
 
       // Check if we need to reset the list
-      final shouldResetList =
-          (name != currentState.name) ||
-              (categories != currentState.categories) ||
-              (price != currentState.price) ||
-              (discount != currentState.discount) ||
-              (popular != currentState.popular);
+      final shouldResetList = (name != currentState.name) ||
+          (categories != currentState.categories) ||
+          (price != currentState.price) ||
+          (discount != currentState.discount) ||
+          (popular != currentState.popular);
 
       // Prepare initial state if resetting
       if (shouldResetList) {
