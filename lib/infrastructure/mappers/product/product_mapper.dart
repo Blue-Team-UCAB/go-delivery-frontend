@@ -79,7 +79,7 @@ class ProductMapper {
           .map((categoryJson) => Category(
                 id: categoryJson['id'] as String? ?? '',
                 name: categoryJson['name'] as String? ?? '',
-                image: '',
+                imageUrl: '',
               ))
           .toList();
     }

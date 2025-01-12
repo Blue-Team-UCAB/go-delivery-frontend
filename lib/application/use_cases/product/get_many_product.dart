@@ -7,7 +7,7 @@ class GetProductsUseCaseInput extends IUseCaseInput {
   final int page;
   final int perpage;
   final List<String>? categories;
-  final String? price;
+  final int? price;
   final String? discount;
   final String? name;
   final String? popular;

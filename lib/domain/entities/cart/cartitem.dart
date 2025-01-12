@@ -4,7 +4,6 @@ class CartItem extends Equatable {
   final String id;
   final String name;
   final String? imgUrl;
-  final List<String>? images;
   final double price;
   final String presentation;
   final int quantity;
@@ -14,7 +13,6 @@ class CartItem extends Equatable {
     required this.id,
     required this.name, 
     this.imgUrl,
-    this.images,
     required this.price, 
     required this.presentation,
     required this.quantity,

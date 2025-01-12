@@ -6,6 +6,8 @@ import 'package:go_delivery_frontend/common/result.dart';
 
 import 'package:go_delivery_frontend/application/api/api_request.dart';
 
+import '../../../common/failure.dart';
+
 class BundleRepositoryImpl extends BundleRepository {
   final IApiRequestManager _apiRequestManager;
   final LocalStorage _localStorage;
@@ -23,9 +25,9 @@ class BundleRepositoryImpl extends BundleRepository {
 
   @override
   Future<Result<List<Bundle>>> getBundles({
-    String? category,
+    List<String>? categories,
     String? name,
-    String? number,
+    int? price,
     String? popular,
     String? discount,
     required int page,
@@ -35,21 +37,84 @@ class BundleRepositoryImpl extends BundleRepository {
 
     print("______ BUNDLE MANY ______");
 
-      final response = await _apiRequestManager.request(
-        '/api/bundle/many',
-        'GET',
-        queryParameters: {
-          'page': page.toString(),
-          'perpage': perpage.toString(),
-        },
-        (data) {
-          List<Bundle> bundles = (data as List)
-              .map((bundleData) => BundleMapper.fromJson(bundleData))
+    final Map<String, dynamic> queryParameters = {
+      'page': page.toString(),
+      'perpage': perpage.toString(),
+    };
+
+    if (name != null && name.trim().isNotEmpty) {
+      queryParameters['name'] = name.trim();
+    }
+
+    if (categories != null &&
+        categories.isNotEmpty &&
+        categories.any((category) => category.trim().isNotEmpty)) {
+      queryParameters['category'] = categories
+          .where((category) => category.trim().isNotEmpty)
+          .join(',');
+    }
+
+    if (price != null && price > 0) {
+      queryParameters['price'] = price;
+    }
+
+    if (discount != null && discount.isNotEmpty) {
+      queryParameters['discount'] = discount;
+    }
+
+    if (popular != null && popular.isNotEmpty) {
+      queryParameters['popular'] = popular;
+    }
+
+    print('Query Parameters:');
+    queryParameters.forEach((key, value) {
+      print('  - $key: $value');
+    });
+
+    final response = await _apiRequestManager.request(
+      '/api/bundle/many',
+      'GET',
+      queryParameters: queryParameters,
+          (dynamic data) {
+        if (data is Map<String, dynamic> && data.containsKey('bundles')) {
+          List<dynamic> bundlesData = data['bundles'];
+
+          List<Bundle> bundles = bundlesData
+              .map((bundleData) {
+            try {
+              return BundleMapper.fromJson(bundleData);
+            } catch (e) {
+              print('Error parsing individual bundle: $e');
+              return null;
+            }
+          })
+              .whereType<Bundle>()
               .toList();
+
           return bundles;
-        },
-      );
-      return response;
+        } else if (data is List) {
+          List<Bundle> bundles = data
+              .map((bundleData) {
+            try {
+              return BundleMapper.fromJson(bundleData);
+            } catch (e) {
+              print('Error parsing individual bundle: $e');
+              return null;
+            }
+          })
+              .whereType<Bundle>()
+              .toList();
+
+          return bundles;
+        } else {
+          print('Unexpected data format: ${data.runtimeType}');
+          print("ERROR AL CARGAR BUNDLES MANY");
+
+          return <Bundle>[];
+        }
+      },
+    );
+    return response;
   }
 
   @override

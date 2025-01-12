@@ -30,7 +30,7 @@ class ProductPopularListBloc extends Bloc<ProductListEvent, ProductListState> {
           GetProductsUseCaseInput(
             name: '',
             categories: [''],
-            price: '',
+            price: 0,
             discount: '',
             popular: '',
             page: event.page,

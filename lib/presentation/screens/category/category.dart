@@ -87,7 +87,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
               itemBuilder: (context, index) {
                 final category = state.categories[index];
                 return CategoryCard(
-                  image: category.image ?? '',
+                  image: category.imageUrl ?? '',
                   title: category.name,
                 );
               },
