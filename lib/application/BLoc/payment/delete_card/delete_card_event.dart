@@ -15,5 +15,3 @@ class DeleteCardRequested extends DeleteCardEvent {
   @override
   List<Object?> get props => [cardId];
 }
-
-class ResetDeleteCardStateEvent extends DeleteCardEvent {}

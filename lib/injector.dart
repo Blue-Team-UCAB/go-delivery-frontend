@@ -315,17 +315,22 @@ class InjectManager {
     //Casos de uso
     final getDirectionsUseCase =
         GetDirectionsUseCase(directionRepository: directionRepository);
-
     final addDirectionUseCase =
         AddDirectionUseCase(directionRepository: directionRepository);
+    final updateDirectionUseCase =
+        UpdateDirectionUseCase(directionRepository: directionRepository);
+    final deleteAddressUseCase =
+        DeleteAddressUseCase(directionRepository: directionRepository);
 
     getIt.registerSingleton<GetDirectionsUseCase>(getDirectionsUseCase);
-
     getIt.registerSingleton<AddDirectionUseCase>(addDirectionUseCase);
+    getIt.registerSingleton<UpdateDirectionUseCase>(updateDirectionUseCase);
+    getIt.registerSingleton<DeleteAddressUseCase>(deleteAddressUseCase);
 
     //Blocs
     getIt.registerSingleton(DirectionListBloc(getDirectionsUseCase));
-
     getIt.registerSingleton(AddDirectionBloc(addDirectionUseCase));
+    getIt.registerSingleton(UpdateDirectionBloc(updateDirectionUseCase));
+    getIt.registerSingleton(DeleteAddressBloc(deleteAddressUseCase));
   }
 }

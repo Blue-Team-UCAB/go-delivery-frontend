@@ -7,7 +7,7 @@ import 'package:go_delivery_frontend/presentation/widgets/order_detailed/active/
 import 'package:go_delivery_frontend/presentation/widgets/order_detailed/active/driver_card.dart';
 import 'package:go_delivery_frontend/presentation/widgets/order_detailed/past/order_items_list.dart';
 
-import '../../../../widgets/order_detailed/past/report_problem_window.dart';
+import 'package:go_delivery_frontend/presentation/widgets/order_detailed/past/report_problem_window.dart';
 
 class ActiveOrderDetails extends StatelessWidget {
   final OrderDetailLoadedState state;
@@ -80,7 +80,8 @@ class ActiveOrderDetails extends StatelessWidget {
                     },
                   );
                 },
-                icon: Icon(Icons.warning, color: Colors.deepOrange[400], size: 16),
+                icon: Icon(Icons.warning,
+                    color: Colors.deepOrange[400], size: 16),
                 label: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
@@ -94,7 +95,8 @@ class ActiveOrderDetails extends StatelessWidget {
                       ),
                     ),
                     SizedBox(width: 4),
-                    Icon(Icons.warning, color: Colors.deepOrange[400], size: 16),
+                    Icon(Icons.warning,
+                        color: Colors.deepOrange[400], size: 16),
                   ],
                 ),
                 style: TextButton.styleFrom(

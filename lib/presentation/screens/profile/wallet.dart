@@ -340,16 +340,12 @@ class _WalletScreenState extends State<WalletScreen> {
                                   );
                                   BlocProvider.of<CardListBloc>(context)
                                       .add(LoadCardList());
-                                  BlocProvider.of<DeleteCardBloc>(context)
-                                      .add(ResetDeleteCardStateEvent());
                                 } else if (state is DeleteCardFailure) {
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     const SnackBar(
                                         content: Text(
                                             'Error al eliminar la tarjeta')),
                                   );
-                                  BlocProvider.of<DeleteCardBloc>(context)
-                                      .add(ResetDeleteCardStateEvent());
                                 }
                               },
                               child: Container(),
