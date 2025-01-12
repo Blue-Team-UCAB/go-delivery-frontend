@@ -179,7 +179,7 @@ class AddAddressBottomSheetState extends State<AddAddressBottomSheet> {
   final TextEditingController _latitudeController = TextEditingController();
   final TextEditingController _longitudeController = TextEditingController();
 
-  String? _name, _direction, _latitude, _longitude;
+  String? _name, _direction, _latitude, _longitude, _favorite;
 
   @override
   Widget build(BuildContext context) {
@@ -284,11 +284,11 @@ class AddAddressBottomSheetState extends State<AddAddressBottomSheet> {
                   onPressed: () {
                     if (_formKey.currentState!.validate()) {
                       context.read<AddDirectionBloc>().add(AddDirection(
-                            name: _name!,
-                            direction: _direction!,
-                            latitude: double.parse(_latitude!),
-                            longitude: double.parse(_longitude!),
-                          ));
+                          name: _name!,
+                          direction: _direction!,
+                          lat: double.parse(_latitude!),
+                          long: double.parse(_longitude!),
+                          favorite: bool.fromEnvironment(_favorite!)));
 
                       Future.delayed(Duration(seconds: 1), () {
                         context

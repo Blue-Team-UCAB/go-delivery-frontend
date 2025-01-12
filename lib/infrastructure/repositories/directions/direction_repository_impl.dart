@@ -29,7 +29,7 @@ class DirectionRepositoryImpl extends DirectionRepository {
       final response = await _apiRequestManager.request(
         '/api/user/address/many',
         'GET',
-        (data) => DirectionMapper.fromJsonList(data['value']),
+        (data) => DirectionMapper.fromJsonList(data),
       );
 
       if (response.isSuccessful()) {

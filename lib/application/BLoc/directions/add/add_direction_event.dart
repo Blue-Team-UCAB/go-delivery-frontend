@@ -7,16 +7,17 @@ abstract class DirectionEvent extends Equatable {
 class AddDirection extends DirectionEvent {
   final String name;
   final String direction;
-  final double latitude;
-  final double longitude;
+  final double lat;
+  final double long;
+  final bool favorite;
 
-  const AddDirection({
-    required this.name,
-    required this.direction,
-    required this.latitude,
-    required this.longitude,
-  });
+  const AddDirection(
+      {required this.name,
+      required this.direction,
+      required this.lat,
+      required this.long,
+      required this.favorite});
 
   @override
-  List<Object?> get props => [name, direction, latitude, longitude];
+  List<Object?> get props => [name, direction, lat, long, favorite];
 }

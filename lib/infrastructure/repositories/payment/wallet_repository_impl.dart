@@ -2,8 +2,10 @@ import 'package:go_delivery_frontend/application/api/api_request.dart';
 import 'package:go_delivery_frontend/application/key_value_storage/key_value.dart';
 import 'package:go_delivery_frontend/common/failure.dart';
 import 'package:go_delivery_frontend/common/result.dart';
+import 'package:go_delivery_frontend/domain/entities/payment/payment.dart';
 import 'package:go_delivery_frontend/domain/entities/payment/wallet.dart';
 import 'package:go_delivery_frontend/domain/repositories/payment/wallet_repository.dart';
+import 'package:go_delivery_frontend/infrastructure/mappers/payment/payment_mapper.dart';
 import 'package:go_delivery_frontend/infrastructure/mappers/wallet/wallet_mapper.dart';
 
 class WalletRepositoryImpl extends WalletRepository {
@@ -25,23 +27,45 @@ class WalletRepositoryImpl extends WalletRepository {
   Future<Result<WalletAmount>> getWalletAmount() async {
     await _addAuthorizationHeader();
 
-    try {
-      final response = await _apiRequestManager.request(
-        '/api/payment/method/user/wallet-amount',
-        'GET',
-        (data) => WalletAmountMapper.fromJson(data),
-      );
+    final response = await _apiRequestManager.request<WalletAmount>(
+      '/api/payment/method/user/wallet-amount',
+      'GET',
+      (data) {
+        if (data is Map<String, dynamic>) {
+          return WalletAmountMapper.fromJson(data);
+        }
+        throw FormatException('Unexpected response format');
+      },
+    );
 
-      if (response.isSuccessful()) {
-        final walletAmount = response.getValue();
-        return Result.success(walletAmount);
-      } else {
-        return Result.fail(const ServerFailure());
-      }
-    } catch (e) {
-      print('Error in WalletRepositoryImpl.getWalletAmount: $e');
+    if (response.isSuccess) {
+      return Result.success(response.value!);
+    } else {
       return Result.fail(
-          ServerFailure(message: 'Fallo al obtener el monto del wallet: $e'));
+          ServerFailure(message: 'Error al obtener el wallet amount'));
+    }
+  }
+
+  @override
+  Future<Result<List<Payment>>> getPaymentTransactions() async {
+    await _addAuthorizationHeader();
+
+    final response = await _apiRequestManager.request<List<Payment>>(
+      '/api/payment/method/user/many/transaccion',
+      'GET',
+      (data) {
+        if (data is List) {
+          return PaymentMapper.fromJsonList(data);
+        }
+        throw FormatException('Unexpected response format');
+      },
+    );
+
+    if (response.isSuccess) {
+      return Result.success(response.value!);
+    } else {
+      return Result.fail(
+          ServerFailure(message: 'Error al obtener las transacciones'));
     }
   }
 }

@@ -1,17 +1,14 @@
-// ignore_for_file: constant_identifier_names
-
 import 'dart:io';
-
 import 'package:dio/dio.dart';
 import 'package:go_delivery_frontend/common/failure.dart';
 import 'package:go_delivery_frontend/infrastructure/mappers/user/user_mapper.dart';
-
 import 'package:go_delivery_frontend/application/api/api_request.dart';
 import 'package:go_delivery_frontend/application/key_value_storage/key_value.dart';
 import 'package:go_delivery_frontend/common/result.dart';
 import 'package:go_delivery_frontend/domain/repositories/user/user_repository.dart';
 import 'package:go_delivery_frontend/infrastructure/models/user_model.dart';
 
+// ignore: constant_identifier_names
 enum UserType { CLIENT, ADMIN }
 
 class AuthRepositoryImpl implements UserRepository {
@@ -31,33 +28,35 @@ class AuthRepositoryImpl implements UserRepository {
 
   @override
   Future<Result<bool>> login(String email, String password) async {
-    var message = '';
     final response = await _apiRequestManager.request<bool>(
       '/api/auth/login',
       'POST',
       (data) {
-        if (data['errorCode'] != 200) {
-          message = data["message"];
-
-          return false;
-        } else {
-          final userData = data['value'] as Map<String, dynamic>;
-          var user = UserMapper.fromJson(userData);
-
-          _apiRequestManager.setHeaders(
-              'Authorization', 'Bearer ${user.token}');
-
-          _localStorage.setKeyValue<bool>('isAdmin', true);
-          _localStorage.setKeyValue<String>('appToken', user.token);
+        if (data is Map<String, dynamic>) {
+          if (data.containsKey('error')) {
+            return false;
+          } else {
+            var user = UserMapper.fromJson(data);
+            _apiRequestManager.setHeaders(
+                'Authorization', 'Bearer ${user.token}');
+            _localStorage.setKeyValue<bool>('isAdmin', true);
+            _localStorage.setKeyValue<String>('appToken', user.token);
+            return true;
+          }
         }
-        return true;
+        return false;
       },
       body: {"email": email, "password": password},
     );
-    if (response.value == true) {
-      return response;
+
+    if (response.isSuccess) {
+      if (response.value == true) {
+        return Result.success(true);
+      } else {
+        return Result.fail(CustomFailure(message: 'Login failed'));
+      }
     } else {
-      return Result.fail(CustomFailure(message: message));
+      return response;
     }
   }
 
@@ -68,7 +67,7 @@ class AuthRepositoryImpl implements UserRepository {
     required String name,
     required String phone,
   }) async {
-    var message = '';
+    var message = "";
     final response = await _apiRequestManager.request<bool>(
       '/api/auth/register',
       'POST',
@@ -97,7 +96,7 @@ class AuthRepositoryImpl implements UserRepository {
 
   @override
   Future<Result<bool>> sendRecoveryCode(String email) async {
-    var message = '';
+    var message = "";
     final response = await _apiRequestManager.request<bool>(
       '/api/auth/forgot/password',
       'POST',
@@ -120,16 +119,19 @@ class AuthRepositoryImpl implements UserRepository {
 
   @override
   Future<Result<bool>> validateRecoveryCode(String email, String code) async {
-    var message = '';
+    var message = "";
 
     final response = await _apiRequestManager.request<bool>(
       '/api/auth/code/validate',
       'POST',
       (data) {
+        print(data);
         return true;
       },
       body: {'email': email, 'code': code},
     );
+    print(response.value);
+
     if (response.value == true) {
       return response;
     } else {
@@ -148,23 +150,20 @@ class AuthRepositoryImpl implements UserRepository {
       },
       body: {'email': email, 'code': code, 'password': password},
     );
+
+    print(response.value);
+
     return response;
   }
 
   @override
   Future<Result<User>> getCurrent() async {
     await _addAuthorizationHeader();
-    final response = await _apiRequestManager.request(
-      '/api/auth/current',
-      'GET',
-      (data) {
-        if (data['value'] != null) {
-          return UserMapper.fromJson(data['value']);
-        } else {
-          throw Exception('No se encontró el campo "value" en la respuesta');
-        }
-      },
-    );
+    final response =
+        await _apiRequestManager.request('/api/auth/current', 'GET', (data) {
+      return UserMapper.fromJson(data);
+    });
+
     return response;
   }
 

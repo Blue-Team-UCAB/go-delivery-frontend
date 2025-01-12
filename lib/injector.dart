@@ -293,10 +293,17 @@ class InjectManager {
     final getWalletAmountUseCase =
         GetWalletAmountUseCase(walletRepository: walletRepository);
 
+    final getPaymentTransactionsUseCase =
+        GetPaymentTransactionsUseCase(walletRepository: walletRepository);
+
     getIt.registerSingleton<GetWalletAmountUseCase>(getWalletAmountUseCase);
+    getIt.registerSingleton<GetPaymentTransactionsUseCase>(
+        getPaymentTransactionsUseCase);
 
     //Bloc
     getIt.registerSingleton(GetWalletAmountBloc(getWalletAmountUseCase));
+    getIt.registerSingleton(
+        GetPaymentTransactionsBloc(getPaymentTransactionsUseCase));
 
     // ============================= DIRECTIONS =================================== //
 

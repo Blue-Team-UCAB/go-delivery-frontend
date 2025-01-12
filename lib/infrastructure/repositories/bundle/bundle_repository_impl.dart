@@ -36,7 +36,7 @@ class BundleRepositoryImpl extends BundleRepository {
           'perpage': perpage.toString(),
         },
         (data) {
-          List<Bundle> bundles = (data['value']['bundles'] as List)
+          List<Bundle> bundles = (data['bundles'] as List)
               .map((bundleData) => BundleMapper.fromJson(bundleData))
               .toList();
           return bundles;
@@ -60,7 +60,7 @@ class BundleRepositoryImpl extends BundleRepository {
           // Imprimir los datos recibidos de la API
           print('Respuesta de la API para el bundle: $data');
 
-          final bundle = BundleMapper.fromJson(data['value']);
+          final bundle = BundleMapper.fromJson(data);
 
           // Imprimir la data de los productos del bundle
           print('Productos del bundle recibido de la API:');
