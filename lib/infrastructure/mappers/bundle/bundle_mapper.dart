@@ -1,16 +1,12 @@
-import '../../../domain/entities/bundle/bundle.dart';
-import '../../../domain/entities/category/category.dart';
-import '../../../domain/entities/discount/discount.dart';
-import '../../../domain/entities/product/product.dart';
-import '../../../domain/entities/bundle/bundle_product.dart';
-import 'bundle_product_mapper.dart';
+import 'package:go_delivery_frontend/domain/entities/bundle/bundle.dart';
+import 'package:go_delivery_frontend/domain/entities/category/category.dart';
+import 'package:go_delivery_frontend/domain/entities/discount/discount.dart';
+import 'package:go_delivery_frontend/infrastructure/mappers/bundle/bundle_product_mapper.dart';
 
 class BundleMapper {
   // Parse list of bundles
   static List<Bundle> fromJsonList(List<dynamic> jsonList) {
-    return jsonList
-        .map((bundleJson) => fromJson(bundleJson))
-        .toList();
+    return jsonList.map((bundleJson) => fromJson(bundleJson)).toList();
   }
 
   // Parse single bundle
@@ -31,12 +27,10 @@ class BundleMapper {
       products: json['product'] != null
           ? BundleProductMapper.fromJsonList(json['product'])
           : null,
-      categories: json['category'] != null
-          ? _parseCategories(json['category'])
-          : null,
-      discounts: json['discount'] != null
-          ? _parseDiscounts(json['discount'])
-          : null,
+      categories:
+          json['category'] != null ? _parseCategories(json['category']) : null,
+      discounts:
+          json['discount'] != null ? _parseDiscounts(json['discount']) : null,
     );
   }
 

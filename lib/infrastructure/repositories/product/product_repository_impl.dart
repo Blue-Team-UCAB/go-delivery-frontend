@@ -1,4 +1,3 @@
-import 'package:go_delivery_frontend/common/failure.dart';
 import 'package:go_delivery_frontend/domain/entities/product/product.dart';
 import 'package:go_delivery_frontend/domain/repositories/product/product_repository.dart';
 import 'package:go_delivery_frontend/infrastructure/mappers/product/product_mapper.dart';
@@ -32,63 +31,63 @@ class ProductRepositoryImpl extends ProductRepository {
     required int page,
     required int perpage,
   }) async {
-
     print("______ PRODUCT MANY ______");
 
-      final queryParameters = <String, dynamic>{
-        'page': page.toString(),
-        'perpage': perpage.toString(),
-      };
+    final queryParameters = <String, dynamic>{
+      'page': page.toString(),
+      'perpage': perpage.toString(),
+    };
 
-      // Add optional parameters conditionally
-      if (name != null && name.trim().isNotEmpty) {
-        queryParameters['name'] = name.trim();
-      }
+    // Add optional parameters conditionally
+    if (name != null && name.trim().isNotEmpty) {
+      queryParameters['name'] = name.trim();
+    }
 
-      if (categories != null && categories.isNotEmpty) {
-        // Join categories into a comma-separated string if the API expects it
-        queryParameters['category'] = categories.join(',');
-      }
+    if (categories != null && categories.isNotEmpty) {
+      // Join categories into a comma-separated string if the API expects it
+      queryParameters['category'] = categories.join(',');
+    }
 
-      if (price != null && price.isNotEmpty) {
-        queryParameters['price'] = price;
-      }
+    if (price != null && price.isNotEmpty) {
+      queryParameters['price'] = price;
+    }
 
-      if (discount != null && discount.isNotEmpty) {
-        queryParameters['discount'] = discount;
-      }
+    if (discount != null && discount.isNotEmpty) {
+      queryParameters['discount'] = discount;
+    }
 
-      if (popular != null && popular.isNotEmpty) {
-        queryParameters['popular'] = popular;
-      }
+    if (popular != null && popular.isNotEmpty) {
+      queryParameters['popular'] = popular;
+    }
 
-      print('Query Parameters:');
-      queryParameters.forEach((key, value) {
-        print('  - $key: $value');
-      });
+    print('Query Parameters:');
+    queryParameters.forEach((key, value) {
+      print('  - $key: $value');
+    });
 
-      // Perform the API request
-      final response = await _apiRequestManager.request(
-        '/api/product/many',
-        'GET',
-        queryParameters: queryParameters,
-            (data) {
-          // Robust parsing with error handling
-          if (data == null || data['products'] == null) {
-            throw FormatException('Invalid response format: products data is missing');
-          }
+    // Perform the API request
+    final response = await _apiRequestManager.request(
+      '/api/product/many',
+      'GET',
+      queryParameters: queryParameters,
+      (data) {
+        // Robust parsing with error handling
+        if (data == null || data['products'] == null) {
+          throw FormatException(
+              'Invalid response format: products data is missing');
+        }
 
-          try {
-            return (data['products'] as List)
-                .map((productData) => ProductMapper.fromJson(productData))
-                .toList();
-          } catch (e) {
-            throw FormatException('Failed to parse products: ${e.toString()}');
-          }
-        },
-      );
+        try {
+          return (data['products'] as List)
+              .map((productData) => ProductMapper.fromJson(productData))
+              .toList();
+        } catch (e) {
+          throw FormatException('Failed to parse products: ${e.toString()}');
+        }
+      },
+    );
 
-      return response;
+    return response;
   }
 
   @override
@@ -97,16 +96,14 @@ class ProductRepositoryImpl extends ProductRepository {
 
     print("______ PRODUCT BY ID ______");
 
-
-      final response = await _apiRequestManager.request(
-        '/api/product/$productId',
-        'GET',
-        (data) {
-          final product = ProductMapper.fromJson(data);
-          return product;
-        },
-      );
-      return response;
-
+    final response = await _apiRequestManager.request(
+      '/api/product/$productId',
+      'GET',
+      (data) {
+        final product = ProductMapper.fromJson(data);
+        return product;
+      },
+    );
+    return response;
   }
 }
