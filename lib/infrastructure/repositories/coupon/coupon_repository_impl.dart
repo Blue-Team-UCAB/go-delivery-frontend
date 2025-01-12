@@ -30,7 +30,7 @@ class CouponRepositoryImpl extends CouponRepository {
         'POST',
         body: CouponMapper.toJson(couponId),
         (data) {
-          final coupon = CouponMapper.fromJson(data['value']);
+          final coupon = CouponMapper.fromJson(data);
           return coupon;
         },
       );

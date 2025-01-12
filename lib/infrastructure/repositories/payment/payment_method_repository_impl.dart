@@ -3,7 +3,7 @@ import 'package:go_delivery_frontend/common/failure.dart';
 import 'package:go_delivery_frontend/application/api/api_request.dart';
 import 'package:go_delivery_frontend/application/key_value_storage/key_value.dart';
 import 'package:go_delivery_frontend/domain/entities/payment/payment_method_zelle.dart';
-import 'package:go_delivery_frontend/infrastructure/mappers/payment/payment_mapper.dart';
+import 'package:go_delivery_frontend/infrastructure/mappers/payment/payment_method_mapper.dart';
 import 'package:go_delivery_frontend/domain/entities/payment/payment_method_pago_movil.dart';
 import 'package:go_delivery_frontend/domain/repositories/payment/payment_method_repository.dart';
 import 'package:go_delivery_frontend/domain/entities/payment/payment_method_card.dart';
@@ -27,7 +27,6 @@ class PaymentRepositoryImpl extends PaymentRepository {
   Future<Result<dynamic>> processPagoMovil(PagoMovil pagoMovil) async {
     await _addAuthorizationHeader();
     try {
-      // Realizamos la solicitud al servidor
       final response = await _apiRequestManager.request(
         '/api/payment/method/recharge/pago-movil',
         'POST',

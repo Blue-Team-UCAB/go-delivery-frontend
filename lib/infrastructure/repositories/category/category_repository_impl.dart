@@ -49,21 +49,19 @@ class CategoryRepositoryImpl extends CategoryRepository {
         'GET',
         queryParameters: queryParameters,
         (data) {
-          // Verificar si data['value'] existe y contiene 'categories'
-          if (data['value'] != null && data['value']['categories'] != null) {
-            List<dynamic> categoriesData = data['value']['categories'] as List;
+          if (data['value'] != null && data['categories'] != null) {
+            List<dynamic> categoriesData = data['categories'] as List;
             List<Category> categories = categoriesData
                 .map((categoryData) => CategoryMapper.fromJson(categoryData))
                 .toList();
             return categories;
           }
-          return <Category>[]; // Retornar lista vacía si no hay datos
+          return <Category>[];
         },
       );
       return response;
     } catch (e) {
       print('Error in CategoryRepositoryImpl.getCategories: $e');
-      // return Result.fail(Failure(message: 'Failed to fetch categories: $e'));
       rethrow;
     }
   }

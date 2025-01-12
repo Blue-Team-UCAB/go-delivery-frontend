@@ -1,6 +1,8 @@
+import 'dart:io';
+
+import 'package:dio/dio.dart';
 import 'package:go_delivery_frontend/common/failure.dart';
 import 'package:go_delivery_frontend/infrastructure/mappers/user/user_mapper.dart';
-
 import 'package:go_delivery_frontend/application/api/api_request.dart';
 import 'package:go_delivery_frontend/application/key_value_storage/key_value.dart';
 import 'package:go_delivery_frontend/common/result.dart';
@@ -29,7 +31,7 @@ class AuthRepositoryImpl implements UserRepository {
     final response = await _apiRequestManager.request<bool>(
       '/api/auth/login',
       'POST',
-          (data) {
+      (data) {
         if (data is Map<String, dynamic>) {
           if (data.containsKey('error')) {
             return false;
@@ -140,7 +142,6 @@ class AuthRepositoryImpl implements UserRepository {
   @override
   Future<Result<bool>> changePassword(
       String email, String code, String password) async {
-
     final response = await _apiRequestManager.request<bool>(
       '/api/auth/change/password',
       'PUT',
@@ -159,14 +160,28 @@ class AuthRepositoryImpl implements UserRepository {
   Future<Result<User>> getCurrent() async {
     await _addAuthorizationHeader();
     final response =
-        await _apiRequestManager.request(
-            '/api/auth/current',
-            'GET',
-                (data) {
-                  return UserMapper.fromJson(data);
-                }
-         );
+        await _apiRequestManager.request('/api/auth/current', 'GET', (data) {
+      return UserMapper.fromJson(data);
+    });
 
     return response;
+  }
+
+  @override
+  Future<Result<bool>> updateUserImage(File image) async {
+    await _addAuthorizationHeader();
+    final response = await _apiRequestManager
+        .request<bool>('/api/user/update/image', 'PATCH', (data) {
+      return data['errorCode'] == 200;
+    },
+            body: FormData.fromMap(
+                {'image': MultipartFile.fromFileSync(image.path)}));
+
+    if (response.value == true) {
+      return Result.success(true);
+    } else {
+      return Result.fail(
+          CustomFailure(message: 'Error al actualizar la imagen'));
+    }
   }
 }
