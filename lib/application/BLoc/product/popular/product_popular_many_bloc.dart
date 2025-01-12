@@ -52,7 +52,6 @@ class ProductPopularListBloc extends Bloc<ProductListEvent, ProductListState> {
           emit(ProductListFailed(result));
         }
       } catch (e) {
-        print('Error in ProductListBloc: $e');
         emit(ProductListFailed(Result.fail(e.toString() as Failure)));
       }
     }

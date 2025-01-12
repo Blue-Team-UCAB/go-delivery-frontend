@@ -13,18 +13,15 @@ class BundleListBloc extends Bloc<BundleListEvent, BundleListState> {
   }
 
   Future<void> _onLoadBundleList(
-      LoadBundleList event,
-      Emitter<BundleListState> emit,
-      ) async {
+    LoadBundleList event,
+    Emitter<BundleListState> emit,
+  ) async {
     if (state is BundleListInitial || state is BundleListLoaded) {
       try {
         final currentState = state is BundleListLoaded
             ? state as BundleListLoaded
             : const BundleListLoaded(
-            bundles: [],
-            hasReachedMax: false,
-            page: 1
-        );
+                bundles: [], hasReachedMax: false, page: 1);
 
         emit(BundleListLoading(currentState.bundles));
 
@@ -53,7 +50,6 @@ class BundleListBloc extends Bloc<BundleListEvent, BundleListState> {
           emit(BundleListFailed(result));
         }
       } catch (e) {
-        print('Error in BundleListBloc: $e');
         emit(BundleListFailed(Result.fail(BadReponseFailure())));
       }
     }

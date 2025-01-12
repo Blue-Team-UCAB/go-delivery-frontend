@@ -1,6 +1,6 @@
-import '../category/category.dart';
-import '../discount/discount.dart';
-import 'bundle_product.dart';
+import 'package:go_delivery_frontend/domain/entities/category/category.dart';
+import 'package:go_delivery_frontend/domain/entities/discount/discount.dart';
+import 'package:go_delivery_frontend/domain/entities/bundle/bundle_product.dart';
 
 class Bundle {
   final String id;

@@ -197,7 +197,7 @@ class InjectManager {
     getIt.registerSingleton<CheckoutUseCase>(checkoutUseCase);
     getIt.registerSingleton<CancelOneOrderUseCase>(cancelOneOrderUseCase);
     getIt.registerFactory(
-        () => OrderReportBloc(ReportOrderUseCase: reportOneOrderUseCase));
+        () => OrderReportBloc(reportOrderUseCase: reportOneOrderUseCase));
     // ======================================================================= //
 
     getIt.registerSingleton(
