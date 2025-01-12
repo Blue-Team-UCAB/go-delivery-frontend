@@ -32,6 +32,8 @@ void main() async {
         BlocProvider(create: (_) => getIt<UserImageBloc>()),
         BlocProvider(create: (_) => getIt<AddDirectionBloc>()),
         BlocProvider(create: (_) => getIt<DirectionListBloc>()),
+        BlocProvider(create: (_) => getIt<UpdateDirectionBloc>()),
+        BlocProvider(create: (_) => getIt<DeleteAddressBloc>()),
         BlocProvider(create: (_) => getIt<GetWalletAmountBloc>()),
         BlocProvider(create: (_) => getIt<DeleteCardBloc>()),
         BlocProvider(create: (_) => getIt<GetPaymentTransactionsBloc>()),

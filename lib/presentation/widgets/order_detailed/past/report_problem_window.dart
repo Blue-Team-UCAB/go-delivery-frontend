@@ -11,10 +11,10 @@ class ReportProblemDialog extends StatefulWidget {
   const ReportProblemDialog({super.key, required this.orderId});
 
   @override
-  _ReportProblemDialogState createState() => _ReportProblemDialogState();
+  ReportProblemDialogState createState() => ReportProblemDialogState();
 }
 
-class _ReportProblemDialogState extends State<ReportProblemDialog> {
+class ReportProblemDialogState extends State<ReportProblemDialog> {
   final TextEditingController _reasonController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
 

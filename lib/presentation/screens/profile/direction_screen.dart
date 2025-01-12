@@ -3,9 +3,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_delivery_frontend/application/BLoc/directions/add/add_direction_bloc.dart';
 import 'package:go_delivery_frontend/application/BLoc/directions/add/add_direction_event.dart';
 import 'package:go_delivery_frontend/application/BLoc/directions/add/add_direction_state.dart';
+import 'package:go_delivery_frontend/application/BLoc/directions/delete/delete_direction_bloc.dart';
+import 'package:go_delivery_frontend/application/BLoc/directions/delete/delete_direction_state.dart';
+import 'package:go_delivery_frontend/application/BLoc/directions/delete/delte_direction_event.dart';
 import 'package:go_delivery_frontend/application/BLoc/directions/many/direction_many_bloc.dart';
 import 'package:go_delivery_frontend/application/BLoc/directions/many/direction_many_event.dart';
 import 'package:go_delivery_frontend/application/BLoc/directions/many/direction_many_state.dart';
+import 'package:go_delivery_frontend/application/BLoc/directions/patch/patch_directions_bloc.dart';
+import 'package:go_delivery_frontend/application/BLoc/directions/patch/patch_directions_event.dart';
 import 'package:go_delivery_frontend/domain/entities/direction/direction.dart';
 import 'package:go_router/go_router.dart';
 
@@ -122,9 +127,22 @@ class DirectionScreenState extends State<DirectionScreen> {
                       ),
                     ),
                     IconButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        showModalBottomSheet(
+                          context: context,
+                          builder: (context) =>
+                              EditAddressBottomSheet(address: address),
+                        );
+                      },
                       icon: Icon(Icons.edit),
-                      color: Color(0xFF2000B1), // Azul #2000B1
+                      color: Color(0xFF2000B1),
+                    ),
+                    IconButton(
+                      onPressed: () {
+                        _confirmDeleteAddress(context, address.id);
+                      },
+                      icon: Icon(Icons.delete),
+                      color: Colors.red,
                     ),
                   ],
                 ),
@@ -136,8 +154,8 @@ class DirectionScreenState extends State<DirectionScreen> {
         Align(
           alignment: Alignment.bottomCenter,
           child: Padding(
-            padding: const EdgeInsets.symmetric(
-                horizontal: 16.0, vertical: 16.0), // Añadir padding vertical
+            padding:
+                const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
             child: ElevatedButton(
               onPressed: () {
                 showModalBottomSheet(
@@ -161,6 +179,50 @@ class DirectionScreenState extends State<DirectionScreen> {
           ),
         ),
       ],
+    );
+  }
+
+  void _confirmDeleteAddress(BuildContext context, String addressId) {
+    showDialog(
+      context: context,
+      builder: (BuildContext dialogContext) {
+        return AlertDialog(
+          title: Text('Eliminar dirección'),
+          content: Text('¿Estás seguro de que deseas eliminar esta dirección?'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(dialogContext).pop(),
+              child: Text('Cancelar'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(dialogContext).pop();
+                _deleteAddress(context, addressId);
+              },
+              child: Text('Eliminar', style: TextStyle(color: Colors.red)),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _deleteAddress(BuildContext context, String addressId) {
+    context
+        .read<DeleteAddressBloc>()
+        .add(DeleteAddressRequested(addressId: addressId));
+    BlocListener<DeleteAddressBloc, DeleteAddressState>(
+      listener: (context, state) {
+        if (state is DeleteAddressSuccess) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Dirección eliminada con éxito.')),
+          );
+        } else if (state is DeleteAddressFailure) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Error al eliminar la dirección.')),
+          );
+        }
+      },
     );
   }
 }
@@ -307,6 +369,175 @@ class AddAddressBottomSheetState extends State<AddAddressBottomSheet> {
                   ),
                   child: Text(
                     'Guardar Dirección',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                    ),
+                  ),
+                );
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class EditAddressBottomSheet extends StatefulWidget {
+  final Direction address;
+
+  const EditAddressBottomSheet({super.key, required this.address});
+
+  @override
+  EditAddressBottomSheetState createState() => EditAddressBottomSheetState();
+}
+
+class EditAddressBottomSheetState extends State<EditAddressBottomSheet> {
+  final _formKey = GlobalKey<FormState>();
+  late TextEditingController _nameController;
+  late TextEditingController _directionController;
+  late TextEditingController _latitudeController;
+  late TextEditingController _longitudeController;
+
+  @override
+  void initState() {
+    super.initState();
+    _nameController = TextEditingController(text: widget.address.name);
+    _directionController =
+        TextEditingController(text: widget.address.direction);
+    _latitudeController =
+        TextEditingController(text: widget.address.lat.toString());
+    _longitudeController =
+        TextEditingController(text: widget.address.long.toString());
+  }
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _directionController.dispose();
+    _latitudeController.dispose();
+    _longitudeController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Form(
+        key: _formKey,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              'Editar Dirección',
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            SizedBox(height: 16),
+            TextFormField(
+              controller: _nameController,
+              decoration: InputDecoration(
+                labelText: 'Nombre',
+                border: OutlineInputBorder(),
+              ),
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Por favor ingrese un nombre';
+                }
+                return null;
+              },
+            ),
+            SizedBox(height: 16),
+            TextFormField(
+              controller: _directionController,
+              decoration: InputDecoration(
+                labelText: 'Dirección',
+                border: OutlineInputBorder(),
+              ),
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Por favor ingrese una dirección';
+                }
+                return null;
+              },
+            ),
+            SizedBox(height: 16),
+            TextFormField(
+              controller: _latitudeController,
+              decoration: InputDecoration(
+                labelText: 'Latitud',
+                border: OutlineInputBorder(),
+              ),
+              keyboardType: TextInputType.numberWithOptions(decimal: true),
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Por favor ingrese una latitud';
+                }
+                if (double.tryParse(value) == null) {
+                  return 'Por favor ingrese un valor válido para la latitud';
+                }
+                return null;
+              },
+            ),
+            SizedBox(height: 16),
+            TextFormField(
+              controller: _longitudeController,
+              decoration: InputDecoration(
+                labelText: 'Longitud',
+                border: OutlineInputBorder(),
+              ),
+              keyboardType: TextInputType.numberWithOptions(decimal: true),
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Por favor ingrese una longitud';
+                }
+                if (double.tryParse(value) == null) {
+                  return 'Por favor ingrese un valor válido para la longitud';
+                }
+                return null;
+              },
+            ),
+            SizedBox(height: 24),
+            BlocBuilder<UpdateDirectionBloc, DirectionState>(
+              builder: (context, state) {
+                if (state is DirectionLoading) {
+                  return CircularProgressIndicator();
+                }
+
+                return ElevatedButton(
+                  onPressed: () {
+                    if (_formKey.currentState!.validate()) {
+                      context.read<UpdateDirectionBloc>().add(UpdateDirection(
+                            directionId: widget.address.id,
+                            name: _nameController.text,
+                            direction: _directionController.text,
+                            lat: double.parse(_latitudeController.text),
+                            long: double.parse(_longitudeController.text),
+                            favorite: false,
+                          ));
+
+                      Future.delayed(Duration(seconds: 1), () {
+                        context
+                            .read<DirectionListBloc>()
+                            .add(LoadDirectionList());
+                        Navigator.pop(context);
+                      });
+                    }
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Color(0xFF2000B1),
+                    minimumSize: Size(double.infinity, 50),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
+                  child: Text(
+                    'Guardar Cambios',
                     style: TextStyle(
                       color: Colors.white,
                       fontWeight: FontWeight.bold,

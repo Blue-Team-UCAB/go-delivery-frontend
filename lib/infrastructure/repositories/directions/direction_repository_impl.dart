@@ -1,6 +1,7 @@
 import 'package:go_delivery_frontend/application/api/api_request.dart';
 import 'package:go_delivery_frontend/application/key_value_storage/key_value.dart';
 import 'package:go_delivery_frontend/application/use_cases/direction/add/add_direction.dart';
+import 'package:go_delivery_frontend/application/use_cases/direction/patch/patch_direction.dart';
 import 'package:go_delivery_frontend/common/failure.dart';
 import 'package:go_delivery_frontend/common/result.dart';
 import 'package:go_delivery_frontend/domain/entities/direction/direction.dart';
@@ -69,6 +70,53 @@ class DirectionRepositoryImpl extends DirectionRepository {
     } catch (e) {
       print('Error in DirectionRepositoryImpl.addDirection: $e');
       return Result.fail(ServerFailure(message: 'Failed to add direction: $e'));
+    }
+  }
+
+  @override
+  Future<Result<Direction>> updateDirection(UpdateDirectionInput input) async {
+    await _addAuthorizationHeader();
+
+    try {
+      final response = await _apiRequestManager.request(
+        '/api/user/update/address',
+        'PATCH',
+        (data) => DirectionMapper.fromJson(data),
+        body: DirectionMapper.toJsonUpdate(input),
+      );
+
+      if (response.isSuccessful()) {
+        final updatedDirection = response.getValue();
+        return Result.success(updatedDirection);
+      } else {
+        final error = response.getError();
+        return Result.fail(
+            ServerFailure(message: 'Error al actualizar dirección: $error'));
+      }
+    } catch (e) {
+      print('Error in DirectionRepositoryImpl.updateDirection: $e');
+      return Result.fail(
+          ServerFailure(message: 'Failed to update direction: $e'));
+    }
+  }
+
+  @override
+  Future<Result<void>> deleteAddress(String addressId) async {
+    await _addAuthorizationHeader();
+    final response = await _apiRequestManager.request<void>(
+      '/api/user/delete/address/$addressId',
+      'DELETE',
+      (data) {
+        if (data is Map<String, dynamic> && !data.containsKey('error')) {
+          return;
+        }
+        return;
+      },
+    );
+    if (response.isSuccess) {
+      return Result.success(null);
+    } else {
+      return response;
     }
   }
 }
