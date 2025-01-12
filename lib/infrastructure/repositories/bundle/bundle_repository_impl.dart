@@ -23,36 +23,41 @@ class BundleRepositoryImpl extends BundleRepository {
 
   @override
   Future<Result<List<Bundle>>> getBundles({
+    String? category,
+    String? name,
+    String? number,
+    String? popular,
+    String? discount,
     required int page,
     required int perpage,
   }) async {
     await _addAuthorizationHeader();
-    try {
+
+    print("______ BUNDLE MANY ______");
+
       final response = await _apiRequestManager.request(
-        '/api/bundle',
+        '/api/bundle/many',
         'GET',
         queryParameters: {
           'page': page.toString(),
           'perpage': perpage.toString(),
         },
         (data) {
-          List<Bundle> bundles = (data['bundles'] as List)
+          List<Bundle> bundles = (data as List)
               .map((bundleData) => BundleMapper.fromJson(bundleData))
               .toList();
           return bundles;
         },
       );
       return response;
-    } catch (e) {
-      print('Error in BundleRepositoryImpl.getBundles: $e');
-      rethrow;
-    }
   }
 
   @override
   Future<Result<Bundle>> getBundleById(String bundleId) async {
+    print("______ BUNDLE BY ID ______");
+
     await _addAuthorizationHeader();
-    try {
+
       final response = await _apiRequestManager.request(
         '/api/bundle/$bundleId',
         'GET',
@@ -62,19 +67,10 @@ class BundleRepositoryImpl extends BundleRepository {
 
           final bundle = BundleMapper.fromJson(data);
 
-          // Imprimir la data de los productos del bundle
-          print('Productos del bundle recibido de la API:');
-          for (var product in bundle.products) {
-            print('Producto: ${product.name}, URL imagen: ${product.imageUrl}');
-          }
 
           return bundle;
         },
       );
       return response;
-    } catch (e) {
-      print('Error in BundleRepositoryImpl.getBundleById: $e');
-      rethrow;
-    }
   }
 }

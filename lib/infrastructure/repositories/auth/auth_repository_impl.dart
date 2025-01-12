@@ -1,4 +1,5 @@
 import 'dart:io';
+
 import 'package:dio/dio.dart';
 import 'package:go_delivery_frontend/common/failure.dart';
 import 'package:go_delivery_frontend/infrastructure/mappers/user/user_mapper.dart';
@@ -8,7 +9,6 @@ import 'package:go_delivery_frontend/common/result.dart';
 import 'package:go_delivery_frontend/domain/repositories/user/user_repository.dart';
 import 'package:go_delivery_frontend/infrastructure/models/user_model.dart';
 
-// ignore: constant_identifier_names
 enum UserType { CLIENT, ADMIN }
 
 class AuthRepositoryImpl implements UserRepository {
@@ -53,10 +53,10 @@ class AuthRepositoryImpl implements UserRepository {
       if (response.value == true) {
         return Result.success(true);
       } else {
-        return Result.fail(CustomFailure(message: 'Login failed'));
+        return Result.fail(CustomFailure(message: 'Login Fallido'));
       }
     } else {
-      return response;
+      return Result.fail(CustomFailure(message: 'Login Fallido'));
     }
   }
 
@@ -67,17 +67,19 @@ class AuthRepositoryImpl implements UserRepository {
     required String name,
     required String phone,
   }) async {
-    var message = "";
+    var message;
     final response = await _apiRequestManager.request<bool>(
       '/api/auth/register',
       'POST',
       (data) {
-        if (data['errorCode'] != 200) {
-          message = data["message"];
-          return false;
-        } else {
-          return true;
+        if (data is Map<String, dynamic>) {
+          if (data.containsKey('error')) {
+            return false;
+          } else {
+            return true;
+          }
         }
+        return false;
       },
       body: {
         'email': email,
@@ -87,31 +89,42 @@ class AuthRepositoryImpl implements UserRepository {
       },
     );
 
-    if (response.value == true) {
-      return response;
+    if (response.isSuccess) {
+      if (response.value == true) {
+        return Result.success(true);
+      } else {
+        return Result.fail(CustomFailure(message: 'Registro Fallido!'));
+      }
     } else {
-      return Result.fail(CustomFailure(message: message));
+      return Result.fail(CustomFailure(message: 'Registro Fallido!'));
     }
   }
 
   @override
   Future<Result<bool>> sendRecoveryCode(String email) async {
-    var message = "";
+    var message;
     final response = await _apiRequestManager.request<bool>(
       '/api/auth/forgot/password',
       'POST',
       (data) {
-        if (data['errorCode'] != 200) {
-          message = data["message"];
-          return false;
-        } else {
-          return true;
+        if (data is Map<String, dynamic>) {
+          if (data.containsKey('error')) {
+            return false;
+          } else {
+            return true;
+          }
         }
+        return false;
       },
       body: {'email': email},
     );
-    if (response.value == true) {
-      return response;
+
+    if (response.isSuccess) {
+      if (response.value == true) {
+        return Result.success(true);
+      } else {
+        return Result.fail(CustomFailure(message: message));
+      }
     } else {
       return Result.fail(CustomFailure(message: message));
     }
@@ -119,21 +132,24 @@ class AuthRepositoryImpl implements UserRepository {
 
   @override
   Future<Result<bool>> validateRecoveryCode(String email, String code) async {
-    var message = "";
+    var message;
 
     final response = await _apiRequestManager.request<bool>(
       '/api/auth/code/validate',
       'POST',
       (data) {
         print(data);
-        return true;
+          return true;
       },
       body: {'email': email, 'code': code},
     );
-    print(response.value);
 
-    if (response.value == true) {
-      return response;
+    if (response.isSuccess) {
+      if (response.value == true) {
+        return Result.success(true);
+      } else {
+        return Result.fail(CustomFailure(message: message));
+      }
     } else {
       return Result.fail(CustomFailure(message: message));
     }
@@ -151,7 +167,6 @@ class AuthRepositoryImpl implements UserRepository {
       body: {'email': email, 'code': code, 'password': password},
     );
 
-    print(response.value);
 
     return response;
   }

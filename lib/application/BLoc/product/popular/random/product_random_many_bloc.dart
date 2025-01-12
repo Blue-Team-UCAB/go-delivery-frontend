@@ -21,7 +21,6 @@ class ProductRandomListBloc extends Bloc<ProductListEvent, ProductListState> {
     LoadProductList event,
     Emitter<ProductListState> emit,
   ) async {
-    try {
       emit(const ProductListLoading([]));
 
       final result = await _getProductsUseCase.execute(
@@ -40,15 +39,11 @@ class ProductRandomListBloc extends Bloc<ProductListEvent, ProductListState> {
           products: randomProducts,
           hasReachedMax: true,
           page: event.page,
-          category: '',
+          categories: [''],
         ));
       } else {
         emit(ProductListFailed(result));
       }
-    } catch (e) {
-      print('Error in ProductRandomListBloc: $e');
-      emit(ProductListFailed(Result.fail(e.toString() as Failure)));
-    }
   }
 
   List<Product> _getRandomProducts(List<Product> allProducts, int count) {

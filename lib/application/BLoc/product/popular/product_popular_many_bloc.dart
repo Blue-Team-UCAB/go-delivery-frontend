@@ -22,7 +22,7 @@ class ProductPopularListBloc extends Bloc<ProductListEvent, ProductListState> {
         final currentState = state is ProductListLoaded
             ? state
             : const ProductListLoaded(
-                products: [], hasReachedMax: false, page: 1, category: '');
+                products: [], hasReachedMax: false, page: 1, categories: ['']);
 
         emit(ProductListLoading(currentState.products));
 
@@ -42,7 +42,7 @@ class ProductPopularListBloc extends Bloc<ProductListEvent, ProductListState> {
             products: [...newProducts],
             hasReachedMax: hasReachedMax,
             page: event.page,
-            category: '',
+            categories: [''],
           ));
         } else {
           emit(ProductListFailed(result));

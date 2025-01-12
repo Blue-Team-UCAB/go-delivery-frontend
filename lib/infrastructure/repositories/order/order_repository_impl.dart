@@ -79,6 +79,7 @@ class OrderRepositoryImpl extends OrderRepository {
       List<CheckoutBundle>? bundles}) async {
     await _addAuthorizationHeader();
 
+    // Prepare the body
     final body = {
       'direction': direction,
       'longitude': longitude,
@@ -89,7 +90,7 @@ class OrderRepositoryImpl extends OrderRepository {
       if (bundles != null && bundles.isNotEmpty)
         'bundles': CheckoutBundleMapper.toJsonList(bundles),
     };
-    var message = "";
+    var message;
 
     print("APPLIED COUPON: ${body["id_coupon"]}");
 
@@ -99,17 +100,23 @@ class OrderRepositoryImpl extends OrderRepository {
       '/api/order',
       'POST',
       (data) {
-        if (data['errorCode'] != 200) {
-          message = data["message"];
-          return false;
-        } else {
-          return true;
+        if (data is Map<String, dynamic>) {
+          if (data.containsKey('error')) {
+            return false;
+          } else {
+            return true;
+          }
         }
+        return false;
       },
       body: body,
     );
-    if (response.value == true) {
-      return response;
+    if (response.isSuccess) {
+      if (response.value == true) {
+        return Result.success(true);
+      } else {
+        return Result.fail(CustomFailure(message: message));
+      }
     } else {
       return Result.fail(CustomFailure(message: message));
     }
@@ -123,25 +130,33 @@ class OrderRepositoryImpl extends OrderRepository {
       '/api/order/cancel',
       'POST',
       (data) {
-        if (data['errorCode'] != 200) {
-          message = data["message"];
-          return false;
-        } else {
-          return true;
+        if (data is Map<String, dynamic>) {
+          if (data.containsKey('error')) {
+            return false;
+          } else {
+            return true;
+          }
         }
+        return false;
       },
       body: {'orderId': orderId},
     );
-    if (response.value == true) {
-      return response;
+    if (response.isSuccess) {
+      if (response.value == true) {
+        return Result.success(true);
+      } else {
+        return Result.fail(CustomFailure(message: message));
+      }
     } else {
       return Result.fail(CustomFailure(message: message));
     }
   }
 
   @override
-  Future<Result<bool>> reportOrder(
-      {required String orderId, required String desc}) async {
+  Future<Result<bool>> reportOrder({
+    required String orderId,
+    required String desc
+  }) async {
     var message;
     await _addAuthorizationHeader();
 
@@ -151,18 +166,27 @@ class OrderRepositoryImpl extends OrderRepository {
     final response = await _apiRequestManager.request(
       '/api/order/report',
       'POST',
-      (data) {
-        if (data['errorCode'] != 200) {
-          message = data["message"];
-          return false;
-        } else {
-          return true;
-        }
+          (data) {
+            if (data is Map<String, dynamic>) {
+              if (data.containsKey('error')) {
+                return false;
+              } else {
+                return true;
+              }
+            }
+            return false;
       },
-      body: {'orderId': orderId, 'description': desc},
+      body: {
+        'orderId': orderId,
+        'description': desc
+      },
     );
-    if (response.value == true) {
-      return response;
+    if (response.isSuccess) {
+      if (response.value == true) {
+        return Result.success(true);
+      } else {
+        return Result.fail(CustomFailure(message: message));
+      }
     } else {
       return Result.fail(CustomFailure(message: message));
     }
