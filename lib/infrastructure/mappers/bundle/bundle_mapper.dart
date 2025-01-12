@@ -65,7 +65,7 @@ class BundleMapper {
     return Category(
       id: json['id'] as String,
       name: json['name'] as String,
-      imageUrl: '',
+      image: '',
     );
   }
 

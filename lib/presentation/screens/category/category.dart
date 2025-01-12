@@ -16,7 +16,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
   @override
   void initState() {
     super.initState();
-    // Cargar las categorías cuando se inicia la pantalla
+    // Add page and perpage parameters
     context.read<CategoryBloc>().add(LoadCategories());
   }
 
@@ -49,49 +49,32 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
           }
 
           if (state is CategoryError) {
-            final fakeCategories = [
-              {'imageUrl': '', 'name': 'Fake Category 1'},
-              {'imageUrl': '', 'name': 'Fake Category 2'},
-              {'imageUrl': '', 'name': 'Fake Category 3'},
-            ];
-            return Stack(
-              children: [
-                GridView.builder(
-                  padding: const EdgeInsets.all(16),
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 3,
-                    mainAxisSpacing: 16,
-                    crossAxisSpacing: 16,
-                    childAspectRatio: 0.9,
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(state.message),
+                  const SizedBox(height: 16),
+                  ElevatedButton(
+                    onPressed: () {
+                      context
+                          .read<CategoryBloc>()
+                          .add(LoadCategories(page: 1, perpage: 10));
+                    },
+                    child: const Text('Reintentar'),
                   ),
-                  itemCount: fakeCategories.length,
-                  itemBuilder: (context, index) {
-                    final category = fakeCategories[index];
-                    return CategoryCard(
-                      imageUrl: category['imageUrl']!,
-                      title: category['name']!,
-                    );
-                  },
-                ),
-                Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(state.message),
-                      ElevatedButton(
-                        onPressed: () {
-                          context.read<CategoryBloc>().add(LoadCategories());
-                        },
-                        child: const Text('Reintentar'),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
+                ],
+              ),
             );
           }
 
           if (state is CategoryLoaded) {
+            if (state.categories.isEmpty) {
+              return const Center(
+                child: Text('No hay categorías disponibles'),
+              );
+            }
+
             return GridView.builder(
               padding: const EdgeInsets.all(16),
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
@@ -104,14 +87,15 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
               itemBuilder: (context, index) {
                 final category = state.categories[index];
                 return CategoryCard(
-                  imageUrl: category.imageUrl,
+                  image: category.image ?? '',
                   title: category.name,
                 );
               },
             );
           }
 
-          return Container();
+          // Initial state
+          return const Center(child: CircularProgressIndicator());
         },
       ),
       bottomNavigationBar: CustomNavBar(
@@ -123,12 +107,12 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
 }
 
 class CategoryCard extends StatelessWidget {
-  final String imageUrl;
+  final String image;
   final String title;
 
   const CategoryCard({
     super.key,
-    required this.imageUrl,
+    required this.image,
     required this.title,
   });
 
@@ -142,10 +126,10 @@ class CategoryCard extends StatelessWidget {
           CircleAvatar(
             backgroundColor: Colors.deepOrange,
             radius: 30,
-            child: imageUrl.isNotEmpty
+            child: image.isNotEmpty
                 ? ClipOval(
                     child: Image.network(
-                      imageUrl,
+                      image,
                       width: 60,
                       height: 60,
                       fit: BoxFit.cover,

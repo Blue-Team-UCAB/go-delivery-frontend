@@ -3,8 +3,7 @@ import 'package:go_delivery_frontend/domain/entities/category/category.dart';
 
 abstract class CategoryRepository {
   Future<Result<List<Category>>> getCategories({
-    String search,
-    String? category,
+    String? name,
     required int page,
     required int perpage,
   });

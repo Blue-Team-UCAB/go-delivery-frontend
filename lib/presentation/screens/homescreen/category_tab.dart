@@ -21,92 +21,114 @@ class CategoryTabsState extends State<CategoryTabs> {
   @override
   void initState() {
     super.initState();
-    // Asegurarse de que las categorías estén cargadas
-    if (context.read<CategoryBloc>().state is! CategoryLoaded) {
-      context.read<CategoryBloc>().add(LoadCategories());
-    }
+    // Load categories when widget initializes
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<CategoryBloc>().add(LoadCategories(page: 1, perpage: 10));
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<CategoryBloc, CategoryState>(
       builder: (context, state) {
+        print('Current state: $state'); // Debug print
+
         if (state is CategoryLoading) {
-          return Container(
-            padding: const EdgeInsets.symmetric(vertical: 16),
-            child: SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Row(
-                children: List.generate(
-                    3,
-                    (index) => AnimatedContainer(
-                          duration: const Duration(milliseconds: 500),
-                          margin: const EdgeInsets.only(right: 8),
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 16, vertical: 8),
-                          decoration: BoxDecoration(
-                            color: Colors.grey[(index % 2 == 0) ? 300 : 400],
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          child: Text(
-                            'Loading...',
-                            style: TextStyle(
-                              fontFamily: 'Montserrat',
-                              color: Colors.grey[600],
-                              fontWeight: FontWeight.normal,
-                            ),
-                          ),
-                        )),
-              ),
-            ),
-          );
+          return _buildLoadingTabs();
         }
 
         if (state is CategoryError) {
-          final fakeCategories = [
-            Category(id: '1', name: 'Tag 1', imageUrl: ''),
-            Category(id: '2', name: 'Tag 2', imageUrl: ''),
-            Category(id: '3', name: 'Tag 3', imageUrl: ''),
-          ];
-          return Container(
-            padding: const EdgeInsets.symmetric(vertical: 16),
-            child: SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Row(
-                children: [
-                  const SizedBox(width: 16),
-                  for (int i = 0; i < fakeCategories.length; i++)
-                    _buildTab(fakeCategories[i], i == _selectedIndex, i),
-                ],
-              ),
-            ),
-          );
+          return _buildErrorTabs();
         }
 
         if (state is CategoryLoaded) {
-          // Agregar "Todo" al principio de la lista
-          final List<Category> categories = [
-            Category(id: '', name: 'Todo', imageUrl: ''),
-            ...state.categories
-          ];
-
-          return Container(
-            padding: const EdgeInsets.symmetric(vertical: 16),
-            child: SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Row(
-                children: [
-                  const SizedBox(width: 16),
-                  for (int i = 0; i < categories.length; i++)
-                    _buildTab(categories[i], i == _selectedIndex, i),
-                ],
-              ),
-            ),
-          );
+          return _buildLoadedTabs(state.categories);
         }
 
-        return Container();
+        return _buildLoadingTabs(); // Show loading for initial state
       },
+    );
+  }
+
+  Widget _buildLoadingTabs() {
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 16),
+      child: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: Row(
+          children: [
+            const SizedBox(width: 16),
+            ...List.generate(
+              3,
+              (index) => Container(
+                margin: const EdgeInsets.only(right: 8),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                decoration: BoxDecoration(
+                  color: Colors.grey[300],
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: const Text('Loading...'),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildErrorTabs() {
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 16),
+      child: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: Row(
+          children: [
+            const SizedBox(width: 16),
+            Container(
+              margin: const EdgeInsets.only(right: 8),
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              decoration: BoxDecoration(
+                color: Colors.red[100],
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: const Text('Error loading categories'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                context
+                    .read<CategoryBloc>()
+                    .add(LoadCategories(page: 1, perpage: 10));
+              },
+              child: const Text('Retry'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildLoadedTabs(List<Category> categories) {
+    final allCategories = [
+      Category(id: '', name: 'Todo', image: ''),
+      ...categories,
+    ];
+
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 16),
+      child: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: Row(
+          children: [
+            const SizedBox(width: 16),
+            ...List.generate(
+              allCategories.length,
+              (index) => _buildTab(
+                  allCategories[index], index == _selectedIndex, index),
+            ),
+          ],
+        ),
+      ),
     );
   }
 
@@ -116,10 +138,7 @@ class CategoryTabsState extends State<CategoryTabs> {
         setState(() {
           _selectedIndex = index;
         });
-        // Llamar al callback con el ID de la categoría (null para "Todo")
-        widget.onCategorySelected?.call(
-          index == 0 ? null : category.id,
-        );
+        widget.onCategorySelected?.call(index == 0 ? null : category.id);
       },
       child: Container(
         margin: const EdgeInsets.only(right: 8),
@@ -127,7 +146,6 @@ class CategoryTabsState extends State<CategoryTabs> {
         decoration: BoxDecoration(
           color: isSelected ? const Color(0xFF2000B1) : const Color(0xFFFFFFFF),
           borderRadius: BorderRadius.circular(20),
-          // Agregar sombra sutil
           boxShadow: [
             if (!isSelected)
               BoxShadow(
