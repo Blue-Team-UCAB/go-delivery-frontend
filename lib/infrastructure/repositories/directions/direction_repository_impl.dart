@@ -49,7 +49,7 @@ class DirectionRepositoryImpl extends DirectionRepository {
   }
 
   @override
-  Future<Result<void>> addDirection(AddDirectionInput input) async {
+  Future<Result<dynamic>> addDirection(AddDirectionInput input) async {
     await _addAuthorizationHeader();
 
     try {
@@ -61,7 +61,7 @@ class DirectionRepositoryImpl extends DirectionRepository {
       );
 
       if (response.isSuccessful()) {
-        return Result.success(null);
+        return Result.success("Dirección agregada exitosamente");
       } else {
         final error = response.getError();
         return Result.fail(
