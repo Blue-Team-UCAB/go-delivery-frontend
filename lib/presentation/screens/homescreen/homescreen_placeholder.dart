@@ -58,7 +58,7 @@ class HomescreenPlaceholder extends StatelessWidget {
           color: Color(0x55d8d5dd),
           borderRadius: BorderRadius.only(topLeft: Radius.circular(12),topRight: Radius.circular(12))
         ),
-        height: 90,
+        height: 80,
       ),
     );
   }

@@ -13,14 +13,14 @@ class NotificationScreen extends StatelessWidget {
         context.watch<NotificationsBloc>().state.notifications;
     return Scaffold(
       // backgroundColor: isDarkMode ? Colors.black26 : const Color(0xFF02066F),
-      // backgroundColor: const Color(0xFF02066F),
+      backgroundColor: const Color(0xFFEBEAED),
       appBar: AppBar(
           // title: Text(
           //   context.select((NotificationsBloc bloc) => '${bloc.state}'),
           //   style: const TextStyle(fontSize: 10),
           // ),
           title: const Text('Notificaciones'),
-          // backgroundColor: const Color(0xFF02066F),
+          backgroundColor: const Color(0xFFEBEAED),
           leading: IconButton(
             icon: const Icon(Icons.arrow_back),
             onPressed: () {
@@ -51,6 +51,7 @@ class NotificationScreen extends StatelessWidget {
                     borderRadius:
                         BorderRadius.all(Radius.circular(12))),
                   child: ListTile(
+                    contentPadding: EdgeInsets.symmetric(vertical: 0,horizontal: 10),
                     title: Text(
                       notification.title,
                       style: const TextStyle(fontFamily: 'Inter',fontSize: 16, fontWeight: FontWeight.w600,color: Color(0xFF000000)),
@@ -60,10 +61,14 @@ class NotificationScreen extends StatelessWidget {
                       style: const TextStyle(fontFamily: 'Inter',fontSize: 14, color: Color(0xFF000000)),
                     ),
                     leading: 
-                    SizedBox(width: 50,
+                    Container(width: 60,height: 60,
+                      
+                      decoration: const BoxDecoration(
+                        color: Color.fromARGB(100, 213, 204, 255),
+                        borderRadius: BorderRadius.all(Radius.circular(12))),
                       child:  notification.imageUrl != null
-                        ? Image.network(notification.imageUrl!)
-                        : Icon(Icons.notifications_active_outlined,color: Color(0xFF02066F),)
+                        ? Icon(Icons.comment,color: Color(0xFF02066F))
+                        : Icon(Icons.comment,color: Color(0xFF02066F),)
                     ),
                     onTap: () {
                       context.push(
