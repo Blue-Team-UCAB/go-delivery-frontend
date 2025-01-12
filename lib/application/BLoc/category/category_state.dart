@@ -9,14 +9,15 @@ class CategoryInitial extends CategoryState {}
 
 class CategoryLoading extends CategoryState {}
 
+// In category_state.dart or as part of your bloc file
 class CategoryLoaded extends CategoryState {
   final List<Category> categories;
 
-  CategoryLoaded(this.categories);
+  const CategoryLoaded(this.categories);
 }
 
 class CategoryError extends CategoryState {
   final String message;
 
-  CategoryError(this.message);
+  const CategoryError(this.message);
 }

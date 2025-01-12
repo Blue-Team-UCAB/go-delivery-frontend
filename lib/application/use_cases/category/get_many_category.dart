@@ -5,14 +5,12 @@ import 'package:go_delivery_frontend/domain/repositories/category/category_repos
 
 // get_categories_use_case.dart
 class GetCategoriesInput extends IUseCaseInput {
-  final String? search;
-  final String? category;
+  final String? name;
   final int page;
   final int perpage;
 
   GetCategoriesInput({
-    this.search,
-    this.category,
+    this.name,
     required this.page,
     required this.perpage,
   });
@@ -28,8 +26,9 @@ class GetCategoriesUseCase
   @override
   Future<Result<List<Category>>> execute(GetCategoriesInput input) async {
     return await _categoryRepository.getCategories(
-      search: input.search ?? '',
-      category: input.category,
+      // search: input.search ?? '',
+      // category: input.category,
+      name: input.name, // nuevo
       page: input.page,
       perpage: input.perpage,
     );

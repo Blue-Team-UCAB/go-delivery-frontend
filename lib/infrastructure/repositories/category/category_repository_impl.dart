@@ -23,8 +23,7 @@ class CategoryRepositoryImpl extends CategoryRepository {
 
   @override
   Future<Result<List<Category>>> getCategories({
-    String? search,
-    String? category,
+    String? name,
     required int page,
     required int perpage,
   }) async {
@@ -36,25 +35,19 @@ class CategoryRepositoryImpl extends CategoryRepository {
         'perpage': perpage.toString(),
       };
 
-      if (search != null && search.isNotEmpty) {
-        queryParameters['search'] = search;
-      }
-
-      if (category?.isNotEmpty ?? false) {
-        queryParameters['category'] = category!;
+      if (name != null && name.isNotEmpty) {
+        queryParameters['name'] = name;
       }
 
       final response = await _apiRequestManager.request(
-        '/api/category',
+        'api/category/many', // Actualizado según la interfaz
         'GET',
         queryParameters: queryParameters,
         (data) {
-          if (data['value'] != null && data['categories'] != null) {
-            List<dynamic> categoriesData = data['categories'] as List;
-            List<Category> categories = categoriesData
+          if (data is List) {
+            return data
                 .map((categoryData) => CategoryMapper.fromJson(categoryData))
                 .toList();
-            return categories;
           }
           return <Category>[];
         },

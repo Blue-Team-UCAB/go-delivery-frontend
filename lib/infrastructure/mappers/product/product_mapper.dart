@@ -21,7 +21,8 @@ class ProductMapper {
         // Basic product information (works with both simple and detailed structures)
         id: json['id'] as String? ?? '',
         name: json['name'] as String? ?? 'Sin nombre',
-        description: json['description'] as String? ?? 'Descripción no disponible',
+        description:
+            json['description'] as String? ?? 'Descripción no disponible',
         currency: json['currency'] as String? ?? 'USD',
         price: (json['price'] as num?)?.toDouble() ?? 0.0,
         stock: json['stock'] as int? ?? 0,
@@ -74,21 +75,26 @@ class ProductMapper {
 
   static List<Category> _parseCategories(dynamic categoryData) {
     if (categoryData is List) {
-      return categoryData.map((categoryJson) => Category(
-        id: categoryJson['id'] as String? ?? '',
-        name: categoryJson['name'] as String? ?? '',
-        imageUrl: '',
-      )).toList();
+      return categoryData
+          .map((categoryJson) => Category(
+                id: categoryJson['id'] as String? ?? '',
+                name: categoryJson['name'] as String? ?? '',
+                image: '',
+              ))
+          .toList();
     }
     return [];
   }
 
   static List<Discount> _parseDiscounts(dynamic discountData) {
     if (discountData is List) {
-      return discountData.map((discountJson) => Discount(
-        id: discountJson['id'] as String? ?? '',
-        percentage: (discountJson['percentage'] as num?)?.toDouble() ?? 0.0,
-      )).toList();
+      return discountData
+          .map((discountJson) => Discount(
+                id: discountJson['id'] as String? ?? '',
+                percentage:
+                    (discountJson['percentage'] as num?)?.toDouble() ?? 0.0,
+              ))
+          .toList();
     }
     return [];
   }
@@ -101,7 +107,8 @@ class ProductMapper {
         print('Error parsing caducity date: $e');
       }
     }
-    return DateTime.now().add(Duration(days: 365)); // Default to 1 year from now
+    return DateTime.now()
+        .add(Duration(days: 365)); // Default to 1 year from now
   }
 
   // Conversion to JSON
@@ -116,14 +123,13 @@ class ProductMapper {
       'weight': product.weight,
       'measurement': product.measurement,
       'images': [product.imageUrl],
-      'category': product.categories.map((category) => {
-        'id': category.id,
-        'name': category.name
-      }).toList(),
-      'discount': product.discounts.map((discount) => {
-        'id': discount.id,
-        'percentage': discount.percentage
-      }).toList(),
+      'category': product.categories
+          .map((category) => {'id': category.id, 'name': category.name})
+          .toList(),
+      'discount': product.discounts
+          .map((discount) =>
+              {'id': discount.id, 'percentage': discount.percentage})
+          .toList(),
       'caducityDate': product.caducityDate.toIso8601String(),
     };
   }
