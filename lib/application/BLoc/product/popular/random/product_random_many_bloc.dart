@@ -1,9 +1,6 @@
 import 'dart:math';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-
-import 'package:go_delivery_frontend/common/failure.dart';
-import 'package:go_delivery_frontend/common/result.dart';
 import 'package:go_delivery_frontend/domain/entities/product/product.dart';
 import 'package:go_delivery_frontend/application/use_cases/product/get_many_product.dart';
 import 'package:go_delivery_frontend/application/BLoc/product/product_many/product_many_event.dart';
@@ -21,33 +18,33 @@ class ProductRandomListBloc extends Bloc<ProductListEvent, ProductListState> {
     LoadProductList event,
     Emitter<ProductListState> emit,
   ) async {
-      emit(const ProductListLoading([]));
+    emit(const ProductListLoading([]));
 
-      final result = await _getProductsUseCase.execute(
-        GetProductsUseCaseInput(
-          name: '',
-          categories: [''],
-          price: 0,
-          discount: '',
-          popular: '',
-          page: event.page,
-          perpage: event.perpage,
-        ),
-      );
+    final result = await _getProductsUseCase.execute(
+      GetProductsUseCaseInput(
+        name: '',
+        categories: [''],
+        price: 0,
+        discount: '',
+        popular: '',
+        page: event.page,
+        perpage: event.perpage,
+      ),
+    );
 
-      if (result.isSuccessful()) {
-        final allProducts = result.getValue();
-        final randomProducts = _getRandomProducts(allProducts, 10);
+    if (result.isSuccessful()) {
+      final allProducts = result.getValue();
+      final randomProducts = _getRandomProducts(allProducts, 10);
 
-        emit(ProductListLoaded(
-          products: randomProducts,
-          hasReachedMax: true,
-          page: event.page,
-          categories: [''],
-        ));
-      } else {
-        emit(ProductListFailed(result));
-      }
+      emit(ProductListLoaded(
+        products: randomProducts,
+        hasReachedMax: true,
+        page: event.page,
+        categories: [''],
+      ));
+    } else {
+      emit(ProductListFailed(result));
+    }
   }
 
   List<Product> _getRandomProducts(List<Product> allProducts, int count) {

@@ -3,10 +3,7 @@ import 'package:go_delivery_frontend/domain/repositories/bundle/bundle_repositor
 import 'package:go_delivery_frontend/infrastructure/mappers/bundle/bundle_mapper.dart';
 import 'package:go_delivery_frontend/application/key_value_storage/key_value.dart';
 import 'package:go_delivery_frontend/common/result.dart';
-
 import 'package:go_delivery_frontend/application/api/api_request.dart';
-
-import '../../../common/failure.dart';
 
 class BundleRepositoryImpl extends BundleRepository {
   final IApiRequestManager _apiRequestManager;
@@ -49,9 +46,8 @@ class BundleRepositoryImpl extends BundleRepository {
     if (categories != null &&
         categories.isNotEmpty &&
         categories.any((category) => category.trim().isNotEmpty)) {
-      queryParameters['category'] = categories
-          .where((category) => category.trim().isNotEmpty)
-          .join(',');
+      queryParameters['category'] =
+          categories.where((category) => category.trim().isNotEmpty).join(',');
     }
 
     if (price != null && price > 0) {
@@ -75,19 +71,19 @@ class BundleRepositoryImpl extends BundleRepository {
       '/api/bundle/many',
       'GET',
       queryParameters: queryParameters,
-          (dynamic data) {
+      (dynamic data) {
         if (data is Map<String, dynamic> && data.containsKey('bundles')) {
           List<dynamic> bundlesData = data['bundles'];
 
           List<Bundle> bundles = bundlesData
               .map((bundleData) {
-            try {
-              return BundleMapper.fromJson(bundleData);
-            } catch (e) {
-              print('Error parsing individual bundle: $e');
-              return null;
-            }
-          })
+                try {
+                  return BundleMapper.fromJson(bundleData);
+                } catch (e) {
+                  print('Error parsing individual bundle: $e');
+                  return null;
+                }
+              })
               .whereType<Bundle>()
               .toList();
 
@@ -95,13 +91,13 @@ class BundleRepositoryImpl extends BundleRepository {
         } else if (data is List) {
           List<Bundle> bundles = data
               .map((bundleData) {
-            try {
-              return BundleMapper.fromJson(bundleData);
-            } catch (e) {
-              print('Error parsing individual bundle: $e');
-              return null;
-            }
-          })
+                try {
+                  return BundleMapper.fromJson(bundleData);
+                } catch (e) {
+                  print('Error parsing individual bundle: $e');
+                  return null;
+                }
+              })
               .whereType<Bundle>()
               .toList();
 
@@ -123,19 +119,18 @@ class BundleRepositoryImpl extends BundleRepository {
 
     await _addAuthorizationHeader();
 
-      final response = await _apiRequestManager.request(
-        '/api/bundle/$bundleId',
-        'GET',
-        (data) {
-          // Imprimir los datos recibidos de la API
-          print('Respuesta de la API para el bundle: $data');
+    final response = await _apiRequestManager.request(
+      '/api/bundle/$bundleId',
+      'GET',
+      (data) {
+        // Imprimir los datos recibidos de la API
+        print('Respuesta de la API para el bundle: $data');
 
-          final bundle = BundleMapper.fromJson(data);
+        final bundle = BundleMapper.fromJson(data);
 
-
-          return bundle;
-        },
-      );
-      return response;
+        return bundle;
+      },
+    );
+    return response;
   }
 }
