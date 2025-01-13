@@ -1,40 +1,88 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_delivery_frontend/application/BLoc/category/category_event.dart';
+import 'package:go_delivery_frontend/application/BLoc/category/category_state.dart';
 import 'package:go_delivery_frontend/application/use_cases/category/get_many_category.dart';
-import 'package:go_delivery_frontend/domain/entities/category/category.dart';
-part 'category_event.dart';
-part 'category_state.dart';
 
 class CategoryBloc extends Bloc<CategoryEvent, CategoryState> {
   final GetCategoriesUseCase _getCategoriesUseCase;
 
-  CategoryBloc({required GetCategoriesUseCase getCategoriesUseCase})
-      : _getCategoriesUseCase = getCategoriesUseCase,
-        super(CategoryInitial()) {
+  CategoryBloc(this._getCategoriesUseCase) : super(CategoryInitial()) {
     on<LoadCategories>(_onLoadCategories);
+    on<SearchCategories>(_onSearchCategories);
   }
 
   Future<void> _onLoadCategories(
     LoadCategories event,
     Emitter<CategoryState> emit,
   ) async {
-    try {
-      emit(CategoryLoading());
+    await _loadCategories(
+      name: event.name ?? '',
+      page: event.page,
+      perPage: event.perpage,
+      emit: emit,
+    );
+  }
 
-      final result = await _getCategoriesUseCase.execute(
-        GetCategoriesInput(
-          page: event.page,
-          perpage: event.perpage,
-        ),
-      );
+  Future<void> _onSearchCategories(
+    SearchCategories event,
+    Emitter<CategoryState> emit,
+  ) async {
+    await _loadCategories(
+      name: event.name,
+      page: event.page,
+      perPage: event.perpage,
+      emit: emit,
+    );
+  }
+
+  Future<void> _loadCategories({
+    String name = '',
+    required int page,
+    required int perPage,
+    required Emitter<CategoryState> emit,
+  }) async {
+    try {
+      final currentState = state is CategoryLoaded
+          ? state as CategoryLoaded
+          : CategoryLoaded(
+              categories: [],
+              hasReachedMax: false,
+              page: 1,
+              name: name,
+            );
+
+      final shouldResetList = (name != currentState.name);
+      if (shouldResetList) {
+        emit(CategoryLoaded(
+          categories: [],
+          hasReachedMax: false,
+          page: 1,
+          name: name,
+        ));
+      }
+
+      final result = await _getCategoriesUseCase.execute(GetCategoriesInput(
+        name: name,
+        page: page,
+        perpage: perPage,
+      ));
 
       if (result.isSuccessful()) {
-        final categories = result.getValue();
-        emit(CategoryLoaded(categories));
+        final newCategories = result.getValue();
+        final hasReachedMax = newCategories.isEmpty;
+        emit(CategoryLoaded(
+          categories: newCategories.isNotEmpty
+              ? newCategories
+              : currentState.categories,
+          hasReachedMax: hasReachedMax,
+          page: page,
+          name: name,
+        ));
       } else {
-        emit(CategoryError(result.getError().message));
+        emit(CategoryFailed(result.getError().message));
       }
     } catch (e) {
-      emit(CategoryError(e.toString()));
+      emit(CategoryFailed(e.toString()));
     }
   }
 }

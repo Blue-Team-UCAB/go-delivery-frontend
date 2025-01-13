@@ -1,16 +1,38 @@
-part of 'category_bloc.dart';
+import 'package:equatable/equatable.dart';
 
-// category_event.dart
-abstract class CategoryEvent {}
+abstract class CategoryEvent extends Equatable {
+  const CategoryEvent();
+
+  @override
+  List<Object?> get props => [];
+}
 
 class LoadCategories extends CategoryEvent {
-  final String? name;
   final int page;
   final int perpage;
+  final String? name;
 
-  LoadCategories({
+  const LoadCategories({
+    required this.page,
+    required this.perpage,
     this.name,
-    this.page = 1,
-    this.perpage = 10,
   });
+
+  @override
+  List<Object?> get props => [page, perpage, name];
+}
+
+class SearchCategories extends CategoryEvent {
+  final int page;
+  final int perpage;
+  final String name;
+
+  const SearchCategories({
+    required this.name,
+    required this.page,
+    required this.perpage,
+  });
+
+  @override
+  List<Object?> get props => [name, page, perpage];
 }

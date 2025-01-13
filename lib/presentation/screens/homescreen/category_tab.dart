@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_delivery_frontend/application/BLoc/category/category_bloc.dart';
+import 'package:go_delivery_frontend/application/BLoc/category/category_event.dart';
+import 'package:go_delivery_frontend/application/BLoc/category/category_state.dart';
 import 'package:go_delivery_frontend/domain/entities/category/category.dart';
 
 class CategoryTabs extends StatefulWidget {
@@ -21,7 +23,6 @@ class CategoryTabsState extends State<CategoryTabs> {
   @override
   void initState() {
     super.initState();
-    // Load categories when widget initializes
     WidgetsBinding.instance.addPostFrameCallback((_) {
       context.read<CategoryBloc>().add(LoadCategories(page: 1, perpage: 10));
     });
@@ -31,13 +32,11 @@ class CategoryTabsState extends State<CategoryTabs> {
   Widget build(BuildContext context) {
     return BlocBuilder<CategoryBloc, CategoryState>(
       builder: (context, state) {
-        print('Current state: $state'); // Debug print
-
         if (state is CategoryLoading) {
           return _buildLoadingTabs();
         }
 
-        if (state is CategoryError) {
+        if (state is CategoryFailed) {
           return _buildErrorTabs();
         }
 
@@ -45,7 +44,7 @@ class CategoryTabsState extends State<CategoryTabs> {
           return _buildLoadedTabs(state.categories);
         }
 
-        return _buildLoadingTabs(); // Show loading for initial state
+        return _buildLoadingTabs();
       },
     );
   }

@@ -45,6 +45,10 @@ class RoutesManager {
           pageBuilder: (context, state) => CustomTransitions.slideRight(
               key: state.pageKey, child: const DirectionScreen())),
       GoRoute(
+          path: '/preferences',
+          pageBuilder: (context, state) => CustomTransitions.slideRight(
+              key: state.pageKey, child: const PreferencesScreen())),
+      GoRoute(
           path: '/login',
           pageBuilder: (context, state) => CustomTransitions.slideRight(
               key: state.pageKey, child: const LoginScreen())),

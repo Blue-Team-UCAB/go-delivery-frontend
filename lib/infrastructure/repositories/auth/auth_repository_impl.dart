@@ -183,14 +183,20 @@ class AuthRepositoryImpl implements UserRepository {
   @override
   Future<Result<bool>> updateUserImage(File image) async {
     await _addAuthorizationHeader();
-    final response = await _apiRequestManager
-        .request<bool>('/api/user/update/image', 'PATCH', (data) {
-      return data['errorCode'] == 200;
-    },
-            body: FormData.fromMap(
-                {'image': MultipartFile.fromFileSync(image.path)}));
-
-    if (response.value == true) {
+    final response = await _apiRequestManager.request<Map<String, dynamic>>(
+      '/api/user/update/image',
+      'PATCH',
+      (data) {
+        if (data is Map<String, dynamic> && data.containsKey('image')) {
+          return data;
+        }
+        throw Exception('Respuesta inesperada');
+      },
+      body: FormData.fromMap({
+        'image': MultipartFile.fromFileSync(image.path),
+      }),
+    );
+    if (response.isSuccess) {
       return Result.success(true);
     } else {
       return Result.fail(
