@@ -106,7 +106,7 @@ class _PaymentMethodSectionState extends State<PaymentMethodSection> {
               padding: const EdgeInsets.all(12.0),
               decoration: BoxDecoration(
                 color: _selectedPaymentMethod == title
-                    ? const Color(0xFF2000B1).withOpacity(0.1)
+                    ? const Color(0xFFD5CCFF)
                     : Colors.transparent,
                 borderRadius: const BorderRadius.vertical(
                   top: Radius.circular(8.0),

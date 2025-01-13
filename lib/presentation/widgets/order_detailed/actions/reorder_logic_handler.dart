@@ -227,7 +227,7 @@ class _ReorderOrderWidgetState extends State<ReorderOrderWidget> {
                     cartBloc.add(AddCartItem(CartItem(
                       id: productState.product!.id,
                       name: productState.product!.name,
-                      imgUrl: productState.product!.imageUrl,
+                      imgUrl: productState.product!.images[0],
                       price: productState.product!.price,
                       presentation:
                           'peso: ${productState.product!.weight} medidas: ${productState.product!.measurement}',
