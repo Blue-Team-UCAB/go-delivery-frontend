@@ -13,8 +13,6 @@ import 'package:go_delivery_frontend/presentation/widgets/dialog_darken_window.d
 import 'package:go_delivery_frontend/presentation/widgets/navbar.dart';
 import 'package:go_delivery_frontend/presentation/screens/homescreen/homescreen_locationbar.dart';
 
-import '../../core/theme/theme.dart';
-
 class HomeScreenParentView extends StatelessWidget {
   static const name = 'home-screen';
   final int initialCounterNavbar;
