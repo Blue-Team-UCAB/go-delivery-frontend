@@ -2,7 +2,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_delivery_frontend/application/BLoc/blocs.dart';
-import 'package:go_delivery_frontend/domain/entities/cart/cartitem.dart';
 import 'package:go_delivery_frontend/domain/entities/product/product.dart';
 import 'package:go_router/go_router.dart';
 import 'package:go_delivery_frontend/application/BLoc/cart/cart_bloc.dart';
