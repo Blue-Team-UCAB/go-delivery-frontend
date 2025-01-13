@@ -16,7 +16,6 @@ import 'package:go_delivery_frontend/application/BLoc/order/order_create/order_c
 import 'package:go_delivery_frontend/firebase_options.dart';
 import 'package:go_delivery_frontend/infrastructure/firebase/firebase_notifications_manager.dart';
 import 'package:go_delivery_frontend/infrastructure/mappers/local_notifications.dart';
-import 'package:go_delivery_frontend/presentation/core/restarter.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -29,8 +28,7 @@ void main() async {
   Stripe.publishableKey = dotenv.env['STRIPE_PUBLISHABLE_KEY'] ?? '';
   await Stripe.instance.applySettings();
   runApp(
-      RestartWidget(
-        child: MultiBlocProvider(
+        MultiBlocProvider(
           providers: [
             BlocProvider(create: (_) => getIt<UserImageBloc>()),
             BlocProvider(create: (_) => getIt<AddDirectionBloc>()),
@@ -69,10 +67,9 @@ void main() async {
           ],
           child: BlocBuilder<ThemesBloc, ThemesState>(
             builder: (context, state) {
-              return GoDelyApp(key: ValueKey(state.appTheme.colorMode));
+              return GoDelyApp();
             },
           ),
         ),
-      )
   );
 }
