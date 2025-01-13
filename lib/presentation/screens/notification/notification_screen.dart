@@ -19,10 +19,10 @@ class NotificationScreen extends StatelessWidget {
           //   context.select((NotificationsBloc bloc) => '${bloc.state}'),
           //   style: const TextStyle(fontSize: 10),
           // ),
-          title: const Text('Notificaciones'),
+          title:  Text('Notificaciones', style: TextStyle(fontFamily: "Montserrat",fontWeight: FontWeight.bold, fontSize: 26)),
           backgroundColor: const Color(0xFFEBEAED),
           leading: IconButton(
-            icon: const Icon(Icons.arrow_back),
+            icon: const Icon(Icons.arrow_back_ios_new),
             onPressed: () {
               Navigator.pop(context);
             },

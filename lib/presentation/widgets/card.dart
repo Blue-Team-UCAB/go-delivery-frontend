@@ -79,7 +79,7 @@ class ProductCard extends StatelessWidget {
                           duration: Duration(seconds: 1),
                           behavior: SnackBarBehavior.floating,
                           margin:
-                          EdgeInsets.only(bottom: 25, right: 20, left: 20),
+                          EdgeInsets.only(bottom: 110, right: 20, left: 20),
                           backgroundColor: Color(0xfc009e4f),
                           content: Text('Agregado Satisfactoriamente')));
                     },

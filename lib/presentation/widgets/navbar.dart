@@ -12,99 +12,142 @@ class CustomNavBar extends StatelessWidget {
     required this.onItemTapped,
   });
 
-  Widget _buildNavItem(IconData icon, String label, int index,
-      BuildContext context, String direccion) {
-    return GestureDetector(
-      onTap: () {
-        onItemTapped(index);
-        if (direccion.isNotEmpty) {
-          context.go(direccion);
-        }
-      },
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(
-            icon,
-            color:
-                selectedIndex == index ? const Color(0xFF2000B1) : Colors.grey,
+  Widget _buildNavItem(
+      IconData icon, String label, int index, BuildContext context, String direccion) {
+    return Expanded(
+      child: GestureDetector(
+        onTap: () {
+          onItemTapped(index);
+          if (direccion.isNotEmpty) {
+            context.go(direccion);
+          }
+        },
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeInOut,
+          transform: Matrix4.translationValues(
+              0,
+              selectedIndex == index ? -10.0 : 0.0, // Slight lift when selected
+              0
           ),
-          Text(
-            label,
-            style: TextStyle(
-              color: selectedIndex == index
-                  ? const Color(0xFF2000B1)
-                  : Colors.grey,
-              fontWeight:
-                  selectedIndex == index ? FontWeight.bold : FontWeight.normal,
-            ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              AnimatedContainer(
+                duration: const Duration(milliseconds: 300),
+                curve: Curves.easeInOut,
+                width: selectedIndex == index ? 40 : 30,
+                height: selectedIndex == index ? 40 : 30,
+                child: Icon(
+                  icon,
+                  color: selectedIndex == index
+                      ? const Color(0xFF2000B1)
+                      : Colors.grey,
+                  size: selectedIndex == index ? 30 : 24,
+                ),
+              ),
+              AnimatedDefaultTextStyle(
+                duration: const Duration(milliseconds: 300),
+                curve: Curves.easeInOut,
+                style: TextStyle(
+                  color: selectedIndex == index
+                      ? const Color(0xFF2000B1)
+                      : Colors.grey,
+                  fontWeight: selectedIndex == index
+                      ? FontWeight.bold
+                      : FontWeight.normal,
+                  fontSize: selectedIndex == index ? 14 : 12,
+                ),
+                child: Text(label),
+              ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: const BorderRadius.only(topLeft: Radius.circular(30), topRight: Radius.circular(30))
-      ),
-      height: 80,
-      child: Stack(
-        clipBehavior: Clip.none,
-        children: [
-          ClipRRect(
-            borderRadius: const BorderRadius.only(
-                topLeft: Radius.circular(30), topRight: Radius.circular(30)),
-            child: BottomAppBar(
-              color: const Color(0xFFFFFFFF),
-              shape: const CircularNotchedRectangle(),
-              notchMargin: 6.0,
-              child: Container(
-                height: 70,
-                padding: const EdgeInsets.symmetric(horizontal: 16),
+    return SafeArea(
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxHeight: 75),
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeInOut,
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(selectedIndex == -1 ? 0 : 30),
+              topRight: Radius.circular(selectedIndex == -1 ? 0 : 30),
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black12,
+                blurRadius: selectedIndex == -1 ? 0 : 10,
+                offset: const Offset(0, -2),
+              ),
+            ],
+          ),
+          child: Stack(
+            clipBehavior: Clip.none,
+            alignment: Alignment.bottomCenter,
+            children: [
+              Positioned(
+                bottom: 10,
+                left: 0,
+                right: 0,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
                     _buildNavItem(Icons.home, "Home", 0, context, '/'),
-                    const SizedBox(width: 10),
                     _buildNavItem(
                         Icons.search, "Buscar", 1, context, '/Catalog'),
-                    const SizedBox(width: 60),
+                    const SizedBox(width: 60), // Placeholder for center button
                     _buildNavItem(
                         Icons.receipt, "Ordenes", 2, context, '/order'),
-                    const SizedBox(width: 10),
                     _buildNavItem(
                         Icons.person, "Perfil", 3, context, '/profile'),
                   ],
                 ),
               ),
-            ),
+              Positioned(
+                bottom: 40, // Adjusted positioning
+                child: _buildCenterButton(context),
+              ),
+            ],
           ),
-          Positioned(
-            bottom: 50,
-            left:
-                MediaQuery.of(context).size.width / 2 - 30, // Center the button
-            child: _buildCenterButton(context),
-          ),
-        ],
+        ),
       ),
     );
   }
 
   Widget _buildCenterButton(BuildContext context) {
-    return FloatingActionButton(
-      onPressed: () => context.push('/Cart'),
-      backgroundColor: const Color(0xFF2000B1),
-      shape: const CircleBorder(),
-      elevation: 6.0, // Add some elevation for better visibility
-      mini: false,
-      child: Icon(
-        selectedIndex == 2 ? Icons.shopping_cart_outlined : Icons.shopping_cart,
-        size: 36,
-        color: Colors.grey[300], // Light gray color
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.easeInOut,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+
+      ),
+      child: FloatingActionButton(
+        onPressed: () => context.push('/Cart'),
+        backgroundColor: const Color(0xFF2000B1),
+        shape: const CircleBorder(),
+        elevation: 6.0,
+        child: AnimatedSwitcher(
+          duration: const Duration(milliseconds: 300),
+          transitionBuilder: (Widget child, Animation<double> animation) {
+            return ScaleTransition(scale: animation, child: child);
+          },
+          child: Icon(
+            Icons.shopping_cart_outlined,
+            key: ValueKey<int>(selectedIndex),
+            size: 36,
+            color: Colors.grey[300],
+          ),
+        ),
       ),
     );
   }

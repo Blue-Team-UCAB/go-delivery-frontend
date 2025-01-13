@@ -33,8 +33,15 @@ class CheckoutOrderScreenState extends State<CheckoutOrderScreen> {
       builder: (context, state) {
         return Scaffold(
           appBar: AppBar(
-            title: const Text('Órdenes'),
-            centerTitle: true,
+            backgroundColor: Colors.white,
+            title: Text('Checkout Orden',
+                style: TextStyle(
+                    fontSize: 24,
+                    fontFamily: 'Montserrat',
+                    fontWeight: FontWeight.bold,
+                ),
+            ),
+            centerTitle: false,
             leading: IconButton(
               icon: const Icon(Icons.arrow_back_ios_new),
               onPressed: () {
