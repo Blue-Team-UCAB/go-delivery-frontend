@@ -97,7 +97,7 @@ class OrderRepositoryImpl extends OrderRepository {
     print(body);
 
     final response = await _apiRequestManager.request(
-      '/api/order',
+      '/api/order/pay',
       'POST',
       (data) {
         if (data is Map<String, dynamic>) {

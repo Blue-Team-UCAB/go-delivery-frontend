@@ -1,6 +1,8 @@
 import "package:flutter/material.dart";
 import "package:go_router/go_router.dart";
 
+import "../core/theme/theme_getter.dart";
+
 // TODO: link theme context to a custom theme file with primary, secondary... colors 2024-11-09
 class CustomNavBar extends StatelessWidget {
   final int selectedIndex;
@@ -14,6 +16,8 @@ class CustomNavBar extends StatelessWidget {
 
   Widget _buildNavItem(
       IconData icon, String label, int index, BuildContext context, String direccion) {
+    final currentSecondaryThemeColor = AppThemesGetter.getSecondaryColor(context);
+
     return Expanded(
       child: GestureDetector(
         onTap: () {
@@ -42,7 +46,7 @@ class CustomNavBar extends StatelessWidget {
                 child: Icon(
                   icon,
                   color: selectedIndex == index
-                      ? const Color(0xFF2000B1)
+                      ? currentSecondaryThemeColor
                       : Colors.grey,
                   size: selectedIndex == index ? 30 : 24,
                 ),
@@ -52,7 +56,7 @@ class CustomNavBar extends StatelessWidget {
                 curve: Curves.easeInOut,
                 style: TextStyle(
                   color: selectedIndex == index
-                      ? const Color(0xFF2000B1)
+                      ? currentSecondaryThemeColor
                       : Colors.grey,
                   fontWeight: selectedIndex == index
                       ? FontWeight.bold
@@ -124,6 +128,8 @@ class CustomNavBar extends StatelessWidget {
   }
 
   Widget _buildCenterButton(BuildContext context) {
+    final currentSecondaryThemeColor = AppThemesGetter.getSecondaryColor(context);
+
     return AnimatedContainer(
       duration: const Duration(milliseconds: 300),
       curve: Curves.easeInOut,
@@ -133,7 +139,7 @@ class CustomNavBar extends StatelessWidget {
       ),
       child: FloatingActionButton(
         onPressed: () => context.push('/Cart'),
-        backgroundColor: const Color(0xFF2000B1),
+        backgroundColor: currentSecondaryThemeColor,
         shape: const CircleBorder(),
         elevation: 6.0,
         child: AnimatedSwitcher(

@@ -10,10 +10,9 @@ import 'package:go_delivery_frontend/application/BLoc/auth/login/login_bloc.dart
 import 'package:go_delivery_frontend/injector.dart';
 import 'package:go_delivery_frontend/presentation/screens/auth/login/inputDecorationLogin.dart';
 
-import '../../../../application/BLoc/themes/themes_bloc.dart';
-import '../../../../infrastructure/datasources/localstorage/localstorage_impl.dart';
-import '../../../core/restarter.dart';
-import '../../../core/theme/theme.dart';
+import 'package:go_delivery_frontend/application/BLoc/themes/themes_bloc.dart';
+import 'package:go_delivery_frontend/infrastructure/datasources/localstorage/localstorage_impl.dart';
+import 'package:go_delivery_frontend/presentation/core/theme/theme.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -152,7 +151,7 @@ class LoginFormState extends State<LoginForm> {
                                       style: TextStyle(
                                         fontFamily: 'Montserrat',
                                         color: currentColorMode == AppColorMode.blue
-                                            ? Colors.blue
+                                            ? Color(0xFF02066F)
                                             : Colors.black,
                                         fontWeight: currentColorMode == AppColorMode.blue
                                             ? FontWeight.bold
@@ -160,7 +159,7 @@ class LoginFormState extends State<LoginForm> {
                                       ),
                                     ),
                                     if (currentColorMode == AppColorMode.blue)
-                                      Icon(Icons.check, color: Colors.blue),
+                                      Icon(Icons.check, color: Color(0xFF02066F)),
                                   ],
                                 ),
                               ),
@@ -174,7 +173,7 @@ class LoginFormState extends State<LoginForm> {
                                       style: TextStyle(
                                         fontFamily: 'Montserrat',
                                         color: currentColorMode == AppColorMode.red
-                                            ? Colors.red
+                                            ? Color(0xFF8F0000)
                                             : Colors.black,
                                         fontWeight: currentColorMode == AppColorMode.red
                                             ? FontWeight.bold
@@ -182,7 +181,7 @@ class LoginFormState extends State<LoginForm> {
                                       ),
                                     ),
                                     if (currentColorMode == AppColorMode.red)
-                                      Icon(Icons.check, color: Colors.red),
+                                      Icon(Icons.check, color: Color(0xFF8F0000)),
                                   ],
                                 ),
                               ),
@@ -206,7 +205,6 @@ class LoginFormState extends State<LoginForm> {
                               await localStorageService.setKeyValue<String>("CURRENT_API_URL", apiUrl);
                               await localStorageService.setKeyValue<String>('colorMode', newMode.toString());
 
-                              RestartWidget.restartApp(context);
                             }
                           },
                         ),
