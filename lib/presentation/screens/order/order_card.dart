@@ -88,7 +88,7 @@ class OrderCardState extends State<OrderCard> {
                       children: [
                         Flexible(
                           child: Text(
-                            "Orden #${widget.order.id.substring(widget.order.id.length - 4)}",
+                            "Orden #${widget.order.id.substring(widget.order.id.length - 5)}",
                             style: const TextStyle(
                               fontFamily: 'Inter',
                               fontSize: 18,
