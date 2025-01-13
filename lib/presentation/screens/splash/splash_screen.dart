@@ -6,10 +6,14 @@ import 'package:flutter_svg/flutter_svg.dart';
 
 import 'package:go_delivery_frontend/application/BLoc/themes/themes_bloc.dart';
 
+import '../../core/theme/theme.dart';
+
 class SplashScreen extends StatefulWidget {
-  const SplashScreen(
-      {super.key, required this.onSplashScreenFade,
-      required this.splashScreenDurationSeconds});
+  const SplashScreen({
+    super.key,
+    required this.onSplashScreenFade,
+    required this.splashScreenDurationSeconds
+  });
 
   final int splashScreenDurationSeconds;
   final void Function() onSplashScreenFade;
@@ -23,24 +27,37 @@ class SplashScreenState extends State<SplashScreen> {
   void initState() {
     super.initState();
     Timer(Duration(seconds: widget.splashScreenDurationSeconds),
-        () => widget.onSplashScreenFade());
+            () => widget.onSplashScreenFade());
   }
 
   @override
   Widget build(BuildContext context) {
-    final bool isDarkMode = context.watch<ThemesBloc>().isDarkMode;
+    final AppColorMode currentColorMode = context.watch<ThemesBloc>().currentColorMode;
+
+    // Define colors and logo based on current color mode
+    Color backgroundColor;
+    String logoAsset;
+
+    switch (currentColorMode) {
+      case AppColorMode.blue:
+        backgroundColor = const Color(0xFF02066F);
+        logoAsset = 'assets/icon/logo.svg';
+        break;
+      case AppColorMode.red:
+        backgroundColor = const Color(0xFF8F0000);
+        logoAsset = 'assets/icon/logo-white.svg';
+        break;
+    }
 
     return Scaffold(
-      backgroundColor: isDarkMode ? Colors.black26 : const Color(0xFF02066F), // Decimal value for #2000B1
+      backgroundColor: backgroundColor,
       body: SafeArea(
         child: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               SvgPicture.asset(
-                isDarkMode
-                    ? 'assets/icon/logo-white.svg'
-                    : 'assets/icon/logo.svg',
+                logoAsset,
                 height: 300,
                 width: 300,
               ),
