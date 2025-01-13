@@ -8,21 +8,40 @@ part 'themes_state.dart';
 
 class ThemesBloc extends Bloc<ThemesEvent, ThemesState> {
   ThemesBloc() : super(const ThemesState()) {
-    on<ToggleDarkmode>(_toggleDarkmode);
+    on<ToggleDarkmode>(_toggleColorMode);
     on<InitThemeSystem>(_initThemeSystem);
   }
 
-  void _toggleDarkmode(ToggleDarkmode event, Emitter<ThemesState> emit) {
-    final apptheme = state.appTheme;
+  void _toggleColorMode(ToggleDarkmode event, Emitter<ThemesState> emit) {
+    final currentMode = state.appTheme.colorMode;
+    AppColorMode nextMode;
+
+    switch (currentMode) {
+      case AppColorMode.red:
+        nextMode = AppColorMode.blue;
+        break;
+      case AppColorMode.blue:
+        nextMode = AppColorMode.red;
+        break;
+      default:
+        nextMode = AppColorMode.red; // Default to red if somehow another mode is set
+    }
+
     emit(state.copyWith(
-        appTheme: apptheme.copyWith(isDarkMode: !apptheme.isDarkMode)));
+        appTheme: state.appTheme.copyWith(colorMode: nextMode)
+    ));
   }
 
   void _initThemeSystem(InitThemeSystem event, Emitter<ThemesState> emit) {
-    final apptheme = state.appTheme;
+    // If value is true, start with red, otherwise blue
+    AppColorMode initialMode = event.value
+        ? AppColorMode.red
+        : AppColorMode.blue;
+
     emit(state.copyWith(
-        appTheme: apptheme.copyWith(isDarkMode: event.value),
-        isInitialized: true));
+        appTheme: state.appTheme.copyWith(colorMode: initialMode),
+        isInitialized: true
+    ));
   }
 
   void changeTheme() {
@@ -33,5 +52,5 @@ class ThemesBloc extends Bloc<ThemesEvent, ThemesState> {
     add(InitThemeSystem(value: value));
   }
 
-  bool get isDarkMode => state.appTheme.isDarkMode;
+  AppColorMode get currentColorMode => state.appTheme.colorMode;
 }
