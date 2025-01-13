@@ -1,5 +1,8 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_delivery_frontend/application/BLoc/payment/card_get/get_card_bloc.dart';
 import 'package:go_delivery_frontend/application/BLoc/payment/card_get/get_card_event.dart';
 import 'package:go_delivery_frontend/application/BLoc/payment/card_get/get_card_state.dart';
@@ -33,6 +36,7 @@ class _PaymentMethodSectionState extends State<PaymentMethodSection> {
   String? _referenceNumber;
   String? _selectedBank;
   String? _selectedCardId;
+  bool isSelected = false;
   double userPoints = 0.00;
 
   TextEditingController referenceController = TextEditingController();
@@ -51,7 +55,7 @@ class _PaymentMethodSectionState extends State<PaymentMethodSection> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(16.0),
+      padding: const EdgeInsets.all(8.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -157,7 +161,7 @@ class _PaymentMethodSectionState extends State<PaymentMethodSection> {
 
   Widget _buildCreditCardOptions() {
     return Padding(
-      padding: const EdgeInsets.all(12.0),
+      padding: const EdgeInsets.all(18.0),
       child: Column(
         children: [
           BlocBuilder<CardListBloc, CardListState>(
@@ -175,7 +179,6 @@ class _PaymentMethodSectionState extends State<PaymentMethodSection> {
                     final cardIdentifier =
                         "${card.brand ?? ''}-${card.last4 ?? ''}-${card.expMonth ?? ''}-${card.expYear ?? ''}";
                     final selectedCardId = card.idCard;
-
                     return GestureDetector(
                       onTap: () {
                         setState(() {
@@ -188,47 +191,57 @@ class _PaymentMethodSectionState extends State<PaymentMethodSection> {
                         }
                         debugPrint("Selected Card ID: $_selectedCardId");
                       },
-                      child: Container(
-                        key: ValueKey(_selectedCardId), // Uso alternativo
-                        margin: const EdgeInsets.only(bottom: 12.0),
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 12.0,
-                          vertical: 8.0,
-                        ),
-                        width: double.infinity,
-                        decoration: BoxDecoration(
-                          border: Border.all(
-                            color: _selectedCardType == cardIdentifier
-                                ? const Color(0xFF2000B1)
-                                : Colors.grey,
+                      child: Transform.scale(
+                        scale: max(1, _selectedCardType == cardIdentifier ? 1.05 : 0),
+                        child: Container(
+                          decoration: BoxDecoration(
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.grey.withOpacity(_selectedCardType == cardIdentifier ? 0.5 : 0),
+                                      spreadRadius: -12,
+                                      blurRadius: 16,
+                                      offset: const Offset(6, 2)
+                                    )
+                                  ]
+                                ),
+                          height: 190,width: 342,
+                          child: Stack(
+                            children: [
+                              SvgPicture.asset(card.brand=='visa'? 'assets/visa_card.svg' : 'assets/masterc_card.svg',height: 170,width: 342,),
+                              Container(
+                                height: 170,
+                                width: 342,
+                                child: Padding(
+                                  padding: EdgeInsets.only(left: 20,top: 20,bottom: 0),
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        "XXXX XXXX XXXX ${card.last4 ?? '0000'}",
+                                        style: const TextStyle(
+                                          color: Color(0xFFFFFFFF),
+                                          fontSize: 18,
+                                          fontFamily: 'Inter',
+                                          fontWeight: FontWeight.bold
+                                        ),
+                                      ),
+                                      const SizedBox(height: 4),
+                                      Text(
+                                        "Fecha: ${card.expMonth?.toString().padLeft(2, '0') ?? '00'}/${card.expYear?.toString().substring(2, 4) ?? '00'}",
+                                        style: const TextStyle(
+                                          color: Color(0xFFFFFFFF),
+                                          fontSize: 16,
+                                          fontFamily: 'Inter',
+                                          fontWeight: FontWeight.bold
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
-                          borderRadius: BorderRadius.circular(8.0),
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              (card.brand ?? 'Desconocido').toUpperCase(),
-                              style: const TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            const SizedBox(height: 4),
-                            Text(
-                              "XXXX XXXX XXXX ${card.last4 ?? '0000'}",
-                              style: const TextStyle(
-                                fontSize: 14,
-                              ),
-                            ),
-                            const SizedBox(height: 4),
-                            Text(
-                              "Fecha: ${card.expMonth?.toString().padLeft(2, '0') ?? '00'}/${card.expYear?.toString().substring(2, 4) ?? '00'}",
-                              style: const TextStyle(
-                                fontSize: 14,
-                              ),
-                            ),
-                          ],
                         ),
                       ),
                     );
