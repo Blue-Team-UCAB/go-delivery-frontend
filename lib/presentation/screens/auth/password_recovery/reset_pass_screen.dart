@@ -8,6 +8,9 @@ import 'package:go_delivery_frontend/presentation/widgets/dialog_darken_window.d
 import 'package:go_delivery_frontend/presentation/screens/auth/login/inputDecorationLogin.dart';
 import 'package:go_delivery_frontend/presentation/screens/auth/login/login_validators.dart';
 
+import '../../../../application/BLoc/themes/themes_bloc.dart';
+import '../../../core/theme/theme.dart';
+
 class PasswordRenewScreen extends StatefulWidget {
   final String email;
 
@@ -96,8 +99,16 @@ class _PasswordRenewScreenState extends State<PasswordRenewScreen> {
 
   @override
   Widget build(BuildContext context) {
+
+    final themesBloc = context.watch<ThemesBloc>();
+    final appTheme = themesBloc.state.appTheme;
+    final isPrimaryRed = appTheme.colorMode == AppColorMode.red;
+    final primaryColor = isPrimaryRed
+        ? const Color(0xFF8F0000)  // Dark Crimson
+        : const Color(0xFF02066F);
+
     return Scaffold(
-      backgroundColor: const Color(0xFF02066F),
+      backgroundColor: primaryColor,
       body: BlocListener<RecoverPasswordBloc, RecoverPasswordState>(
         listenWhen: (previous, current) =>
             previous.formStatus != current.formStatus,
@@ -124,8 +135,8 @@ class _PasswordRenewScreenState extends State<PasswordRenewScreen> {
                       context.go('/login');
                     },
                     icon: Icons.check_circle,
-                    iconColor: const Color(0xFF02066F),
-                    buttonColor: const Color(0xFF02066F),
+                    iconColor: primaryColor,
+                    buttonColor: primaryColor,
                   );
                 },
               );
@@ -160,7 +171,8 @@ class _PasswordRenewScreenState extends State<PasswordRenewScreen> {
               Expanded(
                 flex: 2,
                 child: SvgPicture.asset(
-                  'assets/icon/logo.svg',
+                  isPrimaryRed ?
+                  'assets/icon/logo_red.svg' : 'assets/icon/logo.svg',
                   fit: BoxFit.contain,
                 ),
               ),
@@ -308,7 +320,7 @@ class _PasswordRenewScreenState extends State<PasswordRenewScreen> {
                               }
                             },
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: const Color(0xFF02066F),
+                              backgroundColor: primaryColor,
                               padding: const EdgeInsets.symmetric(vertical: 16),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(8),
@@ -332,7 +344,7 @@ class _PasswordRenewScreenState extends State<PasswordRenewScreen> {
                                   .sendCode(resend: true);
                             },
                             style: TextButton.styleFrom(
-                              foregroundColor: const Color(0xFF02066F),
+                              foregroundColor: primaryColor,
                             ),
                             child: const Text(
                               'Reenviar Código',
