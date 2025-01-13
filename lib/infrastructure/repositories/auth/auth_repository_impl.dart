@@ -53,10 +53,10 @@ class AuthRepositoryImpl implements UserRepository {
       if (response.value == true) {
         return Result.success(true);
       } else {
-        return Result.fail(CustomFailure(message: 'Login Fallido'));
+        return Result.fail(CustomFailure(message: 'Login Fallido!: ${response.error?.message.toString()}'));
       }
     } else {
-      return Result.fail(CustomFailure(message: 'Login Fallido'));
+      return Result.fail(CustomFailure(message: 'Login Fallido!: ${response.error?.message.toString()}'));
     }
   }
 
@@ -101,19 +101,14 @@ class AuthRepositoryImpl implements UserRepository {
 
   @override
   Future<Result<bool>> sendRecoveryCode(String email) async {
-    var message;
+
+    print("el body:${email}");
+
     final response = await _apiRequestManager.request<bool>(
-      '/api/auth/forgot/password',
+      '/api/auth/forget/password',
       'POST',
       (data) {
-        if (data is Map<String, dynamic>) {
-          if (data.containsKey('error')) {
-            return false;
-          } else {
-            return true;
-          }
-        }
-        return false;
+        return true;
       },
       body: {'email': email},
     );
@@ -122,16 +117,15 @@ class AuthRepositoryImpl implements UserRepository {
       if (response.value == true) {
         return Result.success(true);
       } else {
-        return Result.fail(CustomFailure(message: message));
+        return Result.fail(CustomFailure(message: "Hubo un problema enviando el codigo con su Email"));
       }
     } else {
-      return Result.fail(CustomFailure(message: message));
+      return Result.fail(CustomFailure(message: "Hubo un problema enviando el codigo con su Email"));
     }
   }
 
   @override
   Future<Result<bool>> validateRecoveryCode(String email, String code) async {
-    var message;
 
     final response = await _apiRequestManager.request<bool>(
       '/api/auth/code/validate',
@@ -144,13 +138,9 @@ class AuthRepositoryImpl implements UserRepository {
     );
 
     if (response.isSuccess) {
-      if (response.value == true) {
         return Result.success(true);
-      } else {
-        return Result.fail(CustomFailure(message: message));
-      }
     } else {
-      return Result.fail(CustomFailure(message: message));
+      return Result.fail(CustomFailure(message: "Algo Salio mal con la validacion del codigo"));
     }
   }
 

@@ -14,20 +14,29 @@ class GoDelyApp extends StatelessWidget {
     final LocalStorageService localStorage = LocalStorageService();
     final AppTheme appTheme = context.watch<ThemesBloc>().state.appTheme;
     final bool isThemeInit = context.watch<ThemesBloc>().state.isInitialized;
-    var brightness =
-        SchedulerBinding.instance.platformDispatcher.platformBrightness;
-    final isDarkMode = brightness == Brightness.dark;
+
+    // Default to blue mode when first launching the app
+    final defaultColorMode = AppColorMode.blue;
+
     if (!isThemeInit) {
-      localStorage.getValue<bool>('theme').then((value) {
+      localStorage.getValue<String>('colorMode').then((value) {
+        AppColorMode savedColorMode;
+
         if (value == null) {
-          localStorage.setKeyValue('theme', isDarkMode);
-          context.read<ThemesBloc>().setInitTheme(isDarkMode);
+          // If no saved color mode, use default blue
+          localStorage.setKeyValue('colorMode', defaultColorMode.toString());
+          context.read<ThemesBloc>().setInitTheme(defaultColorMode == AppColorMode.red);
         } else {
-          context.read<ThemesBloc>().setInitTheme(value);
+          // Convert saved string to AppColorMode
+          savedColorMode = value.contains('blue')
+              ? AppColorMode.blue
+              : AppColorMode.red;
+          context.read<ThemesBloc>().setInitTheme(savedColorMode == AppColorMode.red);
         }
       });
     } else {
-      localStorage.setKeyValue('theme', appTheme.isDarkMode);
+      // Save current color mode to local storage
+      localStorage.setKeyValue('colorMode', appTheme.colorMode.toString());
     }
 
     return MaterialApp.router(

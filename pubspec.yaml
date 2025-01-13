@@ -62,15 +62,18 @@ flutter:
     - lib/presentation/core/app.dart
     - assets/icon/logo-white.svg
     - assets/icon/logo.svg
-    - assets/icon/google.svg
-    - assets/icon/facebook.svg
-    - assets/icon/apple.svg
+    - assets/icon/logo_red.svg
     - assets/not-found-image.svg
     - assets/icon/order_not_found.svg
     - assets/icon/user_150x150.png
     - assets/empty_states/coupon_emptystate.svg
     - assets/empty_states/cart_emptystate.svg
     - assets/empty_states/order_emptystate.svg
+    - assets/empty_states/coupon_emptystate_red.svg
+    - assets/empty_states/cart_emptystate_red.svg
+    - assets/empty_states/order_emptystate_red.svg
+    - assets/visa_card.svg
+    - assets/masterc_card.svg
 
   fonts:
     - family: Montserrat
