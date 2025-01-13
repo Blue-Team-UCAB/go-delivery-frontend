@@ -3,7 +3,7 @@ import 'package:equatable/equatable.dart';
 class CartItem extends Equatable {
   final String id;
   final String name;
-  final String? imgUrl;
+  final String imgUrl;
   final double price;
   final String presentation;
   final int quantity;
@@ -12,7 +12,7 @@ class CartItem extends Equatable {
   const CartItem({
     required this.id,
     required this.name, 
-    this.imgUrl,
+    required this.imgUrl,
     required this.price, 
     required this.presentation,
     required this.quantity,

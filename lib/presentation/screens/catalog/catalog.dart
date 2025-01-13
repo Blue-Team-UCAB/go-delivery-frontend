@@ -141,7 +141,7 @@ class CatalogScreenState extends State<CatalogScreen>
         backgroundColor: Colors.transparent,
         title: const Text(
           'Catálogo',
-          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 26),
+          style: TextStyle(fontFamily: "Montserrat",fontWeight: FontWeight.bold, fontSize: 26),
         ),
         elevation: 0,
         actions: [
