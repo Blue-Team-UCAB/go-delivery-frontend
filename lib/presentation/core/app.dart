@@ -15,7 +15,6 @@ class GoDelyApp extends StatelessWidget {
     final AppTheme appTheme = context.watch<ThemesBloc>().state.appTheme;
     final bool isThemeInit = context.watch<ThemesBloc>().state.isInitialized;
 
-    // Default to blue mode when first launching the app
     final defaultColorMode = AppColorMode.blue;
 
     if (!isThemeInit) {
@@ -23,11 +22,9 @@ class GoDelyApp extends StatelessWidget {
         AppColorMode savedColorMode;
 
         if (value == null) {
-          // If no saved color mode, use default blue
           localStorage.setKeyValue('colorMode', defaultColorMode.toString());
           context.read<ThemesBloc>().setInitTheme(defaultColorMode == AppColorMode.red);
         } else {
-          // Convert saved string to AppColorMode
           savedColorMode = value.contains('blue')
               ? AppColorMode.blue
               : AppColorMode.red;
@@ -40,6 +37,7 @@ class GoDelyApp extends StatelessWidget {
     }
 
     return MaterialApp.router(
+      key: ValueKey(appTheme.colorMode),
       debugShowCheckedModeBanner: false,
       routerConfig: RoutesManager.appRouter,
       theme: appTheme.getTheme(),

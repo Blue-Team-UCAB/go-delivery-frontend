@@ -45,7 +45,7 @@ class SplashScreenState extends State<SplashScreen> {
         break;
       case AppColorMode.red:
         backgroundColor = const Color(0xFF8F0000);
-        logoAsset = 'assets/icon/logo-white.svg';
+        logoAsset = 'assets/icon/logo_red.svg';
         break;
     }
 
