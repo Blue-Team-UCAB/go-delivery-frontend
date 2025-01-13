@@ -29,9 +29,6 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
     final primaryColor = isPrimaryRed
         ? const Color(0xFF8F0000)
         : const Color(0xFF02066F);
-    final secondaryColor = isPrimaryRed
-        ? const Color(0xFFC60000)
-        : const Color(0xFF2000B1);
 
 
     return BlocConsumer<RecoverPasswordBloc, RecoverPasswordState>(
