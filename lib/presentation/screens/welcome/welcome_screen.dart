@@ -36,7 +36,7 @@ class WelcomeScreenState extends State<WelcomeScreen> {
       case AppColorMode.red:
         backgroundColor = const Color(0xFF8F0000);  // Dark Crimson
         buttonTextColor = const Color(0xFF8F0000);
-        logoAsset = 'assets/icon/logo-white.svg';
+        logoAsset = 'assets/icon/logo_red.svg';
         break;
     }
 

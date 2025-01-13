@@ -50,7 +50,7 @@ class AppTheme {
       scaffoldBackgroundColor: Colors.white,
       appBarTheme: AppBarTheme(
         backgroundColor: primaryColor,
-        foregroundColor: Colors.white,
+        foregroundColor: Colors.black,
       ),
     );
   }

@@ -24,15 +24,30 @@ import 'package:go_delivery_frontend/infrastructure/datasources/cart/cart_isar_l
 import 'package:go_delivery_frontend/infrastructure/datasources/localstorage/localstorage_impl.dart';
 import 'package:go_delivery_frontend/infrastructure/repositories/notifications/notifications_repository_impl.dart';
 
+import 'application/api/api_request.dart';
+
 final getIt = GetIt.instance;
 
 class InjectManager {
   static Future<void> setUpInjections() async {
     await dotenv.load(fileName: ".env");
     final LocalStorageService localStorageService = LocalStorageService();
-    final apiRequestManagerImpl = ApiRequestManagerImpl(
-      baseDirection: dotenv.env['API_URL']!,
-    );
+
+    ApiRequestManagerImpl apiRequestManagerImpl;
+
+    String? currentApiUrl = await localStorageService.getValue<String>("CURRENT_API_URL");
+
+    if (currentApiUrl != null && currentApiUrl.length > 1) {
+      print("CURRENT API URL: ${currentApiUrl}");
+
+      apiRequestManagerImpl = ApiRequestManagerImpl(
+          baseDirection: currentApiUrl
+      );
+    } else {
+      apiRequestManagerImpl = ApiRequestManagerImpl(
+          baseDirection: dotenv.env['API_URL']!
+      );
+    }
 
     // ============================= THEME =================================== //
     getIt.registerSingleton(ThemesBloc());
@@ -42,7 +57,8 @@ class InjectManager {
 
     final userRepository = AuthRepositoryImpl(
         apiRequestManager: apiRequestManagerImpl,
-        localStorage: localStorageService);
+        localStorage: localStorageService
+    );
 
     //caso de uso
     final loginUseCase = LoginUseCase(userRepository: userRepository);

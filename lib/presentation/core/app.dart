@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_delivery_frontend/presentation/core/router/app_router.dart';
 import 'package:go_delivery_frontend/presentation/core/theme/theme.dart';
@@ -14,7 +15,6 @@ class GoDelyApp extends StatelessWidget {
     final AppTheme appTheme = context.watch<ThemesBloc>().state.appTheme;
     final bool isThemeInit = context.watch<ThemesBloc>().state.isInitialized;
 
-    // Default to blue mode when first launching the app
     final defaultColorMode = AppColorMode.blue;
 
     if (!isThemeInit) {
@@ -22,18 +22,13 @@ class GoDelyApp extends StatelessWidget {
         AppColorMode savedColorMode;
 
         if (value == null) {
-          // If no saved color mode, use default blue
           localStorage.setKeyValue('colorMode', defaultColorMode.toString());
-          context
-              .read<ThemesBloc>()
-              .setInitTheme(defaultColorMode == AppColorMode.red);
+          context.read<ThemesBloc>().setInitTheme(defaultColorMode == AppColorMode.red);
         } else {
-          // Convert saved string to AppColorMode
-          savedColorMode =
-              value.contains('blue') ? AppColorMode.blue : AppColorMode.red;
-          context
-              .read<ThemesBloc>()
-              .setInitTheme(savedColorMode == AppColorMode.red);
+          savedColorMode = value.contains('blue')
+              ? AppColorMode.blue
+              : AppColorMode.red;
+          context.read<ThemesBloc>().setInitTheme(savedColorMode == AppColorMode.red);
         }
       });
     } else {
@@ -42,6 +37,7 @@ class GoDelyApp extends StatelessWidget {
     }
 
     return MaterialApp.router(
+      key: ValueKey(appTheme.colorMode),
       debugShowCheckedModeBanner: false,
       routerConfig: RoutesManager.appRouter,
       theme: appTheme.getTheme(),

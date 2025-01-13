@@ -1,6 +1,7 @@
 import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_delivery_frontend/application/BLoc/notifications/bloc/notifications_bloc.dart';
 import 'package:go_delivery_frontend/presentation/screens/auth/login/login_validators.dart';
@@ -10,6 +11,8 @@ import 'package:go_delivery_frontend/injector.dart';
 import 'package:go_delivery_frontend/presentation/screens/auth/login/inputDecorationLogin.dart';
 
 import '../../../../application/BLoc/themes/themes_bloc.dart';
+import '../../../../infrastructure/datasources/localstorage/localstorage_impl.dart';
+import '../../../core/restarter.dart';
 import '../../../core/theme/theme.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -185,9 +188,25 @@ class LoginFormState extends State<LoginForm> {
                               ),
                             ];
                           },
-                          onSelected: (AppColorMode? newMode) {
-                            if (newMode != null && newMode != context.read<ThemesBloc>().currentColorMode) {
+                          onSelected: (AppColorMode? newMode) async {
+                            if (newMode != null && newMode != context.read<ThemesBloc>().state.appTheme.colorMode) {
                               context.read<ThemesBloc>().changeTheme();
+
+                              final localStorageService = LocalStorageService();
+
+                              String apiUrl;
+                              if (newMode == AppColorMode.blue) {
+                                apiUrl = dotenv.env['API_URL']!;
+                              } else if (newMode == AppColorMode.red) {
+                                apiUrl = dotenv.env['RED_API_URL']!;
+                              } else {
+                                apiUrl = dotenv.env['API_URL']!;
+                              }
+
+                              await localStorageService.setKeyValue<String>("CURRENT_API_URL", apiUrl);
+                              await localStorageService.setKeyValue<String>('colorMode', newMode.toString());
+
+                              RestartWidget.restartApp(context);
                             }
                           },
                         ),
