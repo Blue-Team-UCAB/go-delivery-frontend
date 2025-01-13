@@ -72,9 +72,9 @@ class ProductCard extends StatelessWidget {
                   OutlinedButton.icon(
                     iconAlignment: IconAlignment.start,
                     onPressed: () {
-                      final cartItem = CartItemMapper.fromProduct(product);
+                      final cartItem = CartItemMapper.fromProduct(product).toCartItemEntity();
 
-                      context.read<CartBloc>().addCartItem(cartItem as CartItem);
+                      context.read<CartBloc>().addCartItem(cartItem);
                       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                           duration: Duration(seconds: 1),
                           behavior: SnackBarBehavior.floating,
