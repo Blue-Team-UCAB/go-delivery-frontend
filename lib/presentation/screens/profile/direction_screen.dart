@@ -30,52 +30,66 @@ class DirectionScreenState extends State<DirectionScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Padding(
-          padding: const EdgeInsets.only(left: 16.0),
-          child: Text(
-            'Direcciones',
-            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+    return BlocListener<DeleteAddressBloc, DeleteAddressState>(
+      listener: (context, state) {
+        if (state is DeleteAddressSuccess) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Dirección eliminada con éxito.')),
+          );
+          context.read<DirectionListBloc>().add(LoadDirectionList());
+        } else if (state is DeleteAddressFailure) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Error al eliminar la dirección.')),
+          );
+        }
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          title: Padding(
+            padding: const EdgeInsets.only(left: 16.0),
+            child: Text(
+              'Direcciones',
+              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            ),
+          ),
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back),
+            onPressed: () {
+              context.go('/profile');
+            },
           ),
         ),
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back),
-          onPressed: () {
-            context.go('/profile');
+        body: BlocBuilder<DirectionListBloc, DirectionListState>(
+          builder: (context, state) {
+            if (state is DirectionListLoading) {
+              return Stack(
+                children: [
+                  _buildAddressList(state),
+                  Center(child: CircularProgressIndicator()),
+                ],
+              );
+            }
+
+            if (state is DirectionListFailed) {
+              return Stack(
+                children: [
+                  _buildAddressList(state),
+                  Center(
+                    child: Text('No se pudieron cargar las direcciones.',
+                        style: TextStyle(color: Colors.red)),
+                  ),
+                ],
+              );
+            }
+
+            if (state is DirectionListLoaded) {
+              final addresses = state.directions;
+              return _buildAddressListWithDirections(addresses);
+            }
+
+            return const SizedBox();
           },
         ),
-      ),
-      body: BlocBuilder<DirectionListBloc, DirectionListState>(
-        builder: (context, state) {
-          if (state is DirectionListLoading) {
-            return Stack(
-              children: [
-                _buildAddressList(state),
-                Center(child: CircularProgressIndicator()),
-              ],
-            );
-          }
-
-          if (state is DirectionListFailed) {
-            return Stack(
-              children: [
-                _buildAddressList(state),
-                Center(
-                  child: Text('No se pudieron cargar las direcciones.',
-                      style: TextStyle(color: Colors.red)),
-                ),
-              ],
-            );
-          }
-
-          if (state is DirectionListLoaded) {
-            final addresses = state.directions;
-            return _buildAddressListWithDirections(addresses);
-          }
-
-          return const SizedBox();
-        },
       ),
     );
   }

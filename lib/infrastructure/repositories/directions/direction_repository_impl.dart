@@ -56,7 +56,7 @@ class DirectionRepositoryImpl extends DirectionRepository {
       final response = await _apiRequestManager.request(
         '/api/user/add/address',
         'POST',
-        (data) => null,
+        (data) => true,
         body: DirectionMapper.toJsonAdd(input),
       );
 
@@ -101,22 +101,27 @@ class DirectionRepositoryImpl extends DirectionRepository {
   }
 
   @override
-  Future<Result<void>> deleteAddress(String addressId) async {
-    await _addAuthorizationHeader();
-    final response = await _apiRequestManager.request<void>(
-      '/api/user/delete/address/$addressId',
-      'DELETE',
-      (data) {
-        if (data is Map<String, dynamic> && !data.containsKey('error')) {
-          return;
-        }
-        return;
-      },
-    );
-    if (response.isSuccess) {
-      return Result.success(null);
-    } else {
-      return response;
+  Future<Result<bool>> deleteAddress(String addressId) async {
+    try {
+      final response = await _apiRequestManager.request(
+        '/api/user/delete/address/$addressId',
+        'DELETE',
+        (data) {
+          if (data == null || (data is String && data.isEmpty)) {
+            return Result.success(true);
+          }
+          return Result.fail(
+              ServerFailure(message: 'Failed to delete direction.'));
+        },
+      );
+      if (response.isSuccess) {
+        return Result.success(true);
+      } else {
+        return Result.fail(
+            ServerFailure(message: 'Failed to delete direction.'));
+      }
+    } catch (e) {
+      return Result.fail(ServerFailure(message: 'Failed to delete direction.'));
     }
   }
 }
