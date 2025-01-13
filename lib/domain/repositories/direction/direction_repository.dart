@@ -5,7 +5,7 @@ import 'package:go_delivery_frontend/domain/entities/direction/direction.dart';
 
 abstract class DirectionRepository {
   Future<Result<List<Direction>>> getDirections();
-  Future<Result<void>> addDirection(AddDirectionInput input);
+  Future<Result<dynamic>> addDirection(AddDirectionInput input);
   Future<Result<Direction>> updateDirection(UpdateDirectionInput input);
-  Future<Result<void>> deleteAddress(String addressId);
+  Future<Result<dynamic>> deleteAddress(String addressId);
 }

@@ -26,7 +26,11 @@ class DeleteAddressBloc extends Bloc<DeleteAddressEvent, DeleteAddressState> {
       if (result.isSuccessful()) {
         emit(DeleteAddressSuccess());
       } else {
-        emit(DeleteAddressFailure(result));
+        emit(DeleteAddressFailure(
+          result.error != null
+              ? result
+              : Result.fail(ServerFailure(message: 'Error.')),
+        ));
       }
     } catch (e) {
       emit(DeleteAddressFailure(Result.fail(ServerFailure(message: '$e'))));

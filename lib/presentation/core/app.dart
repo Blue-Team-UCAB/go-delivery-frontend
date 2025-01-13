@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_delivery_frontend/presentation/core/router/app_router.dart';
 import 'package:go_delivery_frontend/presentation/core/theme/theme.dart';
@@ -23,12 +22,15 @@ class GoDelyApp extends StatelessWidget {
 
         if (value == null) {
           localStorage.setKeyValue('colorMode', defaultColorMode.toString());
-          context.read<ThemesBloc>().setInitTheme(defaultColorMode == AppColorMode.red);
+          context
+              .read<ThemesBloc>()
+              .setInitTheme(defaultColorMode == AppColorMode.red);
         } else {
-          savedColorMode = value.contains('blue')
-              ? AppColorMode.blue
-              : AppColorMode.red;
-          context.read<ThemesBloc>().setInitTheme(savedColorMode == AppColorMode.red);
+          savedColorMode =
+              value.contains('blue') ? AppColorMode.blue : AppColorMode.red;
+          context
+              .read<ThemesBloc>()
+              .setInitTheme(savedColorMode == AppColorMode.red);
         }
       });
     } else {
