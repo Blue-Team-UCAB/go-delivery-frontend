@@ -6,6 +6,7 @@ import 'package:go_delivery_frontend/application/BLoc/user/current/current_user_
 import 'package:go_delivery_frontend/application/BLoc/user/current/current_user_state.dart';
 import 'package:go_delivery_frontend/application/BLoc/user/update_image/update_image_bloc.dart';
 import 'package:go_delivery_frontend/application/BLoc/user/update_image/update_image_event.dart';
+import 'package:go_delivery_frontend/application/BLoc/user/update_image/update_image_state.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
@@ -27,19 +28,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   void initState() {
     super.initState();
-    _loadProfileImage();
     context.read<CurrentUserBloc>().add(FetchCurrentUser());
-  }
-
-  void _loadProfileImage() async {
-    final prefs = await SharedPreferences.getInstance();
-    final imagePath = prefs.getString('profile_image');
-
-    if (imagePath != null && imagePath.isNotEmpty) {
-      setState(() {
-        _profileImage = File(imagePath);
-      });
-    }
   }
 
   Future<void> _pickImage() async {
@@ -185,90 +174,105 @@ class _ProfileScreenState extends State<ProfileScreen> {
         elevation: 1,
         iconTheme: const IconThemeData(color: Colors.black),
       ),
-      body: BlocBuilder<CurrentUserBloc, CurrentUserState>(
-        builder: (context, state) {
-          if (state is CurrentUserLoading) {
-            return const Center(child: CircularProgressIndicator());
-          } else if (state is CurrentUserLoaded) {
-            _nameController.text = state.name;
-            _phoneController.text = state.phone;
-            _profileImage ??= state.image.isNotEmpty ? File(state.image) : null;
+      body: BlocListener<UserImageBloc, UserImageState>(
+        listener: (context, state) {
+          if (state is UserImageSuccess) {
+            context.read<CurrentUserBloc>().add(FetchCurrentUser());
+          } else if (state is UserImageFailure) {
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+              content: Text(
+                  'Error al actualizar la imagen de perfil: ${state.message}'),
+            ));
+          }
+        },
+        child: BlocBuilder<CurrentUserBloc, CurrentUserState>(
+          builder: (context, state) {
+            if (state is CurrentUserLoading) {
+              return const Center(child: CircularProgressIndicator());
+            } else if (state is CurrentUserLoaded) {
+              _nameController.text = state.name;
+              _phoneController.text = state.phone;
+              _profileImage ??=
+                  state.image.isNotEmpty ? null : File(state.image);
 
-            return SafeArea(
-              child: SingleChildScrollView(
-                padding: const EdgeInsets.symmetric(vertical: 16.0),
-                child: Center(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      const SizedBox(height: 20),
-                      Stack(
-                        alignment: Alignment.center,
-                        children: [
-                          CircleAvatar(
-                            radius: 80,
-                            backgroundColor: Colors.grey[300],
-                            backgroundImage: _profileImage != null
-                                ? FileImage(_profileImage!)
-                                : (state.image.isNotEmpty
-                                    ? NetworkImage(state.image)
-                                    : const AssetImage(
-                                            'assets/icon/user_150x150.png')
-                                        as ImageProvider),
-                          ),
-                          Positioned(
-                            bottom: 10,
-                            right: 10,
-                            child: InkWell(
-                              onTap: _pickImage,
-                              child: Container(
-                                width: 36,
-                                height: 36,
-                                decoration: const BoxDecoration(
-                                  color: Colors.orange,
-                                  shape: BoxShape.circle,
+              return SafeArea(
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.symmetric(vertical: 16.0),
+                  child: Center(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        const SizedBox(height: 20),
+                        Stack(
+                          alignment: Alignment.center,
+                          children: [
+                            CircleAvatar(
+                              radius: 80,
+                              backgroundColor: Colors.grey[300],
+                              backgroundImage: state.image.isNotEmpty
+                                  ? NetworkImage(state.image)
+                                  : (_profileImage != null
+                                      ? FileImage(_profileImage!)
+                                      : const AssetImage(
+                                              'assets/icon/user_150x150.png')
+                                          as ImageProvider),
+                            ),
+                            Positioned(
+                              bottom: 10,
+                              right: 10,
+                              child: InkWell(
+                                onTap: _pickImage,
+                                child: Container(
+                                  width: 36,
+                                  height: 36,
+                                  decoration: const BoxDecoration(
+                                    color: Colors.orange,
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: const Icon(Icons.edit,
+                                      color: Colors.white, size: 20),
                                 ),
-                                child: const Icon(Icons.edit,
-                                    color: Colors.white, size: 20),
                               ),
                             ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 20),
-                      _buildEditableField(
-                        'Nombre de Usuario',
-                        _nameController,
-                        hintText: 'Ingrese su nombre',
-                      ),
-                      const SizedBox(height: 20),
-                      _buildEditableField(
-                        'Número de Teléfono',
-                        _phoneController,
-                        hintText: 'Ingrese su número de teléfono',
-                        keyboardType: TextInputType.phone,
-                      ),
-                      const SizedBox(height: 20),
-                      _buildButton(context, "Preferencias",
-                          route: "/preferences"),
-                      const SizedBox(height: 20),
-                      _buildButton(context, "GoDely Wallet", route: "/wallet"),
-                      const SizedBox(height: 20),
-                      _buildButton(context, "Direcciones", route: "/addresses"),
-                    ],
+                          ],
+                        ),
+                        const SizedBox(height: 20),
+                        _buildEditableField(
+                          'Nombre de Usuario',
+                          _nameController,
+                          hintText: 'Ingrese su nombre',
+                        ),
+                        const SizedBox(height: 20),
+                        _buildEditableField(
+                          'Número de Teléfono',
+                          _phoneController,
+                          hintText: 'Ingrese su número de teléfono',
+                          keyboardType: TextInputType.phone,
+                        ),
+                        const SizedBox(height: 20),
+                        _buildButton(context, "Preferencias",
+                            route: "/preferences"),
+                        const SizedBox(height: 20),
+                        _buildButton(context, "GoDely Wallet",
+                            route: "/wallet"),
+                        const SizedBox(height: 20),
+                        _buildButton(context, "Direcciones",
+                            route: "/addresses"),
+                      ],
+                    ),
                   ),
                 ),
-              ),
-            );
-          } else if (state is CurrentUserError) {
-            return Center(
-              child: Text('Error: ${state.message}'),
-            );
-          }
+              );
+            } else if (state is CurrentUserError) {
+              return Center(
+                child: Text('Error: ${state.message}'),
+              );
+            }
 
-          return const Center(
-              child: Text('No se han cargado los datos del usuario.'));
-        },
+            return const Center(
+                child: Text('No se han cargado los datos del usuario.'));
+          },
+        ),
       ),
       bottomNavigationBar: CustomNavBar(
         selectedIndex: 3,
