@@ -233,9 +233,11 @@ class InjectManager {
         GetCategoriesUseCase(categoryRepository: categoryRepository);
 
     // Registrar el caso de uso de obtención de productos
-    // getIt.registerSingleton<GetCategoriesUseCase>(getCategoriesUseCase);
-    getIt.registerSingleton(
-        CategoryBloc(getCategoriesUseCase: getCategoriesUseCase));
+    getIt.registerSingleton<GetCategoriesUseCase>(getCategoriesUseCase);
+
+    getIt.registerSingleton(CategoryBloc(
+      getCategoriesUseCase,
+    ));
     // ======================================================================= //
     getIt.registerSingleton(
         ManyOrdersBloc(getManyOrdersUseCase: getManyOrderUseCase));

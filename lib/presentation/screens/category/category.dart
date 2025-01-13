@@ -1,10 +1,11 @@
 import 'package:go_delivery_frontend/application/BLoc/category/category_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_delivery_frontend/application/BLoc/category/category_event.dart';
+import 'package:go_delivery_frontend/application/BLoc/category/category_state.dart';
 import 'package:go_delivery_frontend/presentation/widgets/navbar.dart';
 import 'package:go_router/go_router.dart';
 
-// categories_screen.dart
 class CategoriesScreen extends StatefulWidget {
   const CategoriesScreen({super.key});
 
@@ -16,12 +17,10 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
   @override
   void initState() {
     super.initState();
-    // Add page and perpage parameters
-    context.read<CategoryBloc>().add(LoadCategories());
+    context.read<CategoryBloc>().add(LoadCategories(page: 1, perpage: 10));
   }
 
   int _counter = 0;
-  // Función para manejar el cambio de tab
   void _onNavItemTapped(int valueIndex) {
     setState(() {
       _counter = valueIndex;
@@ -48,7 +47,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
             return const Center(child: CircularProgressIndicator());
           }
 
-          if (state is CategoryError) {
+          if (state is CategoryFailed) {
             return Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -74,7 +73,6 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                 child: Text('No hay categorías disponibles'),
               );
             }
-
             return GridView.builder(
               padding: const EdgeInsets.all(16),
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
@@ -94,7 +92,6 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
             );
           }
 
-          // Initial state
           return const Center(child: CircularProgressIndicator());
         },
       ),

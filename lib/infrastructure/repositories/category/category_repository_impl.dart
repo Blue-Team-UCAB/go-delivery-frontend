@@ -1,3 +1,4 @@
+import 'package:go_delivery_frontend/common/failure.dart';
 import 'package:go_delivery_frontend/domain/repositories/category/category_repository.dart';
 import 'package:go_delivery_frontend/infrastructure/mappers/category/category_mapper.dart';
 import 'package:go_delivery_frontend/application/key_value_storage/key_value.dart';
@@ -40,22 +41,24 @@ class CategoryRepositoryImpl extends CategoryRepository {
       }
 
       final response = await _apiRequestManager.request(
-        'api/category/many', // Actualizado según la interfaz
+        '/api/category/many',
         'GET',
         queryParameters: queryParameters,
         (data) {
-          if (data is List) {
-            return data
-                .map((categoryData) => CategoryMapper.fromJson(categoryData))
-                .toList();
+          if (data is Map<String, dynamic> && data.containsKey('categories')) {
+            final categoriesData = data['categories'];
+            if (categoriesData is List) {
+              return categoriesData
+                  .map((categoryData) => CategoryMapper.fromJson(categoryData))
+                  .toList();
+            }
           }
           return <Category>[];
         },
       );
       return response;
     } catch (e) {
-      print('Error in CategoryRepositoryImpl.getCategories: $e');
-      rethrow;
+      return Result.fail('Error loading categories: $e' as Failure);
     }
   }
 }
