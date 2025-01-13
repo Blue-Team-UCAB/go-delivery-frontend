@@ -7,8 +7,8 @@ import 'package:go_delivery_frontend/application/BLoc/auth/recover_password/reco
 import 'package:go_delivery_frontend/presentation/screens/auth/login/inputDecorationLogin.dart';
 import 'package:go_delivery_frontend/presentation/screens/auth/login/login_validators.dart';
 
-import '../../../../application/BLoc/themes/themes_bloc.dart';
-import '../../../core/theme/theme.dart';
+import 'package:go_delivery_frontend/application/BLoc/themes/themes_bloc.dart';
+import 'package:go_delivery_frontend/presentation/core/theme/theme.dart';
 
 class ForgotPasswordScreen extends StatefulWidget {
   const ForgotPasswordScreen({super.key});
@@ -26,9 +26,8 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
     final themesBloc = context.watch<ThemesBloc>();
     final appTheme = themesBloc.state.appTheme;
     final isPrimaryRed = appTheme.colorMode == AppColorMode.red;
-    final primaryColor = isPrimaryRed
-        ? const Color(0xFF8F0000)
-        : const Color(0xFF02066F);
+    final primaryColor =
+        isPrimaryRed ? const Color(0xFF8F0000) : const Color(0xFF02066F);
 
     return BlocConsumer<RecoverPasswordBloc, RecoverPasswordState>(
       listener: (context, state) {
@@ -46,9 +45,10 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
         return Stack(
           children: [
             Scaffold(
-              backgroundColor: state.formStatus == RecoverPasswordFormStatus.posting
-                  ? (isPrimaryRed ? Colors.red : primaryColor)
-                  : primaryColor,
+              backgroundColor:
+                  state.formStatus == RecoverPasswordFormStatus.posting
+                      ? (isPrimaryRed ? Colors.red : primaryColor)
+                      : primaryColor,
               body: SafeArea(
                 child: Column(
                   children: [
@@ -57,11 +57,11 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                       child: SvgPicture.asset(
                         state.formStatus == RecoverPasswordFormStatus.posting
                             ? (isPrimaryRed
-                            ? 'assets/icon/logo_red.svg'
-                            : 'assets/icon/logo.svg')
+                                ? 'assets/icon/logo_red.svg'
+                                : 'assets/icon/logo.svg')
                             : (isPrimaryRed
-                            ? 'assets/icon/logo_red.svg'
-                            : 'assets/icon/logo.svg'),
+                                ? 'assets/icon/logo_red.svg'
+                                : 'assets/icon/logo.svg'),
                         fit: BoxFit.contain,
                       ),
                     ),
@@ -74,16 +74,19 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                             topLeft: Radius.circular(30),
                             topRight: Radius.circular(30),
                           ),
-                          boxShadow: state.formStatus == RecoverPasswordFormStatus.posting
+                          boxShadow: state.formStatus ==
+                                  RecoverPasswordFormStatus.posting
                               ? [
-                            BoxShadow(
-                              color: (isPrimaryRed ? Colors.red : primaryColor)
-                                  .withOpacity(0.5),
-                              spreadRadius: 5,
-                              blurRadius: 7,
-                              offset: const Offset(0, -3),
-                            )
-                          ]
+                                  BoxShadow(
+                                    color: (isPrimaryRed
+                                            ? Colors.red
+                                            : primaryColor)
+                                        .withOpacity(0.5),
+                                    spreadRadius: 5,
+                                    blurRadius: 7,
+                                    offset: const Offset(0, -3),
+                                  )
+                                ]
                               : null,
                         ),
                         child: SingleChildScrollView(
@@ -97,8 +100,11 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                                   fontFamily: 'Montserrat',
                                   fontSize: 24,
                                   fontWeight: FontWeight.w800,
-                                  color: state.formStatus == RecoverPasswordFormStatus.posting
-                                      ? (isPrimaryRed ? Colors.red : primaryColor)
+                                  color: state.formStatus ==
+                                          RecoverPasswordFormStatus.posting
+                                      ? (isPrimaryRed
+                                          ? Colors.red
+                                          : primaryColor)
                                       : Colors.black,
                                 ),
                               ),
@@ -111,10 +117,11 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                                     fontFamily: 'Montserrat',
                                     fontWeight: FontWeight.w500,
                                     fontSize: 16,
-                                    color: state.formStatus == RecoverPasswordFormStatus.posting
+                                    color: state.formStatus ==
+                                            RecoverPasswordFormStatus.posting
                                         ? (isPrimaryRed
-                                        ? Colors.red.shade300
-                                        : primaryColor.withOpacity(0.5))
+                                            ? Colors.red.shade300
+                                            : primaryColor.withOpacity(0.5))
                                         : Colors.grey,
                                   ),
                                 ),
@@ -125,7 +132,8 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                                 child: SingleChildScrollView(
                                   padding: const EdgeInsets.all(20),
                                   child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.stretch,
                                     children: [
                                       TextFormField(
                                         controller: _emailController,
@@ -142,40 +150,50 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                                               .read<RecoverPasswordBloc>()
                                               .changeEmail(value);
                                         },
-                                        keyboardType: TextInputType.emailAddress,
+                                        keyboardType:
+                                            TextInputType.emailAddress,
                                         style: const TextStyle(
                                             fontFamily: 'Montserrat'),
                                         decoration: inputDecorationBuilderLogin
                                             .buildInputDecorationLogin(
-                                            'Correo electrónico'),
+                                                'Correo electrónico'),
                                       ),
                                       const SizedBox(height: 24),
                                       ElevatedButton(
                                         onPressed: state.formStatus ==
-                                            RecoverPasswordFormStatus.posting
+                                                RecoverPasswordFormStatus
+                                                    .posting
                                             ? null
                                             : () {
-                                          if (_formKey.currentState!
-                                              .validate()) {
-                                            context
-                                                .read<RecoverPasswordBloc>()
-                                                .sendCode();
-                                          }
-                                        },
+                                                if (_formKey.currentState!
+                                                    .validate()) {
+                                                  context
+                                                      .read<
+                                                          RecoverPasswordBloc>()
+                                                      .sendCode();
+                                                }
+                                              },
                                         style: ElevatedButton.styleFrom(
-                                          backgroundColor: state.formStatus == RecoverPasswordFormStatus.posting
-                                              ? (isPrimaryRed ? Colors.red : primaryColor)
+                                          backgroundColor: state.formStatus ==
+                                                  RecoverPasswordFormStatus
+                                                      .posting
+                                              ? (isPrimaryRed
+                                                  ? Colors.red
+                                                  : primaryColor)
                                               : primaryColor,
                                           padding: const EdgeInsets.symmetric(
                                               vertical: 16),
                                           shape: RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.circular(12),
+                                            borderRadius:
+                                                BorderRadius.circular(12),
                                           ),
                                         ),
                                         child: Text(
                                           'Enviar código',
                                           style: TextStyle(
-                                            color: state.formStatus == RecoverPasswordFormStatus.posting
+                                            color: state.formStatus ==
+                                                    RecoverPasswordFormStatus
+                                                        .posting
                                                 ? Colors.white.withOpacity(0.7)
                                                 : Colors.white,
                                             fontFamily: 'Montserrat',
@@ -187,7 +205,8 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                                         height: 20,
                                       ),
                                       Row(
-                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
                                         children: [
                                           TextButton(
                                             onPressed: () {
@@ -198,8 +217,12 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                                               style: TextStyle(
                                                 fontFamily: 'Montserrat',
                                                 fontWeight: FontWeight.w600,
-                                                color: state.formStatus == RecoverPasswordFormStatus.posting
-                                                    ? (isPrimaryRed ? Colors.red : primaryColor)
+                                                color: state.formStatus ==
+                                                        RecoverPasswordFormStatus
+                                                            .posting
+                                                    ? (isPrimaryRed
+                                                        ? Colors.red
+                                                        : primaryColor)
                                                     : primaryColor,
                                               ),
                                             ),
@@ -228,8 +251,10 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
                       colors: [
-                        (isPrimaryRed ? Colors.red : primaryColor).withOpacity(0.6),
-                        (isPrimaryRed ? Colors.blue : Colors.blue).withOpacity(0.6),
+                        (isPrimaryRed ? Colors.red : primaryColor)
+                            .withOpacity(0.6),
+                        (isPrimaryRed ? Colors.blue : Colors.blue)
+                            .withOpacity(0.6),
                       ],
                     ),
                   ),

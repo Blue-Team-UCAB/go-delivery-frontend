@@ -8,8 +8,8 @@ import 'package:go_delivery_frontend/presentation/widgets/dialog_darken_window.d
 import 'package:go_delivery_frontend/presentation/screens/auth/login/inputDecorationLogin.dart';
 import 'package:go_delivery_frontend/presentation/screens/auth/login/login_validators.dart';
 
-import '../../../../application/BLoc/themes/themes_bloc.dart';
-import '../../../core/theme/theme.dart';
+import 'package:go_delivery_frontend/application/BLoc/themes/themes_bloc.dart';
+import 'package:go_delivery_frontend/presentation/core/theme/theme.dart';
 
 class PasswordRenewScreen extends StatefulWidget {
   final String email;
@@ -99,12 +99,11 @@ class _PasswordRenewScreenState extends State<PasswordRenewScreen> {
 
   @override
   Widget build(BuildContext context) {
-
     final themesBloc = context.watch<ThemesBloc>();
     final appTheme = themesBloc.state.appTheme;
     final isPrimaryRed = appTheme.colorMode == AppColorMode.red;
     final primaryColor = isPrimaryRed
-        ? const Color(0xFF8F0000)  // Dark Crimson
+        ? const Color(0xFF8F0000) // Dark Crimson
         : const Color(0xFF02066F);
 
     return Scaffold(
@@ -171,8 +170,9 @@ class _PasswordRenewScreenState extends State<PasswordRenewScreen> {
               Expanded(
                 flex: 2,
                 child: SvgPicture.asset(
-                  isPrimaryRed ?
-                  'assets/icon/logo_red.svg' : 'assets/icon/logo.svg',
+                  isPrimaryRed
+                      ? 'assets/icon/logo_red.svg'
+                      : 'assets/icon/logo.svg',
                   fit: BoxFit.contain,
                 ),
               ),

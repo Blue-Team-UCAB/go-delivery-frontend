@@ -192,49 +192,58 @@ class _PaymentMethodSectionState extends State<PaymentMethodSection> {
                         debugPrint("Selected Card ID: $_selectedCardId");
                       },
                       child: Transform.scale(
-                        scale: max(1, _selectedCardType == cardIdentifier ? 1.05 : 0),
+                        scale: max(
+                            1, _selectedCardType == cardIdentifier ? 1.05 : 0),
                         child: Container(
-                          decoration: BoxDecoration(
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.grey.withOpacity(_selectedCardType == cardIdentifier ? 0.5 : 0),
-                                      spreadRadius: -12,
-                                      blurRadius: 16,
-                                      offset: const Offset(6, 2)
-                                    )
-                                  ]
-                                ),
-                          height: 190,width: 342,
+                          decoration: BoxDecoration(boxShadow: [
+                            BoxShadow(
+                                color: Colors.grey.withOpacity(
+                                    _selectedCardType == cardIdentifier
+                                        ? 0.5
+                                        : 0),
+                                spreadRadius: -12,
+                                blurRadius: 16,
+                                offset: const Offset(6, 2))
+                          ]),
+                          height: 190,
+                          width: 342,
                           child: Stack(
                             children: [
-                              SvgPicture.asset(card.brand=='visa'? 'assets/visa_card.svg' : 'assets/masterc_card.svg',height: 170,width: 342,),
-                              Container(
+                              SvgPicture.asset(
+                                card.brand == 'visa'
+                                    ? 'assets/visa_card.svg'
+                                    : 'assets/masterc_card.svg',
+                                height: 170,
+                                width: 342,
+                              ),
+                              SizedBox(
                                 height: 170,
                                 width: 342,
                                 child: Padding(
-                                  padding: EdgeInsets.only(left: 20,top: 20,bottom: 0),
+                                  padding: EdgeInsets.only(
+                                      left: 20, top: 20, bottom: 0),
                                   child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceAround,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
                                       Text(
                                         "XXXX XXXX XXXX ${card.last4 ?? '0000'}",
                                         style: const TextStyle(
-                                          color: Color(0xFFFFFFFF),
-                                          fontSize: 18,
-                                          fontFamily: 'Inter',
-                                          fontWeight: FontWeight.bold
-                                        ),
+                                            color: Color(0xFFFFFFFF),
+                                            fontSize: 18,
+                                            fontFamily: 'Inter',
+                                            fontWeight: FontWeight.bold),
                                       ),
                                       const SizedBox(height: 4),
                                       Text(
                                         "Fecha: ${card.expMonth?.toString().padLeft(2, '0') ?? '00'}/${card.expYear?.toString().substring(2, 4) ?? '00'}",
                                         style: const TextStyle(
-                                          color: Color(0xFFFFFFFF),
-                                          fontSize: 16,
-                                          fontFamily: 'Inter',
-                                          fontWeight: FontWeight.bold
-                                        ),
+                                            color: Color(0xFFFFFFFF),
+                                            fontSize: 16,
+                                            fontFamily: 'Inter',
+                                            fontWeight: FontWeight.bold),
                                       ),
                                     ],
                                   ),
