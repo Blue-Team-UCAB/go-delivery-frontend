@@ -13,8 +13,12 @@ import 'package:go_delivery_frontend/domain/entities/product/product.dart';
 
 class CatalogScreen extends StatefulWidget {
   final int initialCounterNavbar;
+  final String? selectedCategory; // Add this line
 
-  const CatalogScreen({super.key, required this.initialCounterNavbar});
+  const CatalogScreen(
+      {super.key,
+      required this.initialCounterNavbar,
+      this.selectedCategory}); // Modify this line
 
   @override
   CatalogScreenState createState() => CatalogScreenState();
@@ -31,6 +35,7 @@ class CatalogScreenState extends State<CatalogScreen>
   String _searchQuery = '';
   late StreamSubscription<ProductListState> _productListSubscription;
   final List<Product> _products = [];
+  String? _selectedCategory; // Add this line
 
   @override
   bool get wantKeepAlive => true;
@@ -39,10 +44,14 @@ class CatalogScreenState extends State<CatalogScreen>
   void initState() {
     super.initState();
     _counter = widget.initialCounterNavbar;
+    _selectedCategory = widget.selectedCategory; // Add this line
     _loadProducts();
 
     BlocProvider.of<ProductListBloc>(context).add(
-      LoadProductList(page: _currentPage, perpage: 6, categories: ['']),
+      LoadProductList(
+          page: _currentPage,
+          perpage: 6,
+          categories: [_selectedCategory ?? '']), // Modify this line
     );
     _scrollController.addListener(_onScroll);
 
@@ -60,6 +69,19 @@ class CatalogScreenState extends State<CatalogScreen>
   }
 
   @override
+  void didUpdateWidget(CatalogScreen oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.selectedCategory != oldWidget.selectedCategory) {
+      setState(() {
+        _selectedCategory = widget.selectedCategory;
+        _currentPage = 1;
+        _products.clear();
+        _loadProducts();
+      });
+    }
+  }
+
+  @override
   void dispose() {
     _scrollController.removeListener(_onScroll);
     _scrollController.dispose();
@@ -70,7 +92,10 @@ class CatalogScreenState extends State<CatalogScreen>
   // Función para cargar productos
   void _loadProducts() {
     BlocProvider.of<ProductListBloc>(context).add(
-      LoadProductList(page: _currentPage, perpage: 6, categories: ['']),
+      LoadProductList(
+          page: _currentPage,
+          perpage: 6,
+          categories: [_selectedCategory ?? '']), // Modify this line
     );
   }
 
@@ -90,12 +115,15 @@ class CatalogScreenState extends State<CatalogScreen>
         _currentPage = state.page + 1;
         BlocProvider.of<ProductListBloc>(context).add(
           _searchQuery.isEmpty
-              ? LoadProductList(page: _currentPage, perpage: 6, categories: [''])
+              ? LoadProductList(
+                  page: _currentPage,
+                  perpage: 6,
+                  categories: [_selectedCategory ?? '']) // Modify this line
               : SearchProductList(
                   name: _searchQuery,
                   page: _currentPage,
                   perpage: 6,
-                  categories: ['']),
+                  categories: [_selectedCategory ?? '']), // Modify this line
         );
       }
     }
@@ -110,7 +138,10 @@ class CatalogScreenState extends State<CatalogScreen>
     });
     BlocProvider.of<ProductListBloc>(context).add(
       SearchProductList(
-          name: query, page: _currentPage, perpage: 6, categories: ['']),
+          name: query,
+          page: _currentPage,
+          perpage: 6,
+          categories: [_selectedCategory ?? '']), // Modify this line
     );
   }
 
@@ -141,7 +172,10 @@ class CatalogScreenState extends State<CatalogScreen>
         backgroundColor: Colors.transparent,
         title: const Text(
           'Catálogo',
-          style: TextStyle(fontFamily: "Montserrat",fontWeight: FontWeight.bold, fontSize: 26),
+          style: TextStyle(
+              fontFamily: "Montserrat",
+              fontWeight: FontWeight.bold,
+              fontSize: 26),
         ),
         elevation: 0,
         actions: [
@@ -232,18 +266,28 @@ class CatalogScreenState extends State<CatalogScreen>
                   ),
                   IconButton(
                     icon: const Icon(Icons.filter_list, color: Colors.grey),
-                    onPressed: () {
+                    onPressed: () async {
                       // Acción de filtros
-                      showModalBottomSheet(
+                      final selectedCategory =
+                          await showModalBottomSheet<String>(
                         context: context,
                         isScrollControlled:
                             true, // Allows the modal to take more space
-                        shape: RoundedRectangleBorder(
+                        shape: const RoundedRectangleBorder(
                           borderRadius:
                               BorderRadius.vertical(top: Radius.circular(16)),
                         ),
-                        builder: (context) => FilterSheet(),
+                        builder: (context) => const FilterSheet(),
                       );
+
+                      if (selectedCategory != null) {
+                        setState(() {
+                          _selectedCategory = selectedCategory;
+                          _currentPage = 1;
+                          _products.clear();
+                          _loadProducts();
+                        });
+                      }
                     },
                   ),
                 ],
@@ -257,7 +301,7 @@ class CatalogScreenState extends State<CatalogScreen>
             child: BlocBuilder<ProductListBloc, ProductListState>(
               builder: (context, state) {
                 if (state is ProductListInitial && _products.isEmpty) {
-                  return CatalogProductGridPlaceholder();
+                  return const CatalogProductGridPlaceholder();
                 } else if (state is ProductListLoading) {
                   return _productGrid(state.products, isLoading: true);
                 } else if (state is ProductListLoaded) {

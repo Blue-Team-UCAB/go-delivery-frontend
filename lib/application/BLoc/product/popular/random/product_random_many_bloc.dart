@@ -22,11 +22,12 @@ class ProductRandomListBloc extends Bloc<ProductListEvent, ProductListState> {
 
     final result = await _getProductsUseCase.execute(
       GetProductsUseCaseInput(
-        name: '',
-        categories: [''],
-        price: 0,
-        discount: '',
-        popular: '',
+        name: '', // Puedes mantenerlo vacío si no necesitas filtrar por nombre
+        categories:
+            event.categories, // Aquí pasa las categorías recibidas en el evento
+        price: 0, // Si no estás filtrando por precio, puedes mantenerlo como 0
+        discount: '', // Lo mismo para el descuento
+        popular: '', // Lo mismo para popular
         page: event.page,
         perpage: event.perpage,
       ),
@@ -40,7 +41,7 @@ class ProductRandomListBloc extends Bloc<ProductListEvent, ProductListState> {
         products: randomProducts,
         hasReachedMax: true,
         page: event.page,
-        categories: [''],
+        categories: event.categories,
       ));
     } else {
       emit(ProductListFailed(result));

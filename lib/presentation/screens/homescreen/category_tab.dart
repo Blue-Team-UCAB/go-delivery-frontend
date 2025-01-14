@@ -137,7 +137,7 @@ class CategoryTabsState extends State<CategoryTabs> {
         setState(() {
           _selectedIndex = index;
         });
-        widget.onCategorySelected?.call(index == 0 ? null : category.id);
+        widget.onCategorySelected?.call(index == 0 ? null : category.name);
       },
       child: Container(
         margin: const EdgeInsets.only(right: 8),

@@ -7,11 +7,10 @@ import 'package:go_router/go_router.dart';
 import 'package:go_delivery_frontend/application/BLoc/cart/cart_bloc.dart';
 import 'package:go_delivery_frontend/infrastructure/mappers/cart/cart_item_mapper.dart';
 import 'package:shimmer/shimmer.dart';
-
 import 'package:go_delivery_frontend/domain/entities/bundle/bundle_product.dart';
 
 class ProductCard extends StatelessWidget {
-  final dynamic product;
+  final Product product;
 
   const ProductCard({super.key, required this.product});
 
@@ -38,11 +37,14 @@ class ProductCard extends StatelessWidget {
                 imageUrl: _getImageUrl(),
                 height: 100,
                 fit: BoxFit.fill,
-                placeholder: (context,url) => Shimmer.fromColors(
+                placeholder: (context, url) => Shimmer.fromColors(
                     baseColor: const Color(0xFFd8d5dd),
                     highlightColor: const Color(0xFFF4F4F4),
-                    child: Container(height: 100,width: double.infinity,color: Color(0xFFd8d5dd),)
-                ),
+                    child: Container(
+                      height: 100,
+                      width: double.infinity,
+                      color: Color(0xFFd8d5dd),
+                    )),
               ),
             ),
             Padding(
@@ -71,14 +73,15 @@ class ProductCard extends StatelessWidget {
                   OutlinedButton.icon(
                     iconAlignment: IconAlignment.start,
                     onPressed: () {
-                      final cartItem = CartItemMapper.fromProduct(product).toCartItemEntity();
+                      final cartItem = CartItemMapper.fromProduct(product)
+                          .toCartItemEntity();
 
                       context.read<CartBloc>().addCartItem(cartItem);
                       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                           duration: Duration(seconds: 1),
                           behavior: SnackBarBehavior.floating,
                           margin:
-                          EdgeInsets.only(bottom: 110, right: 20, left: 20),
+                              EdgeInsets.only(bottom: 110, right: 20, left: 20),
                           backgroundColor: Color(0xfc009e4f),
                           content: Text('Agregado Satisfactoriamente')));
                     },
@@ -113,7 +116,6 @@ class ProductCard extends StatelessWidget {
     );
   }
 
-  // Helper methods to handle different product types
   String _getProductId() {
     if (product is Product) return (product as Product).id;
     if (product is BundleProduct) return (product as BundleProduct).id;
@@ -122,7 +124,8 @@ class ProductCard extends StatelessWidget {
 
   String _getImageUrl() {
     if (product is Product) return (product as Product).images.first;
-    if (product is BundleProduct) return (product as BundleProduct).images.first;
+    if (product is BundleProduct)
+      return (product as BundleProduct).images.first;
     throw ArgumentError('Unsupported product type');
   }
 
@@ -138,4 +141,3 @@ class ProductCard extends StatelessWidget {
     throw ArgumentError('Unsupported product type');
   }
 }
-

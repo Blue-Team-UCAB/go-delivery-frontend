@@ -36,3 +36,12 @@ class SearchCategories extends CategoryEvent {
   @override
   List<Object?> get props => [name, page, perpage];
 }
+
+class SelectCategory extends CategoryEvent {
+  final String? categoryName;
+
+  const SelectCategory({this.categoryName});
+
+  @override
+  List<Object?> get props => [categoryName];
+}

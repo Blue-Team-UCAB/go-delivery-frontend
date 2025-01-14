@@ -96,7 +96,7 @@ class ProductRepositoryImpl extends ProductRepository {
       '/api/product/$productId',
       'GET',
       (data) {
-        final product = ProductMapper.fromJson(data);
+        final product = ProductMapper.fromJsonDetail(data, productId);
         return product;
       },
     );

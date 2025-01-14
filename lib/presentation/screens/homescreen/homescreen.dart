@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_delivery_frontend/application/BLoc/blocs.dart';
+import 'package:go_delivery_frontend/application/BLoc/category/category_bloc.dart';
+import 'package:go_delivery_frontend/application/BLoc/category/category_event.dart';
 import 'package:go_delivery_frontend/presentation/screens/homescreen/category_tab.dart';
 import 'package:go_delivery_frontend/presentation/screens/homescreen/homescreen_combo_section.dart';
 import 'package:go_delivery_frontend/presentation/screens/homescreen/homescreen_placeholder.dart';
@@ -43,6 +45,7 @@ class HomeScreen extends StatefulWidget {
 
 class HomeScreenState extends State<HomeScreen> {
   int _counter = 0;
+  List<String>? _selectedCategories = [];
   final ScrollController _scrollController = ScrollController();
 
   double xOffset = 0;
@@ -75,9 +78,6 @@ class HomeScreenState extends State<HomeScreen> {
       child: BlocBuilder<CurrentUserBloc, CurrentUserState>(
         builder: (context, state) {
           if (state is CurrentUserLoading) {
-            // HomescreenPlaceholder();
-            //Aqui pones lo retornado en el loading de las siluetas de productos en el homescreen. Gustavo.
-
             return const HomescreenPlaceholder();
           }
           if (state is CurrentUserInitial || state is CurrentUserError) {
@@ -248,27 +248,29 @@ class HomeScreenState extends State<HomeScreen> {
 
   Widget _buildContent() {
     return SingleChildScrollView(
-      controller: _scrollController, // Aquí agregamos el ScrollController
+      controller: _scrollController,
       child: Padding(
         padding: const EdgeInsets.only(top: 30),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             CategoryTabs(
-              onCategorySelected: (String? categoryId) {
-                // Manejar la selección de categoría
-                if (categoryId == null) {
-                  // Se seleccionó "Todo"
-                  print('Mostrando todas las categorías');
-                } else {
-                  // Se seleccionó una categoría específica
-                  print('Categoría seleccionada: $categoryId');
-                }
+              onCategorySelected: (String? categoryName) {
+                setState(() {
+                  if (categoryName != null && categoryName.isNotEmpty) {
+                    _selectedCategories = [categoryName];
+                  } else {
+                    _selectedCategories = [];
+                  }
+                });
+                context
+                    .read<CategoryBloc>()
+                    .add(SelectCategory(categoryName: categoryName));
               },
             ),
             const ComboSection(),
             const SizedBox(height: 14),
-            const RandomSection(), // Este widget sigue siendo el mismo
+            RandomSection(selectedCategoryNames: _selectedCategories),
           ],
         ),
       ),
