@@ -11,8 +11,12 @@ import 'dart:math';
 
 class RelatedProductsSection extends StatefulWidget {
   final String category;
+  final Function(String) onCategoryTap; // Add this line
 
-  const RelatedProductsSection({super.key, required this.category});
+  const RelatedProductsSection(
+      {super.key,
+      required this.category,
+      required this.onCategoryTap}); // Modify this line
 
   @override
   RelatedProductsSectionState createState() => RelatedProductsSectionState();
@@ -115,7 +119,9 @@ class RelatedProductsSectionState extends State<RelatedProductsSection> {
                 );
               }),
               GestureDetector(
-                onTap: () {},
+                onTap: () {
+                  widget.onCategoryTap(_currentCategory); // Modify this line
+                },
                 child: Padding(
                   padding: const EdgeInsets.only(left: 16.0),
                   child: Column(

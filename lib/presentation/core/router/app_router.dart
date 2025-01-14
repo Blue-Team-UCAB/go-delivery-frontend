@@ -68,10 +68,16 @@ class RoutesManager {
               key: state.pageKey, child: const CategoriesScreen())),
       GoRoute(
           path: '/catalog',
-          pageBuilder: (context, state) => CustomTransitions.slideRight(
-                key: state.pageKey,
-                child: const CatalogScreen(initialCounterNavbar: 1),
-              )),
+          pageBuilder: (context, state) {
+            final selectedCategory = state.extra as String?;
+            return CustomTransitions.slideRight(
+              key: state.pageKey,
+              child: CatalogScreen(
+                initialCounterNavbar: 1,
+                selectedCategory: selectedCategory,
+              ),
+            );
+          }),
       GoRoute(
           path: '/profile',
           pageBuilder: (context, state) => CustomTransitions.slideRight(

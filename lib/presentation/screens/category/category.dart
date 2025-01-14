@@ -84,9 +84,15 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
               itemCount: state.categories.length,
               itemBuilder: (context, index) {
                 final category = state.categories[index];
-                return CategoryCard(
-                  image: category.imageUrl ?? '',
-                  title: category.name,
+                return GestureDetector(
+                  onTap: () {
+                    context.push('/catalog',
+                        extra: category.name); // Pass the selected category
+                  },
+                  child: CategoryCard(
+                    image: category.imageUrl ?? '',
+                    title: category.name,
+                  ),
                 );
               },
             );
