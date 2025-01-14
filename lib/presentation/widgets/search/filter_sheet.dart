@@ -11,6 +11,7 @@ class FilterSheet extends StatefulWidget {
 class _FilterSheetState extends State<FilterSheet> {
   bool hasDiscount = false;
   RangeValues priceRange = RangeValues(90, 200);
+  String? _selectedCategory; // Add this line
 
   @override
   Widget build(BuildContext context) {
@@ -61,14 +62,9 @@ class _FilterSheetState extends State<FilterSheet> {
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
           CategoryTabs(
             onCategorySelected: (String? categoryId) {
-              // Manejar la selección de categoría
-              if (categoryId == null) {
-                // Se seleccionó "Todo"
-                print('Mostrando todas las categorías');
-              } else {
-                // Se seleccionó una categoría específica
-                print('Categoría seleccionada: $categoryId');
-              }
+              setState(() {
+                _selectedCategory = categoryId; // Add this line
+              });
             },
           ),
           // Price Range
@@ -107,7 +103,10 @@ class _FilterSheetState extends State<FilterSheet> {
               SizedBox(width: 8),
               Expanded(
                 child: ElevatedButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.pop(
+                        context, _selectedCategory); // Modify this line
+                  },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFF2000B1),
                   ),
