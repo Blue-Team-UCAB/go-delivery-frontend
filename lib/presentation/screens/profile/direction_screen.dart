@@ -344,10 +344,11 @@ class AddAddressBottomSheetState extends State<AddAddressBottomSheet> {
                 labelText: 'Dirección',
                 border: OutlineInputBorder(),
               ),
-              readOnly: true,
+              onChanged: (value) {
+                _direction = value;
+              },
             ),
             const SizedBox(height: 16),
-            // Contenedor para el mapa
             Container(
               height: 300,
               decoration: BoxDecoration(
@@ -553,10 +554,11 @@ class EditAddressBottomSheetState extends State<EditAddressBottomSheet> {
                 labelText: 'Dirección',
                 border: OutlineInputBorder(),
               ),
-              readOnly: true,
+              onChanged: (value) {
+                _direction = value;
+              },
             ),
             const SizedBox(height: 16),
-            // Contenedor para el mapa
             Container(
               height: 300,
               decoration: BoxDecoration(
