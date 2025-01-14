@@ -15,10 +15,10 @@ class DeliveryMap extends StatefulWidget {
   });
 
   @override
-  _DeliveryMapState createState() => _DeliveryMapState();
+  DeliveryMapState createState() => DeliveryMapState();
 }
 
-class _DeliveryMapState extends State<DeliveryMap> {
+class DeliveryMapState extends State<DeliveryMap> {
   late GoogleMapController mapController;
   late Set<Marker> _markers;
   late Set<Polyline> _polylines;
@@ -57,7 +57,8 @@ class _DeliveryMapState extends State<DeliveryMap> {
         if (decoded['status'] == 'OK') {
           final routes = decoded['routes'] as List;
           if (routes.isNotEmpty) {
-            final points = _decodePolyline(routes[0]['overview_polyline']['points']);
+            final points =
+                _decodePolyline(routes[0]['overview_polyline']['points']);
 
             setState(() {
               _polylines.add(
