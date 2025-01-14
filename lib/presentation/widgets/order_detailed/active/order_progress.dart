@@ -1,10 +1,17 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 import 'package:go_delivery_frontend/presentation/widgets/order_detailed/active/timeLine_painter.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:animate_do/animate_do.dart';
 import 'package:go_delivery_frontend/application/BLoc/order/order_detailed/order_detailed_state.dart';
 import 'package:go_delivery_frontend/domain/entities/order/order.dart';
 import 'package:go_delivery_frontend/presentation/widgets/order_detailed/active/delivery_map_order.dart';
+
+import '../../../../application/BLoc/order/courier_position/order_courier_position_bloc.dart';
+import '../../../../application/BLoc/order/courier_position/order_courier_position_event.dart';
+import '../../../../application/BLoc/order/courier_position/order_courier_position_state.dart';
 
 class OrderProgress extends StatefulWidget {
   final OrderDetailLoadedState state;
@@ -31,9 +38,29 @@ class OrderProgressState extends State<OrderProgress>
     'DELIVERED'
   ];
 
+  OrderDriverPositionBloc? _orderDriverPositionBloc;
+  LatLng? _driverLocation;
+  LatLng? _destinationLocation;
+
   @override
   void initState() {
     super.initState();
+
+    // Safely try to get the bloc
+    try {
+      _orderDriverPositionBloc = GetIt.I<OrderDriverPositionBloc>();
+    } catch (e) {
+      print('Error getting OrderDriverPositionBloc: $e');
+      return;
+    }
+
+    // Initialize destination location
+    _destinationLocation = LatLng(
+        double.parse(widget.state.direction.latitude.toString()),
+        double.parse(widget.state.direction.longitude.toString())
+    );
+
+    // Initialize animation controller
     _animationController = AnimationController(
       duration: const Duration(seconds: 2),
       vsync: this,
@@ -46,13 +73,43 @@ class OrderProgressState extends State<OrderProgress>
       ),
     );
 
+    // Start periodic driver position updates
+    _startPeriodicDriverPositionUpdates();
+
+    // Add BLoC listener
+    _orderDriverPositionBloc?.stream.listen((state) {
+      if (state is LoadDriverPositionOrderLoadedState) {
+        setState(() {
+          _driverLocation = LatLng(
+              double.parse(state.latActual),
+              double.parse(state.longActual)
+          );
+        });
+      }
+    });
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _animationController.forward();
     });
   }
 
+  void _startPeriodicDriverPositionUpdates() {
+    // Null-aware call
+    _orderDriverPositionBloc?.add(
+        LoadDriverPositionOrderEvent(id: widget.state.id)
+    );
+
+    // Periodic updates every 30 seconds
+    Timer.periodic(const Duration(seconds: 10), (_) {
+      _orderDriverPositionBloc?.add(
+          LoadDriverPositionOrderEvent(id: widget.state.id)
+      );
+    });
+  }
+
   @override
   void dispose() {
+    _orderDriverPositionBloc!.close();
     _animationController.dispose();
     super.dispose();
   }
@@ -186,12 +243,12 @@ class OrderProgressState extends State<OrderProgress>
                   borderRadius: BorderRadius.circular(8),
                   child: SizedBox(
                     height: 220,
-                    child: DeliveryMap(
-                      driverLocation: const LatLng(10.48801, -66.87919),
-                      destinationLocation: LatLng(
-                          widget.state.direction.latitude,
-                          widget.state.direction.longitude),
-                    ),
+                    child: _driverLocation != null && _destinationLocation != null
+                        ? DeliveryMap(
+                      driverLocation: _destinationLocation!,
+                      destinationLocation: _driverLocation!,
+                    )
+                        : Center(child: CircularProgressIndicator()),
                   ),
                 ),
                 const SizedBox(height: 10),
@@ -279,4 +336,5 @@ class OrderProgressState extends State<OrderProgress>
       ],
     );
   }
+
 }

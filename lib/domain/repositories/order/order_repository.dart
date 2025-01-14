@@ -1,4 +1,5 @@
 import 'package:go_delivery_frontend/common/result.dart';
+import 'package:go_delivery_frontend/domain/entities/courier/courier.dart';
 import 'package:go_delivery_frontend/infrastructure/models/order_many_model.dart';
 import 'package:go_delivery_frontend/domain/entities/bundle/bundle.dart';
 import 'package:go_delivery_frontend/domain/entities/order/order.dart';
@@ -30,4 +31,6 @@ abstract class OrderRepository {
     required String orderId,
     required String desc
    });
+
+  Future<Result<CourierPosition>> courierPositionOrder(String orderId);
 }

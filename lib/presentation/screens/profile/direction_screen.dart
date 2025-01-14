@@ -506,7 +506,7 @@ class EditAddressBottomSheetState extends State<EditAddressBottomSheet> {
                 labelText: 'Longitud',
                 border: OutlineInputBorder(),
               ),
-              keyboardType: TextInputType.numberWithOptions(decimal: true),
+              keyboardType: TextInputType.numberWithOptions(signed: true,decimal: true),
               validator: (value) {
                 if (value == null || value.isEmpty) {
                   return 'Por favor ingrese una longitud';
