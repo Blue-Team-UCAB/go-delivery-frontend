@@ -13,7 +13,7 @@ import 'package:go_delivery_frontend/domain/entities/product/product.dart';
 
 class CatalogScreen extends StatefulWidget {
   final int initialCounterNavbar;
-  final String? selectedCategory; // Add this line
+  final String? selectedCategory;
 
   const CatalogScreen(
       {super.key,
