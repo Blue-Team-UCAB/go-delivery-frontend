@@ -53,10 +53,12 @@ class AuthRepositoryImpl implements UserRepository {
       if (response.value == true) {
         return Result.success(true);
       } else {
-        return Result.fail(CustomFailure(message: 'Login Fallido!: ${response.error?.message.toString()}'));
+        return Result.fail(CustomFailure(
+            message: 'Login Fallido!: ${response.error?.message.toString()}'));
       }
     } else {
-      return Result.fail(CustomFailure(message: 'Login Fallido!: ${response.error?.message.toString()}'));
+      return Result.fail(CustomFailure(
+          message: 'Login Fallido!: ${response.error?.message.toString()}'));
     }
   }
 
@@ -101,8 +103,7 @@ class AuthRepositoryImpl implements UserRepository {
 
   @override
   Future<Result<bool>> sendRecoveryCode(String email) async {
-
-    print("el body:${email}");
+    print("el body:$email");
 
     final response = await _apiRequestManager.request<bool>(
       '/api/auth/forget/password',
@@ -117,16 +118,17 @@ class AuthRepositoryImpl implements UserRepository {
       if (response.value == true) {
         return Result.success(true);
       } else {
-        return Result.fail(CustomFailure(message: "Hubo un problema enviando el codigo con su Email"));
+        return Result.fail(CustomFailure(
+            message: "Hubo un problema enviando el codigo con su Email"));
       }
     } else {
-      return Result.fail(CustomFailure(message: "Hubo un problema enviando el codigo con su Email"));
+      return Result.fail(CustomFailure(
+          message: "Hubo un problema enviando el codigo con su Email"));
     }
   }
 
   @override
   Future<Result<bool>> validateRecoveryCode(String email, String code) async {
-
     final response = await _apiRequestManager.request<bool>(
       '/api/auth/code/validate',
       'POST',
@@ -138,9 +140,10 @@ class AuthRepositoryImpl implements UserRepository {
     );
 
     if (response.isSuccess) {
-        return Result.success(true);
+      return Result.success(true);
     } else {
-      return Result.fail(CustomFailure(message: "Algo Salio mal con la validacion del codigo"));
+      return Result.fail(CustomFailure(
+          message: "Algo Salio mal con la validacion del codigo"));
     }
   }
 

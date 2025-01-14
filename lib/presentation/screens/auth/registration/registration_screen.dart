@@ -10,8 +10,8 @@ import 'package:go_delivery_frontend/injector.dart';
 import 'package:go_delivery_frontend/presentation/widgets/dialog_darken_window.dart';
 import 'package:go_delivery_frontend/presentation/screens/auth/registration/inputDecorationRegister.dart';
 
-import '../../../../application/BLoc/themes/themes_bloc.dart';
-import '../../../core/theme/theme.dart';
+import 'package:go_delivery_frontend/application/BLoc/themes/themes_bloc.dart';
+import 'package:go_delivery_frontend/presentation/core/theme/theme.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -95,13 +95,11 @@ class RegisterFormState extends State<RegisterForm> {
 
   @override
   Widget build(BuildContext context) {
-
     final themesBloc = context.watch<ThemesBloc>();
     final appTheme = themesBloc.state.appTheme;
     final isPrimaryRed = appTheme.colorMode == AppColorMode.red;
-    final primaryColor = isPrimaryRed
-        ? const Color(0xFF8F0000)
-        : const Color(0xFF02066F);
+    final primaryColor =
+        isPrimaryRed ? const Color(0xFF8F0000) : const Color(0xFF02066F);
 
     return BlocConsumer<RegisterBloc, RegisterState>(
         listenWhen: (previous, current) =>
@@ -150,8 +148,9 @@ class RegisterFormState extends State<RegisterForm> {
                   Expanded(
                     flex: 1,
                     child: SvgPicture.asset(
-                      isPrimaryRed ?
-                      'assets/icon/logo_red.svg' : 'assets/icon/logo.svg',
+                      isPrimaryRed
+                          ? 'assets/icon/logo_red.svg'
+                          : 'assets/icon/logo.svg',
                       fit: BoxFit.contain,
                     ),
                   ),
