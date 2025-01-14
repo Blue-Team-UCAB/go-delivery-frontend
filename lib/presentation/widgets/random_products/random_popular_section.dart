@@ -1,7 +1,8 @@
-import 'dart:math';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_delivery_frontend/application/BLoc/category/category_bloc.dart';
+import 'package:go_delivery_frontend/application/BLoc/category/category_state.dart';
 import 'package:go_delivery_frontend/presentation/widgets/homescreen/popular_product_section_placeholder.dart';
 import 'package:go_router/go_router.dart';
 import 'package:go_delivery_frontend/application/BLoc/cart/cart_bloc.dart';
@@ -11,10 +12,13 @@ import 'package:go_delivery_frontend/application/BLoc/product/product_many/produ
 import 'package:go_delivery_frontend/domain/entities/product/product.dart';
 import 'package:go_delivery_frontend/infrastructure/mappers/cart/cart_item_mapper.dart';
 
-//THIS IS A PLACEHOLDER. Pronto estará el Popular list definitivo despues de tener casi listo la app
-
 class RandomSection extends StatefulWidget {
-  const RandomSection({super.key});
+  final List<String>? selectedCategoryNames;
+
+  const RandomSection({
+    super.key,
+    this.selectedCategoryNames,
+  });
 
   @override
   RandomSectionState createState() => RandomSectionState();
@@ -22,6 +26,8 @@ class RandomSection extends StatefulWidget {
 
 class RandomSectionState extends State<RandomSection> {
   bool _mounted = true;
+  List<String> _currentCategoryNames =
+      []; // Lista de categorías seleccionadas (no puede ser null)
 
   @override
   void initState() {
@@ -29,62 +35,77 @@ class RandomSectionState extends State<RandomSection> {
     _loadRandomProducts();
   }
 
+  // Método para cargar productos según las categorías
   void _loadRandomProducts() {
     if (!_mounted) return;
-    final random = Random();
-    final randomPage = random.nextInt(6) + 1;
 
-    context
-        .read<ProductRandomListBloc>()
-        .add(LoadProductList(page: randomPage, perpage: 5));
+    final categories = _currentCategoryNames; // Usamos las categorías actuales
+
+    context.read<ProductRandomListBloc>().add(LoadProductList(
+          page: 1,
+          perpage: 5,
+          categories: categories,
+        ));
   }
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Padding(
-          padding: EdgeInsets.symmetric(horizontal: 16),
-          child: Text(
-            'Productos Populares',
-            style: TextStyle(
-              fontFamily: 'Montserrat',
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
+    return BlocListener<CategoryBloc, CategoryState>(
+      listener: (context, state) {
+        if (state is CategoryLoaded) {
+          // Aseguramos que _currentCategoryNames siempre sea una lista de String no nula
+          setState(() {
+            // Asignamos una lista con un valor no nulo o vacío
+            _currentCategoryNames = state.name != null ? [state.name!] : [];
+          });
+
+          _loadRandomProducts(); // Vuelves a cargar los productos con la nueva categoría
+        }
+      },
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Padding(
+            padding: EdgeInsets.symmetric(horizontal: 16),
+            child: Text(
+              'Productos Populares',
+              style: TextStyle(
+                fontFamily: 'Montserrat',
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ),
-        ),
-        const SizedBox(height: 16),
-        BlocBuilder<ProductRandomListBloc, ProductListState>(
-          builder: (context, state) {
-            if (state is ProductListLoading) {
-              return const PopularProductSectionPlaceholder();
-            } else if (state is ProductListLoaded) {
-              return ListView.builder(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                itemCount: state.products.length,
-                itemBuilder: (context, index) {
-                  final product = state.products[index];
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: RandomItem(
-                      product: product,
-                    ),
-                  );
-                },
-              );
-            } else if (state is ProductListFailed) {
-              return Center(child: Text('Error: ${state.result.toString()}'));
-            } else {
-              // Use Future.microtask to avoid calling setState during build
-              Future.microtask(() => _loadRandomProducts());
-              return const PopularProductSectionPlaceholder();
-            }
-          },
-        ),
-      ],
+          const SizedBox(height: 16),
+          BlocBuilder<ProductRandomListBloc, ProductListState>(
+            builder: (context, state) {
+              if (state is ProductListLoading) {
+                return const PopularProductSectionPlaceholder();
+              } else if (state is ProductListLoaded) {
+                return ListView.builder(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemCount: state.products.length,
+                  itemBuilder: (context, index) {
+                    final product = state.products[index];
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: RandomItem(
+                        product: product,
+                      ),
+                    );
+                  },
+                );
+              } else if (state is ProductListFailed) {
+                return Center(child: Text('Error: ${state.result.toString()}'));
+              } else {
+                Future.microtask(() => _loadRandomProducts());
+                return const PopularProductSectionPlaceholder();
+              }
+            },
+          ),
+        ],
+      ),
     );
   }
 

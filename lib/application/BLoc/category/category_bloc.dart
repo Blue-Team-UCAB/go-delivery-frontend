@@ -9,6 +9,7 @@ class CategoryBloc extends Bloc<CategoryEvent, CategoryState> {
   CategoryBloc(this._getCategoriesUseCase) : super(CategoryInitial()) {
     on<LoadCategories>(_onLoadCategories);
     on<SearchCategories>(_onSearchCategories);
+    on<SelectCategory>(_onSelectCategory);
   }
 
   Future<void> _onLoadCategories(
@@ -84,5 +85,28 @@ class CategoryBloc extends Bloc<CategoryEvent, CategoryState> {
     } catch (e) {
       emit(CategoryFailed(e.toString()));
     }
+  }
+
+  Future<void> _onSelectCategory(
+    SelectCategory event,
+    Emitter<CategoryState> emit,
+  ) async {
+    final currentState = state is CategoryLoaded
+        ? state as CategoryLoaded
+        : CategoryLoaded(
+            categories: [],
+            hasReachedMax: false,
+            page: 1,
+            name: null,
+          );
+
+    final categoryName = event.categoryName;
+
+    emit(CategoryLoaded(
+      categories: currentState.categories,
+      hasReachedMax: currentState.hasReachedMax,
+      page: currentState.page,
+      name: categoryName,
+    ));
   }
 }
