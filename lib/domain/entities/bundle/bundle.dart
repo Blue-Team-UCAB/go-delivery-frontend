@@ -69,17 +69,23 @@ class Bundle {
 class OrderBundle {
   final String id;
   final String name;
-  final double price;
+  final String description;
   final int quantity;
-  final String imageUrl;
+  final double price;
+  final List<String> images;
+  final String currency;
 
-  const OrderBundle({
+  OrderBundle({
     required this.id,
     required this.name,
-    required this.price,
+    required this.description,
     required this.quantity,
-    required this.imageUrl,
+    required this.price,
+    required this.images,
+    required this.currency,
   });
+
+  double get totalPrice => price * quantity;
 }
 
 class CheckoutBundle {

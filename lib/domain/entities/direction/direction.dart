@@ -17,12 +17,12 @@ class Direction {
 }
 
 class DirectionOrder {
-  final String direction;
-  final double longitude;
   final double latitude;
+  final double longitude;
 
-  DirectionOrder(
-      {required this.direction,
-      required this.longitude,
-      required this.latitude});
+  DirectionOrder({
+    required this.latitude,
+    required this.longitude,
+  });
+
 }

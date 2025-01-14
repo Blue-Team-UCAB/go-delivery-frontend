@@ -37,6 +37,10 @@ class RoutesManager {
           pageBuilder: (context, state) => CustomTransitions.slideRight(
               key: state.pageKey, child: const CouponScreen())),
       GoRoute(
+          path: '/chatbot',
+          pageBuilder: (context, state) => CustomTransitions.slideRight(
+              key: state.pageKey, child: const ChatBotScreen())),
+      GoRoute(
           path: '/wallet',
           pageBuilder: (context, state) => CustomTransitions.slideRight(
               key: state.pageKey, child: const WalletScreen())),

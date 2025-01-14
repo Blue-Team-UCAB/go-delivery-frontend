@@ -37,7 +37,7 @@ class InjectManager {
         await localStorageService.getValue<String>("CURRENT_API_URL");
 
     if (currentApiUrl != null && currentApiUrl.length > 1) {
-      print("CURRENT API URL: ${currentApiUrl}");
+      print("CURRENT API URL: $currentApiUrl");
 
       apiRequestManagerImpl =
           ApiRequestManagerImpl(baseDirection: currentApiUrl);

@@ -62,7 +62,7 @@ class PastOrderDetails extends StatelessWidget {
                       const SizedBox(width: 8),
                       Expanded(
                         child: Text(
-                          state.location,
+                          "Latitude: ${state.direction.latitude.toString()} Longuitude: ${state.direction.longitude.toString()}",
                           style: const TextStyle(
                             fontFamily: 'Inter',
                             color: Colors.grey,

@@ -56,55 +56,20 @@ class ActiveOrderDetails extends StatelessWidget {
             delay: const Duration(milliseconds: 20),
             child: OrderHeaderInfo(
               id: state.id,
-              location: state.location,
+              lat: state.direction.latitude.toString(),
+              lng: state.direction.longitude.toString(),
             ),
           ),
           if (currentActiveState == 'SHIPPED')
             FadeInDown(
               delay: const Duration(milliseconds: 100),
               child: DriverCard(
-                driverName: state.courier!.name,
+                driverName: state.courier!.courierName,
                 phoneNumber: state.courier!.phone,
+                driverImageUrl: state.courier!.courierImage,
                 onCallPressed: () {},
               ),
             ),
-          FadeInDown(
-            delay: const Duration(milliseconds: 150),
-            child: Center(
-              child: TextButton.icon(
-                onPressed: () {
-                  showDialog(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return ReportProblemDialog(orderId: state.id);
-                    },
-                  );
-                },
-                icon: Icon(Icons.warning,
-                    color: Colors.deepOrange[400], size: 16),
-                label: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
-                      'Reportar problema',
-                      style: TextStyle(
-                        fontFamily: "Montserrat",
-                        color: Colors.deepOrange[400],
-                        fontSize: 12,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    SizedBox(width: 4),
-                    Icon(Icons.warning,
-                        color: Colors.deepOrange[400], size: 16),
-                  ],
-                ),
-                style: TextButton.styleFrom(
-                  padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                ),
-              ),
-            ),
-          ),
           FadeInDown(
             delay: const Duration(milliseconds: 100),
             child: OrderProgress(

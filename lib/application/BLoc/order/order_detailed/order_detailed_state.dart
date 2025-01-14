@@ -36,7 +36,7 @@ class OrderDetailLoadedState extends OrderDetailState {
   String get orderNumber => id;
   String get date => state.isNotEmpty ? state.first.date : '';
   String get time => state.isNotEmpty ? state.first.date.split(' ')[1] : '';
-  String get location => direction.direction;
+  DirectionOrder get location => direction;
   String get price => totalAmount.toString();
   String get lastState => state.isNotEmpty ? state.last.state : '';
   LatLng get coordinates => LatLng(direction.latitude, direction.longitude);
