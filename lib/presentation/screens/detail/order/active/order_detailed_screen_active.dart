@@ -7,8 +7,6 @@ import 'package:go_delivery_frontend/presentation/widgets/order_detailed/active/
 import 'package:go_delivery_frontend/presentation/widgets/order_detailed/active/driver_card.dart';
 import 'package:go_delivery_frontend/presentation/widgets/order_detailed/past/order_items_list.dart';
 
-import 'package:go_delivery_frontend/presentation/widgets/order_detailed/past/report_problem_window.dart';
-
 class ActiveOrderDetails extends StatelessWidget {
   final OrderDetailLoadedState state;
 
