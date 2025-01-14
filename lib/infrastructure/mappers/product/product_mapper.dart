@@ -9,6 +9,39 @@ class ProductMapper {
   static Product fromJson(Map<String, dynamic> json) {
     return _parseProduct(json);
   }
+  
+  static Product fromJsonDetail(Map<String, dynamic> json, String productId){
+    try {
+      return Product(
+        // Basic product information (works with both simple and detailed structures)
+        id: productId as String? ?? '',
+        name: json['name'] as String? ?? 'Sin nombre',
+        description:
+            json['description'] as String? ?? 'Descripción no disponible',
+        currency: json['currency'] as String? ?? 'USD',
+        price: (json['price'] as num?)?.toDouble() ?? 0.0,
+        stock: json['stock'] as int? ?? 0,
+        weight: (json['weight'] as num?)?.toDouble() ?? 0.0,
+        measurement: json['measurement'] as String? ?? '',
+
+        // Image handling (flexible for both structures)
+        images: _parseImageUrl(json['images'] ?? json['imageUrl']),
+
+        // Category handling (optional)
+        categories: _parseCategories(json['category']),
+
+        // Discount handling (optional)
+        discounts: _parseDiscounts(json['discount']),
+
+        // Caducity date handling (optional)
+        caducityDate: _parseCaducityDate(json['caducityDate']),
+      );
+    } catch (e) {
+      print('Error parsing product: $e');
+      rethrow;
+    }
+
+  }
 
   // Multiple products mapping
   static List<Product> fromJsonList(List<dynamic> jsonList) {
