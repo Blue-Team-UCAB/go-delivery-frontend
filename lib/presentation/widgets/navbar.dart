@@ -31,7 +31,7 @@ class CustomNavBar extends StatelessWidget {
           curve: Curves.easeInOut,
           transform: Matrix4.translationValues(
               0,
-              selectedIndex == index ? -10.0 : 0.0, // Slight lift when selected
+              selectedIndex == index ? -5.0 : 0.0, // Slight lift when selected
               0
           ),
           child: Column(

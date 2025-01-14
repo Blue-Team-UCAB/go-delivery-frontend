@@ -40,7 +40,7 @@ class CartItemWidget extends StatelessWidget {
                 SizedBox(
                     width: 90,
                     height: 90,
-                    child: Image(image: NetworkImage(item.imgUrl!))),
+                    child: Image(image: NetworkImage(item.imgUrl))),
                 DataBox(
                     id: item.id,
                     name: item.name,

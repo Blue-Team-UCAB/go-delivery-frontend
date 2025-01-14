@@ -1,3 +1,4 @@
+import 'package:go_delivery_frontend/domain/entities/bundle/bundle_product.dart';
 import 'package:go_delivery_frontend/domain/entities/product/product.dart';
 
 import 'package:go_delivery_frontend/domain/entities/category/category.dart';
@@ -13,8 +14,21 @@ class ProductMapper {
   static List<Product> fromJsonList(List<dynamic> jsonList) {
     return jsonList.map((json) => _parseProduct(json)).toList();
   }
-
-  // Internal parsing method with flexible structure
+  
+  static Product fromBundleProduct(BundleProduct bundleProduct) {
+    return Product(
+      id: bundleProduct.id,
+      name: bundleProduct.name,
+      description: '',
+      currency: 'USD',
+      price: bundleProduct.price,
+      stock: 0,
+      measurement: '',
+      weight: bundleProduct.weight?? 1,
+      images: bundleProduct.images
+    );
+  }
+    // Internal parsing method with flexible structure
   static Product _parseProduct(Map<String, dynamic> json) {
     try {
       return Product(

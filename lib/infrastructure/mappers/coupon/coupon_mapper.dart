@@ -6,7 +6,9 @@ class CouponMapper {
       return Coupon(
         id: json['id'] as String? ?? '',
         porcentage: json['porcentage'] as int? ?? 0,
-
+        code : json['code'] as String? ?? '',
+        expirationDate: json['expirationDate'] as DateTime? ?? DateTime.now(),
+        numberUses: json['numberUses'] as int? ?? 1
       );
   }
 

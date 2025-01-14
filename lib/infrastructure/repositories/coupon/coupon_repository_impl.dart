@@ -26,12 +26,40 @@ class CouponRepositoryImpl extends CouponRepository {
     await _addAuthorizationHeader();
     try {
       final response = await _apiRequestManager.request(
-        '/api/coupon/validate-coupon',
+        '/api/coupon/claim-coupon',
         'POST',
         body: CouponMapper.toJson(couponId),
         (data) {
           final coupon = CouponMapper.fromJson(data);
+          print(coupon);
           return coupon;
+        },
+      );
+      return response;
+    } catch (e) {
+      print('Error in CouponRepositoryImpl.getCouponById: $e');
+      rethrow;
+    }
+  }
+  @override
+  Future<Result<List<Coupon>>> getUserCoupons() async {
+    await _addAuthorizationHeader();
+    try {
+      final response = await _apiRequestManager.request(
+        '/api/coupon/applicable',
+        'GET',
+        (data) {
+          if (data == null || data['coupons'] == null) {
+            throw FormatException(
+                'Invalid response format: coupons data is missing');
+          }
+          try {
+            return (data['coupons'] as List)
+                .map((couponData) => CouponMapper.fromJson(couponData))
+                .toList();
+          } catch (e) {
+            throw FormatException('Failed to parse products: ${e.toString()}');
+          }
         },
       );
       return response;
