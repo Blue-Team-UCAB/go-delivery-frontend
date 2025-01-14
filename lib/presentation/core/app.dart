@@ -6,13 +6,13 @@ import 'package:go_delivery_frontend/application/BLoc/themes/themes_bloc.dart';
 import 'package:go_delivery_frontend/infrastructure/datasources/localstorage/localstorage_impl.dart';
 
 class GoDelyApp extends StatefulWidget {
-  const GoDelyApp({Key? key}) : super(key: key);
+  const GoDelyApp({super.key});
 
   @override
-  _GoDelyAppState createState() => _GoDelyAppState();
+  GoDelyAppState createState() => GoDelyAppState();
 }
 
-class _GoDelyAppState extends State<GoDelyApp> {
+class GoDelyAppState extends State<GoDelyApp> {
   late LocalStorageService localStorage;
 
   @override
@@ -30,10 +30,12 @@ class _GoDelyAppState extends State<GoDelyApp> {
       AppColorMode savedColorMode;
 
       if (value == null) {
-        await localStorage.setKeyValue('colorMode', AppColorMode.blue.toString());
+        await localStorage.setKeyValue(
+            'colorMode', AppColorMode.blue.toString());
         themeBloc.setInitTheme(false);
       } else {
-        savedColorMode = value.contains('blue') ? AppColorMode.blue : AppColorMode.red;
+        savedColorMode =
+            value.contains('blue') ? AppColorMode.blue : AppColorMode.red;
         themeBloc.setInitTheme(savedColorMode == AppColorMode.red);
       }
     }
