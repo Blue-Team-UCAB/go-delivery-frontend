@@ -9,9 +9,9 @@ import 'package:go_delivery_frontend/application/BLoc/order/order_detailed/order
 import 'package:go_delivery_frontend/domain/entities/order/order.dart';
 import 'package:go_delivery_frontend/presentation/widgets/order_detailed/active/delivery_map_order.dart';
 
-import '../../../../application/BLoc/order/courier_position/order_courier_position_bloc.dart';
-import '../../../../application/BLoc/order/courier_position/order_courier_position_event.dart';
-import '../../../../application/BLoc/order/courier_position/order_courier_position_state.dart';
+import 'package:go_delivery_frontend/application/BLoc/order/courier_position/order_courier_position_bloc.dart';
+import 'package:go_delivery_frontend/application/BLoc/order/courier_position/order_courier_position_event.dart';
+import 'package:go_delivery_frontend/application/BLoc/order/courier_position/order_courier_position_state.dart';
 
 class OrderProgress extends StatefulWidget {
   final OrderDetailLoadedState state;
