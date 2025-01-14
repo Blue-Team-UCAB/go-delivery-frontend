@@ -22,3 +22,18 @@ class Courier {
   int get hashCode =>
       courierName.hashCode ^ phone.hashCode ^ courierImage.hashCode;
 }
+
+class CourierPosition {
+  final String latActual;
+  final String longActual;
+  final String longPuntoLlegada;
+  final String latPuntoLlegada;
+
+  CourierPosition({
+    required this.latActual,
+    required this.longActual,
+    required this.longPuntoLlegada,
+    required this.latPuntoLlegada
+  });
+
+}

@@ -22,7 +22,7 @@ class ActiveOrderDetails extends StatelessWidget {
           FadeInDown(
             delay: const Duration(milliseconds: 20),
             child: OrderSummary(
-              orderNumber: state.time,
+              orderNumber: state.timeCreated,
               amount: state.price,
             ),
           ),

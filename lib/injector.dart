@@ -3,11 +3,13 @@ import 'package:get_it/get_it.dart';
 import 'package:go_delivery_frontend/application/BLoc/blocs.dart';
 import 'package:go_delivery_frontend/application/BLoc/category/category_bloc.dart';
 import 'package:go_delivery_frontend/application/BLoc/filter/filter_bloc.dart';
+import 'package:go_delivery_frontend/application/BLoc/order/courier_position/order_courier_position_bloc.dart';
 import 'package:go_delivery_frontend/application/BLoc/order/order_create/order_create_bloc.dart';
 import 'package:go_delivery_frontend/application/BLoc/payment/get_payment_methods/get_payment_methods_blocs.dart';
 import 'package:go_delivery_frontend/application/use_cases/category/get_many_category.dart';
 import 'package:go_delivery_frontend/application/BLoc/order/order_report/order_report_bloc.dart';
 import 'package:go_delivery_frontend/application/use_cases/order/cancel_order.dart';
+import 'package:go_delivery_frontend/application/use_cases/order/driver_position_order.dart';
 import 'package:go_delivery_frontend/application/use_cases/order/report_order.dart';
 import 'package:go_delivery_frontend/application/use_cases/use_cases.dart';
 import 'package:go_delivery_frontend/domain/repositories/category/category_repository.dart';
@@ -204,6 +206,8 @@ class InjectManager {
         CancelOneOrderUseCase(orderRepository: orderRepository);
     final reportOneOrderUseCase =
         ReportOneOrderUseCase(orderRepository: orderRepository);
+    final driverPositionOrderUseCase =
+        GetDriverPositionOrderUseCase(orderRepository: orderRepository);
 
     getIt.registerSingleton<GetOneOrderUseCase>(getOneOrderUseCase);
     getIt.registerSingleton<GetManyOrdersUseCase>(getManyOrderUseCase);
@@ -211,10 +215,13 @@ class InjectManager {
     getIt.registerSingleton<CancelOneOrderUseCase>(cancelOneOrderUseCase);
     getIt.registerFactory(
         () => OrderReportBloc(reportOrderUseCase: reportOneOrderUseCase));
-    // ======================================================================= //
+    getIt.registerSingleton<GetDriverPositionOrderUseCase>(driverPositionOrderUseCase);
 
+    // ======================================================================= //
     getIt.registerSingleton(
         OrderDetailBloc(getOneOrderUseCase: getOneOrderUseCase));
+    getIt.registerSingleton(
+        OrderDriverPositionBloc(getDriverPositionOrderUseCase: driverPositionOrderUseCase));
 
     // ============================= CATEGORIES ============================= //
     // Repositorio

@@ -26,6 +26,7 @@ class OrderDetailBloc extends SafeBloc<OrderDetailEvent, OrderDetailState> {
       emit(OrderDetailLoadedState(
         id: orderDetail.value!.id,
         state: orderDetail.value!.state,
+        timeCreated: orderDetail.value!.orderTimeCreated,
         totalAmount: orderDetail.value!.totalAmount,
         subtotalAmount: orderDetail.value!.subtotalAmount,
         direction: orderDetail.value!.direction,

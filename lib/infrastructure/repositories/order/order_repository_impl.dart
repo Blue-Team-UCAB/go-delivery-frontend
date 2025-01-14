@@ -1,3 +1,5 @@
+import 'package:go_delivery_frontend/domain/entities/courier/courier.dart';
+import 'package:go_delivery_frontend/infrastructure/mappers/courier/courier_mapper.dart';
 import 'package:go_delivery_frontend/infrastructure/mappers/order/checkout/bundlecheckout_mapper.dart';
 import 'package:go_delivery_frontend/infrastructure/mappers/order/checkout/productcheckout_mapper.dart';
 
@@ -163,4 +165,34 @@ class OrderRepositoryImpl extends OrderRepository {
       return Result.fail(CustomFailure(message: response.error!.message.toString()));
     }
   }
+
+  @override
+  Future<Result<CourierPosition>> courierPositionOrder(String orderId) async {
+    print("COURIER POSITION order id: ${orderId}");
+
+    await _addAuthorizationHeader();
+    final response = await _apiRequestManager.request(
+      '/api/order/courier/position/$orderId',
+      'GET',
+          (data) {
+            final courierPosition = CourierPositionMapper.fromJson(data);
+
+            print(courierPosition.latActual);
+            print(courierPosition.longActual);
+            print(courierPosition.latPuntoLlegada);
+            print(courierPosition.longPuntoLlegada);
+
+
+            return courierPosition;
+      },
+      body: {'orderId': orderId},
+    );
+    if(!response.isSuccess) {
+      return Result.fail(
+          new CustomFailure(message: response.error!.message.toString()));
+    }
+    return Result.fail(
+        new CustomFailure(message: response.error!.message.toString()));
+  }
+
 }

@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_delivery_frontend/application/BLoc/blocs.dart';
 import 'package:go_delivery_frontend/application/BLoc/category/category_bloc.dart';
 import 'package:go_delivery_frontend/application/BLoc/filter/filter_bloc.dart';
+import 'package:go_delivery_frontend/application/BLoc/order/courier_position/order_courier_position_bloc.dart';
 import 'package:go_delivery_frontend/application/BLoc/order/order_cancel/order_cancel_bloc.dart';
 import 'package:go_delivery_frontend/application/BLoc/order/order_report/order_report_bloc.dart';
 import 'package:go_delivery_frontend/application/BLoc/payment/get_payment_methods/get_payment_methods_blocs.dart';
@@ -65,6 +66,7 @@ void main() async {
         BlocProvider(create: (_) => getIt<OrderDetailBloc>()),
         BlocProvider(create: (_) => getIt<ManyOrdersBloc>()),
         BlocProvider(create: (_) => getIt<CategoryBloc>()),
+        BlocProvider(create: (_) => getIt<OrderDriverPositionBloc>()),
         BlocProvider(create: (_) => getIt<FilterBloc>()), // Add this line
       ],
       child: BlocBuilder<ThemesBloc, ThemesState>(
