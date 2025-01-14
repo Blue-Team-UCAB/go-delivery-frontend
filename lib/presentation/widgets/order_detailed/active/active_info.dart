@@ -70,7 +70,7 @@ class OrderSummary extends StatelessWidget {
           Text(
             'Orden efectuada a las $orderNumber',
             style: const TextStyle(
-              fontSize: 22,
+              fontSize: 21,
               fontWeight: FontWeight.bold,
             ),
           ),

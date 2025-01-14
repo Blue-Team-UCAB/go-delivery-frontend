@@ -10,7 +10,7 @@ class Order {
   final double totalAmount;
   final double subtotalAmount;
   final DateTime? orderReceivedDate;
-  final String? orderTimeCreated;
+  final String orderTimeCreated;
   final DirectionOrder direction;
   final Courier? courier;
   final List<OrderProduct> products;
@@ -23,7 +23,7 @@ class Order {
     required this.totalAmount,
     required this.subtotalAmount,
     this.orderReceivedDate,
-    this.orderTimeCreated,
+    required this.orderTimeCreated,
     required this.direction,
     this.courier,
     required this.products,

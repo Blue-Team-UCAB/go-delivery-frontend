@@ -17,6 +17,7 @@ class OrderDetailLoadedState extends OrderDetailState {
   final List<OrderState> state;
   final double totalAmount;
   final double subtotalAmount;
+  final String timeCreated;
   final DirectionOrder direction;
   final Courier? courier;
   final List<OrderProduct> products;
@@ -27,6 +28,7 @@ class OrderDetailLoadedState extends OrderDetailState {
     required this.state,
     required this.totalAmount,
     required this.subtotalAmount,
+    required this.timeCreated,
     required this.direction,
     required this.products,
     required this.bundles,
