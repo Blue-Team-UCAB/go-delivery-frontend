@@ -115,25 +115,25 @@ class ProductCard extends StatelessWidget {
 
   // Helper methods to handle different product types
   String _getProductId() {
-    // if (product is Product) return (product as Product).id;
+    if (product is Product) return (product as Product).id;
     if (product is BundleProduct) return (product as BundleProduct).id;
     throw ArgumentError('Unsupported product type');
   }
 
   String _getImageUrl() {
-    // if (product is Product) return (product as Product).images.first;
+    if (product is Product) return (product as Product).images.first;
     if (product is BundleProduct) return (product as BundleProduct).images.first;
     throw ArgumentError('Unsupported product type');
   }
 
   String _getName() {
-    // if (product is Product) return (product as Product).name;
+    if (product is Product) return (product as Product).name;
     if (product is BundleProduct) return (product as BundleProduct).name;
     throw ArgumentError('Unsupported product type');
   }
 
   double _getPrice() {
-    // if (product is Product) return (product as Product).price;
+    if (product is Product) return (product as Product).price;
     if (product is BundleProduct) return (product as BundleProduct).price;
     throw ArgumentError('Unsupported product type');
   }
