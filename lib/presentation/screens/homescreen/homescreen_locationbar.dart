@@ -1,4 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_delivery_frontend/application/BLoc/directions/many/direction_many_bloc.dart';
+import 'package:go_delivery_frontend/application/BLoc/directions/many/direction_many_event.dart';
+import 'package:go_delivery_frontend/application/BLoc/directions/many/direction_many_state.dart';
+import 'package:go_router/go_router.dart';
+import 'package:go_delivery_frontend/domain/entities/direction/direction.dart';
 
 class LocationBar extends StatefulWidget {
   const LocationBar({super.key});
@@ -8,81 +14,161 @@ class LocationBar extends StatefulWidget {
 }
 
 class _LocationBarState extends State<LocationBar> {
-  String location = 'El Paraíso, Plaza Madariaga';
+  late List<Direction> addresses = [];
+  late Direction? selectedAddress;
 
-  void _updateLocation(String newLocation) {
-    setState(() {
-      location = newLocation;
-    });
+  @override
+  void initState() {
+    super.initState();
+
+    context.read<DirectionListBloc>().add(LoadDirectionList());
   }
 
   @override
   Widget build(BuildContext context) {
+    return BlocListener<DirectionListBloc, DirectionListState>(
+      listener: (context, state) {
+        if (state is DirectionListLoaded) {
+          setState(() {
+            addresses = state.directions;
+            if (addresses.isNotEmpty) {
+              selectedAddress = addresses[0];
+            }
+          });
+        }
+      },
+      child: BlocBuilder<DirectionListBloc, DirectionListState>(
+        builder: (context, state) {
+          if (state is DirectionListLoading) {
+            return _buildLoadingLocationBar();
+          }
+
+          if (addresses.isEmpty) {
+            return _buildEmptyLocationBar(context);
+          }
+
+          return _buildLocationBarWithDirections(context);
+        },
+      ),
+    );
+  }
+
+  Widget _buildLoadingLocationBar() {
     return ListTile(
-      leading: Container(
-          width: 45,
-          height: 45,
-          decoration: BoxDecoration(
-              color: const Color(0xFF2000B1),
-              borderRadius: BorderRadius.circular(25)),
-          child: const Icon(
-            Icons.location_on_outlined,
-            color: Color(0xffffffff),
-          )),
+      leading: _buildLocationIcon(),
       title: const Text(
         'Entregar a',
-        style: TextStyle(
-            fontFamily: 'Inter',
-            fontWeight: FontWeight.w400,
-            fontSize: 12),
+        style: TextStyle(fontSize: 12, fontWeight: FontWeight.w400),
       ),
-      subtitle: Text(
-        location,
-        style: const TextStyle(
-            fontFamily: 'Inter',
-            fontWeight: FontWeight.w500,
-            fontSize: 16),
+      subtitle: const Text(
+        'Cargando ubicación...',
+        style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+      ),
+      trailing: const CircularProgressIndicator(),
+    );
+  }
+
+  Widget _buildEmptyLocationBar(BuildContext context) {
+    return ListTile(
+      leading: _buildLocationIcon(),
+      title: const Text(
+        'Entregar a',
+        style: TextStyle(fontSize: 12, fontWeight: FontWeight.w400),
+      ),
+      subtitle: const Text(
+        'Añade una nueva dirección para tus pedidos',
+        style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
       ),
       trailing: const Icon(Icons.arrow_forward_ios),
       onTap: () {
-        _showLocationDialog(context);
+        context.go('/addresses');
       },
     );
   }
 
+  Widget _buildLocationBarWithDirections(BuildContext context) {
+    String locationName = selectedAddress?.name ?? 'Sin nombre';
+    String locationAddress = selectedAddress?.direction ?? 'Sin dirección';
 
-  Future<void> _showLocationDialog(BuildContext context) async {
-    String newLocation = '';
-    await showDialog<String>(
+    return ListTile(
+      leading: _buildLocationIcon(),
+      title: const Text(
+        'Entregar a',
+        style: TextStyle(fontSize: 12, fontWeight: FontWeight.w400),
+      ),
+      subtitle: Text(
+        '$locationName\n$locationAddress',
+        style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+        overflow: TextOverflow.ellipsis,
+        maxLines: 1,
+      ),
+      trailing: const Icon(Icons.arrow_forward_ios),
+      onTap: () {
+        _showAddressSelectionDialog(context);
+      },
+    );
+  }
+
+  Widget _buildLocationIcon() {
+    return Container(
+      width: 45,
+      height: 45,
+      decoration: BoxDecoration(
+        color: const Color(0xFF2000B1),
+        borderRadius: BorderRadius.circular(25),
+      ),
+      child: const Icon(
+        Icons.location_on_outlined,
+        color: Color(0xffffffff),
+      ),
+    );
+  }
+
+  Future<void> _showAddressSelectionDialog(BuildContext context) async {
+    showDialog<String>(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Cambiar Ubicación'),
-          content: TextField(
-            onChanged: (value) {
-              newLocation = value;
-            },
-            decoration: const InputDecoration(
-              hintText: 'Ingrese nueva ubicación',
-            ),
+          title: const Text('Selecciona una ubicación'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ...addresses.map((address) {
+                return Container(
+                  margin: const EdgeInsets.only(bottom: 8),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(8),
+                    border:
+                        Border.all(color: const Color(0xFF2000B1), width: 2),
+                  ),
+                  child: ListTile(
+                    title: Text(
+                      address.name,
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    subtitle: Text(address.direction),
+                    onTap: () {
+                      setState(() {
+                        selectedAddress = address;
+                      });
+                      Navigator.pop(context);
+                    },
+                  ),
+                );
+              }),
+              ListTile(
+                title: const Text('Añadir nueva dirección'),
+                onTap: () {
+                  Navigator.pop(context);
+                  context.go('/addresses');
+                },
+              ),
+            ],
           ),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: const Text('Cancelar'),
-            ),
-            TextButton(
-              onPressed: () => Navigator.pop(context, newLocation),
-              child: const Text('Aceptar'),
-            ),
-          ],
         );
       },
-    ).then((value) {
-      if (value != null && value.isNotEmpty) {
-        _updateLocation(value);
-      }
-    });
-
+    );
   }
 }
