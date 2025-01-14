@@ -17,11 +17,11 @@ abstract class OrderRepository {
   });
 
   Future<Result<bool>> createOrder({
-    required String direction,
-    required double longitude,
-    required double latitude,
-    String? tokenStripe,
-    String? idCoupon,
+    String? paymentId,
+    String? stripePaymentMethod,
+    String? paymentMethod,
+    String? couponId,
+    required String idUserDirection,
     required List<CheckoutProduct> products,
     List<CheckoutBundle>? bundles
   });

@@ -80,6 +80,7 @@ class AddressSectionState extends State<AddressSection> {
                           setState(() {
                             _selectedAddressIndex = value!;
                             widget.onAddressSelected({
+                              'id': address.id,
                               'name': address.name,
                               'description': address.direction,
                               'latitude': address.lat,

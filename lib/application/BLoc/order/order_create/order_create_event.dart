@@ -13,20 +13,20 @@ class ApplyCouponEvent extends CheckoutEvent {
 }
 
 class ProcessCheckoutEvent extends CheckoutEvent {
-  final String direction;
-  final double longitude;
-  final double latitude;
-  final String? tokenStripe;
+  final String? paymentId;
+  final String? stripePaymentMethod;
+  final String? paymentMethod;
   final String? couponId;
+  final String idUserDirection;
   final List<CheckoutProduct> productItems;
   final List<CheckoutBundle> bundleItems;
 
   ProcessCheckoutEvent({
-    required this.direction,
-    required this.longitude,
-    required this.latitude,
-    this.tokenStripe,
+    this.paymentId,
+    this.paymentMethod,
+    this.stripePaymentMethod,
     this.couponId,
+    required this.idUserDirection,
     required this.productItems,
     required this.bundleItems,
   });
