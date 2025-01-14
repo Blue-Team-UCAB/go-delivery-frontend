@@ -116,10 +116,10 @@ class ContinueButton extends StatelessWidget {
     // Dispatch checkout event with all necessary data
     context.read<CheckoutBloc>().add(
       ProcessCheckoutEvent(
-        direction: selectedAddress!['description'],
-        longitude: selectedAddress!['longitude'],
-        latitude: selectedAddress!['latitude'],
-        tokenStripe: selectedCardId != "" ? selectedCardId : "",
+        paymentId: "f13784a7-f134-4a14-91de-884634b952a3",
+        stripePaymentMethod: selectedCardId != "" ? selectedCardId : "",
+        paymentMethod: "Wallet",
+        idUserDirection: selectedAddress!['id'],
         couponId: state.appliedCoupon?.id,
         productItems: state.productItems
             .map((item) => CheckoutProduct(

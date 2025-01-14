@@ -11,7 +11,7 @@ import 'package:shimmer/shimmer.dart';
 import 'package:go_delivery_frontend/domain/entities/bundle/bundle_product.dart';
 
 class ProductCard extends StatelessWidget {
-  final dynamic product;
+  final Product product;
 
   const ProductCard({super.key, required this.product});
 

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_delivery_frontend/application/BLoc/bundle/bundle_detail/bundle_detail_bloc.dart';
 import 'package:go_delivery_frontend/application/BLoc/bundle/bundle_detail/bundle_detail_state.dart';
 import 'package:go_delivery_frontend/application/BLoc/bundle/bundle_detail/bundle_detail_event.dart';
+import 'package:go_delivery_frontend/infrastructure/mappers/product/product_mapper.dart';
 import 'package:go_delivery_frontend/presentation/widgets/card.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -157,7 +158,7 @@ class BundleDetailScreen extends StatelessWidget {
                                     child: SizedBox(
                                       width: 200,
                                       height: 255,
-                                      child: ProductCard(product: product),
+                                      child: ProductCard(product: ProductMapper.fromBundleProduct(product)),
                                     ),
                                   );
                                 }),

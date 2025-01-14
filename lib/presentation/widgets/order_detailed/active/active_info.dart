@@ -2,12 +2,14 @@ import 'package:flutter/material.dart';
 
 class OrderHeaderInfo extends StatelessWidget {
   final String id;
-  final String location;
+  final String lat;
+  final String lng;
 
   const OrderHeaderInfo({
     super.key,
     required this.id,
-    required this.location,
+    required this.lat,
+    required this.lng,
   });
 
   @override
@@ -36,7 +38,7 @@ class OrderHeaderInfo extends StatelessWidget {
               const SizedBox(width: 4),
               Expanded(
                 child: Text(
-                  location,
+                  "Latitude: ${lat} Longuitude: ${lng}",
                   style: const TextStyle(color: Colors.grey, fontSize: 14),
                 ),
               ),

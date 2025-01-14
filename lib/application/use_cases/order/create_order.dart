@@ -5,22 +5,22 @@ import 'package:go_delivery_frontend/domain/entities/product/product.dart';
 import 'package:go_delivery_frontend/domain/repositories/order/order_repository.dart';
 
 class CheckoutUseCaseInput extends IUseCaseInput {
-  final String direction;
-  final double longitude;
-  final double latitude;
-  final String? tokenStripe;
-  final String? idCoupon;
-  final List<CheckoutProduct> products;
-  final List<CheckoutBundle>? bundles;
+  final String? paymentId;
+  final String? stripePaymentMethod;
+  final String? paymentMethod;
+  final String? couponId;
+  final String idUserDirection;
+  final List<CheckoutProduct> productItems;
+  final List<CheckoutBundle>? bundleItems;
 
   CheckoutUseCaseInput({
-    required this.direction,
-    required this.longitude,
-    required this.latitude,
-    this.tokenStripe,
-    this.idCoupon,
-    required this.products,
-    this.bundles,
+    this.paymentId,
+    this.paymentMethod,
+    this.stripePaymentMethod,
+    this.couponId,
+    required this.idUserDirection,
+    required this.productItems,
+    required this.bundleItems,
   });
 }
 
@@ -32,13 +32,13 @@ class CheckoutUseCase {
 
   Future<Result<bool>> execute(CheckoutUseCaseInput input) {
     return _orderRepository.createOrder(
-      direction: input.direction,
-      longitude: input.longitude,
-      latitude: input.latitude,
-      tokenStripe: input.tokenStripe,
-      idCoupon: input.idCoupon,
-      products: input.products,
-      bundles: input.bundles,
+          paymentId: input.paymentId,
+          stripePaymentMethod: input.stripePaymentMethod,
+          paymentMethod: input.paymentMethod,
+          couponId: input.couponId,
+          idUserDirection: input.idUserDirection,
+          products: input.productItems,
+          bundles: input.bundleItems,
     );
   }
 }

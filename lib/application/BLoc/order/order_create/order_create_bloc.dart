@@ -133,13 +133,13 @@ class CheckoutBloc extends SafeBloc<CheckoutEvent, CheckoutState> {
 
       // Prepare checkout input using CheckoutProduct and CheckoutBundle directly
       final checkoutInput = CheckoutUseCaseInput(
-        direction: event.direction,
-        longitude: event.longitude,
-        latitude: event.latitude,
-        tokenStripe: event.tokenStripe,
-        idCoupon: event.couponId,
-        products: event.productItems,
-        bundles: event.bundleItems,
+        paymentId: event.paymentId,
+        stripePaymentMethod: event.stripePaymentMethod,
+        paymentMethod: event.paymentMethod,
+        couponId: event.couponId,
+        idUserDirection: event.idUserDirection,
+        productItems: event.productItems,
+        bundleItems: event.bundleItems,
       );
 
       // Rest of the checkout process remains the same
