@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'dart:convert';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:go_delivery_frontend/application/BLoc/directions/add/add_direction_bloc.dart';
 import 'package:go_delivery_frontend/application/BLoc/directions/add/add_direction_event.dart';
 import 'package:go_delivery_frontend/application/BLoc/directions/add/add_direction_state.dart';
@@ -13,6 +15,8 @@ import 'package:go_delivery_frontend/application/BLoc/directions/patch/patch_dir
 import 'package:go_delivery_frontend/application/BLoc/directions/patch/patch_directions_event.dart';
 import 'package:go_delivery_frontend/domain/entities/direction/direction.dart';
 import 'package:go_router/go_router.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:http/http.dart' as http;
 
 class DirectionScreen extends StatefulWidget {
   const DirectionScreen({super.key});
@@ -49,11 +53,14 @@ class DirectionScreenState extends State<DirectionScreen> {
             padding: const EdgeInsets.only(left: 16.0),
             child: Text(
               'Direcciones',
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+              style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white),
             ),
           ),
           leading: IconButton(
-            icon: Icon(Icons.arrow_back),
+            icon: Icon(Icons.arrow_back, color: Colors.white),
             onPressed: () {
               context.go('/profile');
             },
@@ -144,6 +151,8 @@ class DirectionScreenState extends State<DirectionScreen> {
                       onPressed: () {
                         showModalBottomSheet(
                           context: context,
+                          isScrollControlled: true,
+                          enableDrag: false,
                           builder: (context) =>
                               EditAddressBottomSheet(address: address),
                         );
@@ -174,6 +183,8 @@ class DirectionScreenState extends State<DirectionScreen> {
               onPressed: () {
                 showModalBottomSheet(
                   context: context,
+                  isScrollControlled: true,
+                  enableDrag: false,
                   builder: (context) => AddAddressBottomSheet(),
                 );
               },
@@ -252,11 +263,46 @@ class AddAddressBottomSheetState extends State<AddAddressBottomSheet> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _directionController = TextEditingController();
-  final TextEditingController _latitudeController = TextEditingController();
-  final TextEditingController _longitudeController = TextEditingController();
 
-  String? _name, _direction, _latitude, _longitude;
+  String? _name, _direction;
+  double? _latitude = 10.484550, _longitude = -66.928746;
   final bool _favorite = false;
+  late GoogleMapController _mapController;
+
+  Future<void> _fetchAddressFromCoordinates(double lat, double lon) async {
+    String apiKey = dotenv.env['GOOGLE_MAPS_SERVICES_KEY'] ?? '';
+    final url =
+        'https://maps.googleapis.com/maps/api/geocode/json?latlng=$lat,$lon&key=$apiKey';
+    try {
+      final response = await http.get(Uri.parse(url));
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        if (mounted) {
+          setState(() {
+            _direction = data['results']?.first['formatted_address'] ??
+                'Dirección no encontrada';
+            _directionController.text = _direction!;
+          });
+        }
+      } else {
+        throw Exception('Error al obtener la dirección');
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error al obtener la dirección: $e')),
+        );
+      }
+    }
+  }
+
+  void _moveCameraToSelectedLocation() {
+    if (_latitude != null && _longitude != null) {
+      _mapController.animateCamera(
+        CameraUpdate.newLatLng(LatLng(_latitude!, _longitude!)),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -267,17 +313,17 @@ class AddAddressBottomSheetState extends State<AddAddressBottomSheet> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text(
+            const Text(
               'Agregar Dirección',
               style: TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
               ),
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             TextFormField(
               controller: _nameController,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 labelText: 'Nombre',
                 border: OutlineInputBorder(),
               ),
@@ -291,83 +337,81 @@ class AddAddressBottomSheetState extends State<AddAddressBottomSheet> {
                 return null;
               },
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             TextFormField(
               controller: _directionController,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 labelText: 'Dirección',
                 border: OutlineInputBorder(),
               ),
-              onChanged: (value) {
-                _direction = value;
-              },
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Por favor ingrese una dirección';
-                }
-                return null;
-              },
+              readOnly: true,
             ),
-            SizedBox(height: 16),
-            TextFormField(
-              controller: _latitudeController,
-              decoration: InputDecoration(
-                labelText: 'Latitud',
-                border: OutlineInputBorder(),
+            const SizedBox(height: 16),
+            // Contenedor para el mapa
+            Container(
+              height: 300,
+              decoration: BoxDecoration(
+                border: Border.all(color: Colors.grey),
+                borderRadius: BorderRadius.circular(8),
               ),
-              keyboardType: TextInputType.numberWithOptions(decimal: true),
-              onChanged: (value) {
-                _latitude = value;
-              },
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Por favor ingrese una latitud';
-                }
-                if (double.tryParse(value) == null) {
-                  return 'Por favor ingrese un valor válido para la latitud';
-                }
-                return null;
-              },
-            ),
-            SizedBox(height: 16),
-            TextFormField(
-              controller: _longitudeController,
-              decoration: InputDecoration(
-                labelText: 'Longitud',
-                border: OutlineInputBorder(),
+              child: GoogleMap(
+                initialCameraPosition: CameraPosition(
+                  target: LatLng(_latitude!, _longitude!),
+                  zoom: 14.0,
+                ),
+                onMapCreated: (controller) {
+                  _mapController = controller;
+                },
+                onTap: (point) {
+                  setState(() {
+                    _latitude = point.latitude;
+                    _longitude = point.longitude;
+                  });
+                  _fetchAddressFromCoordinates(point.latitude, point.longitude);
+                  _moveCameraToSelectedLocation();
+                },
+                markers: {
+                  Marker(
+                    markerId: MarkerId('selected-location'),
+                    position: LatLng(_latitude!, _longitude!),
+                    infoWindow: InfoWindow(title: _direction),
+                  ),
+                },
               ),
-              keyboardType: TextInputType.numberWithOptions(decimal: true),
-              onChanged: (value) {
-                _longitude = value;
-              },
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Por favor ingrese una longitud';
-                }
-                if (double.tryParse(value) == null) {
-                  return 'Por favor ingrese un valor válido para la longitud';
-                }
-                return null;
-              },
             ),
-            SizedBox(height: 24),
+            const SizedBox(height: 16),
+            Text(
+              'Latitud: ${_latitude?.toStringAsFixed(6) ?? 'N/A'}, Longitud: ${_longitude?.toStringAsFixed(6) ?? 'N/A'}',
+              style: const TextStyle(fontSize: 16),
+            ),
+            const SizedBox(height: 24),
             BlocBuilder<AddDirectionBloc, DirectionState>(
               builder: (context, state) {
                 if (state is DirectionLoading) {
-                  return CircularProgressIndicator();
+                  return const CircularProgressIndicator();
                 }
 
                 return ElevatedButton(
                   onPressed: () {
                     if (_formKey.currentState!.validate()) {
+                      if (_latitude == null || _longitude == null) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text(
+                                'Por favor seleccione una ubicación en el mapa'),
+                          ),
+                        );
+                        return;
+                      }
+
                       context.read<AddDirectionBloc>().add(AddDirection(
                           name: _name!,
                           direction: _direction!,
-                          lat: double.parse(_latitude!),
-                          long: double.parse(_longitude!),
+                          lat: _latitude!,
+                          long: _longitude!,
                           favorite: _favorite));
 
-                      Future.delayed(Duration(seconds: 1), () {
+                      Future.delayed(const Duration(seconds: 1), () {
                         context
                             .read<DirectionListBloc>()
                             .add(LoadDirectionList());
@@ -376,13 +420,13 @@ class AddAddressBottomSheetState extends State<AddAddressBottomSheet> {
                     }
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Color(0xFF2000B1),
-                    minimumSize: Size(double.infinity, 50),
+                    backgroundColor: const Color(0xFF2000B1),
+                    minimumSize: const Size(double.infinity, 50),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8),
                     ),
                   ),
-                  child: Text(
+                  child: const Text(
                     'Guardar Dirección',
                     style: TextStyle(
                       color: Colors.white,
@@ -413,8 +457,11 @@ class EditAddressBottomSheetState extends State<EditAddressBottomSheet> {
   final _formKey = GlobalKey<FormState>();
   late TextEditingController _nameController;
   late TextEditingController _directionController;
-  late TextEditingController _latitudeController;
-  late TextEditingController _longitudeController;
+  late GoogleMapController _mapController;
+
+  double? _latitude, _longitude;
+  String? _direction;
+  late bool _favorite;
 
   @override
   void initState() {
@@ -422,19 +469,51 @@ class EditAddressBottomSheetState extends State<EditAddressBottomSheet> {
     _nameController = TextEditingController(text: widget.address.name);
     _directionController =
         TextEditingController(text: widget.address.direction);
-    _latitudeController =
-        TextEditingController(text: widget.address.lat.toString());
-    _longitudeController =
-        TextEditingController(text: widget.address.long.toString());
+    _latitude = widget.address.lat;
+    _longitude = widget.address.long;
+    _favorite = widget.address.favorite;
   }
 
   @override
   void dispose() {
     _nameController.dispose();
     _directionController.dispose();
-    _latitudeController.dispose();
-    _longitudeController.dispose();
     super.dispose();
+  }
+
+  Future<void> _fetchAddressFromCoordinates(double lat, double lon) async {
+    String apiKey = dotenv.env['GOOGLE_MAPS_SERVICES_KEY'] ?? '';
+    final url =
+        'https://maps.googleapis.com/maps/api/geocode/json?latlng=$lat,$lon&key=$apiKey';
+    try {
+      final response = await http.get(Uri.parse(url));
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        if (mounted) {
+          setState(() {
+            _direction = data['results']?.first['formatted_address'] ??
+                'Dirección no encontrada';
+            _directionController.text = _direction!;
+          });
+        }
+      } else {
+        throw Exception('Error al obtener la dirección');
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error al obtener la dirección: $e')),
+        );
+      }
+    }
+  }
+
+  void _moveCameraToSelectedLocation() {
+    if (_latitude != null && _longitude != null) {
+      _mapController.animateCamera(
+        CameraUpdate.newLatLng(LatLng(_latitude!, _longitude!)),
+      );
+    }
   }
 
   @override
@@ -446,17 +525,17 @@ class EditAddressBottomSheetState extends State<EditAddressBottomSheet> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text(
+            const Text(
               'Editar Dirección',
               style: TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
               ),
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             TextFormField(
               controller: _nameController,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 labelText: 'Nombre',
                 border: OutlineInputBorder(),
               ),
@@ -467,76 +546,83 @@ class EditAddressBottomSheetState extends State<EditAddressBottomSheet> {
                 return null;
               },
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             TextFormField(
               controller: _directionController,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 labelText: 'Dirección',
                 border: OutlineInputBorder(),
               ),
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Por favor ingrese una dirección';
-                }
-                return null;
-              },
+              readOnly: true,
             ),
-            SizedBox(height: 16),
-            TextFormField(
-              controller: _latitudeController,
-              decoration: InputDecoration(
-                labelText: 'Latitud',
-                border: OutlineInputBorder(),
+            const SizedBox(height: 16),
+            // Contenedor para el mapa
+            Container(
+              height: 300,
+              decoration: BoxDecoration(
+                border: Border.all(color: Colors.grey),
+                borderRadius: BorderRadius.circular(8),
               ),
-              keyboardType: TextInputType.numberWithOptions(decimal: true),
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Por favor ingrese una latitud';
-                }
-                if (double.tryParse(value) == null) {
-                  return 'Por favor ingrese un valor válido para la latitud';
-                }
-                return null;
-              },
-            ),
-            SizedBox(height: 16),
-            TextFormField(
-              controller: _longitudeController,
-              decoration: InputDecoration(
-                labelText: 'Longitud',
-                border: OutlineInputBorder(),
+              child: GoogleMap(
+                initialCameraPosition: CameraPosition(
+                  target: LatLng(_latitude!, _longitude!),
+                  zoom: 14.0,
+                ),
+                onMapCreated: (controller) {
+                  _mapController = controller;
+                },
+                onTap: (point) {
+                  setState(() {
+                    _latitude = point.latitude;
+                    _longitude = point.longitude;
+                  });
+                  _fetchAddressFromCoordinates(point.latitude, point.longitude);
+                  _moveCameraToSelectedLocation();
+                },
+                markers: {
+                  Marker(
+                    markerId: MarkerId('selected-location'),
+                    position: LatLng(_latitude!, _longitude!),
+                    infoWindow: InfoWindow(title: _direction),
+                  ),
+                },
               ),
-              keyboardType: TextInputType.numberWithOptions(signed: true,decimal: true),
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Por favor ingrese una longitud';
-                }
-                if (double.tryParse(value) == null) {
-                  return 'Por favor ingrese un valor válido para la longitud';
-                }
-                return null;
-              },
             ),
-            SizedBox(height: 24),
+            const SizedBox(height: 16),
+            Text(
+              'Latitud: ${_latitude?.toStringAsFixed(6) ?? 'N/A'}, Longitud: ${_longitude?.toStringAsFixed(6) ?? 'N/A'}',
+              style: const TextStyle(fontSize: 16),
+            ),
+            const SizedBox(height: 24),
             BlocBuilder<UpdateDirectionBloc, DirectionState>(
               builder: (context, state) {
                 if (state is DirectionLoading) {
-                  return CircularProgressIndicator();
+                  return const CircularProgressIndicator();
                 }
 
                 return ElevatedButton(
                   onPressed: () {
                     if (_formKey.currentState!.validate()) {
+                      if (_latitude == null || _longitude == null) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text(
+                                'Por favor seleccione una ubicación en el mapa'),
+                          ),
+                        );
+                        return;
+                      }
+
                       context.read<UpdateDirectionBloc>().add(UpdateDirection(
                             directionId: widget.address.id,
                             name: _nameController.text,
                             direction: _directionController.text,
-                            lat: double.parse(_latitudeController.text),
-                            long: double.parse(_longitudeController.text),
-                            favorite: false,
+                            lat: _latitude!,
+                            long: _longitude!,
+                            favorite: _favorite,
                           ));
 
-                      Future.delayed(Duration(seconds: 1), () {
+                      Future.delayed(const Duration(seconds: 1), () {
                         context
                             .read<DirectionListBloc>()
                             .add(LoadDirectionList());
@@ -545,13 +631,13 @@ class EditAddressBottomSheetState extends State<EditAddressBottomSheet> {
                     }
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Color(0xFF2000B1),
-                    minimumSize: Size(double.infinity, 50),
+                    backgroundColor: const Color(0xFF2000B1),
+                    minimumSize: const Size(double.infinity, 50),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8),
                     ),
                   ),
-                  child: Text(
+                  child: const Text(
                     'Guardar Cambios',
                     style: TextStyle(
                       color: Colors.white,
