@@ -40,7 +40,7 @@ class CartItemWidget extends StatelessWidget {
                 SizedBox(
                     width: 90,
                     height: 90,
-                    child: Image(image: NetworkImage(item.imgUrl!))),
+                    child: Image(image: NetworkImage(item.imgUrl))),
                 DataBox(
                     id: item.id,
                     name: item.name,
@@ -77,7 +77,7 @@ class DataBox extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final double totalItem = (price * quantity)*100.truncateToDouble()/100;
+    final double totalItem = (price * quantity) * 100.truncateToDouble() / 100;
 
     return Flexible(
       flex: 1,
