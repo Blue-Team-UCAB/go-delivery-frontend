@@ -7,7 +7,6 @@ import 'package:go_router/go_router.dart';
 import 'package:go_delivery_frontend/application/BLoc/cart/cart_bloc.dart';
 import 'package:go_delivery_frontend/infrastructure/mappers/cart/cart_item_mapper.dart';
 import 'package:shimmer/shimmer.dart';
-import 'package:go_delivery_frontend/domain/entities/bundle/bundle_product.dart';
 
 class ProductCard extends StatelessWidget {
   final Product product;
@@ -117,27 +116,18 @@ class ProductCard extends StatelessWidget {
   }
 
   String _getProductId() {
-    if (product is Product) return (product as Product).id;
-    if (product is BundleProduct) return (product as BundleProduct).id;
-    throw ArgumentError('Unsupported product type');
+    return (product).id;
   }
 
   String _getImageUrl() {
-    if (product is Product) return (product as Product).images.first;
-    if (product is BundleProduct)
-      return (product as BundleProduct).images.first;
-    throw ArgumentError('Unsupported product type');
+    return (product).images.first;
   }
 
   String _getName() {
-    if (product is Product) return (product as Product).name;
-    if (product is BundleProduct) return (product as BundleProduct).name;
-    throw ArgumentError('Unsupported product type');
+    return (product).name;
   }
 
   double _getPrice() {
-    if (product is Product) return (product as Product).price;
-    if (product is BundleProduct) return (product as BundleProduct).price;
-    throw ArgumentError('Unsupported product type');
+    return (product).price;
   }
 }

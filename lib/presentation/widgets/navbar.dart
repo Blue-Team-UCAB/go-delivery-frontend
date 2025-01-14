@@ -1,7 +1,7 @@
 import "package:flutter/material.dart";
 import "package:go_router/go_router.dart";
 
-import "../core/theme/theme_getter.dart";
+import 'package:go_delivery_frontend/presentation/core/theme/theme_getter.dart';
 
 // TODO: link theme context to a custom theme file with primary, secondary... colors 2024-11-09
 class CustomNavBar extends StatelessWidget {

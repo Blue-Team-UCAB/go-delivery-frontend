@@ -105,10 +105,6 @@ class _ReorderOrderWidgetState extends State<ReorderOrderWidget> {
   }
 
   void _checkCartCompletion(BuildContext context) {
-    print('Productos a cargar: $_productIdsToLoad');
-    print('Cargados los Productos: $_loadedProductIds');
-    print('Bundles a cargar: $_bundleIdsToLoad');
-    print('Cargados los Bundles: $_loadedBundleIds');
 
     // Check if all required items are loaded
     bool allProductsLoaded = _loadedProductIds.containsAll(_productIdsToLoad);
