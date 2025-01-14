@@ -42,7 +42,7 @@ class OrderRepositoryImpl extends OrderRepository {
     };
 
     final response = await _apiRequestManager.request(
-        '/api/order?status=$status', 'GET', queryParameters: queryParameters,
+        '/api/order/user/many/?status=$status', 'GET', queryParameters: queryParameters,
         (data) {
       return OrderManyMapper.fromJson(data).orders;
     });
@@ -69,37 +69,32 @@ class OrderRepositoryImpl extends OrderRepository {
   }
 
   @override
-  Future<Result<bool>> createOrder(
-      {required String direction,
-      required double longitude,
-      required double latitude,
-      String? tokenStripe,
-      String? idCoupon,
-      required List<CheckoutProduct> products,
-      List<CheckoutBundle>? bundles}) async {
+  Future<Result<bool>> createOrder({
+    String? paymentId,
+    String? stripePaymentMethod,
+    String? paymentMethod,
+    String? couponId,
+    required String idUserDirection,
+    required List<CheckoutProduct> products,
+    List<CheckoutBundle>? bundles
+  }) async {
     await _addAuthorizationHeader();
 
     // Prepare the body
     final body = {
-      'direction': direction,
-      'longitude': longitude,
-      'latitude': latitude,
-      if (tokenStripe != null) 'token_stripe': tokenStripe,
-      if (idCoupon != null) 'id_coupon': idCoupon,
+      'idUserDirection': idUserDirection,
       'products': CheckoutProductMapper.toJsonList(products),
-      if (bundles != null && bundles.isNotEmpty)
-        'bundles': CheckoutBundleMapper.toJsonList(bundles),
+      if (bundles != null) 'bundles': CheckoutBundleMapper.toJsonList(bundles),
+      if (paymentId != null) 'paymentId': paymentId,
+      if (stripePaymentMethod != null) 'stripePaymentMethod': stripePaymentMethod,
+      if (paymentMethod != null) 'paymentMethod': paymentMethod,
+      if (couponId != null) 'couponId': couponId,
     };
-    var message;
-
-    print("APPLIED COUPON: ${body["id_coupon"]}");
-
-    print(body);
 
     final response = await _apiRequestManager.request(
-      '/api/order/pay',
+      '/api/order/pay/stripe',
       'POST',
-      (data) {
+          (data) {
         if (data is Map<String, dynamic>) {
           if (data.containsKey('error')) {
             return false;
@@ -111,44 +106,35 @@ class OrderRepositoryImpl extends OrderRepository {
       },
       body: body,
     );
+
     if (response.isSuccess) {
       if (response.value == true) {
         return Result.success(true);
       } else {
+        final message = response.error?.toString() ?? 'Algo Ocurrió en el checkout';
         return Result.fail(CustomFailure(message: message));
       }
     } else {
+      final message = response.error?.toString() ?? 'Algo Ocurrió en el checkout';
       return Result.fail(CustomFailure(message: message));
     }
   }
 
   @override
   Future<Result<bool>> cancelOrder(String orderId) async {
-    var message;
     await _addAuthorizationHeader();
     final response = await _apiRequestManager.request(
       '/api/order/cancel',
       'POST',
       (data) {
-        if (data is Map<String, dynamic>) {
-          if (data.containsKey('error')) {
-            return false;
-          } else {
-            return true;
-          }
-        }
-        return false;
+          return true;
       },
       body: {'orderId': orderId},
     );
     if (response.isSuccess) {
-      if (response.value == true) {
         return Result.success(true);
-      } else {
-        return Result.fail(CustomFailure(message: message));
-      }
     } else {
-      return Result.fail(CustomFailure(message: message));
+      return Result.fail(CustomFailure(message: response.error!.message.toString()));
     }
   }
 
@@ -157,24 +143,14 @@ class OrderRepositoryImpl extends OrderRepository {
     required String orderId,
     required String desc
   }) async {
-    var message;
-    await _addAuthorizationHeader();
 
-    print(orderId);
-    print(desc);
+    await _addAuthorizationHeader();
 
     final response = await _apiRequestManager.request(
       '/api/order/report',
       'POST',
           (data) {
-            if (data is Map<String, dynamic>) {
-              if (data.containsKey('error')) {
-                return false;
-              } else {
-                return true;
-              }
-            }
-            return false;
+            return true;
       },
       body: {
         'orderId': orderId,
@@ -182,13 +158,9 @@ class OrderRepositoryImpl extends OrderRepository {
       },
     );
     if (response.isSuccess) {
-      if (response.value == true) {
-        return Result.success(true);
-      } else {
-        return Result.fail(CustomFailure(message: message));
-      }
+      return Result.success(true);
     } else {
-      return Result.fail(CustomFailure(message: message));
+      return Result.fail(CustomFailure(message: response.error!.message.toString()));
     }
   }
 }

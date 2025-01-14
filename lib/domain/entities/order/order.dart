@@ -5,24 +5,30 @@ import 'package:go_delivery_frontend/domain/entities/direction/direction.dart';
 import 'package:go_delivery_frontend/domain/entities/product/product.dart';
 
 class Order {
-  String id;
-  List<OrderState> state;
-  double totalAmount;
-  double subtotalAmount;
-  DirectionOrder direction;
-  Courier? courier;
-  List<OrderProduct> products;
-  List<OrderBundle> bundles;
+  final String id;
+  final List<OrderState> state;
+  final double totalAmount;
+  final double subtotalAmount;
+  final DateTime? orderReceivedDate;
+  final String? orderTimeCreated;
+  final DirectionOrder direction;
+  final Courier? courier;
+  final List<OrderProduct> products;
+  final List<OrderBundle> bundles;
+  final OrderPayment orderPayment;
 
   Order({
     required this.id,
     required this.state,
     required this.totalAmount,
     required this.subtotalAmount,
+    this.orderReceivedDate,
+    this.orderTimeCreated,
     required this.direction,
+    this.courier,
     required this.products,
     required this.bundles,
-    this.courier,
+    required this.orderPayment,
   });
 }
 
@@ -36,3 +42,14 @@ class OrderState {
   });
 }
 
+class OrderPayment {
+  final double paymentAmount;
+  final String paymentCurrency;
+  final String paymentMethod;
+
+  OrderPayment({
+    required this.paymentAmount,
+    required this.paymentCurrency,
+    required this.paymentMethod,
+  });
+}

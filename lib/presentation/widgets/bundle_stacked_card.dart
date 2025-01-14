@@ -49,10 +49,10 @@ class BundleStackedCard extends StatelessWidget {
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(12),
                   ),
-                  child: bundleData.imageUrl.isNotEmpty
+                  child: bundleData.images[0].isNotEmpty
                       ? FastLoadingImage(
                           fit: BoxFit.cover,
-                          imageUrl: bundleData.imageUrl,
+                          imageUrl: bundleData.images[0],
                         )
                       : const Icon(
                           Icons.inventory_2_outlined,
