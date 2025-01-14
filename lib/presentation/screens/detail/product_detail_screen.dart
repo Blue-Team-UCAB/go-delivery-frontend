@@ -120,20 +120,17 @@ class ProductDetailScreen extends StatelessWidget {
                           ),
                         ),
                         const SizedBox(height: 8),
-                        Row(
+                        Wrap(
+                          spacing: 8.0,
                           children: product.categories.isNotEmpty
                               ? product.categories
-                                  .map((category) => Padding(
-                                        padding:
-                                            const EdgeInsets.only(right: 8.0),
-                                        child: Text(
-                                          category.name,
-                                          style: const TextStyle(
-                                            fontFamily: 'Inter',
-                                            fontWeight: FontWeight.w400,
-                                            fontSize: 16,
-                                          ),
-                                        ),
+                                  .map((category) => ElevatedButton(
+                                        onPressed: () {
+                                          context.push('/catalog',
+                                              extra: category
+                                                  .name); // Modify this line
+                                        },
+                                        child: Text(category.name),
                                       ))
                                   .toList()
                               : const [Text('Sin categorías')],
@@ -152,6 +149,10 @@ class ProductDetailScreen extends StatelessWidget {
                           category: product.categories.isNotEmpty
                               ? product.categories.first.name
                               : '',
+                          onCategoryTap: (category) {
+                            context.push('/catalog',
+                                extra: category); // Modify this line
+                          },
                         ),
                       ],
                     ),
