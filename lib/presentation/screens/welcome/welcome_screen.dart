@@ -6,7 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:go_delivery_frontend/application/BLoc/themes/themes_bloc.dart';
 import 'package:go_delivery_frontend/infrastructure/datasources/localstorage/localstorage_impl.dart';
 
-import '../../core/theme/theme.dart';
+import 'package:go_delivery_frontend/presentation/core/theme/theme.dart';
 
 class WelcomeScreen extends StatefulWidget {
   const WelcomeScreen({super.key, this.onPressSkip});
@@ -20,7 +20,8 @@ class WelcomeScreen extends StatefulWidget {
 class WelcomeScreenState extends State<WelcomeScreen> {
   @override
   Widget build(BuildContext context) {
-    final AppColorMode currentColorMode = context.watch<ThemesBloc>().currentColorMode;
+    final AppColorMode currentColorMode =
+        context.watch<ThemesBloc>().currentColorMode;
 
     // Define colors based on current color mode
     Color backgroundColor;
@@ -34,7 +35,7 @@ class WelcomeScreenState extends State<WelcomeScreen> {
         logoAsset = 'assets/icon/logo.svg';
         break;
       case AppColorMode.red:
-        backgroundColor = const Color(0xFF8F0000);  // Dark Crimson
+        backgroundColor = const Color(0xFF8F0000); // Dark Crimson
         buttonTextColor = const Color(0xFF8F0000);
         logoAsset = 'assets/icon/logo_red.svg';
         break;
@@ -77,7 +78,8 @@ class WelcomeScreenState extends State<WelcomeScreen> {
               TextButton(
                 onPressed: skipPressedCallback,
                 style: TextButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
                   backgroundColor: Colors.white,
                 ),
                 child: Text(

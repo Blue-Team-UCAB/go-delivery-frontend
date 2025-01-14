@@ -6,14 +6,13 @@ import 'package:flutter_svg/flutter_svg.dart';
 
 import 'package:go_delivery_frontend/application/BLoc/themes/themes_bloc.dart';
 
-import '../../core/theme/theme.dart';
+import 'package:go_delivery_frontend/presentation/core/theme/theme.dart';
 
 class SplashScreen extends StatefulWidget {
-  const SplashScreen({
-    super.key,
-    required this.onSplashScreenFade,
-    required this.splashScreenDurationSeconds
-  });
+  const SplashScreen(
+      {super.key,
+      required this.onSplashScreenFade,
+      required this.splashScreenDurationSeconds});
 
   final int splashScreenDurationSeconds;
   final void Function() onSplashScreenFade;
@@ -27,12 +26,13 @@ class SplashScreenState extends State<SplashScreen> {
   void initState() {
     super.initState();
     Timer(Duration(seconds: widget.splashScreenDurationSeconds),
-            () => widget.onSplashScreenFade());
+        () => widget.onSplashScreenFade());
   }
 
   @override
   Widget build(BuildContext context) {
-    final AppColorMode currentColorMode = context.watch<ThemesBloc>().currentColorMode;
+    final AppColorMode currentColorMode =
+        context.watch<ThemesBloc>().currentColorMode;
 
     // Define colors and logo based on current color mode
     Color backgroundColor;

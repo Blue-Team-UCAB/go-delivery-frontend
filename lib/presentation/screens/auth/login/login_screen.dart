@@ -69,11 +69,12 @@ class LoginFormState extends State<LoginForm> {
 
   @override
   Widget build(BuildContext context) {
-    final AppColorMode currentColorMode = context.watch<ThemesBloc>().currentColorMode;
+    final AppColorMode currentColorMode =
+        context.watch<ThemesBloc>().currentColorMode;
 
     return BlocConsumer<LoginBloc, LoginState>(
       listenWhen: (previous, current) =>
-      previous.formStatus != current.formStatus,
+          previous.formStatus != current.formStatus,
       listener: (context, state) {
         if (state.formStatus == LoginFormStatus.valid) {
           context.read<NotificationsBloc>().sendFCMToken();
@@ -116,7 +117,8 @@ class LoginFormState extends State<LoginForm> {
                             borderRadius: BorderRadius.circular(10),
                           ),
                           child: Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 12, vertical: 8),
                             child: Row(
                               mainAxisSize: MainAxisSize.min,
                               children: [
@@ -138,57 +140,72 @@ class LoginFormState extends State<LoginForm> {
                             ),
                           ),
                           itemBuilder: (BuildContext context) {
-                            final currentColorMode = context.read<ThemesBloc>().currentColorMode;
+                            final currentColorMode =
+                                context.read<ThemesBloc>().currentColorMode;
 
                             return [
                               PopupMenuItem<AppColorMode>(
                                 value: AppColorMode.blue,
                                 child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
                                   children: [
                                     Text(
                                       'Azul',
                                       style: TextStyle(
                                         fontFamily: 'Montserrat',
-                                        color: currentColorMode == AppColorMode.blue
+                                        color: currentColorMode ==
+                                                AppColorMode.blue
                                             ? Color(0xFF02066F)
                                             : Colors.black,
-                                        fontWeight: currentColorMode == AppColorMode.blue
+                                        fontWeight: currentColorMode ==
+                                                AppColorMode.blue
                                             ? FontWeight.bold
                                             : FontWeight.normal,
                                       ),
                                     ),
                                     if (currentColorMode == AppColorMode.blue)
-                                      Icon(Icons.check, color: Color(0xFF02066F)),
+                                      Icon(Icons.check,
+                                          color: Color(0xFF02066F)),
                                   ],
                                 ),
                               ),
                               PopupMenuItem<AppColorMode>(
                                 value: AppColorMode.red,
                                 child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
                                   children: [
                                     Text(
                                       'Rojo',
                                       style: TextStyle(
                                         fontFamily: 'Montserrat',
-                                        color: currentColorMode == AppColorMode.red
-                                            ? Color(0xFF8F0000)
-                                            : Colors.black,
-                                        fontWeight: currentColorMode == AppColorMode.red
-                                            ? FontWeight.bold
-                                            : FontWeight.normal,
+                                        color:
+                                            currentColorMode == AppColorMode.red
+                                                ? Color(0xFF8F0000)
+                                                : Colors.black,
+                                        fontWeight:
+                                            currentColorMode == AppColorMode.red
+                                                ? FontWeight.bold
+                                                : FontWeight.normal,
                                       ),
                                     ),
                                     if (currentColorMode == AppColorMode.red)
-                                      Icon(Icons.check, color: Color(0xFF8F0000)),
+                                      Icon(Icons.check,
+                                          color: Color(0xFF8F0000)),
                                   ],
                                 ),
                               ),
                             ];
                           },
                           onSelected: (AppColorMode? newMode) async {
-                            if (newMode != null && newMode != context.read<ThemesBloc>().state.appTheme.colorMode) {
+                            if (newMode != null &&
+                                newMode !=
+                                    context
+                                        .read<ThemesBloc>()
+                                        .state
+                                        .appTheme
+                                        .colorMode) {
                               context.read<ThemesBloc>().changeTheme();
 
                               final localStorageService = LocalStorageService();
@@ -202,9 +219,10 @@ class LoginFormState extends State<LoginForm> {
                                 apiUrl = dotenv.env['API_URL']!;
                               }
 
-                              await localStorageService.setKeyValue<String>("CURRENT_API_URL", apiUrl);
-                              await localStorageService.setKeyValue<String>('colorMode', newMode.toString());
-
+                              await localStorageService.setKeyValue<String>(
+                                  "CURRENT_API_URL", apiUrl);
+                              await localStorageService.setKeyValue<String>(
+                                  'colorMode', newMode.toString());
                             }
                           },
                         ),
@@ -283,17 +301,19 @@ class LoginFormState extends State<LoginForm> {
                                         .changeEmail(value),
                                     controller: _emailController,
                                     validator: (value) {
-                                      final result = loginValidator.emailValidator
+                                      final result = loginValidator
+                                          .emailValidator
                                           .validate(value);
                                       return result.isSuccessful()
                                           ? null
                                           : result.getError().message;
                                     },
                                     keyboardType: TextInputType.emailAddress,
-                                    style: const TextStyle(fontFamily: 'Montserrat'),
+                                    style: const TextStyle(
+                                        fontFamily: 'Montserrat'),
                                     decoration: inputDecorationBuilderLogin
                                         .buildInputDecorationLogin(
-                                        'Correo electrónico'),
+                                            'Correo electrónico'),
                                   ),
                                 ),
 
@@ -314,22 +334,23 @@ class LoginFormState extends State<LoginForm> {
                                           : result.getError().message;
                                     },
                                     obscureText: _obscurePassword,
-                                    style: const TextStyle(fontFamily: 'Montserrat'),
+                                    style: const TextStyle(
+                                        fontFamily: 'Montserrat'),
                                     decoration: inputDecorationBuilderLogin
                                         .buildInputDecorationLogin('Contraseña')
                                         .copyWith(
-                                      suffixIcon: IconButton(
-                                        icon: Icon(
-                                          _obscurePassword
-                                              ? Icons.visibility_off
-                                              : Icons.visibility,
-                                          color: Colors.grey,
+                                          suffixIcon: IconButton(
+                                            icon: Icon(
+                                              _obscurePassword
+                                                  ? Icons.visibility_off
+                                                  : Icons.visibility,
+                                              color: Colors.grey,
+                                            ),
+                                            onPressed: () => setState(() =>
+                                                _obscurePassword =
+                                                    !_obscurePassword),
+                                          ),
                                         ),
-                                        onPressed: () => setState(() =>
-                                        _obscurePassword =
-                                        !_obscurePassword),
-                                      ),
-                                    ),
                                   ),
                                 ),
 
@@ -342,7 +363,8 @@ class LoginFormState extends State<LoginForm> {
                                         context.push('/password/forgot');
                                       },
                                       style: TextButton.styleFrom(
-                                        foregroundColor: currentColorMode == AppColorMode.blue
+                                        foregroundColor: currentColorMode ==
+                                                AppColorMode.blue
                                             ? const Color(0xFF02066F)
                                             : const Color(0xFF8F0000),
                                       ),
@@ -360,35 +382,38 @@ class LoginFormState extends State<LoginForm> {
                                 BlocBuilder<LoginBloc, LoginState>(
                                   builder: (context, state) {
                                     return ZoomIn(
-                                      duration: const Duration(milliseconds: 500),
+                                      duration:
+                                          const Duration(milliseconds: 500),
                                       child: ElevatedButton(
                                         onPressed: state.formStatus ==
-                                            LoginFormStatus.posting
+                                                LoginFormStatus.posting
                                             ? null
                                             : _pressSubmit,
                                         style: ElevatedButton.styleFrom(
-                                          backgroundColor: currentColorMode == AppColorMode.blue
+                                          backgroundColor: currentColorMode ==
+                                                  AppColorMode.blue
                                               ? const Color(0xFF02066F)
                                               : const Color(0xFF8F0000),
                                           padding: const EdgeInsets.symmetric(
                                               vertical: 16),
                                           shape: RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.circular(12),
+                                            borderRadius:
+                                                BorderRadius.circular(12),
                                           ),
                                         ),
                                         child: state.formStatus ==
-                                            LoginFormStatus.posting
+                                                LoginFormStatus.posting
                                             ? const CircularProgressIndicator(
-                                            color: Colors.white)
+                                                color: Colors.white)
                                             : const Text(
-                                          'Iniciar sesión',
-                                          style: TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 16,
-                                            fontFamily: 'Montserrat',
-                                            fontWeight: FontWeight.w700,
-                                          ),
-                                        ),
+                                                'Iniciar sesión',
+                                                style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 16,
+                                                  fontFamily: 'Montserrat',
+                                                  fontWeight: FontWeight.w700,
+                                                ),
+                                              ),
                                       ),
                                     );
                                   },
@@ -405,13 +430,15 @@ class LoginFormState extends State<LoginForm> {
                                       ),
                                     ),
                                     FadeIn(
-                                      duration: const Duration(milliseconds: 500),
+                                      duration:
+                                          const Duration(milliseconds: 500),
                                       child: TextButton(
                                         onPressed: () {
                                           context.push('/register');
                                         },
                                         style: TextButton.styleFrom(
-                                          foregroundColor: currentColorMode == AppColorMode.blue
+                                          foregroundColor: currentColorMode ==
+                                                  AppColorMode.blue
                                               ? const Color(0xFF02066F)
                                               : const Color(0xFF8F0000),
                                         ),

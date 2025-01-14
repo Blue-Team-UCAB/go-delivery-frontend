@@ -16,3 +16,4 @@ export 'profile/profile_screen.dart';
 export 'profile/wallet.dart';
 export 'profile/direction_screen.dart';
 export 'profile/preferences_screen.dart';
+export 'chatbot/chatbot_screen.dart';

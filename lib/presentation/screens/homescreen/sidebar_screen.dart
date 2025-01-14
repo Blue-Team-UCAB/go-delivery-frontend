@@ -90,6 +90,18 @@ class SidebarScreen extends StatelessWidget {
                 context.push('/coupon');
               },
             ),
+            ListTile(
+              leading: const Icon(Icons.android_outlined, color: Colors.white),
+              title: const Text('ChatBot',
+                  style: TextStyle(
+                      fontFamily: 'Inter',
+                      fontWeight: FontWeight.w600,
+                      fontSize: 16,
+                      color: Color(0xFFFFFFFF))),
+              onTap: () {
+                context.push('/chatbot');
+              },
+            ),
             const Spacer(),
             ListTile(
               leading: const Icon(Icons.logout, color: Color(0xFFFFFFFF)),
