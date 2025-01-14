@@ -12,6 +12,7 @@ class CouponBloc extends Bloc<CouponEvent, CouponState> {
   CouponBloc(this._getOneCouponUseCase) : super(CouponInitial()) {
     on<LoadCoupon>(_onLoadCoupon);
     on<ClearCoupon>(_clearCouponHandler);
+
   }
 
   void clearCoupon() {
@@ -32,7 +33,7 @@ class CouponBloc extends Bloc<CouponEvent, CouponState> {
       try {
         final currentState = state is CouponLoaded
             ? state
-            : const CouponLoading(Coupon(id: '', porcentage: 0));
+            : CouponLoading(Coupon(id: '', porcentage: 0));
 
         emit(CouponLoading(currentState.coupon));
 
@@ -44,11 +45,12 @@ class CouponBloc extends Bloc<CouponEvent, CouponState> {
           final coupon = result.getValue();
           emit(CouponLoaded(coupon));
         } else {
-          emit(const CouponFailed(Coupon(id: '', porcentage: 0)));
+          emit(CouponFailed(Coupon(id: '', porcentage: 0)));
         }
       } catch (e) {
         print('Error in CouponBloc: $e');
       }
     }
   }
+
 }

@@ -57,14 +57,6 @@ class SidebarScreen extends StatelessWidget {
                 context.push('/category');
               },
             ),
-            // ListTile(
-            //   leading: const Icon(Icons.star, color: Colors.white),
-            //   title: const Text('Productos Top',
-            //       style: TextStyle(fontFamily: 'Inter', fontWeight: FontWeight.w600, fontSize: 16 ,color: Color(0xFFFFFFFF))),
-            //   onTap: () {
-            //     // Navegar a Productos Top
-            //   },
-            // ),
             ListTile(
               leading: const Icon(Icons.track_changes, color: Colors.white),
               title: const Text('Rastrea tu orden',

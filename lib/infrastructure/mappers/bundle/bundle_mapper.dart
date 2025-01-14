@@ -37,6 +37,29 @@ class BundleMapper {
     );
   }
 
+  static Bundle fromJsonDetail(Map<String, dynamic>? json, String bundleId) {
+    // Throw an error if json is null
+    if (json == null) {
+      throw ArgumentError('Cannot parse Bundle from null JSON');
+    }
+
+    return Bundle(
+      id: bundleId,
+      name: json['name']?.toString() ?? '',
+      description: json['description']?.toString() ?? '',
+      currency: _parseCurrency(json['currency']),
+      price: _parseDouble(json['price']),
+      stock: _parseInt(json['stock']),
+      weight: _parseDouble(json['weight']),
+      measurement: _parseMeasurement(json['measurement']),
+      images: _parseImages(json['images']),
+      caducityDate: _parseDate(json['caducityDate']),
+      products: _parseProducts(json['product']),
+      categories: _parseCategories(json['category']),
+      discounts: _parseDiscounts(json['discount']),
+    );
+  }
+
   // Enhanced parsing methods with more robust type checking
   static double _parseDouble(dynamic value) {
     if (value == null) return 0.0;
