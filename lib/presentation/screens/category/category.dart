@@ -87,8 +87,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                 return GestureDetector(
                   onTap: () {
                     context.push('/catalog',
-                        extra:
-                            category.name); // Use context.push for navigation
+                        extra: category.name); // Pass the selected category
                   },
                   child: CategoryCard(
                     image: category.imageUrl ?? '',
