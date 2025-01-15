@@ -127,7 +127,8 @@ class InjectManager {
     final getOneCouponUseCase =
         GetOneCouponUseCase(couponRepository: couponRepository);
 
-    final getCouponsUseCase = GetCouponsUseCase(couponRepository: couponRepository);
+    final getCouponsUseCase =
+        GetCouponsUseCase(couponRepository: couponRepository);
 
     // Registrar el caso de uso de obtención de cupon
     getIt.registerSingleton<GetOneCouponUseCase>(getOneCouponUseCase);
@@ -221,13 +222,14 @@ class InjectManager {
     getIt.registerSingleton<CancelOneOrderUseCase>(cancelOneOrderUseCase);
     getIt.registerFactory(
         () => OrderReportBloc(reportOrderUseCase: reportOneOrderUseCase));
-    getIt.registerSingleton<GetDriverPositionOrderUseCase>(driverPositionOrderUseCase);
+    getIt.registerSingleton<GetDriverPositionOrderUseCase>(
+        driverPositionOrderUseCase);
 
     // ======================================================================= //
     getIt.registerSingleton(
         OrderDetailBloc(getOneOrderUseCase: getOneOrderUseCase));
-    getIt.registerSingleton(
-        OrderDriverPositionBloc(getDriverPositionOrderUseCase: driverPositionOrderUseCase));
+    getIt.registerSingleton(OrderDriverPositionBloc(
+        getDriverPositionOrderUseCase: driverPositionOrderUseCase));
 
     // ============================= CATEGORIES ============================= //
     // Repositorio

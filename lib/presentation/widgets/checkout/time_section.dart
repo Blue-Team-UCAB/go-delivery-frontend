@@ -11,19 +11,6 @@ class _DeliveryTimeSectionState extends State<DeliveryTimeSection> {
   DateTime? _selectedDate;
   String? _selectedTime;
 
-  final List<String> _timeSlots = List.generate(
-    24,
-        (index) {
-      final hour = index % 24;
-      final nextHour = (hour + 1) % 24;
-      final formattedHour = hour > 12 ? hour - 12 : hour;
-      final formattedNextHour = nextHour > 12 ? nextHour - 12 : nextHour;
-      final period = hour < 12 ? 'am' : 'pm';
-      final nextPeriod = nextHour < 12 ? 'am' : 'pm';
-      return '$formattedHour:00 $period - $formattedNextHour:00 $nextPeriod';
-    },
-  );
-
   Future<void> _pickDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
       context: context,
@@ -39,31 +26,30 @@ class _DeliveryTimeSectionState extends State<DeliveryTimeSection> {
   }
 
   void _selectTime(BuildContext context) async {
-    await showModalBottomSheet(
+    final TimeOfDay? picked = await showTimePicker(
       context: context,
-      builder: (BuildContext context) {
-        return ListView(
-          children: _timeSlots.map((slot) {
-            return ListTile(
-              title: Text(
-                slot,
-                style: const TextStyle(
-                  fontSize: 13,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black,
-                ),
-              ),
-              onTap: () {
-                setState(() {
-                  _selectedTime = slot;
-                });
-                Navigator.pop(context);
-              },
-            );
-          }).toList(),
-        );
-      },
+      initialTime: TimeOfDay(hour: 10, minute: 0),
     );
+
+    if (picked != null) {
+      final formatedTime = _formatTime(picked);
+      setState(() {
+        _selectedTime = formatedTime;
+      });
+    }
+  }
+
+  String _formatTime(TimeOfDay time) {
+    final hour = time.hour;
+    final minute = time.minute;
+    final period = hour < 12 ? 'am' : 'pm';
+    final formatedHour = hour > 12
+        ? hour - 12
+        : hour == 0
+            ? 12
+            : hour;
+    final formatedMinute = minute.toString().padLeft(2, '0');
+    return '$formatedHour:$formatedMinute $period';
   }
 
   @override
@@ -146,7 +132,6 @@ class _DeliveryTimeSectionState extends State<DeliveryTimeSection> {
                 ),
               ),
               const SizedBox(width: 8),
-              // Botón de Hora
               SizedBox(
                 height: buttonHeight,
                 width: 173,
