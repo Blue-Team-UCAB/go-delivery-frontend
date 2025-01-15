@@ -8,6 +8,9 @@ import 'package:go_delivery_frontend/domain/entities/coupon/coupon.dart';
 import 'package:go_delivery_frontend/presentation/widgets/coupon/coupon_empty_state_widget.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../application/BLoc/order/order_create/order_create_bloc.dart';
+import '../../../application/BLoc/order/order_create/order_create_event.dart';
+
 
 class CouponScreen extends StatefulWidget {
   static const name = 'coupon-screen';
@@ -146,8 +149,9 @@ Widget _buildCouponsList(List<Coupon> coupons) {
                               borderRadius: BorderRadius.circular(12))),
                         ),
                         onPressed: () {
-                          context.read<CouponBloc>().add(LoadCoupon(coupon: coupon));
-                          // context.read<CheckoutBloc>().add(ApplyCouponEvent(coupon: coupon));
+                          print(coupon.id);
+                         // context.read<CouponBloc>().add(LoadCoupon(coupon: coupon));
+                          context.read<CheckoutBloc>().add(ApplyCouponEvent(couponId: coupon.id));
                           ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                               duration: Duration(seconds: 1),
                               behavior: SnackBarBehavior.floating,

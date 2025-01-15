@@ -23,7 +23,7 @@ class CouponRepositoryImpl extends CouponRepository {
   }
 
   @override
-  Future<Result<Coupon>> getCouponById(String couponId) async {
+  Future<Result<Coupon>> claimCouponById(String couponId) async {
     await _addAuthorizationHeader();
     try {
       final response = await _apiRequestManager.request(
@@ -33,6 +33,26 @@ class CouponRepositoryImpl extends CouponRepository {
         (data) {
           final coupon = CouponMapper.fromJson(data);
           print(coupon);
+          return coupon;
+        },
+      );
+      return response;
+    } catch (e) {
+      print('Error in CouponRepositoryImpl.getCouponById: $e');
+      rethrow;
+    }
+  }
+
+  @override
+  Future<Result<Coupon>> getCouponById(String couponId) async {
+    await _addAuthorizationHeader();
+    try {
+      final response = await _apiRequestManager.request(
+        '/api/coupon/$couponId',
+        'GET',
+        body: CouponMapper.toJson(couponId),
+            (data) {
+          final coupon = CouponByIdMapper.fromJson(data);
           return coupon;
         },
       );

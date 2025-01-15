@@ -41,7 +41,9 @@ class ContinueButton extends StatelessWidget {
         }
       },
       builder: (context, state) {
-        final bool isProcessing = state is CheckoutLoading;
+        final bool isProcessing =
+            state is CheckoutLoading ||
+                state is CheckoutCouponLoading;
 
         return Padding(
           padding: const EdgeInsets.all(16.0),

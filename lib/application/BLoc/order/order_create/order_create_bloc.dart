@@ -78,7 +78,7 @@ class CheckoutBloc extends SafeBloc<CheckoutEvent, CheckoutState> {
     try {
       // Fetch coupon
       final input =
-          GetOneCouponUseCaseInput(couponId: event.couponId.toUpperCase());
+          GetOneCouponUseCaseInput(couponId: event.couponId);
       final result = await _getOneCouponUseCase.execute(input);
 
       if (result.isSuccessful()) {
@@ -87,9 +87,18 @@ class CheckoutBloc extends SafeBloc<CheckoutEvent, CheckoutState> {
         // Calculate discounted total
         double discountedTotal = state.total * (1 - (coupon.porcentage / 100));
 
+        print(state.appliedCoupon!.id);
+        print(discountedTotal);
+        print(state.cartItems.length);
+        print(state.productItems.length);
+        print(state.bundleItems.length);
+        print("productTotal: ${state.productTotal}");
+        print("productTotal: ${state.bundleTotal}");
+
+
         // Emit coupon applied state
         emit(CheckoutCouponApplied(
-          coupon: coupon,
+          coupon: state.appliedCoupon!,
           discountedTotal: discountedTotal,
           cartItems: state.cartItems,
           productItems: state.productItems,
