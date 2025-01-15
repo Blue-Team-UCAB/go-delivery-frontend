@@ -31,11 +31,8 @@ class PaymentRepositoryImpl extends PaymentRepository {
       '/api/payment/method/recharge/pago-movil',
       'POST',
       (data) {
-        if (data is Map<String, dynamic>) {
-          if (data.containsKey('error') || data['errorCode'] != 200) {
-            return false; // Indica un fallo en el proceso
-          }
-          return true; // Proceso exitoso
+        if (data is Map<String, dynamic> && !data.containsKey('error')) {
+          return true;
         }
         return false;
       },
@@ -50,7 +47,7 @@ class PaymentRepositoryImpl extends PaymentRepository {
             CustomFailure(message: 'Error al procesar PagoMovil'));
       }
     } else {
-      return response; // Retorna el error gestionado por `IApiRequestManager`
+      return response;
     }
   }
 
@@ -61,11 +58,8 @@ class PaymentRepositoryImpl extends PaymentRepository {
       '/api/payment/method/recharge/zelle',
       'POST',
       (data) {
-        if (data is Map<String, dynamic>) {
-          if (data.containsKey('error') || data['errorCode'] != 200) {
-            return false; // Indica un fallo en el proceso
-          }
-          return true; // Proceso exitoso
+        if (data is Map<String, dynamic> && !data.containsKey('error')) {
+          return true;
         }
         return false;
       },
@@ -79,7 +73,7 @@ class PaymentRepositoryImpl extends PaymentRepository {
         return Result.fail(CustomFailure(message: 'Error al procesar Zelle'));
       }
     } else {
-      return response; // Retorna el error gestionado por `IApiRequestManager`
+      return response;
     }
   }
 
