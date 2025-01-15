@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:go_delivery_frontend/presentation/screens/homescreen/homescreen_locationbar.dart';
 import 'package:go_delivery_frontend/presentation/widgets/search/filter_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -35,7 +36,7 @@ class CatalogScreenState extends State<CatalogScreen>
   String _searchQuery = '';
   late StreamSubscription<ProductListState> _productListSubscription;
   final List<Product> _products = [];
-  String? _selectedCategory; // Add this line
+  String? _selectedCategory;
 
   @override
   bool get wantKeepAlive => true;
@@ -44,14 +45,14 @@ class CatalogScreenState extends State<CatalogScreen>
   void initState() {
     super.initState();
     _counter = widget.initialCounterNavbar;
-    _selectedCategory = widget.selectedCategory; // Add this line
+    _selectedCategory = widget.selectedCategory;
     _loadProducts();
 
     BlocProvider.of<ProductListBloc>(context).add(
       LoadProductList(
           page: _currentPage,
           perpage: 6,
-          categories: [_selectedCategory ?? '']), // Modify this line
+          categories: [_selectedCategory ?? '']),
     );
     _scrollController.addListener(_onScroll);
 
@@ -89,17 +90,15 @@ class CatalogScreenState extends State<CatalogScreen>
     super.dispose();
   }
 
-  // Función para cargar productos
   void _loadProducts() {
     BlocProvider.of<ProductListBloc>(context).add(
       LoadProductList(
           page: _currentPage,
           perpage: 6,
-          categories: [_selectedCategory ?? '']), // Modify this line
+          categories: [_selectedCategory ?? '']),
     );
   }
 
-  // Función llamada en el listener de scroll
   void _onScroll() {
     if (_scrollController.position.pixels >=
         _scrollController.position.maxScrollExtent - 300) {
@@ -118,18 +117,17 @@ class CatalogScreenState extends State<CatalogScreen>
               ? LoadProductList(
                   page: _currentPage,
                   perpage: 6,
-                  categories: [_selectedCategory ?? '']) // Modify this line
+                  categories: [_selectedCategory ?? ''])
               : SearchProductList(
                   name: _searchQuery,
                   page: _currentPage,
                   perpage: 6,
-                  categories: [_selectedCategory ?? '']), // Modify this line
+                  categories: [_selectedCategory ?? '']),
         );
       }
     }
   }
 
-  // Función de búsqueda
   void _handleSearch(String query) {
     setState(() {
       _searchQuery = query;
@@ -141,18 +139,16 @@ class CatalogScreenState extends State<CatalogScreen>
           name: query,
           page: _currentPage,
           perpage: 6,
-          categories: [_selectedCategory ?? '']), // Modify this line
+          categories: [_selectedCategory ?? '']),
     );
   }
 
-  // Función para manejar el cambio de tab
   void _onNavItemTapped(int valueIndex) {
     setState(() {
       _counter = valueIndex;
     });
   }
 
-  // Función para evitar productos duplicados en la lista
   void _addUniqueProducts(List<Product> newProducts) {
     for (var product in newProducts) {
       if (!_products.any((p) => p.id == product.id)) {
@@ -190,36 +186,7 @@ class CatalogScreenState extends State<CatalogScreen>
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          ListTile(
-            leading: Container(
-                width: 45,
-                height: 45,
-                decoration: BoxDecoration(
-                    color: const Color(0xFF2000B1),
-                    borderRadius: BorderRadius.circular(25)),
-                child: const Icon(
-                  Icons.location_on_outlined,
-                  color: Color(0xffffffff),
-                )),
-            title: const Text(
-              'Entregar a',
-              style: TextStyle(
-                  fontFamily: 'Inter',
-                  fontWeight: FontWeight.w400,
-                  fontSize: 12),
-            ),
-            subtitle: const Text(
-              'El Paraíso, Plaza Madariaga',
-              style: TextStyle(
-                  fontFamily: 'Inter',
-                  fontWeight: FontWeight.w500,
-                  fontSize: 16),
-            ),
-            trailing: const Icon(Icons.arrow_forward_ios),
-            onTap: () {
-              context.push('/notification');
-            },
-          ),
+          const LocationBar(),
           Padding(
             padding: const EdgeInsets.only(top: 16, left: 18, right: 18.0),
             child: Container(
@@ -267,12 +234,10 @@ class CatalogScreenState extends State<CatalogScreen>
                   IconButton(
                     icon: const Icon(Icons.filter_list, color: Colors.grey),
                     onPressed: () async {
-                      // Acción de filtros
                       final selectedCategory =
                           await showModalBottomSheet<String>(
                         context: context,
-                        isScrollControlled:
-                            true, // Allows the modal to take more space
+                        isScrollControlled: true,
                         shape: const RoundedRectangleBorder(
                           borderRadius:
                               BorderRadius.vertical(top: Radius.circular(16)),

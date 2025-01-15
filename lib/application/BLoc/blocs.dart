@@ -23,4 +23,4 @@ export 'package:go_delivery_frontend/application/BLoc/directions/delete/delete_d
 export 'package:go_delivery_frontend/application/BLoc/notifications/bloc/notifications_bloc.dart';
 export 'package:go_delivery_frontend/application/BLoc/user/update_image/update_image_bloc.dart';
 export 'package:go_delivery_frontend/application/BLoc/themes/themes_bloc.dart';
-export 'package:go_delivery_frontend/application/BLoc/coupon/coupon_bloc.dart';
+export 'package:go_delivery_frontend/application/BLoc/coupons/coupon/coupon_bloc.dart';

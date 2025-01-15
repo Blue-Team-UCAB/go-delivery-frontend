@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:go_delivery_frontend/application/BLoc/cart/cart_bloc.dart';
-import 'package:go_delivery_frontend/application/BLoc/coupon/coupon_bloc.dart';
+import 'package:go_delivery_frontend/application/BLoc/coupons/coupon/coupon_bloc.dart';
 import 'package:go_delivery_frontend/application/BLoc/order/order_create/order_create_bloc.dart';
 import 'package:go_delivery_frontend/application/BLoc/order/order_create/order_create_event.dart';
 import 'package:go_delivery_frontend/application/BLoc/order/order_create/order_create_state.dart';

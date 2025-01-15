@@ -17,10 +17,11 @@ class AllTransactionsScreen extends StatelessWidget {
       appBar: AppBar(
         title: const Text(
           'Todas las transacciones',
-          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          style: TextStyle(
+              fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white),
         ),
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () {
             Navigator.of(context).pop();
           },
@@ -30,6 +31,7 @@ class AllTransactionsScreen extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
         child: BlocBuilder<GetPaymentTransactionsBloc,
             GetPaymentTransactionsState>(
+          // BlocBuilder con estado
           builder: (context, state) {
             if (state is PaymentTransactionsLoading) {
               return const Center(
@@ -74,7 +76,7 @@ class AllTransactionsScreen extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
-                              '${transaction.debit ? '+' : '-'}\$${(transaction.amount / 100).toStringAsFixed(2)}',
+                              '${transaction.debit ? '+' : '-'}\$${transaction.amount}', // Sin conversión, solo mostrar el valor del backend
                               style: const TextStyle(
                                   fontSize: 12, color: Colors.black),
                             ),

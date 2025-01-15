@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:go_delivery_frontend/application/BLoc/directions/add/add_direction_bloc.dart';
 import 'package:go_delivery_frontend/application/BLoc/directions/add/add_direction_event.dart';
 import 'package:go_delivery_frontend/application/BLoc/directions/add/add_direction_state.dart';
@@ -269,6 +270,65 @@ class AddAddressBottomSheetState extends State<AddAddressBottomSheet> {
   final bool _favorite = false;
   late GoogleMapController _mapController;
 
+  // Función para obtener la ubicación actual del usuario
+  Future<void> _getCurrentLocation() async {
+    bool serviceEnabled;
+    LocationPermission permission;
+
+    // Verificar si el servicio de ubicación está habilitado
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+              content: Text('Por favor habilita los servicios de ubicación')),
+        );
+      }
+      return;
+    }
+
+    // Verificar permisos de ubicación
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Permiso de ubicación denegado')),
+          );
+        }
+        return;
+      }
+    }
+
+    if (permission == LocationPermission.deniedForever) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+              content: Text('Permiso de ubicación denegado permanentemente')),
+        );
+      }
+      return;
+    }
+
+    // Obtener la ubicación actual
+    Position position = await Geolocator.getCurrentPosition(
+      locationSettings: LocationSettings(
+        accuracy: LocationAccuracy.high,
+        distanceFilter: 100,
+      ),
+    );
+
+    // Actualizar la ubicación en el mapa y en el campo de dirección
+    if (mounted) {
+      setState(() {
+        _latitude = position.latitude;
+        _longitude = position.longitude;
+        _fetchAddressFromCoordinates(_latitude!, _longitude!);
+      });
+    }
+  }
+
   Future<void> _fetchAddressFromCoordinates(double lat, double lon) async {
     String apiKey = dotenv.env['GOOGLE_MAPS_SERVICES_KEY'] ?? '';
     final url =
@@ -301,6 +361,24 @@ class AddAddressBottomSheetState extends State<AddAddressBottomSheet> {
       _mapController.animateCamera(
         CameraUpdate.newLatLng(LatLng(_latitude!, _longitude!)),
       );
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _getCurrentLocation(); // Obtener la ubicación actual cuando se inicializa el widget
+  }
+
+  Future<void> _handleAfterSave() async {
+    await Future.delayed(const Duration(seconds: 1));
+
+    if (!mounted) return;
+
+    context.read<DirectionListBloc>().add(LoadDirectionList());
+
+    if (mounted) {
+      Navigator.pop(context);
     }
   }
 
@@ -344,10 +422,11 @@ class AddAddressBottomSheetState extends State<AddAddressBottomSheet> {
                 labelText: 'Dirección',
                 border: OutlineInputBorder(),
               ),
-              readOnly: true,
+              onChanged: (value) {
+                _direction = value;
+              },
             ),
             const SizedBox(height: 16),
-            // Contenedor para el mapa
             Container(
               height: 300,
               decoration: BoxDecoration(
@@ -411,12 +490,7 @@ class AddAddressBottomSheetState extends State<AddAddressBottomSheet> {
                           long: _longitude!,
                           favorite: _favorite));
 
-                      Future.delayed(const Duration(seconds: 1), () {
-                        context
-                            .read<DirectionListBloc>()
-                            .add(LoadDirectionList());
-                        Navigator.pop(context);
-                      });
+                      _handleAfterSave();
                     }
                   },
                   style: ElevatedButton.styleFrom(
@@ -553,10 +627,11 @@ class EditAddressBottomSheetState extends State<EditAddressBottomSheet> {
                 labelText: 'Dirección',
                 border: OutlineInputBorder(),
               ),
-              readOnly: true,
+              onChanged: (value) {
+                _direction = value;
+              },
             ),
             const SizedBox(height: 16),
-            // Contenedor para el mapa
             Container(
               height: 300,
               decoration: BoxDecoration(

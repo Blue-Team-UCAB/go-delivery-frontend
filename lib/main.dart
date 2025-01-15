@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_delivery_frontend/application/BLoc/blocs.dart';
 import 'package:go_delivery_frontend/application/BLoc/category/category_bloc.dart';
+import 'package:go_delivery_frontend/application/BLoc/coupons/coupon_many/coupon_many_bloc.dart';
 import 'package:go_delivery_frontend/application/BLoc/filter/filter_bloc.dart';
 import 'package:go_delivery_frontend/application/BLoc/order/courier_position/order_courier_position_bloc.dart';
 import 'package:go_delivery_frontend/application/BLoc/order/order_cancel/order_cancel_bloc.dart';
@@ -47,6 +48,7 @@ void main() async {
         BlocProvider(create: (_) => getIt<PaymentBloc>()),
         BlocProvider(create: (_) => getIt<CartBloc>()),
         BlocProvider(create: (_) => getIt<CouponBloc>()),
+        BlocProvider(create: (_) => getIt<CouponListBloc>()),
         BlocProvider(create: (_) => getIt<LoginBloc>()),
         BlocProvider(create: (_) => getIt<CurrentUserBloc>()),
         BlocProvider(create: (_) => getIt<ThemesBloc>()),

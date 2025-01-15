@@ -3,6 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_delivery_frontend/application/BLoc/directions/many/direction_many_bloc.dart';
 import 'package:go_delivery_frontend/application/BLoc/directions/many/direction_many_event.dart';
 import 'package:go_delivery_frontend/application/BLoc/directions/many/direction_many_state.dart';
+import 'package:go_delivery_frontend/domain/entities/direction/direction.dart';
+import 'package:go_delivery_frontend/presentation/screens/profile/direction_screen.dart';
 
 class AddressSection extends StatefulWidget {
   final Function(Map<String, dynamic>) onAddressSelected;
@@ -105,7 +107,9 @@ class AddressSectionState extends State<AddressSection> {
                               color: Color(0xFF000000)),
                         ),
                         secondary: IconButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            _editAddress(context, address);
+                          },
                           icon: const Icon(Icons.edit),
                           color: const Color(0xFF2000B1),
                         ),
@@ -126,12 +130,55 @@ class AddressSectionState extends State<AddressSection> {
                   );
                 }),
               ),
+              const SizedBox(height: 4),
+              Align(
+                alignment: Alignment.bottomCenter,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 16.0, vertical: 16.0),
+                  child: ElevatedButton(
+                    onPressed: () {
+                      _addAddress(context);
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFF2000B1),
+                      minimumSize: const Size(double.infinity, 50),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
+                    child: const Text(
+                      'Añadir Dirección',
+                      style: TextStyle(
+                          color: Colors.white, fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                ),
+              ),
             ],
           );
         }
 
         return const SizedBox();
       },
+    );
+  }
+
+  void _addAddress(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      enableDrag: false,
+      builder: (context) => AddAddressBottomSheet(),
+    );
+  }
+
+  void _editAddress(BuildContext context, Direction address) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      enableDrag: false,
+      builder: (context) => EditAddressBottomSheet(address: address),
     );
   }
 }
