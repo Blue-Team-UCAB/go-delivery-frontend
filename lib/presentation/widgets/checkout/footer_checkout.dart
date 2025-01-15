@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:go_delivery_frontend/application/BLoc/cart/cart_bloc.dart';
-import 'package:go_delivery_frontend/application/BLoc/coupon/coupon_bloc.dart';
+import 'package:go_delivery_frontend/application/BLoc/coupons/coupon/coupon_bloc.dart';
 import 'package:go_delivery_frontend/application/BLoc/order/order_create/order_create_bloc.dart';
 import 'package:go_delivery_frontend/application/BLoc/order/order_create/order_create_event.dart';
 import 'package:go_delivery_frontend/application/BLoc/order/order_create/order_create_state.dart';
@@ -13,19 +13,18 @@ import 'package:go_delivery_frontend/presentation/widgets/dialog_darken_window.d
 
 class ContinueButton extends StatelessWidget {
   final Map<String, dynamic>? selectedAddress;
-  final String? selectedCardId; // Add this line
+  final String? selectedCardId;
 
   const ContinueButton({
-    super.key,
+    Key? key,
     required this.selectedAddress,
-    this.selectedCardId, // Add this to the constructor
-  });
+    this.selectedCardId,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<CheckoutBloc, CheckoutState>(
       listener: (context, state) {
-        // Handle error messages
         if (state.errorMessage != null) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
@@ -35,24 +34,14 @@ class ContinueButton extends StatelessWidget {
           );
         }
 
-        // Check for successful order creation more precisely
-        if (state is CheckoutInitial &&
-            state.cartItems.isEmpty &&
-            state.total == 0.0 &&
-            state.errorMessage == null) {
-          // Show success dialog only once
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            context.read<CouponBloc>().clearCoupon();
-            context.read<CartBloc>().emptyCart();
-            _showOrderCreatedDialog(context);
-          });
+        if (state is CheckoutSuccess) {
+          print(state.orderId);
+
+          _showOrderCreatedDialog(context, state.orderId!);
         }
       },
       builder: (context, state) {
-        // Determine processing state more accurately
-        final bool isProcessing =
-            state is CheckoutLoading ||
-                state is CheckoutCouponLoading;
+        final bool isProcessing = state is CheckoutLoading;
 
         return Padding(
           padding: const EdgeInsets.all(16.0),
@@ -75,8 +64,9 @@ class ContinueButton extends StatelessWidget {
                   : const Text(
                 'Continuar',
                 style: TextStyle(
+                  fontFamily: "Montserrat",
                   color: Colors.white,
-                  fontSize: 16,
+                  fontSize: 20,
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -110,33 +100,27 @@ class ContinueButton extends StatelessWidget {
       return;
     }
 
-    print(selectedCardId);
+    // Determine payment method based on card selection
+    final String paymentMethod = selectedCardId != null && selectedCardId!.isNotEmpty ? "Credit" : "Wallet";
 
-
-    // Dispatch checkout event with all necessary data
     context.read<CheckoutBloc>().add(
       ProcessCheckoutEvent(
         paymentId: "f13784a7-f134-4a14-91de-884634b952a3",
-        stripePaymentMethod: selectedCardId != "" ? selectedCardId : "",
-        paymentMethod: "Wallet",
+        stripePaymentMethod: selectedCardId,
+        paymentMethod: paymentMethod,
         idUserDirection: selectedAddress!['id'],
         couponId: state.appliedCoupon?.id,
         productItems: state.productItems
-            .map((item) => CheckoutProduct(
-            id: item.id,
-            quantity: item.quantity))
+            .map((item) => CheckoutProduct(id: item.id, quantity: item.quantity))
             .toList(),
         bundleItems: state.bundleItems
-            .map((item) => CheckoutBundle(
-            id: item.id,
-            quantity: item.quantity))
+            .map((item) => CheckoutBundle(id: item.id, quantity: item.quantity))
             .toList(),
       ),
     );
   }
 
-
-  void _showOrderCreatedDialog(BuildContext context) {
+  void _showOrderCreatedDialog(BuildContext context, String orderId) {
     showDialog(
       context: context,
       barrierDismissible: false,
@@ -149,7 +133,9 @@ class ContinueButton extends StatelessWidget {
           iconColor: const Color(0xFF2000B1),
           buttonColor: const Color(0xFF2000B1),
           onButtonPressed: () {
-            context.go('/order');
+            context.go('/orderdetail/$orderId'); // Navigate to order detail screen
+            context.read<CartBloc>().emptyCart(); // Empty the cart only on success
+            context.read<CouponBloc>().clearCoupon();
           },
         );
       },

@@ -2,12 +2,14 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_delivery_frontend/application/BLoc/blocs.dart';
 import 'package:go_delivery_frontend/application/BLoc/category/category_bloc.dart';
+import 'package:go_delivery_frontend/application/BLoc/coupons/coupon_many/coupon_many_bloc.dart';
 import 'package:go_delivery_frontend/application/BLoc/filter/filter_bloc.dart';
 import 'package:go_delivery_frontend/application/BLoc/order/courier_position/order_courier_position_bloc.dart';
 import 'package:go_delivery_frontend/application/BLoc/order/order_create/order_create_bloc.dart';
 import 'package:go_delivery_frontend/application/BLoc/payment/get_payment_methods/get_payment_methods_blocs.dart';
 import 'package:go_delivery_frontend/application/use_cases/category/get_many_category.dart';
 import 'package:go_delivery_frontend/application/BLoc/order/order_report/order_report_bloc.dart';
+import 'package:go_delivery_frontend/application/use_cases/coupon/get_coupons.dart';
 import 'package:go_delivery_frontend/application/use_cases/order/cancel_order.dart';
 import 'package:go_delivery_frontend/application/use_cases/order/driver_position_order.dart';
 import 'package:go_delivery_frontend/application/use_cases/order/report_order.dart';
@@ -125,8 +127,12 @@ class InjectManager {
     final getOneCouponUseCase =
         GetOneCouponUseCase(couponRepository: couponRepository);
 
+    final getCouponsUseCase = GetCouponsUseCase(couponRepository: couponRepository);
+
     // Registrar el caso de uso de obtención de cupon
     getIt.registerSingleton<GetOneCouponUseCase>(getOneCouponUseCase);
+    getIt.registerSingleton<GetCouponsUseCase>(getCouponsUseCase);
+    getIt.registerSingleton(CouponListBloc(getCouponsUseCase));
     getIt.registerSingleton(CouponBloc(getOneCouponUseCase));
     // ======================================================================= //
 

@@ -4,7 +4,6 @@ import 'package:go_delivery_frontend/domain/entities/category/category.dart';
 import 'package:go_delivery_frontend/domain/entities/discount/discount.dart';
 
 class BundleMapper {
-  // Parse list of bundles
   static List<Bundle> fromJsonList(List<dynamic> jsonList) {
     return jsonList
         .map((bundleJson) => fromJson(bundleJson))
@@ -13,7 +12,6 @@ class BundleMapper {
         .toList();
   }
 
-  // Parse single bundle with improved null safety and error handling
   static Bundle fromJson(Map<String, dynamic>? json) {
     // Throw an error if json is null
     if (json == null) {

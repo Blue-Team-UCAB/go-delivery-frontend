@@ -4,6 +4,8 @@ import 'package:go_delivery_frontend/domain/entities/bundle/bundle.dart';
 import 'package:go_delivery_frontend/domain/entities/product/product.dart';
 import 'package:go_delivery_frontend/domain/repositories/order/order_repository.dart';
 
+import '../../../domain/entities/order/order.dart';
+
 class CheckoutUseCaseInput extends IUseCaseInput {
   final String? paymentId;
   final String? stripePaymentMethod;
@@ -30,7 +32,7 @@ class CheckoutUseCase {
   CheckoutUseCase({required OrderRepository orderRepository})
       : _orderRepository = orderRepository;
 
-  Future<Result<bool>> execute(CheckoutUseCaseInput input) {
+  Future<Result<Order>> execute(CheckoutUseCaseInput input) {
     return _orderRepository.createOrder(
           paymentId: input.paymentId,
           stripePaymentMethod: input.stripePaymentMethod,

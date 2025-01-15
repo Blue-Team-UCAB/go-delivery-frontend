@@ -5,7 +5,7 @@ import 'package:go_delivery_frontend/domain/entities/category/category.dart';
 import 'package:go_delivery_frontend/domain/entities/discount/discount.dart';
 
 class ProductMapper {
-  // Single product mapping with flexible parsing
+
   static Product fromJson(Map<String, dynamic> json) {
     return _parseProduct(json);
   }
@@ -13,7 +13,6 @@ class ProductMapper {
   static Product fromJsonDetail(Map<String, dynamic> json, String productId){
     try {
       return Product(
-        // Basic product information (works with both simple and detailed structures)
         id: productId as String? ?? '',
         name: json['name'] as String? ?? 'Sin nombre',
         description:

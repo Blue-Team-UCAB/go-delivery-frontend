@@ -18,8 +18,8 @@ class ProcessCheckoutEvent extends CheckoutEvent {
   final String? paymentMethod;
   final String? couponId;
   final String idUserDirection;
-  final List<CheckoutProduct> productItems;
-  final List<CheckoutBundle> bundleItems;
+  final List<CheckoutProduct>? productItems;
+  final List<CheckoutBundle>? bundleItems;
 
   ProcessCheckoutEvent({
     this.paymentId,
