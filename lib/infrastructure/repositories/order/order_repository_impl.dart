@@ -71,13 +71,13 @@ class OrderRepositoryImpl extends OrderRepository {
   }
 
   @override
-  Future<Result<bool>> createOrder({
+  Future<Result<Order>> createOrder({
     String? paymentId,
     String? stripePaymentMethod,
     String? paymentMethod,
     String? couponId,
     required String idUserDirection,
-    required List<CheckoutProduct> products,
+    List<CheckoutProduct>? products,
     List<CheckoutBundle>? bundles
   }) async {
     await _addAuthorizationHeader();
@@ -85,7 +85,7 @@ class OrderRepositoryImpl extends OrderRepository {
     // Prepare the body
     final body = {
       'idUserDirection': idUserDirection,
-      'products': CheckoutProductMapper.toJsonList(products),
+      if (products != null) 'products': CheckoutProductMapper.toJsonList(products),
       if (bundles != null) 'bundles': CheckoutBundleMapper.toJsonList(bundles),
       if (paymentId != null) 'paymentId': paymentId,
       if (stripePaymentMethod != null) 'stripePaymentMethod': stripePaymentMethod,
@@ -97,21 +97,15 @@ class OrderRepositoryImpl extends OrderRepository {
       '/api/order/pay/stripe',
       'POST',
           (data) {
-        if (data is Map<String, dynamic>) {
-          if (data.containsKey('error')) {
-            return false;
-          } else {
-            return true;
-          }
-        }
-        return false;
+              final responseOrderCreated = OrderMapper.fromJson(data);
+              return responseOrderCreated;
       },
       body: body,
     );
 
     if (response.isSuccess) {
       if (response.value == true) {
-        return Result.success(true);
+        return Result.success(response.value!);
       } else {
         final message = response.error?.toString() ?? 'Algo Ocurrió en el checkout';
         return Result.fail(CustomFailure(message: message));

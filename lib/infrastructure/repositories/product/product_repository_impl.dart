@@ -68,15 +68,14 @@ class ProductRepositoryImpl extends ProductRepository {
       'GET',
       queryParameters: queryParameters,
       (data) {
-        if (data == null || data['products'] == null) {
+        if (data == null) {
           throw FormatException(
               'Invalid response format: products data is missing');
         }
 
         try {
-          return (data['products'] as List)
-              .map((productData) => ProductMapper.fromJson(productData))
-              .toList();
+           return ProductMapper.fromJsonList(data);
+
         } catch (e) {
           throw FormatException('Failed to parse products: ${e.toString()}');
         }
