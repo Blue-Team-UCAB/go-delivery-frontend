@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_delivery_frontend/application/BLoc/cart/cart_bloc.dart';
@@ -8,6 +9,7 @@ import 'package:go_delivery_frontend/domain/entities/product/product.dart';
 import 'package:go_delivery_frontend/infrastructure/mappers/cart/cart_item_mapper.dart';
 import 'package:go_delivery_frontend/presentation/core/common/image-loader.dart';
 import 'package:go_router/go_router.dart';
+import 'package:shimmer/shimmer.dart';
 
 class PopularSection extends StatefulWidget {
   const PopularSection({super.key});
@@ -124,11 +126,16 @@ class PopularItem extends StatelessWidget {
             onTap: () {
               context.push('/productdetail/${product.id}');
             },
-            leading: FastLoadingImage(
+            leading: CachedNetworkImage(
               imageUrl: product.images.first,
               height: 100,
               width: 100,
               fit: BoxFit.contain,
+              placeholder: (context,url) => Shimmer.fromColors(
+                  baseColor: const Color(0xFFd8d5dd),
+                  highlightColor: const Color(0xFFF4F4F4),
+                  child: Container(height: 94,width: double.infinity,color: Color(0xFFd8d5dd),)
+                ),
             ),
             title: Text(
               product.name,
