@@ -5,7 +5,7 @@ class CategoryMapper {
     try {
       final id = json['id'] as String?;
       final name = json['name'] as String?;
-      final imageUrl = json['imageUrl'] as String?;
+      final imageUrl = json['image'] as String?;
 
       if (id == null || id.isEmpty) {
         throw FormatException('Category ID is missing or empty');
