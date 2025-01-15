@@ -45,13 +45,10 @@ class CategoryRepositoryImpl extends CategoryRepository {
         'GET',
         queryParameters: queryParameters,
         (data) {
-          if (data is Map<String, dynamic> && data.containsKey('categories')) {
-            final categoriesData = data['categories'];
-            if (categoriesData is List) {
-              return categoriesData
-                  .map((categoryData) => CategoryMapper.fromJson(categoryData))
-                  .toList();
-            }
+          if (data is List) {
+            return data
+                .map((categoryData) => CategoryMapper.fromJson(categoryData))
+                .toList();
           }
           return <Category>[];
         },
