@@ -10,106 +10,130 @@ import 'package:shimmer/shimmer.dart';
 
 class ProductCard extends StatelessWidget {
   final Product product;
-
   const ProductCard({super.key, required this.product});
-
+  
   @override
   Widget build(BuildContext context) {
+    final int discount = product.discounts.isNotEmpty ? product.discounts[0].percentage.round() : 0; 
     return GestureDetector(
       onTap: () {
         context.push('/productdetail/${_getProductId()}');
       },
-      child: Container(
-        height: 280,
-        decoration: const BoxDecoration(
-          color: Color(0xFFFFFFFF),
-          borderRadius: BorderRadius.all(Radius.circular(14.0)),
-        ),
-        child: Column(
-          children: [
-            ClipRRect(
-              borderRadius: const BorderRadius.only(
-                topLeft: Radius.circular(12.0),
-                topRight: Radius.circular(12.0),
+      child: Badge(
+        isLabelVisible: product.discounts.isNotEmpty,
+        offset: Offset(-30, 20),
+        label: Text('-$discount%'),
+        textStyle: TextStyle(fontSize: 12),
+        padding: EdgeInsets.symmetric(vertical: 12,horizontal: 6),
+        child: Container(
+          height: 280,
+          decoration: const BoxDecoration(
+            color: Color(0xFFFFFFFF),
+            borderRadius: BorderRadius.all(Radius.circular(14.0)),
+          ),
+          child: Column(
+            children: [
+              ClipRRect(
+                borderRadius: const BorderRadius.only(
+                  topLeft: Radius.circular(12.0),
+                  topRight: Radius.circular(12.0),
+                ),
+                child: CachedNetworkImage(
+                  imageUrl: _getImageUrl(),
+                  height: 100,
+                  fit: BoxFit.fill,
+                  placeholder: (context, url) => Shimmer.fromColors(
+                      baseColor: const Color(0xFFd8d5dd),
+                      highlightColor: const Color(0xFFF4F4F4),
+                      child: Container(
+                        height: 100,
+                        width: double.infinity,
+                        color: Color(0xFFd8d5dd),
+                      )),
+                ),
               ),
-              child: CachedNetworkImage(
-                imageUrl: _getImageUrl(),
-                height: 100,
-                fit: BoxFit.fill,
-                placeholder: (context, url) => Shimmer.fromColors(
-                    baseColor: const Color(0xFFd8d5dd),
-                    highlightColor: const Color(0xFFF4F4F4),
-                    child: Container(
-                      height: 100,
-                      width: double.infinity,
-                      color: Color(0xFFd8d5dd),
-                    )),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(15.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Text(
-                    _getName(),
-                    maxLines: 2,
-                    style: const TextStyle(
-                        fontFamily: 'Inter',
-                        fontSize: 14.0,
-                        fontWeight: FontWeight.w400,
-                        color: Color(0xFF000000)),
-                  ),
-                  Text(
-                    '\$${_getPrice().toStringAsFixed(2)}',
-                    style: const TextStyle(
-                        fontFamily: 'Inter',
-                        fontSize: 16,
-                        fontWeight: FontWeight.w800,
-                        color: Color(0xFF000000)),
-                  ),
-                  const SizedBox(height: 8),
-                  OutlinedButton.icon(
-                    iconAlignment: IconAlignment.start,
-                    onPressed: () {
-                      final cartItem = CartItemMapper.fromProduct(product)
-                          .toCartItemEntity();
-
-                      context.read<CartBloc>().addCartItem(cartItem);
-                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                          duration: Duration(seconds: 1),
-                          behavior: SnackBarBehavior.floating,
-                          margin:
-                              EdgeInsets.only(bottom: 110, right: 20, left: 20),
-                          backgroundColor: Color(0xfc009e4f),
-                          content: Text('Agregado Satisfactoriamente')));
-                    },
-                    style: ButtonStyle(
-                      alignment: Alignment.center,
-                      side: const WidgetStatePropertyAll(
-                          BorderSide(color: Color(0xFF2000B1))),
-                      shape: WidgetStatePropertyAll(RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12))),
+              Padding(
+                padding: const EdgeInsets.all(15.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Text(
+                      _getName(),
+                      maxLines: 2,
+                      style: const TextStyle(
+                          fontFamily: 'Inter',
+                          fontSize: 14.0,
+                          fontWeight: FontWeight.w400,
+                          color: Color(0xFF000000)),
                     ),
-                    icon: const Icon(
-                      Icons.add_shopping_cart,
-                      size: 18,
-                      color: Color(0xFF2000B1),
+                    Row(
+                      children: [
+                        product.discounts.isNotEmpty ?
+                        Text(
+                          '\$${(_getPrice()*(1-(discount)/100)).toStringAsFixed(2)}',
+                          style: const TextStyle(
+                              fontFamily: 'Inter',
+                              fontSize: 16,
+                              fontWeight: FontWeight.w800,
+                              color: Color(0xFF000000)),
+                        )
+                        : SizedBox(),
+                        SizedBox(width: 5,),
+                        Text(
+                          '\$${_getPrice().toStringAsFixed(2)}',
+                          style: TextStyle(
+                              fontFamily: 'Inter',
+                              fontSize: 16,
+                              fontWeight: FontWeight.w800,
+                              decoration: discount == 0 ? TextDecoration.none: TextDecoration.lineThrough,
+                              decorationColor: Color(0x55FF0000),
+                              color: discount == 0 ? Color(0xFF000000):Color(0x55FF0000)),
+                        ),
+                      ],
                     ),
-                    label: const Text(
-                      'Añadir',
-                      style: TextStyle(
-                        fontFamily: 'Inter',
-                        fontSize: 13,
-                        fontWeight: FontWeight.w600,
+                    const SizedBox(height: 8),
+                    OutlinedButton.icon(
+                      iconAlignment: IconAlignment.start,
+                      onPressed: () {
+                        final cartItem = CartItemMapper.fromProduct(product)
+                            .toCartItemEntity();
+        
+                        context.read<CartBloc>().addCartItem(cartItem);
+                        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                            duration: Duration(seconds: 1),
+                            behavior: SnackBarBehavior.floating,
+                            margin:
+                                EdgeInsets.only(bottom: 110, right: 20, left: 20),
+                            backgroundColor: Color(0xfc009e4f),
+                            content: Text('Agregado Satisfactoriamente')));
+                      },
+                      style: ButtonStyle(
+                        alignment: Alignment.center,
+                        side: const WidgetStatePropertyAll(
+                            BorderSide(color: Color(0xFF2000B1))),
+                        shape: WidgetStatePropertyAll(RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12))),
+                      ),
+                      icon: const Icon(
+                        Icons.add_shopping_cart,
+                        size: 18,
                         color: Color(0xFF2000B1),
                       ),
+                      label: const Text(
+                        'Añadir',
+                        style: TextStyle(
+                          fontFamily: 'Inter',
+                          fontSize: 13,
+                          fontWeight: FontWeight.w600,
+                          color: Color(0xFF2000B1),
+                        ),
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
