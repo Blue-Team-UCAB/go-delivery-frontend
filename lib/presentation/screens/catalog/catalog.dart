@@ -186,7 +186,15 @@ class CatalogScreenState extends State<CatalogScreen>
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          const LocationBar(),
+          Padding(
+            padding: const EdgeInsets.only( left: 18, right: 18.0),
+            child: Container(
+              decoration: const BoxDecoration(
+                  color: Color(0xFFFFFFFF),
+                  borderRadius:
+                      BorderRadius.all(Radius.circular(12))),
+              child: const LocationBar()),
+          ),
           Padding(
             padding: const EdgeInsets.only(top: 16, left: 18, right: 18.0),
             child: Container(

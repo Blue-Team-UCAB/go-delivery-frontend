@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_delivery_frontend/application/BLoc/directions/many/direction_many_bloc.dart';
 import 'package:go_delivery_frontend/application/BLoc/directions/many/direction_many_event.dart';
 import 'package:go_delivery_frontend/application/BLoc/directions/many/direction_many_state.dart';
+import 'package:go_delivery_frontend/presentation/widgets/homescreen/location_bar_placeholder.dart';
 import 'package:go_router/go_router.dart';
 import 'package:go_delivery_frontend/domain/entities/direction/direction.dart';
 
@@ -40,7 +41,7 @@ class _LocationBarState extends State<LocationBar> {
       child: BlocBuilder<DirectionListBloc, DirectionListState>(
         builder: (context, state) {
           if (state is DirectionListLoading) {
-            return _buildLoadingLocationBar();
+            return LocationBarPlaceholder();
           }
 
           if (addresses.isEmpty) {
@@ -92,30 +93,18 @@ class _LocationBarState extends State<LocationBar> {
 
     return ListTile(
       leading: _buildLocationIcon(),
-      title: const Text(
-        'Entregar a',
-        style: TextStyle(fontSize: 12, fontWeight: FontWeight.w400),
+      title: Text(
+        'Entregar a: ${locationName}',
+        style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
       ),
-      subtitle: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            locationName,
-            style: const TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.w500,
-            ),
-          ),
-          Text(
-            locationAddress,
-            style: const TextStyle(
-              fontSize: 14,
-              fontWeight: FontWeight.w400,
-            ),
-            overflow: TextOverflow.ellipsis,
-            maxLines: 1,
-          ),
-        ],
+      subtitle: Text(
+        locationAddress,
+        style: const TextStyle(
+          fontSize: 14,
+          fontWeight: FontWeight.w400,
+        ),
+        overflow: TextOverflow.ellipsis,
+        maxLines: 1,
       ),
       trailing: const Icon(Icons.arrow_forward_ios),
       onTap: () {
