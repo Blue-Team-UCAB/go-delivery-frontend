@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:go_delivery_frontend/application/BLoc/payment/get_transactions/get_transactions_bloc.dart';
+import 'package:go_delivery_frontend/application/BLoc/payment/get_transactions/get_transactions_event.dart';
 import 'package:go_delivery_frontend/application/BLoc/payment/get_transactions/get_transactions_state.dart';
+import 'package:go_delivery_frontend/application/BLoc/payment/pago_movil/pago_movil_bloc.dart';
+import 'package:go_delivery_frontend/application/BLoc/payment/pago_movil/pago_movil_state.dart';
+import 'package:go_delivery_frontend/application/BLoc/payment/zelle/zelle_bloc.dart';
+import 'package:go_delivery_frontend/application/BLoc/payment/zelle/zelle_state.dart';
 import 'package:go_delivery_frontend/presentation/screens/profile/transactions_screen.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -35,10 +40,23 @@ class PaymentTransactionsWidget extends StatelessWidget {
               border: Border.all(color: const Color(0xFFC5C6CC)),
               borderRadius: BorderRadius.circular(12),
             ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                BlocBuilder<GetPaymentTransactionsBloc,
+            child: BlocListener<PaymentBloc, PaymentState>(
+              listener: (context, state) {
+                if (state is PaymentSuccess) {
+                  context
+                      .read<GetPaymentTransactionsBloc>()
+                      .add(LoadPaymentTransactions());
+                }
+              },
+              child: BlocListener<ZelleBloc, ZelleState>(
+                listener: (context, state) {
+                  if (state is ZelleSuccess) {
+                    context
+                        .read<GetPaymentTransactionsBloc>()
+                        .add(LoadPaymentTransactions());
+                  }
+                },
+                child: BlocBuilder<GetPaymentTransactionsBloc,
                     GetPaymentTransactionsState>(
                   builder: (context, state) {
                     if (state is PaymentTransactionsLoading) {
@@ -91,7 +109,7 @@ class PaymentTransactionsWidget extends StatelessWidget {
                                           MainAxisAlignment.spaceBetween,
                                       children: [
                                         Text(
-                                          '${transactions[i].debit ? '+' : '-'}\$${(transactions[i].amount / 100).toStringAsFixed(2)}',
+                                          '${transactions[i].debit ? '+' : '-'}\$${transactions[i].amount}',
                                           style: const TextStyle(
                                             fontSize: 12,
                                             color: Colors.black,
@@ -149,7 +167,7 @@ class PaymentTransactionsWidget extends StatelessWidget {
                     }
                   },
                 ),
-              ],
+              ),
             ),
           ),
         ],
