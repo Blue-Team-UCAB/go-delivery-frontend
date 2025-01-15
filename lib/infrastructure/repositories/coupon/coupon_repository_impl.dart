@@ -1,3 +1,4 @@
+import 'package:go_delivery_frontend/common/failure.dart';
 import 'package:go_delivery_frontend/domain/entities/coupon/coupon.dart';
 import 'package:go_delivery_frontend/domain/repositories/coupon/coupon_repository.dart';
 import 'package:go_delivery_frontend/infrastructure/mappers/coupon/coupon_mapper.dart';
@@ -41,31 +42,32 @@ class CouponRepositoryImpl extends CouponRepository {
       rethrow;
     }
   }
+
   @override
-  Future<Result<List<Coupon>>> getUserCoupons() async {
+  Future<Result<List<Coupon>>> getCoupons() async {
     await _addAuthorizationHeader();
     try {
       final response = await _apiRequestManager.request(
         '/api/coupon/applicable',
         'GET',
-        (data) {
-          if (data == null || data['coupons'] == null) {
-            throw FormatException(
-                'Invalid response format: coupons data is missing');
-          }
-          try {
-            return (data['coupons'] as List)
-                .map((couponData) => CouponMapper.fromJson(couponData))
-                .toList();
-          } catch (e) {
-            throw FormatException('Failed to parse products: ${e.toString()}');
-          }
-        },
+        (data) => CouponMapper.fromJsonList(data['coupons'])
       );
-      return response;
+
+      if (response.isSuccessful()) {
+
+        final coupons = response.getValue();
+        print('la respuesta es: ${coupons}');
+        return Result.success(coupons);
+      } else {
+        print('entro en error');
+        final error = response.getError();
+        return Result.fail(
+            ServerFailure(message: 'Error al obtener cupones: $error'));
+      }
     } catch (e) {
-      print('Error in CouponRepositoryImpl.getCouponById: $e');
-      rethrow;
+      print('Error in CouponRepositoryImpl.getCoupons: $e');
+      return Result.fail(
+          ServerFailure(message: 'Failed to fetch coupons: $e'));
     }
   }
 }
