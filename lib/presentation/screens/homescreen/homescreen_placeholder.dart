@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:go_delivery_frontend/presentation/widgets/homescreen/bundle_section_placeholder.dart';
 import 'package:go_delivery_frontend/presentation/widgets/homescreen/category_tabs_section_placeholder.dart';
+import 'package:go_delivery_frontend/presentation/widgets/homescreen/location_bar_placeholder.dart';
 import 'package:go_delivery_frontend/presentation/widgets/homescreen/popular_product_section_placeholder.dart';
 import 'package:go_delivery_frontend/presentation/widgets/placeholders/text_placeholder.dart';
-import 'package:shimmer/shimmer.dart';
 
 
 class HomescreenPlaceholder extends StatelessWidget {
@@ -37,17 +37,7 @@ class HomescreenPlaceholder extends StatelessWidget {
                 top: _getLocationBarPosition(context),
                 left: 16,
                 right: 16,
-                child: Shimmer.fromColors(
-                  baseColor: const Color(0xFFd8d5dd),
-                  highlightColor: const Color(0xFFF4F4F4),
-                  child: Container(
-                    height: 72,
-                    decoration: const BoxDecoration(
-                      color: Color(0xFFd8d5dd),
-                      borderRadius: BorderRadius.all(Radius.circular(12))
-                    ),
-                  ),
-                ),
+                child: LocationBarPlaceholder(),
               ),
             ],
           ),
@@ -106,6 +96,7 @@ class HomescreenPlaceholder extends StatelessWidget {
     );
   }
   }
+
 
 
 
