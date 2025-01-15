@@ -5,6 +5,11 @@ import 'package:go_delivery_frontend/domain/entities/order/order.dart';
 import 'package:go_delivery_frontend/infrastructure/mappers/order/many/many_orderbundle_mapper.dart';
 
 import 'package:go_delivery_frontend/infrastructure/mappers/direction/direction_order_mapper.dart';
+import 'package:intl/intl.dart';
+
+import '../../../domain/entities/bundle/bundle.dart';
+import '../../../domain/entities/direction/direction.dart';
+import '../../../domain/entities/product/product.dart';
 
 class OrderMapper {
   static Order fromJson(Map<String, dynamic> json) {
@@ -52,12 +57,106 @@ class OrderMapper {
   }
 }
 
-// You'll need to create additional mappers for the new fields
+
+class OrderCreationMapper {
+  static Order fromJson(Map<String, dynamic> json) {
+    return Order(
+      id: json['id'] ?? '',
+      state: _parseOrderStates(json['orderState']),
+      orderTimeCreated: json['orderCreatedDate'],
+      totalAmount: _parseDouble(json['totalAmount']),
+      subtotalAmount: _parseDouble(json['subtotalAmount']),
+      direction: _parseDirection(json['orderDirection']),
+      products: _parseProducts(json['products']),
+      bundles: _parseBundles(json['bundles']),
+      orderPayment: _parseOrderPayment(json['orderPayment']),
+    );
+  }
+
+  static List<OrderState> _parseOrderStates(dynamic orderStates) {
+    print("STATE PARSING");
+    if (orderStates == null || orderStates is! List) return [];
+    return orderStates.map((state) => OrderStateMapper.fromJson(state)).toList();
+  }
+
+  static double _parseDouble(dynamic value) {
+    print("DOUBLE PARSING");
+    if (value == null) return 0.0;
+    if (value is num) return value.toDouble();
+    if (value is String) return double.tryParse(value) ?? 0.0;
+    return 0.0;
+  }
+
+  static DirectionOrder _parseDirection(dynamic direction) {
+    print("DIRECTION PARSING");
+    if (direction == null || direction is! Map<String, dynamic>) {
+      return DirectionOrder(latitude: 0, longitude: 0);
+    }
+    return DirectionOrderMapper.fromJson(direction);
+  }
+
+  static List<OrderProduct> _parseProducts(dynamic products) {
+    print("STARTING PRODUCT PARSING");
+    if (products == null || products is! List) return [];
+    return products.map((product) => OrderProductMapper.fromJson(product)).toList();
+  }
+
+  static List<OrderBundle> _parseBundles(dynamic bundles) {
+    print("STARTING BUNDLE PARSING");
+    if (bundles == null || bundles is! List) return [];
+    return bundles.map((bundle) => OrderBundleMapper.fromJson(bundle)).toList();
+  }
+
+  static OrderPayment _parseOrderPayment(dynamic payment) {
+    print("STARTING ORDERPAYMENT PARSING");
+    if (payment == null || payment is! Map<String, dynamic>) {
+      return OrderPayment(paymentAmount: 0, paymentCurrency: '', paymentMethod: '');
+    }
+    return OrderCreationPaymentMapper.fromJson(payment);
+  }
+
+  static Map<String, dynamic> toJson(Order order) {
+    return {
+      'id': order.id,
+      'orderState': order.state.map((s) => OrderStateMapper.toJson(s)).toList(),
+      'orderCreatedDate': order.orderTimeCreated.toString(),
+      'orderTimeCreated': DateFormat('h:mm:ss a').format(order.orderTimeCreated as DateTime),
+      'totalAmount': order.totalAmount,
+      'subtotalAmount': order.subtotalAmount,
+      'currency': order.orderPayment.paymentCurrency,
+      'orderDirection': DirectionOrderMapper.toJson(order.direction),
+      'products': order.products.map((p) => OrderProductMapper.toJson(p)).toList(),
+      'bundles': order.bundles.map((b) => OrderBundleMapper.toJson(b)).toList(),
+      'orderPayment': OrderCreationPaymentMapper.toJson(order.orderPayment),
+    };
+  }
+}
+
+
 class OrderPaymentMapper {
   static OrderPayment fromJson(Map<String, dynamic> json) {
     return OrderPayment(
-      paymentAmount: json['paymetAmount'].toDouble(), // Note: typo in original JSON
+      paymentAmount: json['paymetAmount'].toDouble(),
       paymentCurrency: json['paymentCurrency'],
+      paymentMethod: json['paymentMethod'],
+    );
+  }
+
+  static Map<String, dynamic> toJson(OrderPayment payment) {
+    return {
+      'paymetAmount': payment.paymentAmount,
+      'paymentCurrency': payment.paymentCurrency,
+      'paymentMethod': payment.paymentMethod,
+    };
+  }
+}
+
+
+class OrderCreationPaymentMapper {
+  static OrderPayment fromJson(Map<String, dynamic> json) {
+    return OrderPayment(
+      paymentAmount: json['amount'].toDouble(),
+      paymentCurrency: json['currency'],
       paymentMethod: json['paymentMethod'],
     );
   }

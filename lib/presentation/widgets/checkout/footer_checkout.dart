@@ -35,9 +35,9 @@ class ContinueButton extends StatelessWidget {
         }
 
         if (state is CheckoutSuccess) {
-          print(state.orderId);
+          print(state.id);
 
-          _showOrderCreatedDialog(context, state.orderId!);
+          _showOrderCreatedDialog(context, state.id);
         }
       },
       builder: (context, state) {
@@ -134,7 +134,7 @@ class ContinueButton extends StatelessWidget {
           buttonColor: const Color(0xFF2000B1),
           onButtonPressed: () {
             context.go('/orderdetail/$orderId'); // Navigate to order detail screen
-            context.read<CartBloc>().emptyCart(); // Empty the cart only on success
+            context.read<CartBloc>().emptyCart();
             context.read<CouponBloc>().clearCoupon();
           },
         );

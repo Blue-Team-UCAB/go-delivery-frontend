@@ -8,6 +8,7 @@ import 'package:go_delivery_frontend/application/BLoc/order/order_detailed/order
 import 'package:go_delivery_frontend/injector.dart';
 import 'package:go_delivery_frontend/presentation/screens/detail/order/active/order_detailed_screen_active.dart';
 import 'package:go_delivery_frontend/presentation/screens/detail/order/past/order_detailed_screen_past.dart';
+import 'package:go_router/go_router.dart';
 
 class OrderDetailScreen extends StatefulWidget {
   final String orderNumber;
@@ -44,7 +45,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
           elevation: 0,
           leading: IconButton(
             icon: const Icon(Icons.arrow_back_ios, color: Colors.black),
-            onPressed: () => Navigator.of(context).pop(),
+            onPressed: () => context.go("/order"),
           ),
           title: FadeIn(
             child: const Text(

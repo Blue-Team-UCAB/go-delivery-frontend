@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:go_delivery_frontend/domain/entities/courier/courier.dart';
 import 'package:go_delivery_frontend/infrastructure/mappers/courier/courier_mapper.dart';
 import 'package:go_delivery_frontend/infrastructure/mappers/order/checkout/bundlecheckout_mapper.dart';
@@ -93,23 +95,21 @@ class OrderRepositoryImpl extends OrderRepository {
       if (couponId != null) 'couponId': couponId,
     };
 
+    print('Query Parameters JSON:');
+    print(json.encode(body));
+
     final response = await _apiRequestManager.request(
       '/api/order/pay/stripe',
       'POST',
           (data) {
-              final responseOrderCreated = OrderMapper.fromJson(data);
+              final responseOrderCreated = OrderCreationMapper.fromJson(data);
               return responseOrderCreated;
       },
       body: body,
     );
 
     if (response.isSuccess) {
-      if (response.value == true) {
         return Result.success(response.value!);
-      } else {
-        final message = response.error?.toString() ?? 'Algo Ocurrió en el checkout';
-        return Result.fail(CustomFailure(message: message));
-      }
     } else {
       final message = response.error?.toString() ?? 'Algo Ocurrió en el checkout';
       return Result.fail(CustomFailure(message: message));

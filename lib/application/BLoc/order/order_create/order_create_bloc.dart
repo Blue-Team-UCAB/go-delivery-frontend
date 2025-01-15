@@ -137,7 +137,7 @@ class CheckoutBloc extends SafeBloc<CheckoutEvent, CheckoutState> {
         couponId: event.couponId,
         idUserDirection: event.idUserDirection,
         productItems: event.productItems!,
-        bundleItems: event.bundleItems!,
+        bundleItems: event.bundleItems,
       );
 
       final orderResult = await _checkoutUseCase.execute(checkoutInput);
@@ -147,18 +147,8 @@ class CheckoutBloc extends SafeBloc<CheckoutEvent, CheckoutState> {
           errorMessage: orderResult.getError().message,
         ));
       } else {
-
-        emit(CheckoutSuccess(
-          id: orderResult.value!.id,
-          state: orderResult.value!.state,
-          timeCreated: orderResult.value!.orderTimeCreated,
-          totalAmount: orderResult.value!.totalAmount,
-          subtotalAmount: orderResult.value!.subtotalAmount,
-          direction: orderResult.value!.direction,
-          courier: orderResult.value!.courier,
-          products: orderResult.value!.products,
-          bundles: orderResult.value!.bundles,
-        ));
+        // Directly emit CheckoutSuccess with the order ID
+        emit(CheckoutSuccess(id: orderResult.value!.id));
       }
     } catch (e) {
       emit(state.copyWith(
