@@ -7,14 +7,23 @@ abstract class CouponEvent extends Equatable {
   List<Object?> get props => [];
 }
 
-class LoadCoupon extends CouponEvent {
+class ClaimCoupon extends CouponEvent {
   final String couponId;
 
-  const LoadCoupon({required this.couponId});
+  const ClaimCoupon({required this.couponId});
 
   @override
   List<Object?> get props => [couponId];
 }
 class ClearCoupon extends CouponEvent {
   const ClearCoupon();
+}
+
+class LoadCoupon extends CouponEvent {
+  final Coupon coupon;
+  
+  const LoadCoupon({required this.coupon});
+  
+  @override
+  List<Object?> get props => [coupon];
 }
