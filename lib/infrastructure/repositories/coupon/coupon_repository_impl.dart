@@ -56,10 +56,8 @@ class CouponRepositoryImpl extends CouponRepository {
       if (response.isSuccessful()) {
 
         final coupons = response.getValue();
-        print('la respuesta es: ${coupons}');
         return Result.success(coupons);
       } else {
-        print('entro en error');
         final error = response.getError();
         return Result.fail(
             ServerFailure(message: 'Error al obtener cupones: $error'));

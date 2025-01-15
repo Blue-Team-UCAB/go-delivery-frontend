@@ -201,30 +201,59 @@ class HomeScreenState extends State<HomeScreen> {
                     });
                   }),
           const SizedBox(width: 5),
-          const Expanded(
-            flex: 1,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Hola',
-                  style: TextStyle(
-                    fontFamily: 'Montserrat',
-                    color: Colors.white,
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                Text(
-                  'Compra tus productos favoritos',
-                  style: TextStyle(
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  const Text(
+                    'Hola',
+                    style: TextStyle(
                       fontFamily: 'Montserrat',
                       color: Colors.white,
-                      fontSize: 14,
-                      fontWeight: FontWeight.w400),
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(width: 5),
+                  Builder(
+                    builder: (BuildContext innerContext) {
+                      return BlocBuilder<CurrentUserBloc, CurrentUserState>(
+                        builder: (context, state) {
+                          String firstName = "Usuario";
+                          if (state is CurrentUserLoaded) {
+                            firstName = state.name.split(' ').first;
+                          }
+                          return Text(
+                            firstName,
+                            style: const TextStyle(
+                              fontFamily: 'Montserrat',
+                              color: Colors.white,
+                              fontSize: 24,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          );
+                        },
+                      );
+                    },
+                  ),
+                ],
+              ),
+              const Text(
+                'Compra tus productos favoritos',
+                style: TextStyle(
+                  fontFamily: 'Montserrat',
+                  color: Colors.white,
+                  fontSize: 14,
+                  fontWeight: FontWeight.w400,
                 ),
-              ],
-            ),
+              ),
+            ],
+          ),
+          const Expanded(
+            flex: 1,
+            child: SizedBox(),
           ),
           Row(
             children: [
@@ -259,8 +288,6 @@ class HomeScreenState extends State<HomeScreen> {
                 setState(() {
                   if (categoryName != null && categoryName.isNotEmpty) {
                     _selectedCategories = [categoryName];
-                  } else {
-                    _selectedCategories = [];
                   }
                 });
                 context

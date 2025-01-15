@@ -92,7 +92,7 @@ class OrderRepositoryImpl extends OrderRepository {
       if (paymentId != null) 'paymentId': paymentId,
       if (stripePaymentMethod != null) 'stripePaymentMethod': stripePaymentMethod,
       if (paymentMethod != null) 'paymentMethod': paymentMethod,
-      if (couponId != null) 'couponId': couponId,
+      if (couponId != null) 'idCupon': couponId,
     };
 
     print('Query Parameters JSON:');
