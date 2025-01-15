@@ -26,8 +26,7 @@ class RandomSection extends StatefulWidget {
 
 class RandomSectionState extends State<RandomSection> {
   bool _mounted = true;
-  List<String> _currentCategoryNames =
-      []; // Lista de categorías seleccionadas (no puede ser null)
+  List<String> _currentCategoryNames = [];
 
   @override
   void initState() {
@@ -35,11 +34,10 @@ class RandomSectionState extends State<RandomSection> {
     _loadRandomProducts();
   }
 
-  // Método para cargar productos según las categorías
   void _loadRandomProducts() {
     if (!_mounted) return;
 
-    final categories = _currentCategoryNames; // Usamos las categorías actuales
+    final categories = _currentCategoryNames;
 
     context.read<ProductRandomListBloc>().add(LoadProductList(
           page: 1,

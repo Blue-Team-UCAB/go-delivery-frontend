@@ -42,8 +42,11 @@ class ProductRepositoryImpl extends ProductRepository {
       queryParameters['name'] = name.trim();
     }
 
-    if (categories != null && categories.isNotEmpty) {
-      queryParameters['category'] = categories.join(',');
+    if (categories != null &&
+        categories.isNotEmpty &&
+        categories.any((category) => category.trim().isNotEmpty)) {
+      queryParameters['category'] =
+          categories.where((category) => category.trim().isNotEmpty).join(',');
     }
 
     if (price != null && price > 0) {
@@ -74,8 +77,7 @@ class ProductRepositoryImpl extends ProductRepository {
         }
 
         try {
-           return ProductMapper.fromJsonList(data);
-
+          return ProductMapper.fromJsonList(data);
         } catch (e) {
           throw FormatException('Failed to parse products: ${e.toString()}');
         }
