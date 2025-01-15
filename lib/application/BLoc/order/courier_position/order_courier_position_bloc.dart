@@ -4,7 +4,7 @@ import 'package:go_delivery_frontend/application/use_cases/order/driver_position
 import 'package:go_delivery_frontend/application/BLoc/order/courier_position/order_courier_position_event.dart';
 import 'package:go_delivery_frontend/application/BLoc/order/courier_position/order_courier_position_state.dart';
 
-class OrderDriverPositionBloc extends SafeBloc<DriverPositionOrderEvent, DriverPositionOrderState> {
+class OrderDriverPositionBloc extends Bloc<DriverPositionOrderEvent, DriverPositionOrderState> {
   final GetDriverPositionOrderUseCase getDriverPositionOrderUseCase;
 
   OrderDriverPositionBloc({required this.getDriverPositionOrderUseCase})
@@ -23,6 +23,8 @@ class OrderDriverPositionBloc extends SafeBloc<DriverPositionOrderEvent, DriverP
           GetDriverPositionOrderUseCaseInput(id: event.id)
       );
 
+      print(driverPosition.value!.longActual);
+
       emit(LoadDriverPositionOrderLoadedState(
           latActual: driverPosition.value!.latActual,
           longActual: driverPosition.value!.longActual,
@@ -34,4 +36,6 @@ class OrderDriverPositionBloc extends SafeBloc<DriverPositionOrderEvent, DriverP
       emit(LoadDriverPositionOrderErrorState(error: error.toString()));
     }
   }
+
+
 }

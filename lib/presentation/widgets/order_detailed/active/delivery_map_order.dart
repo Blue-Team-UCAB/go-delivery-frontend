@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -58,7 +59,7 @@ class DeliveryMapState extends State<DeliveryMap> {
           final routes = decoded['routes'] as List;
           if (routes.isNotEmpty) {
             final points =
-                _decodePolyline(routes[0]['overview_polyline']['points']);
+            _decodePolyline(routes[0]['overview_polyline']['points']);
 
             setState(() {
               _polylines.add(
