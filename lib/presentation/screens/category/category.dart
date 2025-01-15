@@ -31,7 +31,14 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Todas las categorías'),
+        backgroundColor: const Color(0xFF2000B1),
+        title: const Text(
+          'Todas las categorías',
+          style: TextStyle(color: Colors.white),
+        ),
+        iconTheme: const IconThemeData(
+          color: Colors.white,
+        ),
         actions: [
           IconButton(
             icon: const Icon(Icons.notifications_none),
@@ -86,8 +93,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                 final category = state.categories[index];
                 return GestureDetector(
                   onTap: () {
-                    context.push('/catalog',
-                        extra: category.name); // Pass the selected category
+                    context.push('/catalog', extra: category.name);
                   },
                   child: CategoryCard(
                     image: category.imageUrl ?? '',
