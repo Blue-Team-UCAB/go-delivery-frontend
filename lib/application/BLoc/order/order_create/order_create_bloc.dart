@@ -124,38 +124,41 @@ class CheckoutBloc extends SafeBloc<CheckoutEvent, CheckoutState> {
   }
 
   Future<void> _onProcessCheckout(
-    ProcessCheckoutEvent event,
-    Emitter<CheckoutState> emit,
-  ) async {
+      ProcessCheckoutEvent event,
+      Emitter<CheckoutState> emit,
+      ) async {
     try {
-      // Emit loading state at the start of checkout
       emit(CheckoutLoading());
 
-      // Prepare checkout input using CheckoutProduct and CheckoutBundle directly
       final checkoutInput = CheckoutUseCaseInput(
         paymentId: event.paymentId,
         stripePaymentMethod: event.stripePaymentMethod,
         paymentMethod: event.paymentMethod,
         couponId: event.couponId,
         idUserDirection: event.idUserDirection,
-        productItems: event.productItems,
-        bundleItems: event.bundleItems,
+        productItems: event.productItems!,
+        bundleItems: event.bundleItems!,
       );
 
-      // Rest of the checkout process remains the same
       final orderResult = await _checkoutUseCase.execute(checkoutInput);
 
-      // Handle order creation result
       if (!orderResult.isSuccessful()) {
         emit(state.copyWith(
           errorMessage: orderResult.getError().message,
         ));
       } else {
-        // Clear cart after successful order
-        await cartRepository.emptyCart();
 
-        // Emit initial state to reset everything
-        emit(CheckoutInitial());
+        emit(CheckoutSuccess(
+          id: orderResult.value!.id,
+          state: orderResult.value!.state,
+          timeCreated: orderResult.value!.orderTimeCreated,
+          totalAmount: orderResult.value!.totalAmount,
+          subtotalAmount: orderResult.value!.subtotalAmount,
+          direction: orderResult.value!.direction,
+          courier: orderResult.value!.courier,
+          products: orderResult.value!.products,
+          bundles: orderResult.value!.bundles,
+        ));
       }
     } catch (e) {
       emit(state.copyWith(

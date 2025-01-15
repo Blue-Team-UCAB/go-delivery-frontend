@@ -17,7 +17,7 @@ abstract class OrderRepository {
     required String status,
   });
 
-  Future<Result<bool>> createOrder({
+  Future<Result<Order>> createOrder({
     String? paymentId,
     String? stripePaymentMethod,
     String? paymentMethod,
