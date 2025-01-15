@@ -96,11 +96,26 @@ class _LocationBarState extends State<LocationBar> {
         'Entregar a',
         style: TextStyle(fontSize: 12, fontWeight: FontWeight.w400),
       ),
-      subtitle: Text(
-        '$locationName\n$locationAddress',
-        style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
-        overflow: TextOverflow.ellipsis,
-        maxLines: 1,
+      subtitle: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            locationName,
+            style: const TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+          Text(
+            locationAddress,
+            style: const TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.w400,
+            ),
+            overflow: TextOverflow.ellipsis,
+            maxLines: 1,
+          ),
+        ],
       ),
       trailing: const Icon(Icons.arrow_forward_ios),
       onTap: () {
