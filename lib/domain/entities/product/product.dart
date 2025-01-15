@@ -36,7 +36,7 @@ class Product {
 class OrderProduct {
   final String id;
   final String name;
-  final String description;
+  final String? description;
   final int quantity;
   final double price;
   final List<String> images;
@@ -45,7 +45,7 @@ class OrderProduct {
   OrderProduct({
     required this.id,
     required this.name,
-    required this.description,
+    this.description,
     required this.quantity,
     required this.price,
     required this.images,

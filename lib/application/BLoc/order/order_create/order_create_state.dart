@@ -1,15 +1,8 @@
 import 'package:go_delivery_frontend/domain/entities/cart/cartitem.dart';
 import 'package:go_delivery_frontend/domain/entities/coupon/coupon.dart';
-import 'package:latlong2/latlong.dart';
-
-import 'package:go_delivery_frontend/domain/entities/bundle/bundle.dart';
-import 'package:go_delivery_frontend/domain/entities/courier/courier.dart';
-import 'package:go_delivery_frontend/domain/entities/direction/direction.dart';
-import 'package:go_delivery_frontend/domain/entities/order/order.dart';
-import 'package:go_delivery_frontend/domain/entities/product/product.dart';
 
 class CheckoutState {
-  final String? orderId;
+  final String? id;
   final List<CartItem> cartItems;
   final List<CartItem> productItems;
   final List<CartItem> bundleItems;
@@ -18,13 +11,13 @@ class CheckoutState {
   final double bundleTotal;
   final Coupon? appliedCoupon;
   final String? cardid;
-  final DirectionOrder? direction;
+  final String? direction;
   final double? longitude;
   final double? latitude;
   final String? errorMessage;
 
   const CheckoutState({
-    this.orderId,
+    this.id,
     this.cartItems = const [],
     this.productItems = const [],
     this.bundleItems = const [],
@@ -40,6 +33,7 @@ class CheckoutState {
   });
 
   CheckoutState copyWith({
+    String? id,
     List<CartItem>? cartItems,
     List<CartItem>? productItems,
     List<CartItem>? bundleItems,
@@ -47,12 +41,13 @@ class CheckoutState {
     double? productTotal,
     double? bundleTotal,
     Coupon? appliedCoupon,
-    DirectionOrder? direction,
+    String? direction,
     double? longitude,
     double? latitude,
     String? errorMessage,
   }) {
     return CheckoutState(
+      id: id ?? this.id,
       cartItems: cartItems ?? this.cartItems,
       productItems: productItems ?? this.productItems,
       bundleItems: bundleItems ?? this.bundleItems,
@@ -68,41 +63,33 @@ class CheckoutState {
   }
 }
 
-class CheckoutSuccess extends CheckoutState {
-  final String id;
-  final List<OrderState> state;
-  final double totalAmount;
-  final double subtotalAmount;
-  final String timeCreated;
-  final DirectionOrder direction;
-  final Courier? courier;
-  final List<OrderProduct>? products;
-  final List<OrderBundle>? bundles;
-
-  CheckoutSuccess({
-    required this.id,
-    required this.state,
-    required this.totalAmount,
-    required this.subtotalAmount,
-    required this.timeCreated,
-    required this.direction,
-    this.products,
-    this.bundles,
-    this.courier,
-  });
-
-  String get orderNumber => id;
-  String get date => state.isNotEmpty ? state.first.date : '';
-  String get time => state.isNotEmpty ? state.first.date.split(' ')[1] : '';
-  DirectionOrder get location => direction;
-  String get price => totalAmount.toString();
-  String get lastState => state.isNotEmpty ? state.last.state : '';
-  LatLng get coordinates => LatLng(direction.latitude, direction.longitude);
-}
-
 class CheckoutInitial extends CheckoutState {}
 
 class CheckoutLoading extends CheckoutState {}
+
+class CheckoutSuccess extends CheckoutState {
+  final String id;
+
+  const CheckoutSuccess({
+    required this.id,
+    List<CartItem> cartItems = const [],
+    List<CartItem> productItems = const [],
+    List<CartItem> bundleItems = const [],
+    double total = 0.0,
+    double productTotal = 0.0,
+    double bundleTotal = 0.0,
+    Coupon? appliedCoupon,
+  }) : super(
+    id: id,
+    cartItems: cartItems,
+    productItems: productItems,
+    bundleItems: bundleItems,
+    total: total,
+    productTotal: productTotal,
+    bundleTotal: bundleTotal,
+    appliedCoupon: appliedCoupon,
+  );
+}
 
 class CheckoutCouponLoading extends CheckoutState {
   const CheckoutCouponLoading({
