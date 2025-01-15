@@ -10,8 +10,9 @@ class CouponBloc extends Bloc<CouponEvent, CouponState> {
   final GetOneCouponUseCase _getOneCouponUseCase;
 
   CouponBloc(this._getOneCouponUseCase) : super(CouponInitial()) {
-    on<LoadCoupon>(_onLoadCoupon);
+    on<ClaimCoupon>(_onClaimCoupon);
     on<ClearCoupon>(_clearCouponHandler);
+    on<LoadCoupon>(_onLoadCoupon);
 
   }
 
@@ -23,8 +24,8 @@ class CouponBloc extends Bloc<CouponEvent, CouponState> {
     emit(CouponInitial());
   }
 
-  Future<void> _onLoadCoupon(
-    LoadCoupon event,
+  Future<void> _onClaimCoupon(
+    ClaimCoupon event,
     Emitter<CouponState> emit,
   ) async {
     if (state is CouponInitial ||
@@ -43,7 +44,7 @@ class CouponBloc extends Bloc<CouponEvent, CouponState> {
 
         if (result.isSuccessful()) {
           final coupon = result.getValue();
-          emit(CouponLoaded(coupon));
+          add(LoadCoupon(coupon: coupon));
         } else {
           emit(CouponFailed(Coupon(id: '', porcentage: 0)));
         }
@@ -51,6 +52,10 @@ class CouponBloc extends Bloc<CouponEvent, CouponState> {
         print('Error in CouponBloc: $e');
       }
     }
+  }
+
+  void _onLoadCoupon(LoadCoupon event, Emitter<CouponState> emit) {
+    emit(CouponLoaded(event.coupon));
   }
 
 }
