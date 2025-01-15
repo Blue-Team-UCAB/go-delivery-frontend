@@ -201,7 +201,6 @@ class HomeScreenState extends State<HomeScreen> {
                     });
                   }),
           const SizedBox(width: 5),
-          // Ajuste aquí: Column para colocar los textos uno debajo del otro
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -222,11 +221,9 @@ class HomeScreenState extends State<HomeScreen> {
                     builder: (BuildContext innerContext) {
                       return BlocBuilder<CurrentUserBloc, CurrentUserState>(
                         builder: (context, state) {
-                          String firstName = "Usuario"; // Valor predeterminado
+                          String firstName = "Usuario";
                           if (state is CurrentUserLoaded) {
-                            firstName = state.name
-                                .split(' ')
-                                .first; // Obtiene el primer nombre
+                            firstName = state.name.split(' ').first;
                           }
                           return Text(
                             firstName,
@@ -291,8 +288,6 @@ class HomeScreenState extends State<HomeScreen> {
                 setState(() {
                   if (categoryName != null && categoryName.isNotEmpty) {
                     _selectedCategories = [categoryName];
-                  } else {
-                    _selectedCategories = [];
                   }
                 });
                 context
