@@ -8,8 +8,8 @@ import 'package:go_delivery_frontend/domain/entities/coupon/coupon.dart';
 import 'package:go_delivery_frontend/presentation/widgets/coupon/coupon_empty_state_widget.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../application/BLoc/order/order_create/order_create_bloc.dart';
-import '../../../application/BLoc/order/order_create/order_create_event.dart';
+import 'package:go_delivery_frontend/application/BLoc/order/order_create/order_create_bloc.dart';
+import 'package:go_delivery_frontend/application/BLoc/order/order_create/order_create_event.dart';
 
 
 
