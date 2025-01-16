@@ -301,7 +301,7 @@ class LoginFormState extends State<LoginForm> {
                                         .changeEmail(value),
                                     controller: _emailController,
                                     validator: (value) {
-                                      final result = loginValidator
+                                      final result = LoginValidator
                                           .emailValidator
                                           .validate(value);
                                       return result.isSuccessful()
@@ -326,7 +326,7 @@ class LoginFormState extends State<LoginForm> {
                                         .changePassword(value),
                                     controller: _passwordController,
                                     validator: (value) {
-                                      final result = loginValidator
+                                      final result = LoginValidator
                                           .passwordValidator
                                           .validate(value);
                                       return result.isSuccessful()

@@ -6,7 +6,7 @@ import 'package:go_delivery_frontend/application/BLoc/category/category_state.da
 import 'package:go_delivery_frontend/domain/entities/category/category.dart';
 
 class CategoryTabs extends StatefulWidget {
-  final Function(String?)? onCategorySelected;
+  final Function(List<String>)? onCategorySelected;
 
   const CategoryTabs({
     super.key,
@@ -18,7 +18,7 @@ class CategoryTabs extends StatefulWidget {
 }
 
 class CategoryTabsState extends State<CategoryTabs> {
-  int _selectedIndex = 0;
+  final List<String> _selectedCategories = [];
 
   @override
   void initState() {
@@ -123,7 +123,9 @@ class CategoryTabsState extends State<CategoryTabs> {
             ...List.generate(
               allCategories.length,
               (index) => _buildTab(
-                  allCategories[index], index == _selectedIndex, index),
+                  allCategories[index],
+                  _selectedCategories.contains(allCategories[index].name),
+                  index),
             ),
           ],
         ),
@@ -135,9 +137,17 @@ class CategoryTabsState extends State<CategoryTabs> {
     return GestureDetector(
       onTap: () {
         setState(() {
-          _selectedIndex = index;
+          if (category.name == 'Todo') {
+            _selectedCategories.clear();
+          } else {
+            if (_selectedCategories.contains(category.name)) {
+              _selectedCategories.remove(category.name);
+            } else {
+              _selectedCategories.add(category.name);
+            }
+          }
         });
-        widget.onCategorySelected?.call(index == 0 ? null : category.name);
+        widget.onCategorySelected?.call(_selectedCategories);
       },
       child: Container(
         margin: const EdgeInsets.only(right: 8),

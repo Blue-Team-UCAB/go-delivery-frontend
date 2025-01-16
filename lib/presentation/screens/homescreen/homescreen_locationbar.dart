@@ -54,21 +54,6 @@ class _LocationBarState extends State<LocationBar> {
     );
   }
 
-  Widget _buildLoadingLocationBar() {
-    return ListTile(
-      leading: _buildLocationIcon(),
-      title: const Text(
-        'Entregar a',
-        style: TextStyle(fontSize: 12, fontWeight: FontWeight.w400),
-      ),
-      subtitle: const Text(
-        'Cargando ubicación...',
-        style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
-      ),
-      trailing: const CircularProgressIndicator(),
-    );
-  }
-
   Widget _buildEmptyLocationBar(BuildContext context) {
     return ListTile(
       leading: _buildLocationIcon(),
@@ -94,7 +79,7 @@ class _LocationBarState extends State<LocationBar> {
     return ListTile(
       leading: _buildLocationIcon(),
       title: Text(
-        'Entregar a: ${locationName}',
+        'Entregar a: $locationName',
         style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
       ),
       subtitle: Text(

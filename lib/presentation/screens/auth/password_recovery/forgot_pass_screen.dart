@@ -29,7 +29,6 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
     final primaryColor =
         isPrimaryRed ? const Color(0xFF8F0000) : const Color(0xFF02066F);
 
-
     return BlocConsumer<RecoverPasswordBloc, RecoverPasswordState>(
       listener: (context, state) {
         if (state.formStatus == RecoverPasswordFormStatus.sent) {
@@ -139,7 +138,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                                       TextFormField(
                                         controller: _emailController,
                                         validator: (value) {
-                                          final result = loginValidator
+                                          final result = LoginValidator
                                               .emailValidator
                                               .validate(value);
                                           return result.isSuccessful()

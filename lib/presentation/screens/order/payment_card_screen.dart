@@ -6,14 +6,14 @@ import 'package:go_delivery_frontend/application/BLoc/payment/card/card_event.da
 import 'package:go_delivery_frontend/application/BLoc/payment/card/card_state.dart';
 import 'package:go_delivery_frontend/application/BLoc/payment/card_get/get_card_event.dart';
 
-class AddCardScreen extends StatefulWidget {
-  const AddCardScreen({super.key});
+class PaymentCardScreen extends StatefulWidget {
+  const PaymentCardScreen({super.key});
 
   @override
   AddCardScreenState createState() => AddCardScreenState();
 }
 
-class AddCardScreenState extends State<AddCardScreen> {
+class AddCardScreenState extends State<PaymentCardScreen> {
   CardFieldInputDetails? _cardDetails;
   Future<void> _saveCard(BuildContext context) async {
     if (_cardDetails == null || !_cardDetails!.complete) {
@@ -47,7 +47,13 @@ class AddCardScreenState extends State<AddCardScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Añadir tarjeta')),
+      appBar: AppBar(
+        backgroundColor: const Color(0xFF2000B1),
+        title: const Text(
+          'Añadir tarjeta.',
+          style: TextStyle(color: Colors.white),
+        ),
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
