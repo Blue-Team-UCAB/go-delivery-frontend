@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_delivery_frontend/presentation/core/theme/theme.dart';
 
-import '../../../application/BLoc/themes/themes_bloc.dart';
+import 'package:go_delivery_frontend/application/BLoc/themes/themes_bloc.dart';
 
 class AppThemesGetter {
   static Color getPrimaryColor(BuildContext context) {

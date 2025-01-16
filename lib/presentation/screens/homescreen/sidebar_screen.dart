@@ -5,17 +5,21 @@ import 'package:go_delivery_frontend/application/BLoc/user/current/current_user_
 import 'package:go_router/go_router.dart';
 import 'package:go_delivery_frontend/presentation/screens/catalog/logout_from_catalog.dart';
 
+import 'package:go_delivery_frontend/presentation/core/theme/theme_getter.dart';
+
 class SidebarScreen extends StatelessWidget {
   const SidebarScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final currentPrimaryThemeColor = AppThemesGetter.getPrimaryColor(context);
+
     return SafeArea(
       child: Container(
         padding: const EdgeInsets.fromLTRB(12, 12, 0, 32),
         height: double.infinity,
         width: 288,
-        color: const Color(0xFF02066F),
+        color: currentPrimaryThemeColor,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [

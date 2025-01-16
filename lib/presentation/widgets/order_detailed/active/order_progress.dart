@@ -16,6 +16,8 @@ import 'package:go_delivery_frontend/application/BLoc/order/courier_position/ord
 import 'package:go_delivery_frontend/application/BLoc/order/courier_position/order_courier_position_event.dart';
 import 'package:go_delivery_frontend/application/BLoc/order/courier_position/order_courier_position_state.dart';
 
+import '../../../core/theme/theme_getter.dart';
+
 class OrderProgress extends StatefulWidget {
   final OrderDetailLoadedState state;
   final String currentActiveState;
@@ -147,17 +149,19 @@ class OrderProgressState extends State<OrderProgress>
     );
 
     // Set up periodic updates
-    _locationUpdateTimer = Timer.periodic(const Duration(seconds: 30), (_) {
-      if (!mounted) {
-        _locationUpdateTimer?.cancel();
-        return;
-      }
+    if(widget.currentActiveState == "SHIPPED") {
+      _locationUpdateTimer = Timer.periodic(const Duration(seconds: 30), (_) {
+        if (!mounted) {
+          _locationUpdateTimer?.cancel();
+          return;
+        }
 
-      print('Periodic driver location fetch for order: ${widget.state.id}');
-      _orderDriverPositionBloc?.add(
-          LoadDriverPositionOrderEvent(id: widget.state.id)
-      );
-    });
+        print('Periodic driver location fetch for order: ${widget.state.id}');
+        _orderDriverPositionBloc?.add(
+            LoadDriverPositionOrderEvent(id: widget.state.id)
+        );
+      });
+    }
   }
 
   // Safe setState method
@@ -269,33 +273,40 @@ class OrderProgressState extends State<OrderProgress>
 
   @override
   Widget build(BuildContext context) {
+    final currentSecondaryThemeColor = AppThemesGetter.getSecondaryColor(context);
+
     return CustomPaint(
       painter: TimelineProgressPainter(
         animation: _animation,
         stateOrder: _stateOrder,
         currentActiveState: widget.currentActiveState,
+        lineColor: currentSecondaryThemeColor, // Pass the color directly
       ),
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
             _buildStatusItem(
+              context,
               'Orden realizada',
               _getStateDateByType('CREATED'),
               _isStateCompleted('CREATED'),
             ),
             _buildStatusItem(
+              context,
               'En proceso',
               _getStateDateByType('IN PROCESS'),
               _isStateCompleted('IN PROCESS'),
             ),
             _buildStatusItem(
+              context,
               'Enviando',
               _getStateDateByType('SHIPPED'),
               _isStateCompleted('SHIPPED'),
             ),
-            if (_shouldShowDeliveryTracking()) _buildDeliveryItem(),
+            if (_shouldShowDeliveryTracking()) _buildDeliveryItem(context),
             _buildStatusItem(
+              context,
               'Orden entregada',
               _getStateDateByType('DELIVERED'),
               _isStateCompleted('DELIVERED'),
@@ -308,6 +319,7 @@ class OrderProgressState extends State<OrderProgress>
 
   // Helper methods for building UI components
   Widget _buildStatusItem(
+      BuildContext context,
       String title,
       String subtitle,
       bool isCompleted, {
@@ -318,6 +330,7 @@ class OrderProgressState extends State<OrderProgress>
     return FadeIn(
       delay: delay,
       child: _buildTimelineItem(
+        context,
         title,
         subtitle,
         isCompleted: isCompleted,
@@ -359,7 +372,9 @@ class OrderProgressState extends State<OrderProgress>
     );
   }
 
-  Widget _buildDeliveryItem() {
+  Widget _buildDeliveryItem(BuildContext context) {
+    final currentSecondaryThemeColor = AppThemesGetter.getSecondaryColor(context);
+
     return FadeIn(
       delay: const Duration(milliseconds: 1400),
       child: Row(
@@ -370,9 +385,9 @@ class OrderProgressState extends State<OrderProgress>
               Container(
                 width: 29,
                 height: 29,
-                decoration: const BoxDecoration(
+                decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: Colors.indigo,
+                  color: currentSecondaryThemeColor,
                 ),
                 child: const Icon(Icons.check, color: Colors.white, size: 21),
               ),
@@ -437,10 +452,13 @@ class OrderProgressState extends State<OrderProgress>
   }
 
   Widget _buildTimelineItem(
+      BuildContext context,
       String title,
       String subtitle, {
         bool isCompleted = false,
       }) {
+
+    final currentSecondaryThemeColor = AppThemesGetter.getSecondaryColor(context);
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -451,9 +469,9 @@ class OrderProgressState extends State<OrderProgress>
               height: 28,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: isCompleted ? Colors.indigo : Colors.grey[300],
+                color: isCompleted ? currentSecondaryThemeColor : Colors.grey[300],
                 border: Border.all(
-                  color: isCompleted ? Colors.indigo : Colors.grey[300]!,
+                  color: isCompleted ? currentSecondaryThemeColor : Colors.grey[300]!,
                   width: 2,
                 ),
               ),

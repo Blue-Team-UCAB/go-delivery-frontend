@@ -8,6 +8,8 @@ import 'package:go_delivery_frontend/application/BLoc/bundle/bundle_many/bundle_
 import 'package:go_delivery_frontend/application/BLoc/bundle/bundle_many/bundle_many_state.dart';
 import 'package:go_delivery_frontend/presentation/widgets/homescreen/bundle_section_placeholder.dart';
 
+import '../../core/theme/theme_getter.dart';
+
 class ComboSection extends StatefulWidget {
   final List<String>? selectedCategories;
 
@@ -31,6 +33,8 @@ class _ComboSectionState extends State<ComboSection> {
 
   @override
   Widget build(BuildContext context) {
+    final currentSecondaryThemeColor = AppThemesGetter.getSecondaryColor(context);
+
     return BlocListener<CategoryBloc, CategoryState>(
       listener: (context, state) {
         if (state is CategoryLoaded) {
@@ -51,7 +55,7 @@ class _ComboSectionState extends State<ComboSection> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Padding(
+           Padding(
             padding: EdgeInsets.symmetric(horizontal: 16),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -68,7 +72,7 @@ class _ComboSectionState extends State<ComboSection> {
                   'Ver todos',
                   style: TextStyle(
                     fontFamily: 'Montserrat',
-                    color: Color(0xFF2000B1),
+                    color: currentSecondaryThemeColor,
                     fontWeight: FontWeight.bold,
                   ),
                 ),

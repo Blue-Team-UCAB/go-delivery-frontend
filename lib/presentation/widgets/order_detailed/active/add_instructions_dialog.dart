@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'package:go_delivery_frontend/presentation/core/theme/theme_getter.dart';
+
 class AddInstructionsDialog extends StatefulWidget {
   final String orderId;
 
@@ -46,7 +48,10 @@ class AddInstructionsDialogState extends State<AddInstructionsDialog> {
     );
   }
 
+
   Widget contentBox(context) {
+
+    final currentSecondaryThemeColor = AppThemesGetter.getSecondaryColor(context);
     return Container(
       padding: EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -60,7 +65,7 @@ class AddInstructionsDialogState extends State<AddInstructionsDialog> {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(Icons.add_comment, color: Color(0xFF2000B1)),
+              Icon(Icons.add_comment, color: currentSecondaryThemeColor),
               SizedBox(width: 8),
               Text(
                 'Agregar Instrucciones',
@@ -68,7 +73,7 @@ class AddInstructionsDialogState extends State<AddInstructionsDialog> {
                   fontFamily: 'Montserrat',
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
-                  color: Color(0xFF2000B1),
+                  color: currentSecondaryThemeColor,
                 ),
               ),
             ],
@@ -93,11 +98,11 @@ class AddInstructionsDialogState extends State<AddInstructionsDialog> {
               ),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(4),
-                borderSide: BorderSide(color: Color(0xFF2000B1)),
+                borderSide: BorderSide(color: currentSecondaryThemeColor),
               ),
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(4),
-                borderSide: BorderSide(color: Color(0xFF2000B1), width: 2),
+                borderSide: BorderSide(color: currentSecondaryThemeColor, width: 2),
               ),
               contentPadding:
                   EdgeInsets.symmetric(vertical: 20, horizontal: 10),
@@ -116,7 +121,7 @@ class AddInstructionsDialogState extends State<AddInstructionsDialog> {
                   'Cancelar',
                   style: TextStyle(
                     fontFamily: 'Inter',
-                    color: Color(0xFF2000B1),
+                    color: currentSecondaryThemeColor,
                   ),
                 ),
                 onPressed: () {
@@ -126,7 +131,7 @@ class AddInstructionsDialogState extends State<AddInstructionsDialog> {
               SizedBox(width: 8),
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Color(0xFF2000B1),
+                  backgroundColor: currentSecondaryThemeColor,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(4),
                   ),

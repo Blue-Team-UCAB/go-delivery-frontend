@@ -5,6 +5,8 @@ import 'package:go_delivery_frontend/application/BLoc/category/category_event.da
 import 'package:go_delivery_frontend/application/BLoc/category/category_state.dart';
 import 'package:go_delivery_frontend/domain/entities/category/category.dart';
 
+import '../../core/theme/theme_getter.dart';
+
 class CategoryTabs extends StatefulWidget {
   final Function(List<String>)? onCategorySelected;
 
@@ -41,7 +43,7 @@ class CategoryTabsState extends State<CategoryTabs> {
         }
 
         if (state is CategoryLoaded) {
-          return _buildLoadedTabs(state.categories);
+          return _buildLoadedTabs(state.categories,context);
         }
 
         return _buildLoadingTabs();
@@ -107,7 +109,7 @@ class CategoryTabsState extends State<CategoryTabs> {
     );
   }
 
-  Widget _buildLoadedTabs(List<Category> categories) {
+  Widget _buildLoadedTabs(List<Category> categories,BuildContext context) {
     final allCategories = [
       Category(id: '', name: 'Todo', imageUrl: ''),
       ...categories,
@@ -125,7 +127,7 @@ class CategoryTabsState extends State<CategoryTabs> {
               (index) => _buildTab(
                   allCategories[index],
                   _selectedCategories.contains(allCategories[index].name),
-                  index),
+                  index, context),
             ),
           ],
         ),
@@ -133,7 +135,10 @@ class CategoryTabsState extends State<CategoryTabs> {
     );
   }
 
-  Widget _buildTab(Category category, bool isSelected, int index) {
+  Widget _buildTab(Category category, bool isSelected, int index, BuildContext context) {
+
+    final currentSecondaryThemeColor = AppThemesGetter.getSecondaryColor(context);
+
     return GestureDetector(
       onTap: () {
         setState(() {
@@ -153,7 +158,7 @@ class CategoryTabsState extends State<CategoryTabs> {
         margin: const EdgeInsets.only(right: 8),
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         decoration: BoxDecoration(
-          color: isSelected ? const Color(0xFF2000B1) : const Color(0xFFFFFFFF),
+          color: isSelected ? currentSecondaryThemeColor : const Color(0xFFFFFFFF),
           borderRadius: BorderRadius.circular(20),
           boxShadow: [
             if (!isSelected)

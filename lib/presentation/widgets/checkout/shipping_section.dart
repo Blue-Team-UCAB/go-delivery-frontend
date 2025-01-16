@@ -6,6 +6,8 @@ import 'package:go_delivery_frontend/application/BLoc/directions/many/direction_
 import 'package:go_delivery_frontend/domain/entities/direction/direction.dart';
 import 'package:go_delivery_frontend/presentation/screens/profile/direction_screen.dart';
 
+import '../../core/theme/theme_getter.dart';
+
 class AddressSection extends StatefulWidget {
   final Function(Map<String, dynamic>) onAddressSelected;
 
@@ -30,6 +32,8 @@ class AddressSectionState extends State<AddressSection> {
 
   @override
   Widget build(BuildContext context) {
+    final currentSecondaryThemeColor = AppThemesGetter.getSecondaryColor(context);
+
     return BlocBuilder<DirectionListBloc, DirectionListState>(
       builder: (context, state) {
         if (state is DirectionListLoading) {
@@ -111,9 +115,9 @@ class AddressSectionState extends State<AddressSection> {
                             _editAddress(context, address);
                           },
                           icon: const Icon(Icons.edit),
-                          color: const Color(0xFF2000B1),
+                          color: currentSecondaryThemeColor,
                         ),
-                        activeColor: const Color(0xFF2000B1),
+                        activeColor: currentSecondaryThemeColor,
                         selectedTileColor: const Color(0xFFD5CCFF),
                         isThreeLine: false,
                         shape: RoundedRectangleBorder(
@@ -141,7 +145,7 @@ class AddressSectionState extends State<AddressSection> {
                       _addAddress(context);
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF2000B1),
+                      backgroundColor: currentSecondaryThemeColor,
                       minimumSize: const Size(double.infinity, 50),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8),

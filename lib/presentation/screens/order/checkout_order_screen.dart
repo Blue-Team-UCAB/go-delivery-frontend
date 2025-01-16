@@ -31,6 +31,7 @@ class CheckoutOrderScreenState extends State<CheckoutOrderScreen> {
 
   @override
   Widget build(BuildContext context) {
+
     return BlocBuilder<CheckoutBloc, CheckoutState>(
       builder: (context, state) {
         return Scaffold(

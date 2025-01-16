@@ -1,17 +1,26 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+
+import '../../../application/BLoc/themes/themes_bloc.dart';
+import '../../core/theme/theme.dart';
+import '../../core/theme/theme_getter.dart';
 
 class CartEmptyStateWidget extends StatelessWidget {
   const CartEmptyStateWidget({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final themesBloc = context.watch<ThemesBloc>();
+    final appTheme = themesBloc.state.appTheme;
+    final isPrimaryRed = appTheme.colorMode == AppColorMode.red;
+
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           SvgPicture.asset(
-            'assets/empty_states/cart_emptystate.svg',
+            isPrimaryRed ? 'assets/empty_states/cart_emptystate_red.svg'  : 'assets/empty_states/cart_emptystate.svg',
             width: MediaQuery.of(context).size.width*0.75,
             height: MediaQuery.of(context).size.width*0.75,
             fit: BoxFit.fill,

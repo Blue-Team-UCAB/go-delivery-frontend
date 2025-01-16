@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'package:go_delivery_frontend/presentation/core/theme/theme_getter.dart';
+
 class ReorderButton extends StatelessWidget {
   final VoidCallback onReorder;
 
@@ -10,12 +12,14 @@ class ReorderButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final currentSecondaryThemeColor = AppThemesGetter.getSecondaryColor(context);
+
     return SizedBox(
       width: double.infinity,
       child: ElevatedButton(
         onPressed: onReorder,
         style: ElevatedButton.styleFrom(
-          backgroundColor: Colors.indigo[900],
+          backgroundColor: currentSecondaryThemeColor,
           padding: const EdgeInsets.symmetric(vertical: 16),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(8),

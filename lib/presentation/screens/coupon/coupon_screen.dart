@@ -11,7 +11,7 @@ import 'package:go_router/go_router.dart';
 import 'package:go_delivery_frontend/application/BLoc/order/order_create/order_create_bloc.dart';
 import 'package:go_delivery_frontend/application/BLoc/order/order_create/order_create_event.dart';
 
-
+import 'package:go_delivery_frontend/presentation/core/theme/theme_getter.dart';
 
 
 class CouponScreen extends StatefulWidget {
@@ -35,6 +35,8 @@ class _CouponScreenState extends State<CouponScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final currentSecondaryThemeColor = AppThemesGetter.getSecondaryColor(context);
+
     return Scaffold(
       backgroundColor: Color(0xFFEBEAED),
       appBar: AppBar(
@@ -44,7 +46,7 @@ class _CouponScreenState extends State<CouponScreen> {
             context.pop();
           },
           icon: const Icon(Icons.arrow_back_ios),
-          color: const Color(0xFF2000B1),
+          color: currentSecondaryThemeColor,
         ),
         title:const Text(
           'Cupones',
@@ -109,6 +111,7 @@ Widget _buildAddressList(CouponListState state) {
   }
 
   Widget _buildCouponsList(List<Coupon> coupons) {
+
     return Padding(
       padding: const EdgeInsets.all(12.0),
       child: Column(
@@ -118,6 +121,8 @@ Widget _buildAddressList(CouponListState state) {
             child: ListView.builder(
               itemCount: coupons.length,
               itemBuilder: (context, index) {
+                final currentSecondaryThemeColor = AppThemesGetter.getSecondaryColor(context);
+
                 final coupon = coupons[index];
                 String formattedDate =
                     "${coupon.expirationDate!.day}/${coupon.expirationDate!.month}/${coupon.expirationDate!.year}";
@@ -136,7 +141,7 @@ Widget _buildAddressList(CouponListState state) {
                                     fontFamily: 'Inter',
                                     fontSize: 24,
                                     fontWeight: FontWeight.w600,
-                                    color: Color(0xFF2000B1),
+                                    color: currentSecondaryThemeColor,
                                   )
                               ),
                             ),
@@ -145,8 +150,8 @@ Widget _buildAddressList(CouponListState state) {
                             trailing: OutlinedButton(
                               style: ButtonStyle(
                                 alignment: Alignment.center,
-                                side: const WidgetStatePropertyAll(
-                                    BorderSide(color: Color(0xFF2000B1))),
+                                side:  WidgetStatePropertyAll(
+                                    BorderSide(color: currentSecondaryThemeColor)),
                                 shape: WidgetStatePropertyAll(RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(12))),
                               ),
@@ -173,12 +178,12 @@ Widget _buildAddressList(CouponListState state) {
                                     )
                                 );
                               },
-                              child: const Text('Aplicar',
+                              child:  Text('Aplicar',
                                   style: TextStyle(
                                     fontFamily: 'Inter',
                                     fontSize: 13,
                                     fontWeight: FontWeight.w600,
-                                    color: Color(0xFF2000B1),
+                                    color: currentSecondaryThemeColor
                                   )
                               ),
                             )

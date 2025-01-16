@@ -35,7 +35,7 @@ class CartScreen extends StatelessWidget {
         ),
       ),
       body: cartBloc.state.items.isEmpty
-        ? const CartEmptyStateWidget()
+        ?  CartEmptyStateWidget()
         : _CartView(itemQuantity: cartBloc.state.howManyItems,cartItems: cartBloc.state.items,),
     );
   }
