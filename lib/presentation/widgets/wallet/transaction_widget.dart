@@ -77,60 +77,58 @@ class PaymentTransactionsWidget extends StatelessWidget {
                             for (var i = 0;
                                 i < 2 && i < transactions.length;
                                 i++) ...[
-                              Container(
-                                padding: const EdgeInsets.symmetric(
-                                    vertical: 12, horizontal: 16),
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(8),
-                                  border: Border.all(
-                                      color: const Color(0xFFC3C3C3)),
-                                ),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      transactions[i].type,
-                                      style: const TextStyle(
-                                        fontSize: 12,
-                                        color: Colors.black,
-                                      ),
-                                    ),
-                                    const SizedBox(height: 4),
-                                    Text(
-                                      _formatDate(transactions[i].date),
-                                      style: const TextStyle(
-                                        fontSize: 10,
-                                        color: Colors.grey,
-                                      ),
-                                    ),
-                                    const SizedBox(height: 4),
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Text(
-                                          '${transactions[i].debit ? '+' : '-'}\$${transactions[i].amount}',
-                                          style: const TextStyle(
-                                            fontSize: 12,
-                                            color: Colors.black,
-                                          ),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        transactions[i].type,
+                                        style: const TextStyle(
+                                          fontSize: 14,
+                                          color: Colors.black,
                                         ),
-                                        Text(
-                                          transactions[i].method,
-                                          style: const TextStyle(
-                                            fontSize: 10,
-                                            color: Colors.grey,
-                                          ),
+                                      ),
+                                      Text(
+                                        '${transactions[i].debit ? '+' : ''}${transactions[i].amount}\$',
+                                        style: TextStyle(
+                                          fontSize: 16,
+                                          color: transactions[i].debit ? Colors.black : Color(0xFFFF0000),
                                         ),
-                                      ],
+                                      ),
+                                    ],
+                                  ),
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    _formatDate(transactions[i].date),
+                                    style: const TextStyle(
+                                      fontSize: 12,
+                                      color: Colors.grey,
                                     ),
-                                    if (i < 1)
-                                      const Divider(color: Color(0xFFC3C3C3)),
-                                  ],
-                                ),
+                                  ),
+                                  const SizedBox(height: 4),
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.end,
+                                    children: [
+                                      
+                                      Text(
+                                        transactions[i].method,
+                                        style: const TextStyle(
+                                          fontSize: 12,
+                                          color: Colors.grey,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  
+                                    const Divider(color: Color(0xFFC3C3C3)),
+                                ],
                               ),
-                              const SizedBox(height: 12),
+                              const SizedBox(height: 8),
                             ],
+                            
                             Align(
                               alignment: Alignment.centerLeft,
                               child: TextButton(
