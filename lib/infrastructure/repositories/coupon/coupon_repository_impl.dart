@@ -48,15 +48,26 @@ class CouponRepositoryImpl extends CouponRepository {
     await _addAuthorizationHeader();
     try {
       final response = await _apiRequestManager.request(
-        '/api/coupon/$couponId',
+        '/api/coupon/{id}?id=$couponId',
         'GET',
-        body: CouponMapper.toJson(couponId),
-            (data) {
+          (data) {
           final coupon = CouponByIdMapper.fromJson(data);
+
+          print("COUPON AFTER MAPPING: ${coupon.id}");
           return coupon;
         },
       );
-      return response;
+      if (response.isSuccessful()) {
+        final coupon = response.getValue();
+        return Result.success(coupon);
+      } else {
+        final error = response.getError();
+
+        print("ERROR ON GETTING ONE COUPON");
+
+        return Result.fail(
+            ServerFailure(message: 'Error al obtener cupon: $error'));
+      }
     } catch (e) {
       print('Error in CouponRepositoryImpl.getCouponById: $e');
       rethrow;

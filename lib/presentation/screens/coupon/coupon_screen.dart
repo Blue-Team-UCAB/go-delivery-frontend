@@ -12,6 +12,8 @@ import '../../../application/BLoc/order/order_create/order_create_bloc.dart';
 import '../../../application/BLoc/order/order_create/order_create_event.dart';
 
 
+
+
 class CouponScreen extends StatefulWidget {
   static const name = 'coupon-screen';
 
@@ -106,80 +108,92 @@ Widget _buildAddressList(CouponListState state) {
     );
   }
 
-Widget _buildCouponsList(List<Coupon> coupons) {
-  return Padding(
-    padding: const EdgeInsets.all(12.0),
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Expanded(
-          child: ListView.builder(
-            itemCount: coupons.length,
-            itemBuilder: (context, index) {
-              final coupon = coupons[index];
-              String formattedDate =
-                "${coupon.expirationDate!.day}/${coupon.expirationDate!.month}/${coupon.expirationDate!.year}";
-              return Column(
-                children: [
-                  Container(
-                    decoration: BoxDecoration(
-                      color: Color(0xFFFFFFFF),
-                      borderRadius: BorderRadius.circular(12),
+  Widget _buildCouponsList(List<Coupon> coupons) {
+    return Padding(
+      padding: const EdgeInsets.all(12.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Expanded(
+            child: ListView.builder(
+              itemCount: coupons.length,
+              itemBuilder: (context, index) {
+                final coupon = coupons[index];
+                String formattedDate =
+                    "${coupon.expirationDate!.day}/${coupon.expirationDate!.month}/${coupon.expirationDate!.year}";
+                return Column(
+                  children: [
+                    Container(
+                        decoration: BoxDecoration(
+                          color: Color(0xFFFFFFFF),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: ListTile(
+                            leading: Container(
+                              width: 60,
+                              child: Text('${coupon.porcentage}%',
+                                  style: TextStyle(
+                                    fontFamily: 'Inter',
+                                    fontSize: 24,
+                                    fontWeight: FontWeight.w600,
+                                    color: Color(0xFF2000B1),
+                                  )
+                              ),
+                            ),
+                            title: Text(coupon.code!),
+                            subtitle: Text(formattedDate),
+                            trailing: OutlinedButton(
+                              style: ButtonStyle(
+                                alignment: Alignment.center,
+                                side: const WidgetStatePropertyAll(
+                                    BorderSide(color: Color(0xFF2000B1))),
+                                shape: WidgetStatePropertyAll(RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(12))),
+                              ),
+                              onPressed: () {
+                                // Debug print to verify the correct coupon is being selected
+                                print('Applying coupon: ${coupon.id} - ${coupon.code}');
+
+                                // Dispatch events for the specific coupon
+                                context.read<CouponBloc>().add(
+                                    LoadCoupon(coupon: coupon)
+                                );
+
+                                context.read<CheckoutBloc>().add(
+                                    ApplyCouponEvent(coupon: coupon)
+                                );
+
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text('Cupon ${coupon.code} agregado satisfactoriamente'),
+                                      duration: Duration(seconds: 1),
+                                      behavior: SnackBarBehavior.floating,
+                                      margin: EdgeInsets.only(bottom: 25, right: 20, left: 20),
+                                      backgroundColor: Color(0xfc009e4f),
+                                    )
+                                );
+                              },
+                              child: const Text('Aplicar',
+                                  style: TextStyle(
+                                    fontFamily: 'Inter',
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.w600,
+                                    color: Color(0xFF2000B1),
+                                  )
+                              ),
+                            )
+                        )
                     ),
-                    child: ListTile(
-                      leading: Container(
-                        width: 60,
-                        child: Text('${coupon.porcentage}%',
-                          style: TextStyle(
-                            fontFamily: 'Inter',
-                            fontSize: 24,
-                            fontWeight: FontWeight.w600,
-                            color: Color(0xFF2000B1),
-                          )
-                        ),
-                      ),
-                      title: Text(coupon.code!),
-                      subtitle: Text(formattedDate),
-                      trailing: OutlinedButton(
-                        style: ButtonStyle(
-                          alignment: Alignment.center,
-                          side: const WidgetStatePropertyAll(
-                              BorderSide(color: Color(0xFF2000B1))),
-                          shape: WidgetStatePropertyAll(RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12))),
-                        ),
-                        onPressed: () {
-                          print(coupon.id);
-                         // context.read<CouponBloc>().add(LoadCoupon(coupon: coupon));
-                          context.read<CheckoutBloc>().add(ApplyCouponEvent(couponId: coupon.id));
-                          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                              duration: Duration(seconds: 1),
-                              behavior: SnackBarBehavior.floating,
-                              margin: EdgeInsets.only(bottom: 25, right: 20, left: 20),
-                              backgroundColor: Color(0xfc009e4f),
-                              content: Text('Agregado Satisfactoriamente')));
-                        }, 
-                        child: const Text('Aplicar',
-                          style: TextStyle(
-                            fontFamily: 'Inter',
-                            fontSize: 13,
-                            fontWeight: FontWeight.w600,
-                            color: Color(0xFF2000B1),
-                          )
-                        ),
-                      )
-                    )
-                  ),
-                  SizedBox(height: 12,)
-                ],
-              );
-            },
+                    SizedBox(height: 12,)
+                  ],
+                );
+              },
+            ),
           ),
-        ),
-      ],
-    ),
-  );
-}
+        ],
+      ),
+    );
+  }
 
   Future<void> _showCouponForm(BuildContext context) async {
 

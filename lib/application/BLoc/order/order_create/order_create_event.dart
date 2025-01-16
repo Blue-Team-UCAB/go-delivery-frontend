@@ -1,15 +1,18 @@
 import 'package:go_delivery_frontend/domain/entities/bundle/bundle.dart';
 import 'package:go_delivery_frontend/domain/entities/product/product.dart';
 
+import '../../../../domain/entities/coupon/coupon.dart';
+
+
 
 abstract class CheckoutEvent {}
 
 class LoadCartItemsEvent extends CheckoutEvent {}
 
 class ApplyCouponEvent extends CheckoutEvent {
-  final String couponId;
+  final Coupon coupon;
 
-  ApplyCouponEvent({required this.couponId});
+  ApplyCouponEvent({required this.coupon});
 }
 
 class ProcessCheckoutEvent extends CheckoutEvent {
@@ -31,4 +34,6 @@ class ProcessCheckoutEvent extends CheckoutEvent {
     required this.bundleItems,
   });
 }
+
+
 
