@@ -5,6 +5,8 @@ import 'package:go_delivery_frontend/application/BLoc/order/order_create/order_c
 import 'package:go_delivery_frontend/application/BLoc/order/order_create/order_create_event.dart';
 import 'package:go_delivery_frontend/application/BLoc/order/order_create/order_create_state.dart';
 
+import 'package:go_delivery_frontend/application/BLoc/coupons/coupon/coupon_bloc.dart';
+
 class CheckoutOrderScreen extends StatefulWidget {
   static const name = 'checkout-screen';
   final double total;
@@ -45,6 +47,7 @@ class CheckoutOrderScreenState extends State<CheckoutOrderScreen> {
             leading: IconButton(
               icon: const Icon(Icons.arrow_back_ios_new),
               onPressed: () {
+                context.read<CouponBloc>().clearCoupon();
                 Navigator.pop(context);
               },
             ),

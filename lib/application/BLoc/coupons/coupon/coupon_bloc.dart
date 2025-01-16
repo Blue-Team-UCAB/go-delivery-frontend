@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_delivery_frontend/application/use_cases/coupon/claim_one_coupon.dart';
 import 'package:go_delivery_frontend/application/use_cases/coupon/get_one_coupon.dart';
 import 'package:go_delivery_frontend/domain/entities/coupon/coupon.dart';
 
@@ -7,9 +8,9 @@ part 'coupon_event.dart';
 part 'coupon_state.dart';
 
 class CouponBloc extends Bloc<CouponEvent, CouponState> {
-  final GetOneCouponUseCase _getOneCouponUseCase;
+  final ClaimOneCouponUseCase _claimOneCouponUseCase;
 
-  CouponBloc(this._getOneCouponUseCase) : super(CouponInitial()) {
+  CouponBloc(this._claimOneCouponUseCase) : super(CouponInitial()) {
     on<ClaimCoupon>(_onClaimCoupon);
     on<ClearCoupon>(_clearCouponHandler);
     on<LoadCoupon>(_onLoadCoupon);
@@ -38,8 +39,8 @@ class CouponBloc extends Bloc<CouponEvent, CouponState> {
 
         emit(CouponLoading(currentState.coupon));
 
-        final result = await _getOneCouponUseCase.execute(
-          GetOneCouponUseCaseInput(couponId: event.couponId.toUpperCase()),
+        final result = await _claimOneCouponUseCase.execute(
+          ClaimOneCouponUseCaseInput(couponId: event.couponId.toUpperCase()),
         );
 
         if (result.isSuccessful()) {

@@ -24,10 +24,10 @@ class Courier {
 }
 
 class CourierPosition {
-  final String latActual;
-  final String longActual;
-  final String longPuntoLlegada;
-  final String latPuntoLlegada;
+  final double latActual;
+  final double longActual;
+  final double longPuntoLlegada;
+  final double latPuntoLlegada;
 
   CourierPosition({
     required this.latActual,

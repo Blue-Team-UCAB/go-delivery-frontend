@@ -72,13 +72,12 @@ class CheckoutBloc extends SafeBloc<CheckoutEvent, CheckoutState> {
   }
 
   Future<void> _onApplyCoupon(
-    ApplyCouponEvent event,
-    Emitter<CheckoutState> emit,
-  ) async {
+      ApplyCouponEvent event,
+      Emitter<CheckoutState> emit,
+      ) async {
     try {
-      // Fetch coupon
-      final input =
-          GetOneCouponUseCaseInput(couponId: event.couponId.toUpperCase());
+
+      final input = GetOneCouponUseCaseInput(couponId: event.coupon.id);
       final result = await _getOneCouponUseCase.execute(input);
 
       if (result.isSuccessful()) {
@@ -86,6 +85,8 @@ class CheckoutBloc extends SafeBloc<CheckoutEvent, CheckoutState> {
 
         // Calculate discounted total
         double discountedTotal = state.total * (1 - (coupon.porcentage / 100));
+
+        print("coupon in blocs after mapping: ${coupon.id}");
 
         // Emit coupon applied state
         emit(CheckoutCouponApplied(

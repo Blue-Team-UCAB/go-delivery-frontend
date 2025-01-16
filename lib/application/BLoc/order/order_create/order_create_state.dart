@@ -15,6 +15,7 @@ class CheckoutState {
   final double? longitude;
   final double? latitude;
   final String? errorMessage;
+  final CouponStatus couponStatus;
 
   const CheckoutState({
     this.id,
@@ -30,6 +31,7 @@ class CheckoutState {
     this.longitude,
     this.latitude,
     this.errorMessage,
+    this.couponStatus = CouponStatus.initial,
   });
 
   CheckoutState copyWith({
@@ -45,6 +47,7 @@ class CheckoutState {
     double? longitude,
     double? latitude,
     String? errorMessage,
+    CouponStatus? couponStatus,
   }) {
     return CheckoutState(
       id: id ?? this.id,
@@ -59,8 +62,16 @@ class CheckoutState {
       longitude: longitude ?? this.longitude,
       latitude: latitude ?? this.latitude,
       errorMessage: errorMessage ?? this.errorMessage,
+      couponStatus: couponStatus ?? this.couponStatus,
     );
   }
+}
+
+enum CouponStatus {
+  initial,
+  loading,
+  applied,
+  error
 }
 
 class CheckoutInitial extends CheckoutState {}
@@ -107,6 +118,7 @@ class CheckoutCouponLoading extends CheckoutState {
     total: total ?? 0.0,
     productTotal: productTotal ?? 0.0,
     bundleTotal: bundleTotal ?? 0.0,
+    couponStatus: CouponStatus.loading,
   );
 }
 
@@ -119,6 +131,10 @@ class CheckoutCouponApplied extends CheckoutState {
     List<CartItem>? bundleItems,
     double? productTotal,
     double? bundleTotal,
+    String? cardid,
+    String? direction,
+    double? longitude,
+    double? latitude,
   }) : super(
     appliedCoupon: coupon,
     total: discountedTotal,
@@ -127,6 +143,10 @@ class CheckoutCouponApplied extends CheckoutState {
     bundleItems: bundleItems ?? const [],
     productTotal: productTotal ?? 0.0,
     bundleTotal: bundleTotal ?? 0.0,
+    cardid: cardid,
+    direction: direction,
+    longitude: longitude,
+    latitude: latitude,
   );
 }
 
@@ -141,6 +161,10 @@ class CheckoutCouponError extends CheckoutState {
     double? total,
     double? productTotal,
     double? bundleTotal,
+    String? cardid,
+    String? direction,
+    double? longitude,
+    double? latitude,
   }) : super(
     cartItems: cartItems ?? const [],
     productItems: productItems ?? const [],
@@ -149,5 +173,9 @@ class CheckoutCouponError extends CheckoutState {
     productTotal: productTotal ?? 0.0,
     bundleTotal: bundleTotal ?? 0.0,
     errorMessage: couponErrorMessage,
+    cardid: cardid,
+    direction: direction,
+    longitude: longitude,
+    latitude: latitude,
   );
 }

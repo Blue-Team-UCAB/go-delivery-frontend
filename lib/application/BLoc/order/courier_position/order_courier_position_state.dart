@@ -5,10 +5,10 @@ class LoadDriverPositionOrderInitialState extends DriverPositionOrderState {}
 class LoadDriverPositionOrderLoadingState extends DriverPositionOrderState {}
 
 class LoadDriverPositionOrderLoadedState extends DriverPositionOrderState {
-  final String latActual;
-  final String longActual;
-  final String longPuntoLlegada;
-  final String latPuntoLlegada;
+  final double latActual;
+  final double longActual;
+  final double longPuntoLlegada;
+  final double latPuntoLlegada;
 
   LoadDriverPositionOrderLoadedState({
     required this.latActual,

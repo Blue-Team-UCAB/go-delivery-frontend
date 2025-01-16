@@ -41,7 +41,15 @@ class ContinueButton extends StatelessWidget {
         }
       },
       builder: (context, state) {
-        final bool isProcessing = state is CheckoutLoading;
+        final bool isProcessing =
+            state is CheckoutLoading ||
+                state is CheckoutCouponLoading;
+
+        // Check if a coupon has been applied previously
+        final appliedCoupon = state.appliedCoupon;
+        final total = appliedCoupon != null
+            ? state.total * (1 - (appliedCoupon.porcentage / 100))
+            : state.total;
 
         return Padding(
           padding: const EdgeInsets.all(16.0),
@@ -100,8 +108,15 @@ class ContinueButton extends StatelessWidget {
       return;
     }
 
-    // Determine payment method based on card selection
-    final String paymentMethod = selectedCardId != null && selectedCardId!.isNotEmpty ? "Credit" : "Wallet";
+    // Determine payment method
+    final String paymentMethod = selectedCardId != null &&
+        selectedCardId!.isNotEmpty
+        ? "Credit"
+        : "Wallet";
+
+    if(state.appliedCoupon != null) {
+      context.read<CouponBloc>().add(LoadCoupon(coupon: state.appliedCoupon!));
+    }
 
     context.read<CheckoutBloc>().add(
       ProcessCheckoutEvent(
@@ -109,7 +124,7 @@ class ContinueButton extends StatelessWidget {
         stripePaymentMethod: selectedCardId,
         paymentMethod: paymentMethod,
         idUserDirection: selectedAddress!['id'],
-        couponId: state.appliedCoupon?.id,
+        couponId: state.appliedCoupon?.id,  // Use appliedCoupon from state
         productItems: state.productItems
             .map((item) => CheckoutProduct(id: item.id, quantity: item.quantity))
             .toList(),
