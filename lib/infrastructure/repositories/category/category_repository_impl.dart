@@ -24,6 +24,7 @@ class CategoryRepositoryImpl extends CategoryRepository {
 
   @override
   Future<Result<List<Category>>> getCategories({
+    List<String>? categories, // Added
     String? name,
     required int page,
     required int perpage,
@@ -38,6 +39,10 @@ class CategoryRepositoryImpl extends CategoryRepository {
 
       if (name != null && name.isNotEmpty) {
         queryParameters['name'] = name;
+      }
+
+      if (categories != null && categories.isNotEmpty) {
+        queryParameters['categories'] = categories.join(',');
       }
 
       final response = await _apiRequestManager.request(

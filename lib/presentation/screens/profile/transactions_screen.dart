@@ -60,30 +60,37 @@ class AllTransactionsScreen extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          transaction.type,
-                          style: const TextStyle(
-                              fontSize: 12, color: Colors.black),
-                        ),
-                        const SizedBox(height: 4),
-                        Text(
-                          _formatDate(transaction.date),
-                          style:
-                              const TextStyle(fontSize: 10, color: Colors.grey),
-                        ),
-                        const SizedBox(height: 4),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
-                              '${transaction.debit ? '+' : '-'}\$${transaction.amount}', // Sin conversión, solo mostrar el valor del backend
+                              transaction.type,
                               style: const TextStyle(
-                                  fontSize: 12, color: Colors.black),
+                                  fontSize: 14, color: Colors.black),
                             ),
+                            Text(
+                              '${transaction.debit ? '+' : ''}${transaction.amount}\$', // Sin conversión, solo mostrar el valor del backend
+                              style: TextStyle(
+                                  fontSize: 16, 
+                                  color: transaction.debit ? Color(0xFF008000) : Color(0xFFFF0000)),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 2),
+                        Text(
+                          _formatDate(transaction.date),
+                          style:
+                              const TextStyle(fontSize: 12, color: Colors.grey),
+                        ),
+                        const SizedBox(height: 2),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            
                             Text(
                               transaction.method,
                               style: const TextStyle(
-                                  fontSize: 10, color: Colors.grey),
+                                  fontSize: 12, color: Colors.grey),
                             ),
                           ],
                         ),

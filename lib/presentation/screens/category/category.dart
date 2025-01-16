@@ -31,14 +31,18 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: const Color(0xFF2000B1),
-        title: const Text(
-          'Todas las categorías',
-          style: TextStyle(color: Colors.white),
+        backgroundColor: const Color(0xFFEBEAED),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios_new),
+          onPressed: () {
+            Navigator.pop(context);
+          },
         ),
-        iconTheme: const IconThemeData(
-          color: Colors.white,
-        ),
+        title: Text('Todas las categorías',
+            style: TextStyle(
+                fontFamily: "Montserrat",
+                fontWeight: FontWeight.bold,
+                fontSize: 26)),
         actions: [
           IconButton(
             icon: const Icon(Icons.notifications_none),

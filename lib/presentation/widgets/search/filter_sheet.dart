@@ -64,9 +64,13 @@ class FilterSheetState extends State<FilterSheet> {
                   style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
               CategoryTabs(
                 onCategorySelected: (List<String> selectedCategories) {
-                  context
-                      .read<FilterBloc>()
-                      .add(UpdateCategory(selectedCategories.first));
+                  if (selectedCategories.isNotEmpty) {
+                    context
+                        .read<FilterBloc>()
+                        .add(UpdateCategory(selectedCategories.first));
+                  } else {
+                    context.read<FilterBloc>().add(UpdateCategory(null));
+                  }
                 },
               ),
               SizedBox(height: 32),
@@ -75,8 +79,8 @@ class FilterSheetState extends State<FilterSheet> {
               RangeSlider(
                 values: state.priceRange,
                 min: 0,
-                max: 500,
-                divisions: 50, // Increase divisions for more precision
+                max: 30,
+                divisions: 300, // Increase divisions for more precision
                 labels: RangeLabels(
                     '\$${state.priceRange.start.toStringAsFixed(2)}',
                     '\$${state.priceRange.end.toStringAsFixed(2)}'),
@@ -93,7 +97,11 @@ class FilterSheetState extends State<FilterSheet> {
               Row(
                 children: [
                   OutlinedButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      context.read<FilterBloc>().add(ResetFilters());
+                      Navigator.pop(context, <String,
+                          dynamic>{}); // Return a Map instead of an empty string
+                    },
                     style: OutlinedButton.styleFrom(
                       side: BorderSide(color: const Color(0xFF2000B1)),
                     ),
@@ -106,8 +114,11 @@ class FilterSheetState extends State<FilterSheet> {
                   Expanded(
                     child: ElevatedButton(
                       onPressed: () {
-                        Navigator.pop(context,
-                            state.selectedCategory); // Modify this line
+                        Navigator.pop(context, {
+                          'category': state.selectedCategory,
+                          'priceRange': state.priceRange,
+                          'hasDiscount': state.hasDiscount, // Add this line
+                        }); // Modify this line
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color(0xFF2000B1),

@@ -47,6 +47,8 @@ class UpdateCategories extends FilterEvent {
   List<Object?> get props => [categories];
 }
 
+class ResetFilters extends FilterEvent {} // Add this line
+
 // States
 class FilterState extends Equatable {
   final String? selectedCategory;
@@ -57,7 +59,7 @@ class FilterState extends Equatable {
   const FilterState({
     this.selectedCategory,
     this.hasDiscount = false,
-    this.priceRange = const RangeValues(90, 200),
+    this.priceRange = const RangeValues(0, 30), // Modify this line
     this.categories = const [],
   });
 
@@ -97,6 +99,10 @@ class FilterBloc extends Bloc<FilterEvent, FilterState> {
 
     on<UpdateCategories>((event, emit) {
       emit(state.copyWith(categories: event.categories));
+    });
+
+    on<ResetFilters>((event, emit) {
+      emit(const FilterState());
     });
   }
 }
