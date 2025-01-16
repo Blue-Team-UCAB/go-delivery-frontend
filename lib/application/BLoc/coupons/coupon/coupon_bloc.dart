@@ -13,7 +13,6 @@ class CouponBloc extends Bloc<CouponEvent, CouponState> {
     on<ClaimCoupon>(_onClaimCoupon);
     on<ClearCoupon>(_clearCouponHandler);
     on<LoadCoupon>(_onLoadCoupon);
-
   }
 
   void clearCoupon() {
@@ -57,5 +56,4 @@ class CouponBloc extends Bloc<CouponEvent, CouponState> {
   void _onLoadCoupon(LoadCoupon event, Emitter<CouponState> emit) {
     emit(CouponLoaded(event.coupon));
   }
-
 }

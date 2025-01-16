@@ -56,6 +56,7 @@ class RandomSectionState extends State<RandomSection> {
             _currentCategoryNames = state.name != null ? [state.name!] : [];
           });
 
+          // Llamamos a _loadRandomProducts cada vez que se recibe un cambio
           _loadRandomProducts();
         }
       },
