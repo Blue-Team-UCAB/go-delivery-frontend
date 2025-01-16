@@ -11,6 +11,7 @@ import 'package:go_delivery_frontend/application/BLoc/product/product_many/produ
 import 'package:go_delivery_frontend/application/BLoc/product/product_many/product_many_state.dart';
 import 'package:go_delivery_frontend/domain/entities/product/product.dart';
 import 'package:go_delivery_frontend/infrastructure/mappers/cart/cart_item_mapper.dart';
+import 'package:shimmer/shimmer.dart';
 
 class RandomSection extends StatefulWidget {
   final List<String>? selectedCategoryNames;
@@ -140,8 +141,16 @@ class RandomItem extends StatelessWidget {
               imageUrl: product.images.first,
               width: 60,
               fit: BoxFit.contain,
-              placeholder: (context, url) =>
-                  Center(child: CircularProgressIndicator()),
+              placeholder: (context,url) => Shimmer.fromColors(
+                  baseColor: const Color(0xFFd8d5dd),
+                  highlightColor: const Color(0xFFF4F4F4),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.all(Radius.circular(12)),
+                      color: Color(0xFFd8d5dd),
+                    ),
+                    )
+                ),
             ),
             title: Text(
               product.name,
