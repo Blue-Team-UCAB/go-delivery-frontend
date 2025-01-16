@@ -46,10 +46,8 @@ class ContinueButton extends StatelessWidget {
                 state is CheckoutCouponLoading;
 
         // Check if a coupon has been applied previously
-        final appliedCoupon = state.appliedCoupon;
-        final total = appliedCoupon != null
-            ? state.total * (1 - (appliedCoupon.porcentage / 100))
-            : state.total;
+        
+        
 
         return Padding(
           padding: const EdgeInsets.all(16.0),

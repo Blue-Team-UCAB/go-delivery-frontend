@@ -1,7 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_delivery_frontend/application/use_cases/coupon/claim_one_coupon.dart';
-import 'package:go_delivery_frontend/application/use_cases/coupon/get_one_coupon.dart';
 import 'package:go_delivery_frontend/domain/entities/coupon/coupon.dart';
 
 part 'coupon_event.dart';
