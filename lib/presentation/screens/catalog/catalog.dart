@@ -15,11 +15,16 @@ import 'package:go_delivery_frontend/domain/entities/product/product.dart';
 class CatalogScreen extends StatefulWidget {
   final int initialCounterNavbar;
   final String? selectedCategory;
+  final RangeValues? selectedPriceRange;
+  final bool? hasDiscount; // Add this line
 
-  const CatalogScreen(
-      {super.key,
-      required this.initialCounterNavbar,
-      this.selectedCategory}); // Modify this line
+  const CatalogScreen({
+    super.key,
+    required this.initialCounterNavbar,
+    this.selectedCategory,
+    this.selectedPriceRange,
+    this.hasDiscount, // Add this line
+  });
 
   @override
   CatalogScreenState createState() => CatalogScreenState();
@@ -37,6 +42,8 @@ class CatalogScreenState extends State<CatalogScreen>
   late StreamSubscription<ProductListState> _productListSubscription;
   final List<Product> _products = [];
   String? _selectedCategory;
+  RangeValues? _selectedPriceRange;
+  bool? _hasDiscount;
 
   @override
   bool get wantKeepAlive => true;
@@ -46,13 +53,16 @@ class CatalogScreenState extends State<CatalogScreen>
     super.initState();
     _counter = widget.initialCounterNavbar;
     _selectedCategory = widget.selectedCategory;
+    _selectedPriceRange = widget.selectedPriceRange;
+    _hasDiscount = widget.hasDiscount;
     _loadProducts();
 
     BlocProvider.of<ProductListBloc>(context).add(
       LoadProductList(
-          page: _currentPage,
-          perpage: 6,
-          categories: [_selectedCategory ?? '']),
+        page: _currentPage,
+        perpage: 6,
+        categories: [_selectedCategory ?? ''],
+      ),
     );
     _scrollController.addListener(_onScroll);
 
@@ -72,9 +82,14 @@ class CatalogScreenState extends State<CatalogScreen>
   @override
   void didUpdateWidget(CatalogScreen oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (widget.selectedCategory != oldWidget.selectedCategory) {
+    if (widget.selectedCategory != oldWidget.selectedCategory ||
+        widget.selectedPriceRange != oldWidget.selectedPriceRange ||
+        widget.hasDiscount != oldWidget.hasDiscount) {
+      // Modify this line
       setState(() {
         _selectedCategory = widget.selectedCategory;
+        _selectedPriceRange = widget.selectedPriceRange;
+        _hasDiscount = widget.hasDiscount; // Add this line
         _currentPage = 1;
         _products.clear();
         _loadProducts();
@@ -93,9 +108,11 @@ class CatalogScreenState extends State<CatalogScreen>
   void _loadProducts() {
     BlocProvider.of<ProductListBloc>(context).add(
       LoadProductList(
-          page: _currentPage,
-          perpage: 6,
-          categories: [_selectedCategory ?? '']),
+        page: _currentPage,
+        perpage: 6,
+        categories: [_selectedCategory ?? ''],
+        discount: _hasDiscount == true ? 'true' : null, // Add this line
+      ),
     );
   }
 
@@ -117,12 +134,14 @@ class CatalogScreenState extends State<CatalogScreen>
               ? LoadProductList(
                   page: _currentPage,
                   perpage: 6,
-                  categories: [_selectedCategory ?? ''])
+                  categories: [_selectedCategory ?? ''],
+                )
               : SearchProductList(
                   name: _searchQuery,
                   page: _currentPage,
                   perpage: 6,
-                  categories: [_selectedCategory ?? '']),
+                  categories: [_selectedCategory ?? ''],
+                ),
         );
       }
     }
@@ -136,10 +155,11 @@ class CatalogScreenState extends State<CatalogScreen>
     });
     BlocProvider.of<ProductListBloc>(context).add(
       SearchProductList(
-          name: query,
-          page: _currentPage,
-          perpage: 6,
-          categories: [_selectedCategory ?? '']),
+        name: query,
+        page: _currentPage,
+        perpage: 6,
+        categories: [_selectedCategory ?? ''],
+      ),
     );
   }
 
@@ -152,7 +172,17 @@ class CatalogScreenState extends State<CatalogScreen>
   void _addUniqueProducts(List<Product> newProducts) {
     for (var product in newProducts) {
       if (!_products.any((p) => p.id == product.id)) {
-        _products.add(product);
+        bool isWithinPriceRange = _selectedPriceRange == null ||
+            (product.price >= _selectedPriceRange!.start &&
+                product.price <= _selectedPriceRange!.end);
+
+        bool matchesDiscountFilter = _hasDiscount == null ||
+            (_hasDiscount == true && product.discounts.isNotEmpty) ||
+            (_hasDiscount == false);
+
+        if (isWithinPriceRange && matchesDiscountFilter) {
+          _products.add(product);
+        }
       }
     }
   }
@@ -187,13 +217,12 @@ class CatalogScreenState extends State<CatalogScreen>
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Padding(
-            padding: const EdgeInsets.only( left: 18, right: 18.0),
+            padding: const EdgeInsets.only(left: 18, right: 18.0),
             child: Container(
-              decoration: const BoxDecoration(
-                  color: Color(0xFFFFFFFF),
-                  borderRadius:
-                      BorderRadius.all(Radius.circular(12))),
-              child: const LocationBar()),
+                decoration: const BoxDecoration(
+                    color: Color(0xFFFFFFFF),
+                    borderRadius: BorderRadius.all(Radius.circular(12))),
+                child: const LocationBar()),
           ),
           Padding(
             padding: const EdgeInsets.only(top: 16, left: 18, right: 18.0),
@@ -242,8 +271,8 @@ class CatalogScreenState extends State<CatalogScreen>
                   IconButton(
                     icon: const Icon(Icons.filter_list, color: Colors.grey),
                     onPressed: () async {
-                      final selectedCategory =
-                          await showModalBottomSheet<String>(
+                      final result =
+                          await showModalBottomSheet<Map<String, dynamic>>(
                         context: context,
                         isScrollControlled: true,
                         shape: const RoundedRectangleBorder(
@@ -253,9 +282,11 @@ class CatalogScreenState extends State<CatalogScreen>
                         builder: (context) => const FilterSheet(),
                       );
 
-                      if (selectedCategory != null) {
+                      if (result != null) {
                         setState(() {
-                          _selectedCategory = selectedCategory;
+                          _selectedCategory = result['category'];
+                          _selectedPriceRange = result['priceRange'];
+                          _hasDiscount = result['hasDiscount']; // Add this line
                           _currentPage = 1;
                           _products.clear();
                           _loadProducts();

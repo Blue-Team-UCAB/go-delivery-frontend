@@ -30,13 +30,12 @@ class GetProductsUseCase {
       : _productRepository = productRepository;
 
   Future<Result<List<Product>>> execute(GetProductsUseCaseInput input) {
-
     return _productRepository.getProducts(
-      name: input.name!,
-      categories: input.categories!,
-      price: input.price!,
-      discount: input.discount!,
-      popular: input.popular!,
+      name: input.name ?? '',
+      categories: input.categories ?? [],
+      price: input.price ?? 0,
+      discount: input.discount ?? '',
+      popular: input.popular ?? '',
       page: input.page,
       perpage: input.perpage,
     );

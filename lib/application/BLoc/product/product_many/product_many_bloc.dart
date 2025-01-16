@@ -98,7 +98,7 @@ class ProductListBloc extends Bloc<ProductListEvent, ProductListState> {
         name: name,
         categories: categories,
         price: price,
-        discount: discount,
+        discount: discount, // Ensure this line is present
         popular: popular,
       );
 
