@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-import '../../../application/BLoc/themes/themes_bloc.dart';
-import '../../core/theme/theme.dart';
-import '../../core/theme/theme_getter.dart';
+import 'package:go_delivery_frontend/application/BLoc/themes/themes_bloc.dart';
+import 'package:go_delivery_frontend/presentation/core/theme/theme.dart';
+
 
 class CartEmptyStateWidget extends StatelessWidget {
   const CartEmptyStateWidget({super.key});
