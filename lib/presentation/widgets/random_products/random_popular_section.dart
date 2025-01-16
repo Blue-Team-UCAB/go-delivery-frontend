@@ -36,7 +36,7 @@ class RandomSectionState extends State<RandomSection> {
   }
 
   void _loadRandomProducts() {
-    if (!_mounted) return;
+    if (!_mounted || _currentCategoryNames.isEmpty) return;
 
     final categories = _currentCategoryNames;
 
@@ -141,7 +141,7 @@ class RandomItem extends StatelessWidget {
               imageUrl: product.images.first,
               width: 60,
               fit: BoxFit.contain,
-              placeholder: (context,url) => Shimmer.fromColors(
+              placeholder: (context, url) => Shimmer.fromColors(
                   baseColor: const Color(0xFFd8d5dd),
                   highlightColor: const Color(0xFFF4F4F4),
                   child: Container(
@@ -149,8 +149,7 @@ class RandomItem extends StatelessWidget {
                       borderRadius: BorderRadius.all(Radius.circular(12)),
                       color: Color(0xFFd8d5dd),
                     ),
-                    )
-                ),
+                  )),
             ),
             title: Text(
               product.name,

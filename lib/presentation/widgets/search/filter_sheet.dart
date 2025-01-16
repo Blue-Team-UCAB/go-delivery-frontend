@@ -7,10 +7,10 @@ class FilterSheet extends StatefulWidget {
   const FilterSheet({super.key});
 
   @override
-  _FilterSheetState createState() => _FilterSheetState();
+  FilterSheetState createState() => FilterSheetState();
 }
 
-class _FilterSheetState extends State<FilterSheet> {
+class FilterSheetState extends State<FilterSheet> {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<FilterBloc, FilterState>(
@@ -18,10 +18,9 @@ class _FilterSheetState extends State<FilterSheet> {
         return Container(
           padding: EdgeInsets.all(18),
           child: Column(
-            mainAxisSize: MainAxisSize.min, // Set the modal to fit its content
+            mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Header
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -32,14 +31,13 @@ class _FilterSheetState extends State<FilterSheet> {
                   IconButton(
                     icon: Icon(Icons.close),
                     onPressed: () {
-                      Navigator.of(context).pop(); // Close the modal
+                      Navigator.of(context).pop();
                     },
                   ),
                 ],
               ),
 
               SizedBox(height: 32),
-              // Discount Switch
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -51,26 +49,26 @@ class _FilterSheetState extends State<FilterSheet> {
                     onChanged: (value) {
                       context.read<FilterBloc>().add(UpdateDiscount(value));
                     },
-                    activeColor:
-                        const Color(0xFF2000B1), // Change the active color
-                    inactiveThumbColor: const Color(0xFF2000B1)
-                        .withOpacity(0.3), // Change the inactive thumb color
-                    inactiveTrackColor: const Color(0xFF2000B1)
-                        .withOpacity(0.1), // Change the inactive track color
+                    activeColor: const Color(0xFF2000B1),
+                    inactiveThumbColor:
+                        const Color(0xFF2000B1).withOpacity(0.3),
+                    inactiveTrackColor:
+                        const Color(0xFF2000B1).withOpacity(0.1),
                   ),
                 ],
               ),
 
               SizedBox(height: 32),
-              // Categories
+
               Text('Categorías',
                   style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
               CategoryTabs(
-                onCategorySelected: (String? categoryId) {
-                  context.read<FilterBloc>().add(UpdateCategory(categoryId));
+                onCategorySelected: (List<String> selectedCategories) {
+                  context
+                      .read<FilterBloc>()
+                      .add(UpdateCategory(selectedCategories.first));
                 },
               ),
-              // Price Range
               SizedBox(height: 32),
               Text('Precio',
                   style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),

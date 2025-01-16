@@ -284,15 +284,19 @@ class HomeScreenState extends State<HomeScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             CategoryTabs(
-              onCategorySelected: (String? categoryName) {
+              onCategorySelected: (List<String> selectedCategories) {
                 setState(() {
-                  if (categoryName != null && categoryName.isNotEmpty) {
-                    _selectedCategories = [categoryName];
+                  if (selectedCategories.isNotEmpty) {
+                    _selectedCategories = selectedCategories;
                   }
                 });
-                context
-                    .read<CategoryBloc>()
-                    .add(SelectCategory(categoryName: categoryName));
+
+                // Evitar el error si no hay categorías seleccionadas
+                if (selectedCategories.isNotEmpty) {
+                  context.read<CategoryBloc>().add(
+                        SelectCategory(categoryName: selectedCategories.first),
+                      );
+                }
               },
             ),
             const ComboSection(),
