@@ -5,10 +5,8 @@ import 'package:go_delivery_frontend/application/BLoc/category/category_event.da
 import 'package:go_delivery_frontend/application/BLoc/category/category_state.dart';
 import 'package:go_delivery_frontend/domain/entities/category/category.dart';
 
-import '../../core/theme/theme_getter.dart';
-
 class CategoryTabs extends StatefulWidget {
-  final Function(String?)? onCategorySelected;
+  final Function(List<String>)? onCategorySelected;
 
   const CategoryTabs({
     super.key,
@@ -20,7 +18,7 @@ class CategoryTabs extends StatefulWidget {
 }
 
 class CategoryTabsState extends State<CategoryTabs> {
-  int _selectedIndex = 0;
+  final List<String> _selectedCategories = [];
 
   @override
   void initState() {
@@ -32,7 +30,6 @@ class CategoryTabsState extends State<CategoryTabs> {
 
   @override
   Widget build(BuildContext context) {
-
     return BlocBuilder<CategoryBloc, CategoryState>(
       builder: (context, state) {
         if (state is CategoryLoading) {
@@ -44,7 +41,7 @@ class CategoryTabsState extends State<CategoryTabs> {
         }
 
         if (state is CategoryLoaded) {
-          return _buildLoadedTabs(state.categories, context);
+          return _buildLoadedTabs(state.categories);
         }
 
         return _buildLoadingTabs();
@@ -70,7 +67,7 @@ class CategoryTabsState extends State<CategoryTabs> {
                   color: Colors.grey[300],
                   borderRadius: BorderRadius.circular(20),
                 ),
-                child: const Text('      '),
+                child: const Text('Loading...'),
               ),
             ),
           ],
@@ -110,7 +107,7 @@ class CategoryTabsState extends State<CategoryTabs> {
     );
   }
 
-  Widget _buildLoadedTabs(List<Category> categories, BuildContext context) {
+  Widget _buildLoadedTabs(List<Category> categories) {
     final allCategories = [
       Category(id: '', name: 'Todo', imageUrl: ''),
       ...categories,
@@ -126,7 +123,9 @@ class CategoryTabsState extends State<CategoryTabs> {
             ...List.generate(
               allCategories.length,
               (index) => _buildTab(
-                  allCategories[index], index == _selectedIndex, index, context),
+                  allCategories[index],
+                  _selectedCategories.contains(allCategories[index].name),
+                  index),
             ),
           ],
         ),
@@ -134,21 +133,27 @@ class CategoryTabsState extends State<CategoryTabs> {
     );
   }
 
-  Widget _buildTab(Category category, bool isSelected, int index, BuildContext context) {
-    final currentSecondaryThemeColor = AppThemesGetter.getSecondaryColor(context);
-
+  Widget _buildTab(Category category, bool isSelected, int index) {
     return GestureDetector(
       onTap: () {
         setState(() {
-          _selectedIndex = index;
+          if (category.name == 'Todo') {
+            _selectedCategories.clear();
+          } else {
+            if (_selectedCategories.contains(category.name)) {
+              _selectedCategories.remove(category.name);
+            } else {
+              _selectedCategories.add(category.name);
+            }
+          }
         });
-        widget.onCategorySelected?.call(index == 0 ? null : category.name);
+        widget.onCategorySelected?.call(_selectedCategories);
       },
       child: Container(
         margin: const EdgeInsets.only(right: 8),
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         decoration: BoxDecoration(
-          color: isSelected ? currentSecondaryThemeColor : const Color(0xFFFFFFFF),
+          color: isSelected ? const Color(0xFF2000B1) : const Color(0xFFFFFFFF),
           borderRadius: BorderRadius.circular(20),
           boxShadow: [
             if (!isSelected)

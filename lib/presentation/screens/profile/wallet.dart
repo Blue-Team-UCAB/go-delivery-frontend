@@ -20,7 +20,7 @@ import 'package:go_delivery_frontend/application/BLoc/payment/pago_movil/pago_mo
 import 'package:go_delivery_frontend/application/BLoc/payment/zelle/zelle_bloc.dart';
 import 'package:go_delivery_frontend/application/BLoc/payment/zelle/zelle_event.dart';
 import 'package:go_delivery_frontend/application/BLoc/payment/zelle/zelle_state.dart';
-import 'package:go_delivery_frontend/presentation/screens/order/card_screen.dart';
+import 'package:go_delivery_frontend/presentation/screens/order/payment_card_screen.dart';
 import 'package:go_delivery_frontend/presentation/widgets/wallet/transaction_widget.dart';
 import 'package:go_router/go_router.dart';
 
@@ -380,7 +380,7 @@ class _WalletScreenState extends State<WalletScreen> {
                   ),
                   builder: (context) => SizedBox(
                     height: MediaQuery.of(context).size.height * 0.60,
-                    child: const AddCardScreen(),
+                    child: const PaymentCardScreen(),
                   ),
                 );
               },

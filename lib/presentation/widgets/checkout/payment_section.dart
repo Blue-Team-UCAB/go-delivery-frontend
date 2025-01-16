@@ -9,7 +9,7 @@ import 'package:go_delivery_frontend/application/BLoc/payment/card_get/get_card_
 import 'package:go_delivery_frontend/application/BLoc/payment/get_wallet/get_wallet_bloc.dart';
 import 'package:go_delivery_frontend/application/BLoc/payment/get_wallet/get_wallet_event.dart';
 import 'package:go_delivery_frontend/application/BLoc/payment/get_wallet/get_wallet_state.dart';
-import 'package:go_delivery_frontend/presentation/screens/order/card_screen.dart';
+import 'package:go_delivery_frontend/presentation/screens/order/payment_card_screen.dart';
 import 'package:go_delivery_frontend/application/BLoc/payment/pago_movil/pago_movil_bloc.dart';
 import 'package:go_delivery_frontend/application/BLoc/payment/pago_movil/pago_movil_event.dart';
 import 'package:go_delivery_frontend/application/BLoc/payment/pago_movil/pago_movil_state.dart';
@@ -273,7 +273,7 @@ class _PaymentMethodSectionState extends State<PaymentMethodSection> {
                 ),
                 builder: (context) => SizedBox(
                   height: MediaQuery.of(context).size.height * 0.60,
-                  child: const AddCardScreen(),
+                  child: const PaymentCardScreen(),
                 ),
               );
             },

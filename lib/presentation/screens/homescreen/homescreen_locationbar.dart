@@ -7,8 +7,6 @@ import 'package:go_delivery_frontend/presentation/widgets/homescreen/location_ba
 import 'package:go_router/go_router.dart';
 import 'package:go_delivery_frontend/domain/entities/direction/direction.dart';
 
-import '../../core/theme/theme_getter.dart';
-
 class LocationBar extends StatefulWidget {
   const LocationBar({super.key});
 
@@ -56,24 +54,9 @@ class _LocationBarState extends State<LocationBar> {
     );
   }
 
-  Widget _buildLoadingLocationBar() {
-    return ListTile(
-      leading: _buildLocationIcon(context),
-      title: const Text(
-        'Entregar a',
-        style: TextStyle(fontSize: 12, fontWeight: FontWeight.w400),
-      ),
-      subtitle: const Text(
-        'Cargando ubicación...',
-        style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
-      ),
-      trailing: const CircularProgressIndicator(),
-    );
-  }
-
   Widget _buildEmptyLocationBar(BuildContext context) {
     return ListTile(
-      leading: _buildLocationIcon(context),
+      leading: _buildLocationIcon(),
       title: const Text(
         'Entregar a',
         style: TextStyle(fontSize: 12, fontWeight: FontWeight.w400),
@@ -94,9 +77,9 @@ class _LocationBarState extends State<LocationBar> {
     String locationAddress = selectedAddress?.direction ?? 'Sin dirección';
 
     return ListTile(
-      leading: _buildLocationIcon(context),
+      leading: _buildLocationIcon(),
       title: Text(
-        'Entregar a: ${locationName}',
+        'Entregar a: $locationName',
         style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
       ),
       subtitle: Text(
@@ -115,14 +98,12 @@ class _LocationBarState extends State<LocationBar> {
     );
   }
 
-  Widget _buildLocationIcon(BuildContext context) {
-
-    final currentSecondaryThemeColor = AppThemesGetter.getSecondaryColor(context);
+  Widget _buildLocationIcon() {
     return Container(
       width: 45,
       height: 45,
       decoration: BoxDecoration(
-        color: currentSecondaryThemeColor,
+        color: const Color(0xFF2000B1),
         borderRadius: BorderRadius.circular(25),
       ),
       child: const Icon(

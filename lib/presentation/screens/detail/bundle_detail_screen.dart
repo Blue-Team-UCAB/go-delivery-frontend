@@ -19,7 +19,6 @@ class BundleDetailScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final bundleDetailBloc = context.read<BundleDetailBloc>();
     bundleDetailBloc.add(LoadBundleDetail(bundleId: bundleId));
-
     return Scaffold(
       appBar: AppBar(
         backgroundColor: const Color(0xFFFFFFFF),
@@ -43,6 +42,7 @@ class BundleDetailScreen extends StatelessWidget {
             }
             if (state is BundleDetailLoaded) {
               final bundle = state.bundle;
+              final int discount = (bundle?.discounts!.isNotEmpty ?? true)? bundle!.discounts![0].percentage.round() : 0;
               String imageUrl = (bundle?.images.first.isNotEmpty ?? false)
                   ? bundle!.images.first
                   : 'https://via.placeholder.com/150';
@@ -54,24 +54,28 @@ class BundleDetailScreen extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Image.network(
-                      imageUrl,
-                      fit: BoxFit.fill,
-                      alignment: Alignment.center,
-                      height: 400,
-                      loadingBuilder: (context, child, loadingProgress) {
-                        if (loadingProgress == null) {
-                          return child;
-                        } else {
-                          return const Center(
-                            child: CircularProgressIndicator(),
-                          );
-                        }
-                      },
-                      errorBuilder: (context, error, stackTrace) {
-                        return Image.network('https://via.placeholder.com/150');
-                      },
+                    ClipRRect(
+                      borderRadius: BorderRadius.all(Radius.circular(12)),
+                      child: Image.network(
+                        imageUrl,
+                        fit: BoxFit.cover,
+                        alignment: Alignment.center,
+                        height: 400,
+                        loadingBuilder: (context, child, loadingProgress) {
+                          if (loadingProgress == null) {
+                            return child;
+                          } else {
+                            return const Center(
+                              child: CircularProgressIndicator(),
+                            );
+                          }
+                        },
+                        errorBuilder: (context, error, stackTrace) {
+                          return Image.network('https://via.placeholder.com/150');
+                        },
+                      ),
                     ),
+                    SizedBox(height: 12,),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -84,13 +88,47 @@ class BundleDetailScreen extends StatelessWidget {
                           ),
                         ),
                         const SizedBox(height: 6),
-                        Text(
-                          '\$${bundle?.price ?? 0.0}',
-                          style: const TextStyle(
-                            fontFamily: 'Inter',
-                            fontWeight: FontWeight.w500,
-                            fontSize: 20,
-                          ),
+                        Row(
+                          children: [
+                            (bundle?.discounts!.isNotEmpty ?? true)?
+                            Text(
+                              '\$${(bundle!.price*(1-(discount)/100)).toStringAsFixed(2)}',
+                              style: const TextStyle(
+                                  fontFamily: 'Inter',
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.w500,
+                                  color: Color(0xFF000000)),
+                            ):SizedBox(),
+                            SizedBox(width: 5,),
+                            Text(
+                              '\$${bundle?.price ?? 0.0}',
+                              style: TextStyle(
+                                fontFamily: 'Inter',
+                                fontWeight: FontWeight.w500,
+                                fontSize: 20,
+                                decoration: discount == 0 ? TextDecoration.none: TextDecoration.lineThrough,
+                                decorationColor: Color(0x55FF0000),
+                                color: discount == 0 ? Color(0xFF000000):Color(0x55FF0000)),
+                            ),
+                            Expanded(child: SizedBox()),
+                            (bundle?.discounts!.isNotEmpty ?? true)?
+                            Container(
+                              padding: EdgeInsets.symmetric(vertical: 2,horizontal: 6),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.all(Radius.circular(12)),
+                                color: Color(0x22FF0000)
+                              ),
+                              child: Text(
+                                '-$discount%',
+                                style: const TextStyle(
+                                  fontFamily: 'Inter',
+                                  fontWeight: FontWeight.w800,
+                                  fontSize: 22,
+                                  color: Color(0x55FF0000)
+                                )
+                              ),
+                            ):SizedBox(),
+                          ],
                         ),
                         const SizedBox(height: 24),
                         Text(

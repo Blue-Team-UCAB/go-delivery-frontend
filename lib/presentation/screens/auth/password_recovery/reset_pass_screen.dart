@@ -209,7 +209,7 @@ class _PasswordRenewScreenState extends State<PasswordRenewScreen> {
                                 .changePassword(value),
                             controller: _passwordController,
                             validator: (value) {
-                              final result = loginValidator.passwordValidator
+                              final result = LoginValidator.passwordValidator
                                   .validate(value);
                               return result.isSuccessful()
                                   ? null
