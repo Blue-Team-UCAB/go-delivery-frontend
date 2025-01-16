@@ -43,13 +43,24 @@ class ProductCard extends StatelessWidget {
                   height: 100,
                   fit: BoxFit.fill,
                   placeholder: (context, url) => Shimmer.fromColors(
-                      baseColor: const Color(0xFFd8d5dd),
-                      highlightColor: const Color(0xFFF4F4F4),
-                      child: Container(
-                        height: 100,
-                        width: double.infinity,
-                        color: Color(0xFFd8d5dd),
-                      )),
+                    baseColor: const Color(0xFFd8d5dd),
+                    highlightColor: const Color(0xFFF4F4F4),
+                    child: Container(
+                      height: 100,
+                      width: double.infinity,
+                      color: Color(0xFFd8d5dd),
+                    )
+                  ),
+                  errorWidget: (context, url, error) => Shimmer.fromColors(
+                    baseColor: const Color(0xFFd8d5dd),
+                    highlightColor: const Color(0xFFF4F4F4),
+                    child: Container(
+                      height: 100,
+                      width: double.infinity,
+                      color: Color(0xFFd8d5dd),
+                      child: Center(child: Text('$error'),),
+                    )
+                  ),
                 ),
               ),
               Padding(
