@@ -26,6 +26,8 @@ import 'package:go_delivery_frontend/presentation/widgets/checkout/credit_card_w
 import 'package:go_delivery_frontend/presentation/widgets/wallet/transaction_widget.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../core/theme/theme_getter.dart';
+
 class WalletScreen extends StatefulWidget {
   const WalletScreen({super.key});
 
@@ -57,6 +59,9 @@ class _WalletScreenState extends State<WalletScreen> {
 
   @override
   Widget build(BuildContext context) {
+
+    final currentSecondaryThemeColor = AppThemesGetter.getSecondaryColor(context);
+
     return Scaffold(
       body: SingleChildScrollView(
         child: Column(
@@ -66,7 +71,7 @@ class _WalletScreenState extends State<WalletScreen> {
                 Container(
                   height: 255,
                   width: double.infinity,
-                  color: const Color(0xFF2000B1),
+                  color: currentSecondaryThemeColor,
                 ),
                 SafeArea(
                   child: Padding(
@@ -122,7 +127,7 @@ class _WalletScreenState extends State<WalletScreen> {
                                             const TextSpan(
                                               text: "\$",
                                               style: TextStyle(
-                                                fontSize: 30,
+                                                fontSize: 28,
                                                 color: Colors.white,
                                                 fontWeight: FontWeight.normal,
                                               ),

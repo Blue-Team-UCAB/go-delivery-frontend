@@ -13,6 +13,8 @@ import 'package:go_delivery_frontend/domain/entities/product/product.dart';
 import 'package:go_delivery_frontend/infrastructure/mappers/cart/cart_item_mapper.dart';
 import 'package:shimmer/shimmer.dart';
 
+import '../../core/theme/theme_getter.dart';
+
 class RandomSection extends StatefulWidget {
   final List<String>? selectedCategoryNames;
 
@@ -125,6 +127,8 @@ class RandomItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final currentSecondaryThemeColor = AppThemesGetter.getSecondaryColor(context);
+
     return Column(
       children: [
         Material(
@@ -184,8 +188,8 @@ class RandomItem extends StatelessWidget {
             trailing: OutlinedButton(
               style: ButtonStyle(
                 alignment: Alignment.center,
-                side: const WidgetStatePropertyAll(
-                    BorderSide(color: Color(0xFF2000B1))),
+                side:  WidgetStatePropertyAll(
+                    BorderSide(color: currentSecondaryThemeColor)),
                 shape: WidgetStatePropertyAll(RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12))),
               ),
@@ -199,12 +203,12 @@ class RandomItem extends StatelessWidget {
                     backgroundColor: Color(0xfc009e4f),
                     content: Text('Agregado Satisfactoriamente')));
               },
-              child: const Text('Añadir',
+              child:  Text('Añadir',
                   style: TextStyle(
                     fontFamily: 'Inter',
                     fontSize: 13,
                     fontWeight: FontWeight.w600,
-                    color: Color(0xFF2000B1),
+                    color: currentSecondaryThemeColor,
                   )),
             ),
           ),

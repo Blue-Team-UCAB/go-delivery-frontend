@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:go_delivery_frontend/presentation/screens/homescreen/sidebar_screen.dart';
 import 'package:go_delivery_frontend/presentation/screens/order/orders_screen.dart';
 
+import '../../core/theme/theme_getter.dart';
+
 class OrdersParentView extends StatelessWidget {
   final int initialCounterNavbar;
 
@@ -10,8 +12,10 @@ class OrdersParentView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final currentPrimaryThemeColor = AppThemesGetter.getPrimaryColor(context);
+
     return Scaffold(
-      backgroundColor: const Color(0xFF02066F),
+      backgroundColor: currentPrimaryThemeColor,
       body: Stack(
         children: [
           const SidebarScreen(),
