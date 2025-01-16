@@ -60,6 +60,16 @@ class BundleCard extends StatelessWidget {
                     highlightColor: const Color(0xFFF4F4F4),
                     child: Container(height: 94,width: double.infinity,color: Color(0xFFd8d5dd),)
                   ),
+                  errorWidget: (context, url, error) => Shimmer.fromColors(
+                    baseColor: const Color(0xFFd8d5dd),
+                    highlightColor: const Color(0xFFF4F4F4),
+                    child: Container(
+                      height: 94,
+                      width: double.infinity,
+                      color: Color(0xFFd8d5dd),
+                      child: Center(child: Text('$error'),),
+                    )
+                  ),
                 ),
               ),
               Padding(

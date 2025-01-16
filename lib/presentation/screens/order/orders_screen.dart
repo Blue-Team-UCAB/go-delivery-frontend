@@ -286,11 +286,13 @@ class _OrdersPageState extends State<OrdersPage>
   Widget _buildOrdersList(List<OrderManyItem> orders, bool isActiveTab) {
     return BlocBuilder<ManyOrdersBloc, ManyOrdersState>(
       builder: (context, state) {
+
+        if (orders.isEmpty) {
+          return OrderEmptyStateWidget();
+        }
+
         if (orders.isEmpty && state is ManyOrdersLoadingState) {
-          return const Center(
-            //todo: AQUI EL PLACEHOLDER
-            child: OrderScreenPlaceholder(),
-          );
+          return OrderScreenPlaceholder();
         }
 
         // Error state
@@ -310,11 +312,6 @@ class _OrdersPageState extends State<OrdersPage>
               ],
             ),
           );
-        }
-
-        // No orders
-        if (orders.isEmpty) {
-          return OrderEmptyStateWidget();
         }
 
         return NotificationListener<ScrollNotification>(

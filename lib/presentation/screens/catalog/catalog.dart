@@ -273,7 +273,7 @@ class CatalogScreenState extends State<CatalogScreen>
           Expanded(
             child: BlocBuilder<ProductListBloc, ProductListState>(
               builder: (context, state) {
-                if (state is ProductListInitial && _products.isEmpty) {
+                if (state is ProductListInitial || _products.isEmpty) {
                   return const CatalogProductGridPlaceholder();
                 } else if (state is ProductListLoading) {
                   return _productGrid(state.products, isLoading: true);
@@ -281,9 +281,19 @@ class CatalogScreenState extends State<CatalogScreen>
                   return _productGrid(state.products,
                       hasReachedMax: state.hasReachedMax);
                 } else if (state is ProductListFailed) {
-                  return Center(child: Text('Error: ${state.result.error}'));
+                  return Stack(
+                    children: [
+                      const CatalogProductGridPlaceholder(),
+                      Center(child: Text('Error: ${state.result.error}')),
+                    ],
+                  );
                 } else {
-                  return const Center(child: Text('Estado desconocido'));
+                  return Stack(
+                    children: [
+                      const CatalogProductGridPlaceholder(),
+                      const Center(child: Text('Estado desconocido')),
+                    ],
+                  );
                 }
               },
             ),

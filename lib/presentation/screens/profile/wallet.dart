@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:go_delivery_frontend/application/BLoc/payment/card_get/get_card_bloc.dart';
 import 'package:go_delivery_frontend/application/BLoc/payment/card_get/get_card_event.dart';
 import 'package:go_delivery_frontend/application/BLoc/payment/card_get/get_card_state.dart';
@@ -21,6 +22,7 @@ import 'package:go_delivery_frontend/application/BLoc/payment/zelle/zelle_bloc.d
 import 'package:go_delivery_frontend/application/BLoc/payment/zelle/zelle_event.dart';
 import 'package:go_delivery_frontend/application/BLoc/payment/zelle/zelle_state.dart';
 import 'package:go_delivery_frontend/presentation/screens/order/payment_card_screen.dart';
+import 'package:go_delivery_frontend/presentation/widgets/checkout/credit_card_widget.dart';
 import 'package:go_delivery_frontend/presentation/widgets/wallet/transaction_widget.dart';
 import 'package:go_router/go_router.dart';
 
@@ -35,7 +37,6 @@ class WalletScreen extends StatefulWidget {
 
 class _WalletScreenState extends State<WalletScreen> {
   bool isVisible = true;
-  String? _selectedCardType;
   String? _selectedGoDelyOption;
   String? _selectedBank;
   double userPoints = 0.00;
@@ -276,7 +277,7 @@ class _WalletScreenState extends State<WalletScreen> {
         }
       },
       child: Padding(
-        padding: const EdgeInsets.all(12.0),
+        padding: const EdgeInsets.symmetric(vertical: 12.0,horizontal: 26),
         child: Column(
           children: [
             BlocBuilder<CardListBloc, CardListState>(
@@ -291,74 +292,31 @@ class _WalletScreenState extends State<WalletScreen> {
                 } else if (state is CardListLoaded) {
                   return Column(
                     children: state.cards.map((card) {
-                      final cardIdentifier =
-                          "${card.brand ?? ''}-${card.last4 ?? ''}-${card.expMonth ?? ''}-${card.expYear ?? ''}";
 
-                      return GestureDetector(
-                        onTap: () {
-                          setState(() {
-                            _selectedCardType = cardIdentifier;
-                          });
-                        },
-                        child: Container(
-                          margin: const EdgeInsets.only(bottom: 12.0),
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 12.0,
-                            vertical: 8.0,
-                          ),
-                          width: double.infinity,
-                          decoration: BoxDecoration(
-                            border: Border.all(
-                              color: _selectedCardType == cardIdentifier
-                                  ? const Color(0xFF2000B1)
-                                  : Colors.grey,
+                      return Column(
+                        children: [
+                          Slidable(
+                            endActionPane: ActionPane(
+                              extentRatio: 0.2,
+                              motion: const ScrollMotion(), 
+                              children: [
+                                SlidableAction(
+                                  onPressed: (context) {
+                                    BlocProvider.of<DeleteCardBloc>(context).add(DeleteCardRequested(cardId: card.id!));
+                                  },
+                                  icon: Icons.delete,
+                                  foregroundColor: Color(0xFFFF0000),
+                                  borderRadius: const BorderRadius.only(
+                                      topRight: Radius.circular(8),
+                                      bottomRight: Radius.circular(8)),
+                                )
+                              ]
                             ),
-                            borderRadius: BorderRadius.circular(8.0),
+                            
+                            child: CreditCardWidget(card: card)
                           ),
-                          child: Row(
-                            children: [
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      (card.brand ?? 'Desconocido')
-                                          .toUpperCase(),
-                                      style: const TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                    const SizedBox(height: 4),
-                                    Text(
-                                      "XXXX XXXX XXXX ${card.last4 ?? '0000'}",
-                                      style: const TextStyle(
-                                        fontSize: 14,
-                                      ),
-                                    ),
-                                    const SizedBox(height: 4),
-                                    Text(
-                                      "Fecha: ${card.expMonth?.toString().padLeft(2, '0') ?? '00'}/${card.expYear?.toString().substring(2, 4) ?? '00'}",
-                                      style: const TextStyle(
-                                        fontSize: 14,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              IconButton(
-                                onPressed: () {
-                                  BlocProvider.of<DeleteCardBloc>(context).add(
-                                      DeleteCardRequested(cardId: card.id!));
-                                },
-                                icon: const Icon(
-                                  Icons.delete,
-                                  color: Colors.red,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
+                          SizedBox(height: 12,)
+                        ],
                       );
                     }).toList(),
                   );
@@ -402,6 +360,7 @@ class _WalletScreenState extends State<WalletScreen> {
                 ),
               ),
             ),
+            SizedBox(height: 12,)
           ],
         ),
       ),

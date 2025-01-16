@@ -83,6 +83,7 @@ class HomeScreenState extends State<HomeScreen> {
         builder: (context, state) {
           if (state is CurrentUserLoading) {
             return const HomescreenPlaceholder();
+            
           }
           if (state is CurrentUserInitial || state is CurrentUserError) {
             return const Center(child: Text('Usuario no cargado'));
