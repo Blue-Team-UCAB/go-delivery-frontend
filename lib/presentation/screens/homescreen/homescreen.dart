@@ -15,6 +15,8 @@ import 'package:go_delivery_frontend/presentation/widgets/dialog_darken_window.d
 import 'package:go_delivery_frontend/presentation/widgets/navbar.dart';
 import 'package:go_delivery_frontend/presentation/screens/homescreen/homescreen_locationbar.dart';
 
+import 'package:go_delivery_frontend/presentation/core/theme/theme_getter.dart';
+
 class HomeScreenParentView extends StatelessWidget {
   static const name = 'home-screen';
   final int initialCounterNavbar;
@@ -22,8 +24,10 @@ class HomeScreenParentView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final currentPrimaryThemeColor = AppThemesGetter.getPrimaryColor(context);
+
     return Scaffold(
-      backgroundColor: const Color(0xFF02066F),
+      backgroundColor: currentPrimaryThemeColor,
       body: Stack(
         children: [
           const SidebarScreen(),
@@ -79,13 +83,14 @@ class HomeScreenState extends State<HomeScreen> {
         builder: (context, state) {
           if (state is CurrentUserLoading) {
             return const HomescreenPlaceholder();
+            
           }
           if (state is CurrentUserInitial || state is CurrentUserError) {
             return const Center(child: Text('Usuario no cargado'));
           }
 
           if (state is CurrentUserLoaded) {
-            return _buildMainScreen(state);
+            return _buildMainScreen(state,context);
           }
 
           return const Center(child: Text('Something went wrong'));
@@ -114,7 +119,9 @@ class HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildMainScreen(CurrentUserLoaded userState) {
+  Widget _buildMainScreen(CurrentUserLoaded userState, BuildContext context) {
+    final currentSecondaryThemeColor = AppThemesGetter.getSecondaryColor(context);
+
     return AnimatedContainer(
       transform: Matrix4.translationValues(xOffset, yOffset, 0)
         ..scale(scaleFactor)
@@ -125,7 +132,7 @@ class HomeScreenState extends State<HomeScreen> {
         child: Scaffold(
           backgroundColor: const Color(0xFFEBEAED),
           body: Container(
-            color: const Color(0xFF2000B1),
+            color: currentSecondaryThemeColor,
             child: SafeArea(
               child: Stack(
                 children: [
@@ -172,8 +179,10 @@ class HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildHeader() {
+    final currentSecondaryThemeColor = AppThemesGetter.getSecondaryColor(context);
+
     return Container(
-      color: const Color(0xFF2000B1),
+      color: currentSecondaryThemeColor,
       padding: const EdgeInsets.fromLTRB(8, 16, 16, 50),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.start,

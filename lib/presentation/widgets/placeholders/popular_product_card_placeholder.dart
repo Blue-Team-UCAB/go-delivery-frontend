@@ -21,18 +21,22 @@ class PopularProductCardPlaceholder extends StatelessWidget {
           highlightColor: Color(0xFFF4F4F4),
           child: Row(
             children: [
-              Container(
-                height: 78,
-                width: 78,
-                decoration: const BoxDecoration(
-                  borderRadius: BorderRadius.only(topLeft:Radius.circular(12),bottomLeft:Radius.circular(12)),
-                  color: Color(0xFFd8d5dd)
+              Padding(
+                padding: const EdgeInsets.all(12.0),
+                child: Container(
+                  height: 58,
+                  width: 60,
+                  decoration: const BoxDecoration(
+                    borderRadius: BorderRadius.all(Radius.circular(12)),
+                    color: Color(0xFFd8d5dd)
+                  ),
                 ),
               ),
-              const SizedBox(width: 16,),
+              const SizedBox(width: 8,),
               const Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  SizedBox(height: 2,),
                   TextPlaceholder(height: 14,width: 150,),
                   SizedBox(height: 6,),
                   TextPlaceholder(height: 14,width: 110,),
@@ -40,10 +44,10 @@ class PopularProductCardPlaceholder extends StatelessWidget {
                   TextPlaceholder(height: 12, width: 40,),
                 ],
               ),
-              const SizedBox(width: 26,),
+              const SizedBox(width: 16,),
               Container(
                 height: 40,
-                width: 80,
+                width: 90,
                 decoration: BoxDecoration(
                   shape: BoxShape.rectangle,
                   borderRadius: const BorderRadius.all(Radius.circular(12)),

@@ -7,6 +7,8 @@ import 'package:go_delivery_frontend/presentation/widgets/order_detailed/active/
 import 'package:go_delivery_frontend/presentation/widgets/order_detailed/active/driver_card.dart';
 import 'package:go_delivery_frontend/presentation/widgets/order_detailed/past/order_items_list.dart';
 
+import '../../../../core/theme/theme_getter.dart';
+
 class ActiveOrderDetails extends StatelessWidget {
   final OrderDetailLoadedState state;
 
@@ -15,6 +17,8 @@ class ActiveOrderDetails extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final currentActiveState = _getCurrentActiveState();
+
+    final currentSecondaryThemeColor = AppThemesGetter.getSecondaryColor(context);
 
     return SingleChildScrollView(
       child: Column(
@@ -42,7 +46,7 @@ class ActiveOrderDetails extends StatelessWidget {
                   'Agregar Instrucciones',
                   style: TextStyle(
                     fontFamily: "Montserrat",
-                    color: Color(0xFF2000B1),
+                    color: currentSecondaryThemeColor,
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
                   ),

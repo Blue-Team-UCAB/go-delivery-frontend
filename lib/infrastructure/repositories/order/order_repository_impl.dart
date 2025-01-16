@@ -107,7 +107,6 @@ class OrderRepositoryImpl extends OrderRepository {
       },
       body: body,
     );
-
     if (response.isSuccess) {
         return Result.success(response.value!);
     } else {

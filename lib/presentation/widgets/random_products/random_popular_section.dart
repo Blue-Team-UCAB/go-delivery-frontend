@@ -13,6 +13,8 @@ import 'package:go_delivery_frontend/domain/entities/product/product.dart';
 import 'package:go_delivery_frontend/infrastructure/mappers/cart/cart_item_mapper.dart';
 import 'package:shimmer/shimmer.dart';
 
+import '../../core/theme/theme_getter.dart';
+
 class RandomSection extends StatefulWidget {
   final List<String>? selectedCategoryNames;
 
@@ -125,15 +127,17 @@ class RandomItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final currentSecondaryThemeColor = AppThemesGetter.getSecondaryColor(context);
+
     return Column(
       children: [
         Material(
-          borderRadius: const BorderRadius.all(Radius.circular(16)),
+          borderRadius: const BorderRadius.all(Radius.circular(12)),
           color: const Color(0xFFFFFFFF),
           child: ListTile(
             contentPadding: const EdgeInsets.symmetric(horizontal: 10),
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(20),
+              borderRadius: BorderRadius.circular(12),
             ),
             onTap: () {
               context.push('/productdetail/${product.id}');
@@ -142,15 +146,26 @@ class RandomItem extends StatelessWidget {
               imageUrl: product.images.first,
               width: 60,
               fit: BoxFit.contain,
-              placeholder: (context, url) => Shimmer.fromColors(
-                  baseColor: const Color(0xFFd8d5dd),
-                  highlightColor: const Color(0xFFF4F4F4),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.all(Radius.circular(12)),
+              placeholder: (context,url) => Shimmer.fromColors(
+                baseColor: const Color(0xFFd8d5dd),
+                highlightColor: const Color(0xFFF4F4F4),
+                child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.all(Radius.circular(12)),
+                    color: Color(0xFFd8d5dd),
+                  ),
+                )
+              ),
+              errorWidget: (context, url, error) => Shimmer.fromColors(
+                    baseColor: const Color(0xFFd8d5dd),
+                    highlightColor: const Color(0xFFF4F4F4),
+                    child: Container(
+                      height: 60,
+                      width: double.infinity,
                       color: Color(0xFFd8d5dd),
-                    ),
-                  )),
+                      child: Center(child: Text('$error'),),
+                    )
+                  ),
             ),
             title: Text(
               product.name,
@@ -173,8 +188,8 @@ class RandomItem extends StatelessWidget {
             trailing: OutlinedButton(
               style: ButtonStyle(
                 alignment: Alignment.center,
-                side: const WidgetStatePropertyAll(
-                    BorderSide(color: Color(0xFF2000B1))),
+                side:  WidgetStatePropertyAll(
+                    BorderSide(color: currentSecondaryThemeColor)),
                 shape: WidgetStatePropertyAll(RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12))),
               ),
@@ -188,12 +203,12 @@ class RandomItem extends StatelessWidget {
                     backgroundColor: Color(0xfc009e4f),
                     content: Text('Agregado Satisfactoriamente')));
               },
-              child: const Text('Añadir',
+              child:  Text('Añadir',
                   style: TextStyle(
                     fontFamily: 'Inter',
                     fontSize: 13,
                     fontWeight: FontWeight.w600,
-                    color: Color(0xFF2000B1),
+                    color: currentSecondaryThemeColor,
                   )),
             ),
           ),

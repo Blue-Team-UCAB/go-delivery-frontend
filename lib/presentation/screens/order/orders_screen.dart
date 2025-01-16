@@ -12,6 +12,8 @@ import 'package:go_delivery_frontend/presentation/screens/order/order_card.dart'
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../core/theme/theme_getter.dart';
+
 class OrdersPage extends StatefulWidget {
   final int initialCounterNavbar;
 
@@ -120,6 +122,8 @@ class _OrdersPageState extends State<OrdersPage>
 
   @override
   Widget build(BuildContext context) {
+    final currentSecondaryThemeColor = AppThemesGetter.getSecondaryColor(context);
+
     super.build(context);
     return AnimatedContainer(
       transform: Matrix4.translationValues(xOffset, yOffset, 0)
@@ -200,12 +204,12 @@ class _OrdersPageState extends State<OrdersPage>
                         fontWeight: FontWeight.normal,
                         fontSize: 14,
                       ),
-                      labelColor: const Color(0xFF2000B1),
+                      labelColor: currentSecondaryThemeColor,
                       unselectedLabelColor: Colors.grey[600],
                       indicator: BoxDecoration(
-                        border: const Border(
+                        border:  Border(
                           bottom: BorderSide(
-                            color: Color(0xFF2000B1),
+                            color: currentSecondaryThemeColor,
                             width: 3,
                           ),
                         ),
@@ -282,11 +286,13 @@ class _OrdersPageState extends State<OrdersPage>
   Widget _buildOrdersList(List<OrderManyItem> orders, bool isActiveTab) {
     return BlocBuilder<ManyOrdersBloc, ManyOrdersState>(
       builder: (context, state) {
+
+        if (orders.isEmpty) {
+          return OrderEmptyStateWidget();
+        }
+
         if (orders.isEmpty && state is ManyOrdersLoadingState) {
-          return const Center(
-            //todo: AQUI EL PLACEHOLDER
-            child: OrderScreenPlaceholder(),
-          );
+          return OrderScreenPlaceholder();
         }
 
         // Error state
@@ -306,11 +312,6 @@ class _OrdersPageState extends State<OrdersPage>
               ],
             ),
           );
-        }
-
-        // No orders
-        if (orders.isEmpty) {
-          return OrderEmptyStateWidget();
         }
 
         return NotificationListener<ScrollNotification>(

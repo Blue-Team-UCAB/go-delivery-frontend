@@ -19,6 +19,8 @@ import 'package:go_router/go_router.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:http/http.dart' as http;
 
+import '../../core/theme/theme_getter.dart';
+
 class DirectionScreen extends StatefulWidget {
   const DirectionScreen({super.key});
 
@@ -92,7 +94,7 @@ class DirectionScreenState extends State<DirectionScreen> {
 
             if (state is DirectionListLoaded) {
               final addresses = state.directions;
-              return _buildAddressListWithDirections(addresses);
+              return _buildAddressListWithDirections(addresses,context);
             }
 
             return const SizedBox();
@@ -111,7 +113,9 @@ class DirectionScreenState extends State<DirectionScreen> {
     );
   }
 
-  Widget _buildAddressListWithDirections(List<Direction> addresses) {
+  Widget _buildAddressListWithDirections(List<Direction> addresses, BuildContext context) {
+    final currentSecondaryThemeColor = AppThemesGetter.getSecondaryColor(context);
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -159,7 +163,7 @@ class DirectionScreenState extends State<DirectionScreen> {
                         );
                       },
                       icon: Icon(Icons.edit),
-                      color: Color(0xFF2000B1),
+                      color: currentSecondaryThemeColor,
                     ),
                     IconButton(
                       onPressed: () {
@@ -190,7 +194,7 @@ class DirectionScreenState extends State<DirectionScreen> {
                 );
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: Color(0xFF2000B1),
+                backgroundColor: currentSecondaryThemeColor,
                 minimumSize: Size(double.infinity, 50),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8),
@@ -384,6 +388,8 @@ class AddAddressBottomSheetState extends State<AddAddressBottomSheet> {
 
   @override
   Widget build(BuildContext context) {
+    final currentSecondaryThemeColor = AppThemesGetter.getSecondaryColor(context);
+
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: Form(
@@ -494,7 +500,7 @@ class AddAddressBottomSheetState extends State<AddAddressBottomSheet> {
                     }
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF2000B1),
+                    backgroundColor: currentSecondaryThemeColor,
                     minimumSize: const Size(double.infinity, 50),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8),
@@ -592,6 +598,9 @@ class EditAddressBottomSheetState extends State<EditAddressBottomSheet> {
 
   @override
   Widget build(BuildContext context) {
+
+    final currentSecondaryThemeColor = AppThemesGetter.getSecondaryColor(context);
+
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: Form(
@@ -706,7 +715,7 @@ class EditAddressBottomSheetState extends State<EditAddressBottomSheet> {
                     }
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF2000B1),
+                    backgroundColor: currentSecondaryThemeColor,
                     minimumSize: const Size(double.infinity, 50),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8),

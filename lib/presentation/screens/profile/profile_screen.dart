@@ -68,7 +68,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       uiSettings: [
         AndroidUiSettings(
           toolbarTitle: 'Recortar imagen',
-          toolbarColor: const Color(0xFF2000B1),
+          toolbarColor: const Color(0xD36A00B1),
           toolbarWidgetColor: Colors.white,
           initAspectRatio: CropAspectRatioPreset.square,
           lockAspectRatio: true,

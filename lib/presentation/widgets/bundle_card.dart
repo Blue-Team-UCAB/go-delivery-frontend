@@ -8,6 +8,8 @@ import 'package:go_delivery_frontend/application/BLoc/cart/cart_bloc.dart';
 import 'package:go_delivery_frontend/infrastructure/mappers/cart/cart_item_mapper.dart';
 import 'package:shimmer/shimmer.dart';
 
+import '../core/theme/theme_getter.dart';
+
 class BundleCard extends StatelessWidget {
   final Bundle bundle;
 
@@ -16,6 +18,9 @@ class BundleCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final int discount = bundle.discounts!.isNotEmpty ? bundle.discounts![0].percentage.round() : 0;
+
+    final currentSecondaryThemeColor = AppThemesGetter.getSecondaryColor(context);
+
     return GestureDetector(
       onTap: () {
         context.push('/bundledetail/${bundle.id}');
@@ -54,6 +59,16 @@ class BundleCard extends StatelessWidget {
                     baseColor: const Color(0xFFd8d5dd),
                     highlightColor: const Color(0xFFF4F4F4),
                     child: Container(height: 94,width: double.infinity,color: Color(0xFFd8d5dd),)
+                  ),
+                  errorWidget: (context, url, error) => Shimmer.fromColors(
+                    baseColor: const Color(0xFFd8d5dd),
+                    highlightColor: const Color(0xFFF4F4F4),
+                    child: Container(
+                      height: 94,
+                      width: double.infinity,
+                      color: Color(0xFFd8d5dd),
+                      child: Center(child: Text('$error'),),
+                    )
                   ),
                 ),
               ),
@@ -122,22 +137,22 @@ class BundleCard extends StatelessWidget {
                       },
                       style: ButtonStyle(
                           alignment: Alignment.center,
-                          side: const WidgetStatePropertyAll(
-                              BorderSide(color: Color(0xFF2000B1))),
+                          side:  WidgetStatePropertyAll(
+                              BorderSide(color: currentSecondaryThemeColor)),
                           shape: WidgetStatePropertyAll(RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(12)))),
-                      icon: const Icon(
+                      icon:  Icon(
                         Icons.add_shopping_cart,
                         size: 18,
-                        color: Color(0xFF2000B1),
+                        color: currentSecondaryThemeColor,
                       ),
-                      label: const Text(
+                      label:  Text(
                         'Añadir',
                         style: TextStyle(
                           fontFamily: 'Inter',
                           fontSize: 13,
                           fontWeight: FontWeight.w600,
-                          color: Color(0xFF2000B1),
+                          color: currentSecondaryThemeColor,
                         ),
                       ),
                     ),
