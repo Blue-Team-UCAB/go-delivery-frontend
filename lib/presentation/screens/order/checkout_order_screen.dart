@@ -77,7 +77,7 @@ class CheckoutOrderScreenState extends State<CheckoutOrderScreen> {
                 const ApplyCouponSection(),
                 const SizedBox(height: 8),
                 TotalAmountSection(
-                  total: state.total > 0 ? state.total : widget.total,
+                  total: state.total > 0 ? state.productTotal : widget.total,
                 ),
                 const SizedBox(height: 16),
                 ContinueButton(
