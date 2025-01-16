@@ -150,12 +150,14 @@ class InjectManager {
     // Casos de Uso
     final getProductsUseCase =
         GetProductsUseCase(productRepository: productRepository);
+
     final getOneProductUseCase =
         GetOneProductUseCase(productRepository: productRepository);
 
     // Registrar el caso de uso de obtención de productos
     getIt.registerSingleton<GetProductsUseCase>(getProductsUseCase);
     getIt.registerSingleton<GetOneProductUseCase>(getOneProductUseCase);
+
     // ======================================================================= //
 
     // BLOC del Carrito

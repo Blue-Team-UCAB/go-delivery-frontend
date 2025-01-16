@@ -45,8 +45,7 @@ class ProductRepositoryImpl extends ProductRepository {
     if (categories != null &&
         categories.isNotEmpty &&
         categories.any((category) => category.trim().isNotEmpty)) {
-      queryParameters['category'] =
-          categories.where((category) => category.trim().isNotEmpty).join(',');
+      queryParameters['category'] = categories.join(',');
     }
 
     if (price != null && price > 0) {
@@ -75,7 +74,6 @@ class ProductRepositoryImpl extends ProductRepository {
           throw FormatException(
               'Invalid response format: products data is missing');
         }
-
         try {
           return ProductMapper.fromJsonList(data);
         } catch (e) {

@@ -5,12 +5,11 @@ import 'package:go_delivery_frontend/domain/entities/category/category.dart';
 import 'package:go_delivery_frontend/domain/entities/discount/discount.dart';
 
 class ProductMapper {
-
   static Product fromJson(Map<String, dynamic> json) {
     return _parseProduct(json);
   }
-  
-  static Product fromJsonDetail(Map<String, dynamic> json, String productId){
+
+  static Product fromJsonDetail(Map<String, dynamic> json, String productId) {
     try {
       return Product(
         id: productId as String? ?? '',
@@ -39,32 +38,30 @@ class ProductMapper {
       print('Error parsing product: $e');
       rethrow;
     }
-
   }
 
   // Multiple products mapping
   static List<Product> fromJsonList(List<dynamic> jsonList) {
     return jsonList.map((json) => _parseProduct(json)).toList();
   }
-  
+
   static Product fromBundleProduct(BundleProduct bundleProduct) {
     return Product(
-      id: bundleProduct.id,
-      name: bundleProduct.name,
-      description: '',
-      currency: 'USD',
-      price: bundleProduct.price,
-      stock: 0,
-      measurement: '',
-      weight: bundleProduct.weight?? 1,
-      images: bundleProduct.images
-    );
+        id: bundleProduct.id,
+        name: bundleProduct.name,
+        description: '',
+        currency: 'USD',
+        price: bundleProduct.price,
+        stock: 0,
+        measurement: '',
+        weight: bundleProduct.weight ?? 1,
+        images: bundleProduct.images);
   }
-    // Internal parsing method with flexible structure
+
   static Product _parseProduct(Map<String, dynamic> json) {
+    print('Parsing product: $json');
     try {
       return Product(
-        // Basic product information (works with both simple and detailed structures)
         id: json['id'] as String? ?? '',
         name: json['name'] as String? ?? 'Sin nombre',
         description:
@@ -74,17 +71,9 @@ class ProductMapper {
         stock: json['stock'] as int? ?? 0,
         weight: (json['weight'] as num?)?.toDouble() ?? 0.0,
         measurement: json['measurement'] as String? ?? '',
-
-        // Image handling (flexible for both structures)
         images: _parseImageUrl(json['images'] ?? json['imageUrl']),
-
-        // Category handling (optional)
         categories: _parseCategories(json['category']),
-
-        // Discount handling (optional)
         discounts: _parseDiscounts(json['discount']),
-
-        // Caducity date handling (optional)
         caducityDate: _parseCaducityDate(json['caducityDate']),
       );
     } catch (e) {
@@ -93,16 +82,13 @@ class ProductMapper {
     }
   }
 
-  // Utility parsing methods
   static List<String> _parseImageUrl(dynamic images) {
     if (images == null) return [];
 
-    // If images is a list of strings
     if (images is List<String>) {
       return images.where((image) => image.isNotEmpty).toList();
     }
 
-    // If images is a list of dynamic (from JSON)
     if (images is List) {
       return images
           .map((image) => image.toString())
@@ -110,13 +96,11 @@ class ProductMapper {
           .toList();
     }
 
-    // If images is a single string
-    if (images is String && images.isNotEmpty) {
-      return [images];
+    if (images is String) {
+      return images.isNotEmpty ? [images] : [];
     }
 
-    // Default placeholder if no valid images
-    return ['https://via.placeholder.com/150'];
+    return [];
   }
 
   static List<Category> _parseCategories(dynamic categoryData) {
@@ -129,6 +113,7 @@ class ProductMapper {
               ))
           .toList();
     }
+    print('Unexpected category data format: $categoryData');
     return [];
   }
 
@@ -153,11 +138,9 @@ class ProductMapper {
         print('Error parsing caducity date: $e');
       }
     }
-    return DateTime.now()
-        .add(Duration(days: 365)); // Default to 1 year from now
+    return DateTime.now().add(Duration(days: 365));
   }
 
-  // Conversion to JSON
   static Map<String, dynamic> toJson(Product product) {
     return {
       'id': product.id,
