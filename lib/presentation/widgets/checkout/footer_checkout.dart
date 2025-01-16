@@ -10,6 +10,8 @@ import 'package:go_delivery_frontend/domain/entities/bundle/bundle.dart';
 import 'package:go_delivery_frontend/domain/entities/product/product.dart';
 import 'package:go_delivery_frontend/presentation/widgets/dialog_darken_window.dart';
 
+import '../../core/theme/theme_getter.dart';
+
 
 class ContinueButton extends StatelessWidget {
   final Map<String, dynamic>? selectedAddress;
@@ -23,6 +25,8 @@ class ContinueButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final currentSecondaryThemeColor = AppThemesGetter.getSecondaryColor(context);
+
     return BlocConsumer<CheckoutBloc, CheckoutState>(
       listener: (context, state) {
         if (state.errorMessage != null) {
@@ -60,7 +64,7 @@ class ContinueButton extends StatelessWidget {
                   ? null
                   : () => _onButtonPressed(context, state),
               style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF2000B1),
+                backgroundColor: currentSecondaryThemeColor,
                 disabledBackgroundColor: Colors.grey,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8.0),

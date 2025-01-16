@@ -5,6 +5,8 @@ import 'package:go_delivery_frontend/application/BLoc/category/category_event.da
 import 'package:go_delivery_frontend/application/BLoc/category/category_state.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../core/theme/theme_getter.dart';
+
 class PreferencesScreen extends StatefulWidget {
   const PreferencesScreen({super.key});
 
@@ -33,6 +35,8 @@ class _PreferencesScreenState extends State<PreferencesScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final currentSecondaryThemeColor = AppThemesGetter.getSecondaryColor(context);
+
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -119,7 +123,7 @@ class _PreferencesScreenState extends State<PreferencesScreen> {
                               ),
                               decoration: BoxDecoration(
                                 color: isSelected
-                                    ? const Color(0xFF2000B1)
+                                    ? currentSecondaryThemeColor
                                     : Colors.grey[300],
                                 borderRadius: BorderRadius.circular(20),
                               ),
@@ -130,7 +134,7 @@ class _PreferencesScreenState extends State<PreferencesScreen> {
                                     isSelected ? Icons.check : Icons.add,
                                     color: isSelected
                                         ? Colors.white
-                                        : const Color(0xFF2000B1),
+                                        : currentSecondaryThemeColor,
                                   ),
                                   const SizedBox(width: 8),
                                   Text(

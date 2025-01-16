@@ -11,6 +11,8 @@ import 'package:go_delivery_frontend/application/use_cases/order/cancel_order.da
 import 'package:go_delivery_frontend/presentation/widgets/dialog_darken_window.dart';
 import 'package:go_delivery_frontend/presentation/widgets/order_detailed/past/show_reorder_darken_window.dart';
 
+import '../../core/theme/theme_getter.dart';
+
 class OrderCard extends StatefulWidget {
   final OrderManyItem order;
 
@@ -56,6 +58,8 @@ class OrderCardState extends State<OrderCard> {
     //String orderDate = widget.order.lastState.date.isNotEmpty
     //? widget.order.lastState.date
     //: 'Fecha no disponible';
+
+    final currentSecondaryThemeColor = AppThemesGetter.getSecondaryColor(context);
 
     DateTime orderDateTime = DateTime.parse(widget.order.lastState.date);
     String formattedDate =
@@ -143,11 +147,11 @@ class OrderCardState extends State<OrderCard> {
                   fontWeight: FontWeight.bold,
                   color: readableStatus == 'Cancelada'
                       ? Colors.grey[400]
-                      : const Color(0xFF2000B1),
+                      : currentSecondaryThemeColor,
                 ),
               ),
               const SizedBox(height: 16),
-              _buildButtons(widget.order.id),
+              _buildButtons(widget.order.id,context),
             ],
           ),
         ),
@@ -156,6 +160,8 @@ class OrderCardState extends State<OrderCard> {
   }
 
   void _showCancelMenu(BuildContext context) {
+    final currentSecondaryThemeColor = AppThemesGetter.getSecondaryColor(context);
+
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -192,8 +198,8 @@ class OrderCardState extends State<OrderCard> {
                 message: 'Cancelar Orden #${widget.order.id}?',
                 buttonText: 'Atras',
                 icon: Icons.more_vert,
-                iconColor: const Color(0xFF2000B1),
-                buttonColor: const Color(0xFF2000B1),
+                iconColor: currentSecondaryThemeColor,
+                buttonColor: currentSecondaryThemeColor,
                 onButtonPressed: () {
                   Navigator.of(context).pop();
                 },
@@ -212,8 +218,10 @@ class OrderCardState extends State<OrderCard> {
     );
   }
 
-  Widget _buildButtons(String orderid) {
+  Widget _buildButtons(String orderid, BuildContext context) {
     String readableStatus = _getReadableStatus(status);
+
+    final currentSecondaryThemeColor = AppThemesGetter.getSecondaryColor(context);
 
     if (readableStatus == 'Cancelada') {
       return Row(mainAxisAlignment: MainAxisAlignment.end, children: [
@@ -242,7 +250,7 @@ class OrderCardState extends State<OrderCard> {
             context.push('/orderdetail/$orderid');
           },
           style: OutlinedButton.styleFrom(
-            foregroundColor: const Color(0xFF2000B1),
+            foregroundColor: currentSecondaryThemeColor,
           ),
           child: const Text('Ver',
               style: TextStyle(
@@ -263,7 +271,7 @@ class OrderCardState extends State<OrderCard> {
               showReorderPopupDialog(context, orderid);
             },
             style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFF2000B1),
+              backgroundColor: currentSecondaryThemeColor,
             ),
             child: const Text('Reordenar',
                 style: TextStyle(
@@ -279,7 +287,7 @@ class OrderCardState extends State<OrderCard> {
               context.push('/orderdetail/$orderid');
             },
             style: OutlinedButton.styleFrom(
-              foregroundColor: const Color(0xFF2000B1),
+              foregroundColor: currentSecondaryThemeColor,
             ),
             child: const Text('Ver',
                 style: TextStyle(
@@ -317,7 +325,7 @@ class OrderCardState extends State<OrderCard> {
               context.push('/orderdetail/$orderid');
             },
             style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFF2000B1),
+              backgroundColor: currentSecondaryThemeColor,
             ),
             child: const Text('Ver',
                 style: TextStyle(

@@ -5,6 +5,8 @@ import 'package:go_delivery_frontend/application/BLoc/category/category_event.da
 import 'package:go_delivery_frontend/application/BLoc/category/category_state.dart';
 import 'package:go_delivery_frontend/domain/entities/category/category.dart';
 
+import '../../core/theme/theme_getter.dart';
+
 class CategoryTabs extends StatefulWidget {
   final Function(String?)? onCategorySelected;
 
@@ -30,6 +32,7 @@ class CategoryTabsState extends State<CategoryTabs> {
 
   @override
   Widget build(BuildContext context) {
+
     return BlocBuilder<CategoryBloc, CategoryState>(
       builder: (context, state) {
         if (state is CategoryLoading) {
@@ -41,7 +44,7 @@ class CategoryTabsState extends State<CategoryTabs> {
         }
 
         if (state is CategoryLoaded) {
-          return _buildLoadedTabs(state.categories);
+          return _buildLoadedTabs(state.categories, context);
         }
 
         return _buildLoadingTabs();
@@ -67,7 +70,7 @@ class CategoryTabsState extends State<CategoryTabs> {
                   color: Colors.grey[300],
                   borderRadius: BorderRadius.circular(20),
                 ),
-                child: const Text('Loading...'),
+                child: const Text('      '),
               ),
             ),
           ],
@@ -107,7 +110,7 @@ class CategoryTabsState extends State<CategoryTabs> {
     );
   }
 
-  Widget _buildLoadedTabs(List<Category> categories) {
+  Widget _buildLoadedTabs(List<Category> categories, BuildContext context) {
     final allCategories = [
       Category(id: '', name: 'Todo', imageUrl: ''),
       ...categories,
@@ -123,7 +126,7 @@ class CategoryTabsState extends State<CategoryTabs> {
             ...List.generate(
               allCategories.length,
               (index) => _buildTab(
-                  allCategories[index], index == _selectedIndex, index),
+                  allCategories[index], index == _selectedIndex, index, context),
             ),
           ],
         ),
@@ -131,7 +134,9 @@ class CategoryTabsState extends State<CategoryTabs> {
     );
   }
 
-  Widget _buildTab(Category category, bool isSelected, int index) {
+  Widget _buildTab(Category category, bool isSelected, int index, BuildContext context) {
+    final currentSecondaryThemeColor = AppThemesGetter.getSecondaryColor(context);
+
     return GestureDetector(
       onTap: () {
         setState(() {
@@ -143,7 +148,7 @@ class CategoryTabsState extends State<CategoryTabs> {
         margin: const EdgeInsets.only(right: 8),
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         decoration: BoxDecoration(
-          color: isSelected ? const Color(0xFF2000B1) : const Color(0xFFFFFFFF),
+          color: isSelected ? currentSecondaryThemeColor : const Color(0xFFFFFFFF),
           borderRadius: BorderRadius.circular(20),
           boxShadow: [
             if (!isSelected)
