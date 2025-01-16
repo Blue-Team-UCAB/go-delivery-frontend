@@ -7,6 +7,8 @@ import 'package:go_delivery_frontend/presentation/widgets/homescreen/location_ba
 import 'package:go_router/go_router.dart';
 import 'package:go_delivery_frontend/domain/entities/direction/direction.dart';
 
+import '../../core/theme/theme_getter.dart';
+
 class LocationBar extends StatefulWidget {
   const LocationBar({super.key});
 
@@ -56,7 +58,7 @@ class _LocationBarState extends State<LocationBar> {
 
   Widget _buildEmptyLocationBar(BuildContext context) {
     return ListTile(
-      leading: _buildLocationIcon(),
+      leading: _buildLocationIcon(context),
       title: const Text(
         'Entregar a',
         style: TextStyle(fontSize: 12, fontWeight: FontWeight.w400),
@@ -77,7 +79,7 @@ class _LocationBarState extends State<LocationBar> {
     String locationAddress = selectedAddress?.direction ?? 'Sin dirección';
 
     return ListTile(
-      leading: _buildLocationIcon(),
+      leading: _buildLocationIcon(context),
       title: Text(
         'Entregar a: $locationName',
         style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
@@ -98,12 +100,14 @@ class _LocationBarState extends State<LocationBar> {
     );
   }
 
-  Widget _buildLocationIcon() {
+  Widget _buildLocationIcon(BuildContext context) {
+    final currentSecondaryThemeColor = AppThemesGetter.getSecondaryColor(context);
+
     return Container(
       width: 45,
       height: 45,
       decoration: BoxDecoration(
-        color: const Color(0xFF2000B1),
+        color: currentSecondaryThemeColor,
         borderRadius: BorderRadius.circular(25),
       ),
       child: const Icon(
@@ -114,9 +118,13 @@ class _LocationBarState extends State<LocationBar> {
   }
 
   Future<void> _showAddressSelectionDialog(BuildContext context) async {
+
+
     showDialog<String>(
       context: context,
       builder: (BuildContext context) {
+        final currentSecondaryThemeColor = AppThemesGetter.getSecondaryColor(context);
+
         return AlertDialog(
           title: const Text('Selecciona una ubicación'),
           content: Column(
@@ -128,7 +136,7 @@ class _LocationBarState extends State<LocationBar> {
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(8),
                     border:
-                        Border.all(color: const Color(0xFF2000B1), width: 2),
+                        Border.all(color: currentSecondaryThemeColor, width: 2),
                   ),
                   child: ListTile(
                     title: Text(

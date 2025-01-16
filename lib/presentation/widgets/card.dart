@@ -8,13 +8,17 @@ import 'package:go_delivery_frontend/application/BLoc/cart/cart_bloc.dart';
 import 'package:go_delivery_frontend/infrastructure/mappers/cart/cart_item_mapper.dart';
 import 'package:shimmer/shimmer.dart';
 
+import '../core/theme/theme_getter.dart';
+
 class ProductCard extends StatelessWidget {
   final Product product;
   const ProductCard({super.key, required this.product});
   
   @override
   Widget build(BuildContext context) {
-    final int discount = product.discounts.isNotEmpty ? product.discounts[0].percentage.round() : 0; 
+    final int discount = product.discounts.isNotEmpty ? product.discounts[0].percentage.round() : 0;
+
+    final currentSecondaryThemeColor = AppThemesGetter.getSecondaryColor(context);
     return GestureDetector(
       onTap: () {
         context.push('/productdetail/${_getProductId()}');
@@ -120,23 +124,23 @@ class ProductCard extends StatelessWidget {
                       },
                       style: ButtonStyle(
                         alignment: Alignment.center,
-                        side: const WidgetStatePropertyAll(
-                            BorderSide(color: Color(0xFF2000B1))),
+                        side:  WidgetStatePropertyAll(
+                            BorderSide(color: currentSecondaryThemeColor)),
                         shape: WidgetStatePropertyAll(RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12))),
                       ),
-                      icon: const Icon(
+                      icon:  Icon(
                         Icons.add_shopping_cart,
                         size: 18,
-                        color: Color(0xFF2000B1),
+                        color: currentSecondaryThemeColor,
                       ),
-                      label: const Text(
+                      label:  Text(
                         'Añadir',
                         style: TextStyle(
                           fontFamily: 'Inter',
                           fontSize: 13,
                           fontWeight: FontWeight.w600,
-                          color: Color(0xFF2000B1),
+                          color: currentSecondaryThemeColor,
                         ),
                       ),
                     ),
