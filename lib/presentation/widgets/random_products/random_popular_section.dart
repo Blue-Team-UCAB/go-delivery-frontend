@@ -132,12 +132,12 @@ class RandomItem extends StatelessWidget {
     return Column(
       children: [
         Material(
-          borderRadius: const BorderRadius.all(Radius.circular(16)),
+          borderRadius: const BorderRadius.all(Radius.circular(12)),
           color: const Color(0xFFFFFFFF),
           child: ListTile(
             contentPadding: const EdgeInsets.symmetric(horizontal: 10),
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(20),
+              borderRadius: BorderRadius.circular(12),
             ),
             onTap: () {
               context.push('/productdetail/${product.id}');
@@ -146,15 +146,26 @@ class RandomItem extends StatelessWidget {
               imageUrl: product.images.first,
               width: 60,
               fit: BoxFit.contain,
-              placeholder: (context, url) => Shimmer.fromColors(
-                  baseColor: const Color(0xFFd8d5dd),
-                  highlightColor: const Color(0xFFF4F4F4),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.all(Radius.circular(12)),
+              placeholder: (context,url) => Shimmer.fromColors(
+                baseColor: const Color(0xFFd8d5dd),
+                highlightColor: const Color(0xFFF4F4F4),
+                child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.all(Radius.circular(12)),
+                    color: Color(0xFFd8d5dd),
+                  ),
+                )
+              ),
+              errorWidget: (context, url, error) => Shimmer.fromColors(
+                    baseColor: const Color(0xFFd8d5dd),
+                    highlightColor: const Color(0xFFF4F4F4),
+                    child: Container(
+                      height: 60,
+                      width: double.infinity,
                       color: Color(0xFFd8d5dd),
-                    ),
-                  )),
+                      child: Center(child: Text('$error'),),
+                    )
+                  ),
             ),
             title: Text(
               product.name,

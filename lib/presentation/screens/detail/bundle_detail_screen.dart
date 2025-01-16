@@ -193,7 +193,11 @@ class BundleDetailScreen extends StatelessWidget {
                                 ...bundle!.products!.map((product) {
                                   return Padding(
                                     padding: const EdgeInsets.only(right: 20.0),
-                                    child: SizedBox(
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        border: Border.all(color: Color.fromARGB(100, 213, 204, 255)),
+                                        borderRadius: BorderRadius.all(Radius.circular(12))
+                                      ),
                                       width: 200,
                                       height: 255,
                                       child: ProductCard(product: ProductMapper.fromBundleProduct(product)),
