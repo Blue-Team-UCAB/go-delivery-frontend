@@ -80,10 +80,14 @@ class PaymentRepositoryImpl extends PaymentRepository {
   @override
   Future<Result<bool>> processCard(Card card) async {
     await _addAuthorizationHeader();
+    print(
+        'Iniciando solicitud para procesar tarjeta con id: ${card.idCard}, ${card.brand}, ${card.last4}, ${card.expYear}, ${card.expMonth}');
+
     final response = await _apiRequestManager.request<bool>(
       '/api/payment/method/user/add/card',
       'POST',
       (data) {
+        print('Datos recibidos: $data');
         if (data is Map<String, dynamic> && !data.containsKey('error')) {
           return true;
         }
@@ -92,14 +96,19 @@ class PaymentRepositoryImpl extends PaymentRepository {
       body: {'idCard': card.idCard},
     );
 
+    print('Cuerpo de la solicitud enviado: ${{'idCard': card.idCard}}');
+
     if (response.isSuccess) {
       if (response.value == true) {
+        print('Tarjeta procesada exitosamente.');
         return Result.success(true);
       } else {
+        print('Error al procesar tarjeta: Respuesta inesperada.');
         return Result.fail(
             CustomFailure(message: 'Error al agregar la tarjeta'));
       }
     } else {
+      print('Error en la solicitud: ${response.error}');
       return response;
     }
   }
@@ -107,22 +116,29 @@ class PaymentRepositoryImpl extends PaymentRepository {
   @override
   Future<Result<List<Card>>> getCard() async {
     await _addAuthorizationHeader();
+    print('Iniciando solicitud para obtener tarjetas...');
+
     final response = await _apiRequestManager.request<List<Card>>(
       '/api/payment/method/user/card/many',
       'GET',
       (data) {
+        print('Datos recibidos: $data');
         if (data is List) {
-          return data
-              .map((item) => PaymentMethodMapper.cardFromJson(item))
-              .toList();
+          final cards = data.map((item) {
+            print('Procesando tarjeta: $item');
+            return PaymentMethodMapper.cardFromJson(item);
+          }).toList();
+          return cards;
         }
         throw Exception('Respuesta inesperada');
       },
     );
 
     if (response.isSuccess) {
+      print('Solicitud exitosa. Tarjetas obtenidas: ${response.getValue()}');
       return Result.success(response.getValue());
     } else {
+      print('Error al obtener tarjetas: ${response.error}');
       return response;
     }
   }

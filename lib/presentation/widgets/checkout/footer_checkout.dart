@@ -77,7 +77,6 @@ class ContinueButton extends StatelessWidget {
   }
 
   void _onButtonPressed(BuildContext context, CheckoutState state) {
-    // Address validation
     if (selectedAddress == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -88,7 +87,6 @@ class ContinueButton extends StatelessWidget {
       return;
     }
 
-    // Cart validation
     if (state.cartItems.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -99,7 +97,6 @@ class ContinueButton extends StatelessWidget {
       return;
     }
 
-    // Determine payment method
     final String paymentMethod =
         selectedCardId != null && selectedCardId!.isNotEmpty
             ? "Credit"
@@ -115,7 +112,7 @@ class ContinueButton extends StatelessWidget {
             stripePaymentMethod: selectedCardId,
             paymentMethod: paymentMethod,
             idUserDirection: selectedAddress!['id'],
-            couponId: state.appliedCoupon?.id, // Use appliedCoupon from state
+            couponId: state.appliedCoupon?.id,
             productItems: state.productItems
                 .map((item) =>
                     CheckoutProduct(id: item.id, quantity: item.quantity))

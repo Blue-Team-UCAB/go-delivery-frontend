@@ -59,8 +59,8 @@ class _WalletScreenState extends State<WalletScreen> {
 
   @override
   Widget build(BuildContext context) {
-
-    final currentSecondaryThemeColor = AppThemesGetter.getSecondaryColor(context);
+    final currentSecondaryThemeColor =
+        AppThemesGetter.getSecondaryColor(context);
 
     return Scaffold(
       body: SingleChildScrollView(
@@ -265,7 +265,6 @@ class _WalletScreenState extends State<WalletScreen> {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text('Tarjeta eliminada con éxito')),
           );
-          // Notificar a CardListBloc para recargar la lista de tarjetas
           context.read<CardListBloc>().add(LoadCardList());
         } else if (state is DeleteCardFailure) {
           ScaffoldMessenger.of(context).showSnackBar(
@@ -277,7 +276,7 @@ class _WalletScreenState extends State<WalletScreen> {
         }
       },
       child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 12.0,horizontal: 26),
+        padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 26),
         child: Column(
           children: [
             BlocBuilder<CardListBloc, CardListState>(
@@ -292,30 +291,30 @@ class _WalletScreenState extends State<WalletScreen> {
                 } else if (state is CardListLoaded) {
                   return Column(
                     children: state.cards.map((card) {
-
                       return Column(
                         children: [
                           Slidable(
-                            endActionPane: ActionPane(
-                              extentRatio: 0.2,
-                              motion: const ScrollMotion(), 
-                              children: [
-                                SlidableAction(
-                                  onPressed: (context) {
-                                    BlocProvider.of<DeleteCardBloc>(context).add(DeleteCardRequested(cardId: card.id!));
-                                  },
-                                  icon: Icons.delete,
-                                  foregroundColor: Color(0xFFFF0000),
-                                  borderRadius: const BorderRadius.only(
-                                      topRight: Radius.circular(8),
-                                      bottomRight: Radius.circular(8)),
-                                )
-                              ]
-                            ),
-                            
-                            child: CreditCardWidget(card: card)
-                          ),
-                          SizedBox(height: 12,)
+                              endActionPane: ActionPane(
+                                  extentRatio: 0.2,
+                                  motion: const ScrollMotion(),
+                                  children: [
+                                    SlidableAction(
+                                      onPressed: (context) {
+                                        BlocProvider.of<DeleteCardBloc>(context)
+                                            .add(DeleteCardRequested(
+                                                cardId: card.id!));
+                                      },
+                                      icon: Icons.delete,
+                                      foregroundColor: Color(0xFFFF0000),
+                                      borderRadius: const BorderRadius.only(
+                                          topRight: Radius.circular(8),
+                                          bottomRight: Radius.circular(8)),
+                                    )
+                                  ]),
+                              child: CreditCardWidget(card: card)),
+                          SizedBox(
+                            height: 12,
+                          )
                         ],
                       );
                     }).toList(),
@@ -360,7 +359,9 @@ class _WalletScreenState extends State<WalletScreen> {
                 ),
               ),
             ),
-            SizedBox(height: 12,)
+            SizedBox(
+              height: 12,
+            )
           ],
         ),
       ),
