@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
@@ -26,7 +28,7 @@ import 'package:go_delivery_frontend/presentation/widgets/checkout/credit_card_w
 import 'package:go_delivery_frontend/presentation/widgets/wallet/transaction_widget.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../core/theme/theme_getter.dart';
+import 'package:go_delivery_frontend/presentation/core/theme/theme_getter.dart';
 
 class WalletScreen extends StatefulWidget {
   const WalletScreen({super.key});
@@ -158,19 +160,19 @@ class _WalletScreenState extends State<WalletScreen> {
                                   }
                                 },
                               ),
-                              IconButton(
-                                onPressed: () {
-                                  setState(() {
-                                    isVisible = !isVisible;
-                                  });
-                                },
-                                icon: Icon(
-                                  isVisible
-                                      ? Icons.visibility
-                                      : Icons.visibility_off,
-                                  color: Colors.white,
-                                ),
-                              ),
+                              // IconButton(
+                              //   onPressed: () {
+                              //     setState(() {
+                              //       isVisible = !isVisible;
+                              //     });
+                              //   },
+                              //   icon: Icon(
+                              //     isVisible
+                              //         ? Icons.visibility
+                              //         : Icons.visibility_off,
+                              //     color: Colors.white,
+                              //   ),
+                              // ),
                             ],
                           ),
                         ),
@@ -191,21 +193,15 @@ class _WalletScreenState extends State<WalletScreen> {
                     style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 16),
-                  Column(
-                    children: [
-                      _buildSectionContainer(
-                        'GoDely Points',
-                        _buildGoDelyOptions(),
-                      ),
-                      const SizedBox(height: 16),
-                      _buildSectionContainer(
-                        'Tus tarjetas',
-                        _buildCreditCardOptions(),
-                      ),
-                      const SizedBox(height: 16),
-                      PaymentTransactionsWidget()
-                    ],
+                  _buildGoDelyOptions(),
+                  const SizedBox(height: 16),
+                  const Text(
+                    'Tus Tarjetas',
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
+                  _buildCreditCardOptions(),
+                  const SizedBox(height: 16),
+                  PaymentTransactionsWidget(),
                 ],
               ),
             ),
@@ -215,50 +211,9 @@ class _WalletScreenState extends State<WalletScreen> {
     );
   }
 
-  Widget _buildSectionContainer(String title, Widget child, {String? amount}) {
-    return Container(
-      decoration: BoxDecoration(
-        border: Border.all(color: const Color(0xFFC5C6CC)),
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            padding: const EdgeInsets.all(12.0),
-            decoration: const BoxDecoration(
-              borderRadius: BorderRadius.vertical(
-                top: Radius.circular(8.0),
-              ),
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  title,
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                if (title == 'GoDely Points' && amount != null)
-                  Text(
-                    amount,
-                    style: const TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-              ],
-            ),
-          ),
-          child,
-        ],
-      ),
-    );
-  }
-
   Widget _buildCreditCardOptions() {
+    final pageController =
+        PageController(initialPage: 0, viewportFraction: 0.9);
     return BlocListener<DeleteCardBloc, DeleteCardState>(
       listener: (context, state) {
         if (state is DeleteCardSuccess) {
@@ -279,51 +234,51 @@ class _WalletScreenState extends State<WalletScreen> {
         padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 26),
         child: Column(
           children: [
-            BlocBuilder<CardListBloc, CardListState>(
-              builder: (context, state) {
-                if (state is CardListInitial) {
-                  context.read<CardListBloc>().add(LoadCardList());
-                  return const CircularProgressIndicator();
-                }
+            SizedBox(
+              height: 200,
+              child: BlocBuilder<CardListBloc, CardListState>(
+                builder: (context, state) {
+                  if (state is CardListInitial) {
+                    context.read<CardListBloc>().add(LoadCardList());
+                    return const CircularProgressIndicator();
+                  }
 
-                if (state is CardListLoading) {
-                  return const CircularProgressIndicator();
-                } else if (state is CardListLoaded) {
-                  return Column(
-                    children: state.cards.map((card) {
-                      return Column(
-                        children: [
-                          Slidable(
-                              endActionPane: ActionPane(
-                                  extentRatio: 0.2,
-                                  motion: const ScrollMotion(),
-                                  children: [
-                                    SlidableAction(
-                                      onPressed: (context) {
-                                        BlocProvider.of<DeleteCardBloc>(context)
-                                            .add(DeleteCardRequested(
-                                                cardId: card.id!));
-                                      },
-                                      icon: Icons.delete,
-                                      foregroundColor: Color(0xFFFF0000),
-                                      borderRadius: const BorderRadius.only(
-                                          topRight: Radius.circular(8),
-                                          bottomRight: Radius.circular(8)),
-                                    )
-                                  ]),
-                              child: CreditCardWidget(card: card)),
-                          SizedBox(
-                            height: 12,
-                          )
-                        ],
-                      );
-                    }).toList(),
-                  );
-                } else if (state is CardListFailed) {
-                  return Text('Error: ${state.result.getError()}');
-                }
-                return Container();
-              },
+                  if (state is CardListLoading) {
+                    return const CircularProgressIndicator();
+                  } else if (state is CardListLoaded) {
+                    return PageView(
+                      controller: pageController,
+                      scrollDirection: Axis.vertical,
+                      children: state.cards.map((card) {
+                        return Slidable(
+                            endActionPane: ActionPane(
+                                extentRatio: 0.2,
+                                motion: const ScrollMotion(),
+                                children: [
+                                  SlidableAction(
+                                    onPressed: (context) {
+                                      BlocProvider.of<DeleteCardBloc>(context)
+                                          .add(DeleteCardRequested(
+                                              cardId: card.id!));
+                                    },
+                                    icon: Icons.delete,
+                                    foregroundColor: Color(0xFFFF0000),
+                                    borderRadius: const BorderRadius.only(
+                                        topRight: Radius.circular(8),
+                                        bottomRight: Radius.circular(8)),
+                                  )
+                                ]),
+                            child: Transform.scale(
+                                scale: max(1, 1),
+                                child: CreditCardWidget(card: card)));
+                      }).toList(),
+                    );
+                  } else if (state is CardListFailed) {
+                    return Text('Error: ${state.result.getError()}');
+                  }
+                  return Container();
+                },
+              ),
             ),
             const SizedBox(height: 16),
             GestureDetector(
@@ -388,61 +343,58 @@ class _WalletScreenState extends State<WalletScreen> {
               ),
             );
           }
-          return Padding(
-            padding: const EdgeInsets.all(12.0),
-            child: Column(
-              children: activeMethods.map((method) {
-                return GestureDetector(
-                  behavior: HitTestBehavior.opaque,
-                  onTap: () {
-                    setState(() {
-                      _selectedGoDelyOption = method.name ?? '';
-                    });
-                    final methodName = method.name?.trim().toLowerCase();
-                    if (methodName == 'Pago Movil'.toLowerCase()) {
-                      _showGoDelyForm(context);
-                    } else if (methodName == 'zelle'.toLowerCase()) {
-                      _showZelleForm(context);
-                    }
-                  },
-                  child: Container(
-                    width: double.infinity,
-                    margin: const EdgeInsets.only(bottom: 8.0),
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 16.0, vertical: 12.0),
-                    decoration: BoxDecoration(
-                      border: Border.all(
-                        color: _selectedGoDelyOption == method.name
-                            ? const Color(0xFF2000B1)
-                            : Colors.grey,
-                      ),
-                      borderRadius: BorderRadius.circular(12.0),
+          return Column(
+            children: activeMethods.map((method) {
+              return GestureDetector(
+                behavior: HitTestBehavior.opaque,
+                onTap: () {
+                  setState(() {
+                    _selectedGoDelyOption = method.name ?? '';
+                  });
+                  final methodName = method.name?.trim().toLowerCase();
+                  if (methodName == 'Pago Movil'.toLowerCase()) {
+                    _showGoDelyForm(context);
+                  } else if (methodName == 'zelle'.toLowerCase()) {
+                    _showZelleForm(context);
+                  }
+                },
+                child: Container(
+                  width: double.infinity,
+                  margin: const EdgeInsets.only(bottom: 8.0),
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 16.0, vertical: 12.0),
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      color: _selectedGoDelyOption == method.name
+                          ? const Color(0xFF2000B1)
+                          : Colors.grey,
                     ),
-                    child: Row(
-                      children: [
-                        Image.network(
-                          method.image!,
-                          height: 24,
-                          width: 24,
-                          errorBuilder: (context, error, stackTrace) =>
-                              const Icon(Icons.image_not_supported),
-                        ),
-                        const SizedBox(width: 8),
-                        Text(
-                          method.name!,
-                          style: TextStyle(
-                            fontSize: 14,
-                            color: _selectedGoDelyOption == method.name
-                                ? const Color(0xFF2000B1)
-                                : Colors.black,
-                          ),
-                        ),
-                      ],
-                    ),
+                    borderRadius: BorderRadius.circular(12.0),
                   ),
-                );
-              }).toList(),
-            ),
+                  child: Row(
+                    children: [
+                      Image.network(
+                        method.image!,
+                        height: 24,
+                        width: 24,
+                        errorBuilder: (context, error, stackTrace) =>
+                            const Icon(Icons.image_not_supported),
+                      ),
+                      const SizedBox(width: 8),
+                      Text(
+                        method.name!,
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: _selectedGoDelyOption == method.name
+                              ? const Color(0xFF2000B1)
+                              : Colors.black,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            }).toList(),
           );
         } else if (state is PaymentMethodError) {
           return const Center(

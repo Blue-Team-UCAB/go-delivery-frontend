@@ -24,15 +24,8 @@ class LoadProductList extends ProductListEvent {
   });
 
   @override
-  List<Object?> get props => [
-    page,
-    perpage,
-    categories,
-    name,
-    price,
-    discount,
-    popular
-  ];
+  List<Object?> get props =>
+      [page, perpage, categories, name, price, discount, popular];
 }
 
 class SearchProductList extends ProductListEvent {
@@ -55,15 +48,8 @@ class SearchProductList extends ProductListEvent {
   });
 
   @override
-  List<Object?> get props => [
-    name,
-    page,
-    perpage,
-    categories,
-    price,
-    discount,
-    popular
-  ];
+  List<Object?> get props =>
+      [name, page, perpage, categories, price, discount, popular];
 }
 
 class ClearProductList extends ProductListEvent {

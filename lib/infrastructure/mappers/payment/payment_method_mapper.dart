@@ -76,8 +76,8 @@ class PaymentMethodMapper {
       idCard: json['id'],
       brand: json['brand'],
       last4: json['last4'],
-      expMonth: int.parse(json['exp_month']),
-      expYear: int.parse(json['exp_year']),
+      expMonth: json['exp_month'],
+      expYear: json['exp_year'],
     );
   }
 }

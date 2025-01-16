@@ -21,6 +21,7 @@ class CreditCardWidget extends StatelessWidget {
         SizedBox(
           height: 170,
           width: 342,
+          
           child: Padding(
             padding: EdgeInsets.only(
                 left: 20, top: 20, bottom: 0),
