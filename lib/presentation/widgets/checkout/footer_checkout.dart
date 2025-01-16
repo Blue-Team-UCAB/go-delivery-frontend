@@ -10,16 +10,15 @@ import 'package:go_delivery_frontend/domain/entities/bundle/bundle.dart';
 import 'package:go_delivery_frontend/domain/entities/product/product.dart';
 import 'package:go_delivery_frontend/presentation/widgets/dialog_darken_window.dart';
 
-
 class ContinueButton extends StatelessWidget {
   final Map<String, dynamic>? selectedAddress;
   final String? selectedCardId;
 
   const ContinueButton({
-    Key? key,
+    super.key,
     required this.selectedAddress,
     this.selectedCardId,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -42,23 +41,15 @@ class ContinueButton extends StatelessWidget {
       },
       builder: (context, state) {
         final bool isProcessing =
-            state is CheckoutLoading ||
-                state is CheckoutCouponLoading;
-
-        // Check if a coupon has been applied previously
-        final appliedCoupon = state.appliedCoupon;
-        final total = appliedCoupon != null
-            ? state.total * (1 - (appliedCoupon.porcentage / 100))
-            : state.total;
+            state is CheckoutLoading || state is CheckoutCouponLoading;
 
         return Padding(
           padding: const EdgeInsets.all(16.0),
           child: SizedBox(
             width: double.infinity,
             child: ElevatedButton(
-              onPressed: isProcessing
-                  ? null
-                  : () => _onButtonPressed(context, state),
+              onPressed:
+                  isProcessing ? null : () => _onButtonPressed(context, state),
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFF2000B1),
                 disabledBackgroundColor: Colors.grey,
@@ -70,14 +61,14 @@ class ContinueButton extends StatelessWidget {
               child: isProcessing
                   ? const CircularProgressIndicator(color: Colors.white)
                   : const Text(
-                'Continuar',
-                style: TextStyle(
-                  fontFamily: "Montserrat",
-                  color: Colors.white,
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
+                      'Continuar',
+                      style: TextStyle(
+                        fontFamily: "Montserrat",
+                        color: Colors.white,
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
             ),
           ),
         );
@@ -109,30 +100,32 @@ class ContinueButton extends StatelessWidget {
     }
 
     // Determine payment method
-    final String paymentMethod = selectedCardId != null &&
-        selectedCardId!.isNotEmpty
-        ? "Credit"
-        : "Wallet";
+    final String paymentMethod =
+        selectedCardId != null && selectedCardId!.isNotEmpty
+            ? "Credit"
+            : "Wallet";
 
-    if(state.appliedCoupon != null) {
+    if (state.appliedCoupon != null) {
       context.read<CouponBloc>().add(LoadCoupon(coupon: state.appliedCoupon!));
     }
 
     context.read<CheckoutBloc>().add(
-      ProcessCheckoutEvent(
-        paymentId: "f13784a7-f134-4a14-91de-884634b952a3",
-        stripePaymentMethod: selectedCardId,
-        paymentMethod: paymentMethod,
-        idUserDirection: selectedAddress!['id'],
-        couponId: state.appliedCoupon?.id,  // Use appliedCoupon from state
-        productItems: state.productItems
-            .map((item) => CheckoutProduct(id: item.id, quantity: item.quantity))
-            .toList(),
-        bundleItems: state.bundleItems
-            .map((item) => CheckoutBundle(id: item.id, quantity: item.quantity))
-            .toList(),
-      ),
-    );
+          ProcessCheckoutEvent(
+            paymentId: "f13784a7-f134-4a14-91de-884634b952a3",
+            stripePaymentMethod: selectedCardId,
+            paymentMethod: paymentMethod,
+            idUserDirection: selectedAddress!['id'],
+            couponId: state.appliedCoupon?.id, // Use appliedCoupon from state
+            productItems: state.productItems
+                .map((item) =>
+                    CheckoutProduct(id: item.id, quantity: item.quantity))
+                .toList(),
+            bundleItems: state.bundleItems
+                .map((item) =>
+                    CheckoutBundle(id: item.id, quantity: item.quantity))
+                .toList(),
+          ),
+        );
   }
 
   void _showOrderCreatedDialog(BuildContext context, String orderId) {
@@ -148,7 +141,8 @@ class ContinueButton extends StatelessWidget {
           iconColor: const Color(0xFF2000B1),
           buttonColor: const Color(0xFF2000B1),
           onButtonPressed: () {
-            context.go('/orderdetail/$orderId'); // Navigate to order detail screen
+            context
+                .go('/orderdetail/$orderId'); // Navigate to order detail screen
             context.read<CartBloc>().emptyCart();
             context.read<CouponBloc>().clearCoupon();
           },

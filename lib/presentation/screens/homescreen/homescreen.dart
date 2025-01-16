@@ -290,16 +290,13 @@ class HomeScreenState extends State<HomeScreen> {
                     _selectedCategories = selectedCategories;
                   }
                 });
-
-                // Evitar el error si no hay categorías seleccionadas
-                if (selectedCategories.isNotEmpty) {
-                  context.read<CategoryBloc>().add(
-                        SelectCategory(categoryName: selectedCategories.first),
-                      );
-                }
+                context.read<CategoryBloc>().add(
+                      SelectCategory(
+                          categoryName: selectedCategories.join(',')),
+                    );
               },
             ),
-            const ComboSection(),
+            ComboSection(selectedCategories: _selectedCategories),
             const SizedBox(height: 14),
             RandomSection(selectedCategoryNames: _selectedCategories),
           ],

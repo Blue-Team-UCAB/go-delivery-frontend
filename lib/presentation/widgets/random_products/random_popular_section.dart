@@ -36,7 +36,7 @@ class RandomSectionState extends State<RandomSection> {
   }
 
   void _loadRandomProducts() {
-    if (!_mounted || _currentCategoryNames.isEmpty) return;
+    if (!_mounted) return;
 
     final categories = _currentCategoryNames;
 
@@ -56,6 +56,7 @@ class RandomSectionState extends State<RandomSection> {
             _currentCategoryNames = state.name != null ? [state.name!] : [];
           });
 
+          // Llamamos a _loadRandomProducts cada vez que se recibe un cambio
           _loadRandomProducts();
         }
       },
