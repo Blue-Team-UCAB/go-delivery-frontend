@@ -52,13 +52,11 @@ class RandomSectionState extends State<RandomSection> {
     return BlocListener<CategoryBloc, CategoryState>(
       listener: (context, state) {
         if (state is CategoryLoaded) {
-          // Aseguramos que _currentCategoryNames siempre sea una lista de String no nula
           setState(() {
-            // Asignamos una lista con un valor no nulo o vacío
             _currentCategoryNames = state.name != null ? [state.name!] : [];
           });
 
-          _loadRandomProducts(); // Vuelves a cargar los productos con la nueva categoría
+          _loadRandomProducts();
         }
       },
       child: Column(
