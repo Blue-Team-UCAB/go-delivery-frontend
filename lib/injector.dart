@@ -9,6 +9,7 @@ import 'package:go_delivery_frontend/application/BLoc/order/order_create/order_c
 import 'package:go_delivery_frontend/application/BLoc/payment/get_payment_methods/get_payment_methods_blocs.dart';
 import 'package:go_delivery_frontend/application/use_cases/category/get_many_category.dart';
 import 'package:go_delivery_frontend/application/BLoc/order/order_report/order_report_bloc.dart';
+import 'package:go_delivery_frontend/application/use_cases/coupon/claim_one_coupon.dart';
 import 'package:go_delivery_frontend/application/use_cases/coupon/get_coupons.dart';
 import 'package:go_delivery_frontend/application/use_cases/order/cancel_order.dart';
 import 'package:go_delivery_frontend/application/use_cases/order/driver_position_order.dart';
@@ -127,6 +128,9 @@ class InjectManager {
     final getOneCouponUseCase =
         GetOneCouponUseCase(couponRepository: couponRepository);
 
+    final claimOneCouponUseCase =
+        ClaimOneCouponUseCase(couponRepository: couponRepository);
+
     final getCouponsUseCase =
         GetCouponsUseCase(couponRepository: couponRepository);
 
@@ -134,7 +138,7 @@ class InjectManager {
     getIt.registerSingleton<GetOneCouponUseCase>(getOneCouponUseCase);
     getIt.registerSingleton<GetCouponsUseCase>(getCouponsUseCase);
     getIt.registerSingleton(CouponListBloc(getCouponsUseCase));
-    getIt.registerSingleton(CouponBloc(getOneCouponUseCase));
+    getIt.registerSingleton(CouponBloc(claimOneCouponUseCase));
     // ======================================================================= //
 
     // ============================= PRODUCTS ============================= //

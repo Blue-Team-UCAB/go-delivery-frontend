@@ -162,7 +162,6 @@ class OrderRepositoryImpl extends OrderRepository {
 
   @override
   Future<Result<CourierPosition>> courierPositionOrder(String orderId) async {
-    print("COURIER POSITION order id: ${orderId}");
 
     await _addAuthorizationHeader();
     final response = await _apiRequestManager.request(
@@ -170,23 +169,16 @@ class OrderRepositoryImpl extends OrderRepository {
       'GET',
           (data) {
             final courierPosition = CourierPositionMapper.fromJson(data);
-
-            print(courierPosition.latActual);
-            print(courierPosition.longActual);
-            print(courierPosition.latPuntoLlegada);
-            print(courierPosition.longPuntoLlegada);
-
-
             return courierPosition;
       },
       body: {'orderId': orderId},
     );
-    if(!response.isSuccess) {
+    if(response.isSuccess) {
+      return Result.success(response.value!);
+    }else {
       return Result.fail(
           new CustomFailure(message: response.error!.message.toString()));
     }
-    return Result.fail(
-        new CustomFailure(message: response.error!.message.toString()));
   }
 
 }
