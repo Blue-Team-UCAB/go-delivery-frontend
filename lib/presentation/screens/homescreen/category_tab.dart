@@ -4,8 +4,7 @@ import 'package:go_delivery_frontend/application/BLoc/category/category_bloc.dar
 import 'package:go_delivery_frontend/application/BLoc/category/category_event.dart';
 import 'package:go_delivery_frontend/application/BLoc/category/category_state.dart';
 import 'package:go_delivery_frontend/domain/entities/category/category.dart';
-
-import '../../core/theme/theme_getter.dart';
+import 'package:go_delivery_frontend/presentation/core/theme/theme_getter.dart';
 
 class CategoryTabs extends StatefulWidget {
   final Function(List<String>)? onCategorySelected;
@@ -144,13 +143,19 @@ class CategoryTabsState extends State<CategoryTabs> {
     return GestureDetector(
       onTap: () {
         setState(() {
-          if (_selectedCategories.contains(category.name)) {
+          if (isSelected) {
+            print('Deseleccionando: ${category.name}');
             _selectedCategories.remove(category.name);
           } else {
+            print('Seleccionando: ${category.name}');
             _selectedCategories.add(category.name);
           }
+          print(
+              'Categorías seleccionadas después del cambio: $_selectedCategories');
         });
+
         widget.onCategorySelected?.call(_selectedCategories);
+        print("Seleccionadas en CategoryTabs: $_selectedCategories");
       },
       child: Container(
         margin: const EdgeInsets.only(right: 8),
