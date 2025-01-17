@@ -147,7 +147,7 @@ class SidebarScreen extends StatelessWidget {
                 ListTile(
                   leading: const Icon(Icons.android_outlined, color: Colors.white),
                   title: const Text(
-                    'ChatBot',
+                    'Habla con Bluey',
                     style: TextStyle(
                       fontFamily: 'Inter',
                       fontWeight: FontWeight.w600,
