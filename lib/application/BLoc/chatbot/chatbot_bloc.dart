@@ -26,7 +26,7 @@ class ChatBotBloc extends Bloc<ChatBotEvent, ChatBotState> {
       if (result.isSuccess) {
         final botResponse = result.getValue();
         if (_lastBotResponse == botResponse) {
-          return; // Evitar mensajes redundantes
+          return;
         }
         _lastBotResponse = botResponse;
 

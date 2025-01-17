@@ -42,6 +42,25 @@ class _ChatBotViewState extends State<_ChatBotView> {
   final List<types.Message> _messages = [];
   String? lastBotResponse;
 
+  @override
+  void initState() {
+    super.initState();
+    _addInitialMessage();
+  }
+
+  void _addInitialMessage() {
+    final initialBotMessage = types.TextMessage(
+      author: types.User(id: 'bot-id'),
+      id: const Uuid().v4(),
+      text: '¡Hola! ¿En qué te puedo ayudar hoy?',
+      createdAt: DateTime.now().millisecondsSinceEpoch,
+    );
+
+    setState(() {
+      _messages.insert(0, initialBotMessage);
+    });
+  }
+
   void _handleSendPressed(types.PartialText message) {
     widget.chatBotBloc.add(SendMessageEvent(message: message.text));
     final userMessage = types.TextMessage(
@@ -53,7 +72,14 @@ class _ChatBotViewState extends State<_ChatBotView> {
 
     setState(() {
       _messages.insert(0, userMessage);
+      _trimMessages();
     });
+  }
+
+  void _trimMessages() {
+    if (_messages.length > 10) {
+      _messages.removeRange(10, _messages.length);
+    }
   }
 
   @override
@@ -82,6 +108,7 @@ class _ChatBotViewState extends State<_ChatBotView> {
               setState(() {
                 _messages.insert(0, botMessage);
                 lastBotResponse = state.botResponse;
+                _trimMessages();
               });
             });
           }
@@ -91,6 +118,12 @@ class _ChatBotViewState extends State<_ChatBotView> {
           messages: _messages,
           onSendPressed: _handleSendPressed,
           user: types.User(id: 'user-id'),
+          emptyState: Center(
+            child: Text(
+              'No hay mensajes por el momento.',
+              style: TextStyle(color: Colors.grey, fontSize: 16),
+            ),
+          ),
         );
       },
     );
