@@ -92,7 +92,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       padding: const EdgeInsets.symmetric(horizontal: 16.0),
       child: Container(
         width: double.infinity,
-        height: 70,
+        height: 72,
         alignment: Alignment.center,
         decoration: const BoxDecoration(
           border: Border(bottom: BorderSide(color: Colors.grey, width: 1)),
