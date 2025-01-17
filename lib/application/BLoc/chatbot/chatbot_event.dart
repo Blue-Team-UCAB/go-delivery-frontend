@@ -6,9 +6,15 @@ abstract class ChatBotEvent extends Equatable {
 
 class SendMessageEvent extends ChatBotEvent {
   final String message;
+  final String? context;
 
-  const SendMessageEvent({required this.message});
+  const SendMessageEvent({required this.message, this.context});
 
   @override
-  List<Object?> get props => [message];
+  List<Object?> get props => [message, context];
+}
+
+class ResetChatEvent extends ChatBotEvent {
+  @override
+  List<Object?> get props => [];
 }

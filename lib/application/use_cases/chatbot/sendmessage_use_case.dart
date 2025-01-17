@@ -5,10 +5,12 @@ import 'package:go_delivery_frontend/infrastructure/repositories/chatbot/chat_bo
 class SendMessageInput extends IUseCaseInput {
   final String userId;
   final String message;
+  final String? context;
 
   SendMessageInput({
     required this.userId,
     required this.message,
+    this.context,
   });
 }
 
@@ -22,6 +24,7 @@ class SendMessageUseCase {
     return _chatBotRepository.sendMessage(
       userId: input.userId,
       message: input.message,
+      context: input.context,
     );
   }
 }

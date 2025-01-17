@@ -10,16 +10,11 @@ import 'package:go_router/go_router.dart';
 import 'package:go_delivery_frontend/application/BLoc/auth/login/login_bloc.dart';
 import 'package:go_delivery_frontend/injector.dart';
 import 'package:go_delivery_frontend/presentation/screens/auth/login/inputDecorationLogin.dart';
-
 import 'package:go_delivery_frontend/application/BLoc/themes/themes_bloc.dart';
 import 'package:go_delivery_frontend/infrastructure/datasources/localstorage/localstorage_impl.dart';
 import 'package:go_delivery_frontend/presentation/core/theme/theme.dart';
-
 import 'package:go_delivery_frontend/application/BLoc/cart/cart_bloc.dart';
-import 'package:go_delivery_frontend/presentation/core/app.dart';
-
-import '../../../core/theme/theme_getter.dart';
-import '../../../widgets/dialog_darken_window.dart';
+import 'package:go_delivery_frontend/presentation/widgets/dialog_darken_window.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -207,7 +202,12 @@ class LoginFormState extends State<LoginForm> {
                           },
                           onSelected: (AppColorMode? newMode) async {
                             if (newMode != null &&
-                                newMode != context.read<ThemesBloc>().state.appTheme.colorMode) {
+                                newMode !=
+                                    context
+                                        .read<ThemesBloc>()
+                                        .state
+                                        .appTheme
+                                        .colorMode) {
                               context.read<ThemesBloc>().changeTheme();
 
                               context.read<CartBloc>().emptyCart();
@@ -249,9 +249,9 @@ class LoginFormState extends State<LoginForm> {
                               });
 
                               Future.delayed(const Duration(seconds: 4), () {
-                                SystemChannels.platform.invokeMethod('SystemNavigator.pop');
+                                SystemChannels.platform
+                                    .invokeMethod('SystemNavigator.pop');
                               });
-
                             }
                           },
                         ),
