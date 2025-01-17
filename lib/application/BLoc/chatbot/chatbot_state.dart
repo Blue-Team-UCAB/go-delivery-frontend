@@ -11,6 +11,8 @@ class ChatBotInitial extends ChatBotState {}
 
 class ChatBotLoading extends ChatBotState {}
 
+class ChatBotReset extends ChatBotState {}
+
 class ChatBotMessageSent extends ChatBotState {
   final String message;
   final String botResponse;

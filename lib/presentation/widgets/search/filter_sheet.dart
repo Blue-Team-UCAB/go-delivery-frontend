@@ -63,14 +63,11 @@ class FilterSheetState extends State<FilterSheet> {
               Text('Categorías',
                   style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
               CategoryTabs(
+                selectedCategories: state.selectedCategories, // Add this
                 onCategorySelected: (List<String> selectedCategories) {
-                  if (selectedCategories.isNotEmpty) {
-                    context
-                        .read<FilterBloc>()
-                        .add(UpdateCategory(selectedCategories.first));
-                  } else {
-                    context.read<FilterBloc>().add(UpdateCategory(null));
-                  }
+                  context
+                      .read<FilterBloc>()
+                      .add(UpdateSelectedCategories(selectedCategories));
                 },
               ),
               SizedBox(height: 32),
@@ -115,9 +112,11 @@ class FilterSheetState extends State<FilterSheet> {
                     child: ElevatedButton(
                       onPressed: () {
                         Navigator.pop(context, {
-                          'category': state.selectedCategory,
+                          // 'category': state.selectedCategory, // Remove this
                           'priceRange': state.priceRange,
-                          'hasDiscount': state.hasDiscount, // Add this line
+                          'hasDiscount': state.hasDiscount,
+                          'selectedCategories':
+                              state.selectedCategories, // Add this line
                         }); // Modify this line
                       },
                       style: ElevatedButton.styleFrom(

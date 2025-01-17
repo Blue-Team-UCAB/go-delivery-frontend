@@ -7,8 +7,15 @@ import 'package:go_delivery_frontend/application/BLoc/chatbot/chatbot_state.dart
 import 'package:uuid/uuid.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class ChatBotScreen extends StatelessWidget {
+class ChatBotScreen extends StatefulWidget {
   const ChatBotScreen({super.key});
+
+  @override
+  ChatBotScreenState createState() => ChatBotScreenState();
+}
+
+class ChatBotScreenState extends State<ChatBotScreen> {
+  Key _chatBotViewKey = UniqueKey();
 
   @override
   Widget build(BuildContext context) {
@@ -23,8 +30,24 @@ class ChatBotScreen extends StatelessWidget {
         iconTheme: const IconThemeData(
           color: Colors.white,
         ),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.refresh),
+            onPressed: () {
+              context.read<ChatBotBloc>().add(ResetChatEvent());
+              // Cambiar la clave para forzar el reinicio
+              setState(() {
+                _chatBotViewKey = UniqueKey();
+              });
+            },
+            tooltip: 'Reiniciar chat',
+          ),
+        ],
       ),
-      body: _ChatBotView(chatBotBloc: chatBotBloc),
+      body: _ChatBotView(
+        key: _chatBotViewKey,
+        chatBotBloc: chatBotBloc,
+      ),
     );
   }
 }
@@ -32,7 +55,10 @@ class ChatBotScreen extends StatelessWidget {
 class _ChatBotView extends StatefulWidget {
   final ChatBotBloc chatBotBloc;
 
-  const _ChatBotView({required this.chatBotBloc});
+  const _ChatBotView({
+    required this.chatBotBloc,
+    super.key,
+  });
 
   @override
   _ChatBotViewState createState() => _ChatBotViewState();
@@ -52,7 +78,7 @@ class _ChatBotViewState extends State<_ChatBotView> {
     final initialBotMessage = types.TextMessage(
       author: types.User(id: 'bot-id'),
       id: const Uuid().v4(),
-      text: '¡Hola! ¿En qué te puedo ayudar hoy?',
+      text: '¡Hola! Soy Bluey ¿En qué te puedo ayudar hoy?',
       createdAt: DateTime.now().millisecondsSinceEpoch,
     );
 
@@ -62,7 +88,25 @@ class _ChatBotViewState extends State<_ChatBotView> {
   }
 
   void _handleSendPressed(types.PartialText message) {
-    widget.chatBotBloc.add(SendMessageEvent(message: message.text));
+    final contextMessages = _messages
+        .take(10)
+        .map((msg) {
+          if (msg is types.TextMessage) {
+            final authorName = msg.author.id == 'bot-id' ? 'Bluey' : 'User';
+            return '$authorName: ${msg.text}';
+          }
+          return '';
+        })
+        .where((msg) => msg.isNotEmpty)
+        .join(' ');
+
+    widget.chatBotBloc.add(
+      SendMessageEvent(
+        message: message.text,
+        context: contextMessages.isNotEmpty ? contextMessages : null,
+      ),
+    );
+
     final userMessage = types.TextMessage(
       author: types.User(id: 'user-id'),
       id: const Uuid().v4(),
@@ -95,12 +139,41 @@ class _ChatBotViewState extends State<_ChatBotView> {
           });
         }
 
+        if (state is ChatBotLoading) {
+          if (_messages.isEmpty ||
+              _messages.first is! types.TextMessage ||
+              (_messages.first as types.TextMessage).text !=
+                  'Bluey está escribiendo...') {
+            final typingMessage = types.TextMessage(
+              author: types.User(id: 'bot-id'),
+              id: const Uuid().v4(),
+              text: 'Bluey está escribiendo...',
+              createdAt: DateTime.now().millisecondsSinceEpoch,
+              metadata: {'isTyping': true},
+            );
+
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              setState(() {
+                _messages.insert(0, typingMessage);
+                _trimMessages();
+              });
+            });
+          }
+        }
+
         if (state is ChatBotMessageSent) {
           if (state.botResponse != lastBotResponse) {
+            if (_messages.isNotEmpty &&
+                _messages.first is types.TextMessage &&
+                (_messages.first as types.TextMessage).text ==
+                    'Bluey está escribiendo...') {
+              _messages.removeAt(0);
+            }
+
             final botMessage = types.TextMessage(
               author: types.User(id: 'bot-id'),
               id: const Uuid().v4(),
-              text: state.botResponse,
+              text: state.botResponse.replaceFirst('Bluey: ', ''),
               createdAt: DateTime.now().millisecondsSinceEpoch,
             );
 

@@ -91,7 +91,6 @@ class OrderRepositoryImpl extends OrderRepository {
       List<CheckoutBundle>? bundles}) async {
     await _addAuthorizationHeader();
 
-    // Prepare the body
     final body = {
       'idUserDirection': idUserDirection,
       if (products != null)

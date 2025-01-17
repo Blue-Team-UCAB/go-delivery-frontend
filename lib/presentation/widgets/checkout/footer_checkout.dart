@@ -45,7 +45,8 @@ class ContinueButton extends StatelessWidget {
         final bool isProcessing =
             state is CheckoutLoading || state is CheckoutCouponLoading;
 
-        final currentSecondaryThemeColor = AppThemesGetter.getSecondaryColor(context);
+        final currentSecondaryThemeColor =
+            AppThemesGetter.getSecondaryColor(context);
 
         return Padding(
           padding: const EdgeInsets.all(16.0),
@@ -101,7 +102,6 @@ class ContinueButton extends StatelessWidget {
       return;
     }
 
-
     if (state.appliedCoupon != null) {
       context.read<CouponBloc>().add(LoadCoupon(coupon: state.appliedCoupon!));
     }
@@ -129,7 +129,8 @@ class ContinueButton extends StatelessWidget {
       context: context,
       barrierDismissible: false,
       builder: (BuildContext context) {
-        final currentSecondaryThemeColor = AppThemesGetter.getSecondaryColor(context);
+        final currentSecondaryThemeColor =
+            AppThemesGetter.getSecondaryColor(context);
 
         return AnimatedSuccessDialog(
           title: 'Orden Creada!',

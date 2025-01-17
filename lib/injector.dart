@@ -17,6 +17,7 @@ import 'package:go_delivery_frontend/application/use_cases/order/report_order.da
 import 'package:go_delivery_frontend/application/use_cases/use_cases.dart';
 import 'package:go_delivery_frontend/domain/repositories/category/category_repository.dart';
 import 'package:go_delivery_frontend/domain/repositories/repositories.dart';
+import 'package:go_delivery_frontend/infrastructure/repositories/cart/cart_get_ai_repository_impl.dart';
 import 'package:go_delivery_frontend/infrastructure/repositories/category/category_repository_impl.dart';
 import 'package:go_delivery_frontend/infrastructure/repositories/repositories_impl.dart';
 import 'package:go_delivery_frontend/application/BLoc/auth/recover_password/recover_password_bloc.dart';
@@ -92,7 +93,11 @@ class InjectManager {
     // ============================= CART ==================================== //
     final cartLocalStorageRepo =
         CartLocalStorageRepositoryImpl(CartIsarLocalStorageDatasource());
-    getIt.registerSingleton(CartBloc(cartLocalStorageRepo));
+
+    final cartGetAiRepo = CartGetAiRepositoryImpl(apiRequestManager: apiRequestManagerImpl,
+        localStorage: localStorageService);
+
+    getIt.registerSingleton(CartBloc(cartLocalStorageRepo,cartGetAiRepo));
     // ======================================================================= //
 
     // ============================= NOTIFICATIONS =========================== //
