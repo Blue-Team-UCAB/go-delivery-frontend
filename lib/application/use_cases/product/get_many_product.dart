@@ -5,13 +5,21 @@ import 'package:go_delivery_frontend/domain/repositories/product/product_reposit
 
 class GetProductsUseCaseInput extends IUseCaseInput {
   final int page;
-  final int take;
-  final String? search;
+  final int perpage;
+  final List<String>? categories;
+  final int? price;
+  final String? discount;
+  final String? name;
+  final String? popular;
 
   GetProductsUseCaseInput({
-    this.search,
+    this.price,
+    this.discount,
+    this.name,
+    this.popular,
+    this.categories,
     required this.page,
-    required this.take,
+    required this.perpage,
   });
 }
 
@@ -23,9 +31,13 @@ class GetProductsUseCase {
 
   Future<Result<List<Product>>> execute(GetProductsUseCaseInput input) {
     return _productRepository.getProducts(
-      search: input.search!,
+      name: input.name ?? '',
+      categories: input.categories ?? [],
+      price: input.price ?? 0,
+      discount: input.discount ?? '',
+      popular: input.popular ?? '',
       page: input.page,
-      take: input.take,
+      perpage: input.perpage,
     );
   }
 }

@@ -29,3 +29,11 @@ final class DeleteCartItem extends CartEvent{
   final CartItem item;
   const DeleteCartItem(this.item);
 }
+
+final class EmptyCart extends CartEvent {
+  const EmptyCart();
+}
+
+final class LoadAICart extends CartEvent {
+  const LoadAICart();
+}

@@ -1,39 +1,87 @@
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:get_it/get_it.dart';
-import 'package:go_delivery_frontend/application/BLoc/bundle/bundle_detail/bundle_detail_bloc.dart';
-import 'package:go_delivery_frontend/application/BLoc/bundle/bundle_many/bundle_many_bloc.dart';
-import 'package:go_delivery_frontend/application/BLoc/product/popular/product_popular_many_bloc.dart';
-import 'package:go_delivery_frontend/application/BLoc/product/product_detail/product_detail_bloc.dart';
+import 'package:go_delivery_frontend/application/BLoc/blocs.dart';
+import 'package:go_delivery_frontend/application/BLoc/category/category_bloc.dart';
+import 'package:go_delivery_frontend/application/BLoc/coupons/coupon_many/coupon_many_bloc.dart';
+import 'package:go_delivery_frontend/application/BLoc/filter/filter_bloc.dart';
+import 'package:go_delivery_frontend/application/BLoc/order/courier_position/order_courier_position_bloc.dart';
+import 'package:go_delivery_frontend/application/BLoc/order/order_cancel/order_cancel_bloc.dart';
+import 'package:go_delivery_frontend/application/BLoc/order/order_report/order_report_bloc.dart';
+import 'package:go_delivery_frontend/application/BLoc/payment/get_payment_methods/get_payment_methods_blocs.dart';
 import 'package:go_delivery_frontend/injector.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:go_delivery_frontend/presentation/core/app.dart';
-import 'package:go_delivery_frontend/application/BLoc/product/product_many/product_many_bloc.dart';
-import 'application/BLoc/auth/login/login_bloc.dart';
-import 'application/BLoc/auth/recover_password/recover_password_bloc.dart';
-import 'application/BLoc/cart/cart_bloc.dart';
-import 'application/BLoc/notifications/bloc/notifications_bloc.dart';
-import 'application/BLoc/themes/themes_bloc.dart';
-import 'infrastructure/mappers/local_notifications.dart';
+import 'package:go_delivery_frontend/application/BLoc/auth/recover_password/recover_password_bloc.dart';
+import 'package:go_delivery_frontend/application/BLoc/order/order_create/order_create_bloc.dart';
+import 'package:go_delivery_frontend/firebase_options.dart';
+import 'package:go_delivery_frontend/infrastructure/firebase/firebase_notifications_manager.dart';
+import 'package:go_delivery_frontend/infrastructure/mappers/local_notifications.dart';
+
+import 'package:go_delivery_frontend/infrastructure/datasources/localstorage/localstorage_impl.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
+
+  final LocalStorageService localStorageService = LocalStorageService();
+
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   await LocalNotifications().initializeLocalNotifications();
   await InjectManager.setUpInjections();
+  await dotenv.load();
+
+  String? currentStripeKey = await localStorageService.getValue<String>("stripeKey");
+
+  Stripe.publishableKey = (currentStripeKey ?? dotenv.env['STRIPE_PUBLISHABLE_KEY'])!;
+  await Stripe.instance.applySettings();
   runApp(
     MultiBlocProvider(
       providers: [
+        BlocProvider(create: (_) => getIt<UserImageBloc>()),
+        BlocProvider(create: (_) => getIt<AddDirectionBloc>()),
+        BlocProvider(create: (_) => getIt<DirectionListBloc>()),
+        BlocProvider(create: (_) => getIt<UpdateDirectionBloc>()),
+        BlocProvider(create: (_) => getIt<DeleteAddressBloc>()),
+        BlocProvider(create: (_) => getIt<GetWalletAmountBloc>()),
+        BlocProvider(create: (_) => getIt<DeleteCardBloc>()),
+        BlocProvider(create: (_) => getIt<GetPaymentTransactionsBloc>()),
+        BlocProvider(create: (_) => getIt<CardListBloc>()),
+        BlocProvider(create: (_) => getIt<PaymentMethodBloc>()),
+        BlocProvider(create: (_) => getIt<CardBloc>()),
+        BlocProvider(create: (_) => getIt<ZelleBloc>()),
+        BlocProvider(create: (_) => getIt<PaymentBloc>()),
         BlocProvider(create: (_) => getIt<CartBloc>()),
+        BlocProvider(create: (_) => getIt<CouponBloc>()),
+        BlocProvider(create: (_) => getIt<CouponListBloc>()),
         BlocProvider(create: (_) => getIt<LoginBloc>()),
+        BlocProvider(create: (_) => getIt<CurrentUserBloc>()),
         BlocProvider(create: (_) => getIt<ThemesBloc>()),
         BlocProvider(create: (_) => getIt<NotificationsBloc>()),
         BlocProvider(create: (_) => getIt<RecoverPasswordBloc>()),
+        BlocProvider(create: (_) => getIt<CheckoutBloc>()),
+        BlocProvider(create: (_) => getIt<OrderCancelBloc>()),
         BlocProvider(create: (_) => getIt<ProductListBloc>()),
         BlocProvider(create: (_) => getIt<ProductDetailBloc>()),
         BlocProvider(create: (_) => getIt<BundleListBloc>()),
         BlocProvider(create: (_) => getIt<BundleDetailBloc>()),
-        BlocProvider(create: (_) => getIt<ProductPopularListBloc>())
+        BlocProvider(create: (_) => getIt<OrderReportBloc>()),
+        BlocProvider(create: (_) => getIt<ProductPopularListBloc>()),
+        BlocProvider(create: (_) => getIt<ProductRandomListBloc>()),
+        BlocProvider(create: (_) => getIt<OrderDetailBloc>()),
+        BlocProvider(create: (_) => getIt<ManyOrdersBloc>()),
+        BlocProvider(create: (_) => getIt<CategoryBloc>()),
+        BlocProvider(create: (_) => getIt<OrderDriverPositionBloc>()),
+        BlocProvider(create: (_) => getIt<FilterBloc>()),
+        BlocProvider(create: (_) => getIt<ChatBotBloc>()),
       ],
-      child: const GoDelyApp(),
+      child: BlocBuilder<ThemesBloc, ThemesState>(
+        builder: (context, state) {
+          return GoDelyApp();
+        },
+      ),
     ),
   );
 }

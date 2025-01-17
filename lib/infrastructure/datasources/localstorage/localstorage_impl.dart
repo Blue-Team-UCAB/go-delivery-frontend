@@ -34,15 +34,15 @@ class LocalStorageService extends LocalStorage {
   Future<void> setKeyValue<T>(String key, T value) async {
     final prefs = await getSharedPrefs();
     switch (T) {
-      case int:
+      case const (int):
         prefs.setInt(key, value as int);
         break;
 
-      case String:
+      case const (String):
         prefs.setString(key, value as String);
         break;
 
-      case bool:
+      case const (bool):
         prefs.setBool(key, value as bool);
         break;
 

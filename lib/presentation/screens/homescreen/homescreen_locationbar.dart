@@ -1,4 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_delivery_frontend/application/BLoc/directions/many/direction_many_bloc.dart';
+import 'package:go_delivery_frontend/application/BLoc/directions/many/direction_many_event.dart';
+import 'package:go_delivery_frontend/application/BLoc/directions/many/direction_many_state.dart';
+import 'package:go_delivery_frontend/presentation/widgets/homescreen/location_bar_placeholder.dart';
+import 'package:go_router/go_router.dart';
+import 'package:go_delivery_frontend/domain/entities/direction/direction.dart';
+
+import '../../core/theme/theme_getter.dart';
 
 class LocationBar extends StatefulWidget {
   const LocationBar({super.key});
@@ -8,104 +17,155 @@ class LocationBar extends StatefulWidget {
 }
 
 class _LocationBarState extends State<LocationBar> {
-  String location = 'El Paraíso, Plaza Madariaga';
+  late List<Direction> addresses = [];
+  late Direction? selectedAddress;
 
-  void _updateLocation(String newLocation) {
-    setState(() {
-      location = newLocation;
-    });
+  @override
+  void initState() {
+    super.initState();
+
+    context.read<DirectionListBloc>().add(LoadDirectionList());
   }
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      color: Colors.transparent,
-      child: DecoratedBox(
-        decoration: BoxDecoration(
-          color: Colors.grey[200],
-          borderRadius: BorderRadius.circular(8),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.2),
-              blurRadius: 15,
-              spreadRadius: 10,
-              offset: const Offset(0, 10),
-            ),
-          ],
-        ),
-        child: SizedBox(
-          height: 70,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-            child: Row(
-              children: [
-                const Icon(Icons.location_on_outlined, color: Colors.black, size: 20),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Text(
-                        'Entrega a',
-                        style: TextStyle(fontFamily: 'Montserrat',color: Colors.black54, fontSize: 12),
-                      ),
-                      Text(
-                        location, // Display the current location
-                        style: const TextStyle(fontFamily: 'Montserrat',color: Colors.black, fontSize: 13,fontWeight: FontWeight.w600),
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ],
-                  ),
-                ),
-                InkWell(
-                  onTap: () {
-                    // Example: Show a dialog to update the location
-                    _showLocationDialog(context);
-                  },
-                  child: const Icon(Icons.chevron_right, color: Colors.black),
-                ),
-              ],
-            ),
-          ),
-        ),
+    return BlocListener<DirectionListBloc, DirectionListState>(
+      listener: (context, state) {
+        if (state is DirectionListLoaded) {
+          setState(() {
+            addresses = state.directions;
+            if (addresses.isNotEmpty) {
+              selectedAddress = addresses[0];
+            }
+          });
+        }
+      },
+      child: BlocBuilder<DirectionListBloc, DirectionListState>(
+        builder: (context, state) {
+          if (state is DirectionListLoading) {
+            return LocationBarPlaceholder();
+          }
+
+          if (addresses.isEmpty) {
+            return _buildEmptyLocationBar(context);
+          }
+
+          return _buildLocationBarWithDirections(context);
+        },
       ),
     );
   }
 
+  Widget _buildEmptyLocationBar(BuildContext context) {
+    return ListTile(
+      leading: _buildLocationIcon(context),
+      title: const Text(
+        'Entregar a',
+        style: TextStyle(fontSize: 12, fontWeight: FontWeight.w400),
+      ),
+      subtitle: const Text(
+        'Añade una nueva dirección para tus pedidos',
+        style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+      ),
+      trailing: const Icon(Icons.arrow_forward_ios),
+      onTap: () {
+        context.go('/addresses');
+      },
+    );
+  }
 
-  Future<void> _showLocationDialog(BuildContext context) async {
-    String newLocation = '';
-    await showDialog<String>(
+  Widget _buildLocationBarWithDirections(BuildContext context) {
+    String locationName = selectedAddress?.name ?? 'Sin nombre';
+    String locationAddress = selectedAddress?.direction ?? 'Sin dirección';
+
+    return ListTile(
+      leading: _buildLocationIcon(context),
+      title: Text(
+        'Entregar a: $locationName',
+        style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+      ),
+      subtitle: Text(
+        locationAddress,
+        style: const TextStyle(
+          fontSize: 14,
+          fontWeight: FontWeight.w400,
+        ),
+        overflow: TextOverflow.ellipsis,
+        maxLines: 1,
+      ),
+      trailing: const Icon(Icons.arrow_forward_ios),
+      onTap: () {
+        _showAddressSelectionDialog(context);
+      },
+    );
+  }
+
+  Widget _buildLocationIcon(BuildContext context) {
+    final currentSecondaryThemeColor = AppThemesGetter.getSecondaryColor(context);
+
+    return Container(
+      width: 45,
+      height: 45,
+      decoration: BoxDecoration(
+        color: currentSecondaryThemeColor,
+        borderRadius: BorderRadius.circular(25),
+      ),
+      child: const Icon(
+        Icons.location_on_outlined,
+        color: Color(0xffffffff),
+      ),
+    );
+  }
+
+  Future<void> _showAddressSelectionDialog(BuildContext context) async {
+
+
+    showDialog<String>(
       context: context,
       builder: (BuildContext context) {
+        final currentSecondaryThemeColor = AppThemesGetter.getSecondaryColor(context);
+
         return AlertDialog(
-          title: const Text('Cambiar Ubicación'),
-          content: TextField(
-            onChanged: (value) {
-              newLocation = value;
-            },
-            decoration: const InputDecoration(
-              hintText: 'Ingrese nueva ubicación',
-            ),
+          title: const Text('Selecciona una ubicación'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ...addresses.map((address) {
+                return Container(
+                  margin: const EdgeInsets.only(bottom: 8),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(8),
+                    border:
+                        Border.all(color: currentSecondaryThemeColor, width: 2),
+                  ),
+                  child: ListTile(
+                    title: Text(
+                      address.name,
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    subtitle: Text(address.direction),
+                    onTap: () {
+                      setState(() {
+                        selectedAddress = address;
+                      });
+                      Navigator.pop(context);
+                    },
+                  ),
+                );
+              }),
+              ListTile(
+                title: const Text('Añadir nueva dirección'),
+                onTap: () {
+                  Navigator.pop(context);
+                  context.go('/addresses');
+                },
+              ),
+            ],
           ),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: const Text('Cancelar'),
-            ),
-            TextButton(
-              onPressed: () => Navigator.pop(context, newLocation),
-              child: const Text('Aceptar'),
-            ),
-          ],
         );
       },
-    ).then((value) {
-      if (value != null && value.isNotEmpty) {
-        _updateLocation(value);
-      }
-    });
-
+    );
   }
 }

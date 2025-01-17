@@ -1,0 +1,187 @@
+import 'dart:convert';
+
+import 'package:go_delivery_frontend/domain/entities/courier/courier.dart';
+import 'package:go_delivery_frontend/infrastructure/mappers/courier/courier_mapper.dart';
+import 'package:go_delivery_frontend/infrastructure/mappers/order/checkout/bundlecheckout_mapper.dart';
+import 'package:go_delivery_frontend/infrastructure/mappers/order/checkout/productcheckout_mapper.dart';
+
+import 'package:go_delivery_frontend/application/api/api_request.dart';
+import 'package:go_delivery_frontend/application/key_value_storage/key_value.dart';
+import 'package:go_delivery_frontend/common/failure.dart';
+import 'package:go_delivery_frontend/common/result.dart';
+import 'package:go_delivery_frontend/domain/entities/bundle/bundle.dart';
+import 'package:go_delivery_frontend/domain/entities/order/order.dart';
+import 'package:go_delivery_frontend/domain/entities/product/product.dart';
+import 'package:go_delivery_frontend/domain/repositories/order/order_repository.dart';
+import 'package:go_delivery_frontend/infrastructure/mappers/order/many/many_order_mapper.dart';
+import 'package:go_delivery_frontend/infrastructure/mappers/order/order_mapper.dart';
+import 'package:go_delivery_frontend/infrastructure/models/order_many_model.dart';
+
+class OrderRepositoryImpl extends OrderRepository {
+  final IApiRequestManager _apiRequestManager;
+  final LocalStorage _localStorage;
+
+  OrderRepositoryImpl({
+    required IApiRequestManager apiRequestManager,
+    required LocalStorage localStorage,
+  })  : _apiRequestManager = apiRequestManager,
+        _localStorage = localStorage;
+
+  Future<void> _addAuthorizationHeader() async {
+    final token = await _localStorage.getAuthorizationToken();
+    _apiRequestManager.setHeaders('Authorization', 'Bearer $token');
+  }
+
+  @override
+  Future<Result<List<OrderManyItem>>> getOrders({
+    required int page,
+    required int perpage,
+    required String status,
+  }) async {
+    await _addAuthorizationHeader();
+
+    Map<String, String> queryParameters = {
+      'page': page.toString(),
+      'perpage': perpage.toString(),
+    };
+
+    final response = await _apiRequestManager.request(
+        '/api/order/user/many/?state=$status', 'GET',
+        queryParameters: queryParameters,
+            (data) {
+            if(data is Map<String, dynamic>){
+              final order = OrderManyMapper.fromJson(data['orders']).orders;
+              return order;
+            }
+
+            return OrderManyMapper.fromJson(data).orders;
+        }
+        );
+    return response;
+  }
+
+  @override
+  Future<Result<Order>> getOrderById(String orderId) async {
+    await _addAuthorizationHeader();
+    try {
+      final response = await _apiRequestManager.request(
+        '/api/order/$orderId',
+        'GET',
+        (data) {
+            final order = OrderMapper.fromJson(data);
+            return order;
+        },
+      );
+      return response;
+    } catch (e) {
+      print('Error in OrderRepositoryImpl.getOrderById: $e');
+      rethrow;
+    }
+  }
+
+  @override
+  Future<Result<Order>> createOrder(
+      {String? paymentId,
+      String? stripePaymentMethod,
+      String? paymentMethod,
+      String? couponId,
+      String? currency,
+      required String idUserDirection,
+      List<CheckoutProduct>? products,
+      List<CheckoutBundle>? bundles}) async {
+    await _addAuthorizationHeader();
+
+    final body = {
+      'idUserDirection': idUserDirection,
+      if (products != null)
+        'products': CheckoutProductMapper.toJsonList(products),
+      if (bundles != null) 'bundles': CheckoutBundleMapper.toJsonList(bundles),
+      if (paymentId != null) 'paymentId': paymentId,
+      if (stripePaymentMethod != null)
+        'stripePaymentMethod': stripePaymentMethod,
+      if (paymentMethod != null) 'paymentMethod': paymentMethod,
+      if (couponId != null) 'idCupon': couponId,
+      if (currency != null) 'currency': currency,
+    };
+
+    print('Query Parameters JSON:');
+    print(json.encode(body));
+
+    final response = await _apiRequestManager.request(
+      '/api/order/pay/stripe',
+      'POST',
+      (data) {
+        final responseOrderCreated = OrderCreationMapper.fromJson(data);
+        return responseOrderCreated;
+      },
+      body: body,
+    );
+    if (response.isSuccess) {
+      return Result.success(response.value!);
+    } else {
+      final message =
+          response.error?.toString() ?? 'Algo Ocurrió en el checkout';
+      return Result.fail(CustomFailure(message: message));
+    }
+  }
+
+  @override
+  Future<Result<bool>> cancelOrder(String orderId) async {
+    await _addAuthorizationHeader();
+    final response = await _apiRequestManager.request(
+      '/api/order/cancel',
+      'POST',
+      (data) {
+        return true;
+      },
+      body: {'orderId': orderId},
+    );
+    if (response.isSuccess) {
+      return Result.success(true);
+    } else {
+      return Result.fail(
+          CustomFailure(message: response.error!.message.toString()));
+    }
+  }
+
+  @override
+  Future<Result<bool>> reportOrder(
+      {required String orderId, required String desc}) async {
+    await _addAuthorizationHeader();
+
+    final response = await _apiRequestManager.request(
+      '/api/order/report',
+      'POST',
+      (data) {
+        return true;
+      },
+      body: {'orderId': orderId, 'description': desc},
+    );
+    if (response.isSuccess) {
+      return Result.success(true);
+    } else {
+      return Result.fail(
+          CustomFailure(message: response.error!.message.toString()));
+    }
+  }
+
+  @override
+  Future<Result<CourierPosition>> courierPositionOrder(String orderId) async {
+    await _addAuthorizationHeader();
+    final response = await _apiRequestManager.request(
+      '/api/order/courier/position/$orderId',
+      'GET',
+      (data) {
+        final courierPosition = CourierPositionMapper.fromJson(data);
+        return courierPosition;
+      },
+      body: {'orderId': orderId},
+    );
+    if (response.isSuccess) {
+      return Result.success(response.value!);
+    } else {
+      return Result.fail(
+          new CustomFailure(message: response.error!.message.toString()));
+    }
+  }
+}

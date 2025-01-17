@@ -3,21 +3,30 @@ import 'package:go_delivery_frontend/domain/entities/category/category.dart';
 class CategoryMapper {
   static Category fromJson(Map<String, dynamic> json) {
     try {
+      final id = json['id'] as String?;
+      final name = json['name'] as String?;
+      final imageUrl = json['image'] as String?;
+
+      if (id == null || id.isEmpty) {
+        throw FormatException('Category ID is missing or empty');
+      }
+      if (name == null || name.isEmpty) {
+        throw FormatException('Category name is missing or empty');
+      }
+
       return Category(
-        id: '', // Como solo necesitas el nombre, inicializamos id como vacío
-        icon: '', // Inicializamos icon como vacío
-        name: json['category'] as String? ??
-            '', // Solo tomamos el nombre de la categoría
+        id: id,
+        name: name,
+        imageUrl: imageUrl ?? '',
       );
     } catch (e) {
-      print('Error in CategoryMapper.fromJson: $e');
       rethrow;
     }
   }
 
   static Map<String, dynamic> toJson(Category category) {
     return {
-      'name': category.name, // Solo serializamos el nombre de la categoría
+      'name': category.name,
     };
   }
 }

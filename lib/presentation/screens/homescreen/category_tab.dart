@@ -1,18 +1,63 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_delivery_frontend/application/BLoc/category/category_bloc.dart';
+import 'package:go_delivery_frontend/application/BLoc/category/category_event.dart';
+import 'package:go_delivery_frontend/application/BLoc/category/category_state.dart';
+import 'package:go_delivery_frontend/domain/entities/category/category.dart';
+
+import 'package:go_delivery_frontend/presentation/core/theme/theme_getter.dart';
 
 class CategoryTabs extends StatefulWidget {
-  const CategoryTabs({super.key});
+  final Function(List<String>)? onCategorySelected;
+  final List<String> selectedCategories;
+
+  const CategoryTabs({
+    super.key,
+    this.onCategorySelected,
+    required this.selectedCategories,
+  });
 
   @override
-  _CategoryTabsState createState() => _CategoryTabsState();
+  CategoryTabsState createState() => CategoryTabsState();
 }
 
-class _CategoryTabsState extends State<CategoryTabs> {
-  int _selectedIndex = 0;
-  final List<String> _categories = ['Todo', 'Hogar', 'Niños'];
+class CategoryTabsState extends State<CategoryTabs> {
+  late String _selectedCategory; // A single selected category
+
+  @override
+  void initState() {
+    super.initState();
+    // Initialize with the first selected category or an empty string
+    _selectedCategory = widget.selectedCategories.isNotEmpty
+        ? widget.selectedCategories.first
+        : '';
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<CategoryBloc>().add(LoadCategories(page: 1, perpage: 10));
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
+    return BlocBuilder<CategoryBloc, CategoryState>(
+      builder: (context, state) {
+        if (state is CategoryLoading) {
+          return _buildLoadingTabs();
+        }
+
+        if (state is CategoryFailed) {
+          return _buildErrorTabs();
+        }
+
+        if (state is CategoryLoaded) {
+          return _buildLoadedTabs(state.categories, context);
+        }
+
+        return _buildLoadingTabs();
+      },
+    );
+  }
+
+  Widget _buildLoadingTabs() {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 16),
       child: SingleChildScrollView(
@@ -20,30 +65,123 @@ class _CategoryTabsState extends State<CategoryTabs> {
         child: Row(
           children: [
             const SizedBox(width: 16),
-            for (int i = 0; i < _categories.length; i++)
-              _buildTab(_categories[i], i == _selectedIndex, i),
+            ...List.generate(
+              3,
+              (index) => Container(
+                margin: const EdgeInsets.only(right: 8),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                decoration: BoxDecoration(
+                  color: Colors.grey[300],
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: const Text('Loading...'),
+              ),
+            ),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildTab(String text, bool isSelected, int index) {
+  Widget _buildErrorTabs() {
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 16),
+      child: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: Row(
+          children: [
+            const SizedBox(width: 16),
+            Container(
+              margin: const EdgeInsets.only(right: 8),
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              decoration: BoxDecoration(
+                color: Colors.red[100],
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: const Text('Error loading categories'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                context
+                    .read<CategoryBloc>()
+                    .add(LoadCategories(page: 1, perpage: 10));
+              },
+              child: const Text('Retry'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildLoadedTabs(List<Category> categories, BuildContext context) {
+    final allCategories = [
+      ...categories,
+    ];
+
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 16),
+      child: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: Row(
+          children: [
+            const SizedBox(width: 16),
+            ...List.generate(
+              allCategories.length,
+              (index) => _buildTab(
+                  allCategories[index],
+                  _selectedCategory ==
+                      allCategories[index].name, // Compare to selected category
+                  index,
+                  context),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildTab(
+      Category category, bool isSelected, int index, BuildContext context) {
+    final currentSecondaryThemeColor =
+        AppThemesGetter.getSecondaryColor(context);
+
     return GestureDetector(
       onTap: () {
         setState(() {
-          _selectedIndex = index;
+          // Toggle selection: if already selected, deselect; if not, select
+          if (_selectedCategory == category.name) {
+            _selectedCategory = ''; // Deselect if it's already selected
+          } else {
+            _selectedCategory = category.name; // Select this category
+          }
         });
+
+        // Pass the selected category to the parent
+        widget.onCategorySelected?.call(_selectedCategory.isEmpty
+            ? [] // No category selected
+            : [_selectedCategory]); // Only pass the selected category
       },
       child: Container(
         margin: const EdgeInsets.only(right: 8),
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         decoration: BoxDecoration(
-          color: isSelected ? const Color(0xFF2000B1) : Colors.grey[200],
+          color:
+              isSelected ? currentSecondaryThemeColor : const Color(0xFFFFFFFF),
           borderRadius: BorderRadius.circular(20),
+          boxShadow: [
+            if (!isSelected)
+              BoxShadow(
+                color: Colors.grey.withOpacity(0.1),
+                spreadRadius: 1,
+                blurRadius: 2,
+                offset: const Offset(0, 1),
+              ),
+          ],
         ),
         child: Text(
-          text,
+          category.name,
           style: TextStyle(
             fontFamily: 'Montserrat',
             color: isSelected ? Colors.white : Colors.black,

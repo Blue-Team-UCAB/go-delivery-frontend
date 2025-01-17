@@ -1,5 +1,5 @@
-import '../../../common/failure.dart';
-import '../../../common/result.dart';
+import 'package:go_delivery_frontend/common/failure.dart';
+import 'package:go_delivery_frontend/common/result.dart';
 
 class ValidationRule<T> {
   final Failure failure;

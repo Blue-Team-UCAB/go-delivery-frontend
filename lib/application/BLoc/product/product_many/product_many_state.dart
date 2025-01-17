@@ -20,27 +20,56 @@ class ProductListLoading extends ProductListState {
 class ProductListLoaded extends ProductListState {
   final bool hasReachedMax;
   final int page;
+  final List<String>? categories;
+  final String? name;
+  final int? price;
+  final String? discount;
+  final String? popular;
 
   const ProductListLoaded({
     required super.products,
     required this.hasReachedMax,
     required this.page,
+    this.categories,
+    this.name,
+    this.price,
+    this.discount,
+    this.popular,
   });
 
   ProductListLoaded copyWith({
     List<Product>? products,
     bool? hasReachedMax,
     int? page,
+    List<String>? categories,
+    String? name,
+    int? price,
+    String? discount,
+    String? popular,
   }) {
     return ProductListLoaded(
       products: products ?? this.products,
       hasReachedMax: hasReachedMax ?? this.hasReachedMax,
       page: page ?? this.page,
+      categories: categories ?? this.categories,
+      name: name ?? this.name,
+      price: price ?? this.price,
+      discount: discount ?? this.discount,
+      popular: popular ?? this.popular,
     );
   }
 
   @override
-  List<Object?> get props => [products, hasReachedMax, page];
+  List<Object?> get props => [
+    products,
+    hasReachedMax,
+    page,
+    categories,
+    name,
+    price,
+    discount,
+    popular
+  ];
 }
 
 class ProductListFailed extends ProductListState {

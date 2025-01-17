@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class Sidebar extends StatelessWidget {
-  final String userName;    // Add these parameters
+  final String userName; // Add these parameters
   final String userEmail;
   final VoidCallback onLogout;
 
@@ -21,7 +21,7 @@ class Sidebar extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-              UserAccountsDrawerHeader(
+            UserAccountsDrawerHeader(
               accountName: Text(userName),
               accountEmail: Text(userEmail),
               currentAccountPicture: const CircleAvatar(

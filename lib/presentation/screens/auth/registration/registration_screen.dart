@@ -5,13 +5,16 @@ import 'package:flutter_svg/svg.dart';
 import 'package:go_delivery_frontend/presentation/screens/auth/registration/registration_validators.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../../application/BLoc/auth/register/register_bloc.dart';
-import '../../../../injector.dart';
-import '../../../widgets/dialog_darken_window.dart';
-import 'inputDecorationRegister.dart';
+import 'package:go_delivery_frontend/application/BLoc/auth/register/register_bloc.dart';
+import 'package:go_delivery_frontend/injector.dart';
+import 'package:go_delivery_frontend/presentation/widgets/dialog_darken_window.dart';
+import 'package:go_delivery_frontend/presentation/screens/auth/registration/inputDecorationRegister.dart';
+
+import 'package:go_delivery_frontend/application/BLoc/themes/themes_bloc.dart';
+import 'package:go_delivery_frontend/presentation/core/theme/theme.dart';
 
 class RegisterScreen extends StatefulWidget {
-  const RegisterScreen({Key? key}) : super(key: key);
+  const RegisterScreen({super.key});
 
   @override
   State<RegisterScreen> createState() => _RegisterScreenState();
@@ -28,13 +31,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
 }
 
 class RegisterForm extends StatefulWidget {
-  const RegisterForm({Key? key}) : super(key: key);
+  const RegisterForm({super.key});
 
   @override
   RegisterFormState createState() => RegisterFormState();
 }
 
-class RegisterFormState  extends State<RegisterForm> {
+class RegisterFormState extends State<RegisterForm> {
   final _formKey = GlobalKey<FormState>();
   final _nameController = TextEditingController();
   final _emailController = TextEditingController();
@@ -57,9 +60,7 @@ class RegisterFormState  extends State<RegisterForm> {
   }
 
   Future<void> _handleRegistration() async {
-
     if (_formKey.currentState!.validate()) {
-
       setState(() {
         _isLoading = true;
       });
@@ -94,9 +95,15 @@ class RegisterFormState  extends State<RegisterForm> {
 
   @override
   Widget build(BuildContext context) {
+    final themesBloc = context.watch<ThemesBloc>();
+    final appTheme = themesBloc.state.appTheme;
+    final isPrimaryRed = appTheme.colorMode == AppColorMode.red;
+    final primaryColor =
+        isPrimaryRed ? const Color(0xFF8F0000) : const Color(0xFF02066F);
+
     return BlocConsumer<RegisterBloc, RegisterState>(
         listenWhen: (previous, current) =>
-        previous.registerFormStatus != current.registerFormStatus,
+            previous.registerFormStatus != current.registerFormStatus,
         listener: (context, state) {
           if (state.registerFormStatus == RegisterFormStatus.invalid) {
             ScaffoldMessenger.of(context).hideCurrentSnackBar();
@@ -112,7 +119,6 @@ class RegisterFormState  extends State<RegisterForm> {
           }
 
           if (state.registerFormStatus == RegisterFormStatus.valid) {
-
             showDialog(
               context: context,
               barrierDismissible: false,
@@ -125,7 +131,6 @@ class RegisterFormState  extends State<RegisterForm> {
                 );
               },
             );
-
           }
 
           if (state.registerFormStatus == RegisterFormStatus.valid) {
@@ -136,14 +141,16 @@ class RegisterFormState  extends State<RegisterForm> {
           }
         },
         builder: (context, state) => Scaffold(
-            backgroundColor: const Color(0xFF02066F),
+            backgroundColor: primaryColor,
             body: SafeArea(
               child: Column(
                 children: [
                   Expanded(
                     flex: 1,
                     child: SvgPicture.asset(
-                      'assets/icon/logo.svg',
+                      isPrimaryRed
+                          ? 'assets/icon/logo_red.svg'
+                          : 'assets/icon/logo.svg',
                       fit: BoxFit.contain,
                     ),
                   ),
@@ -181,28 +188,40 @@ class RegisterFormState  extends State<RegisterForm> {
                               ),
                               const SizedBox(height: 14),
                               TextFormField(
-                                onChanged: context.read<RegisterBloc>().fullnameChanged,
+                                onChanged: context
+                                    .read<RegisterBloc>()
+                                    .fullnameChanged,
                                 controller: _nameController,
                                 validator: (value) {
-                                  final result = registrationValidator.usernameValidator.validate(value);
-                                  return result.isSuccessful() ? null : result.getError().message;
+                                  final result = registrationValidator
+                                      .usernameValidator
+                                      .validate(value);
+                                  return result.isSuccessful()
+                                      ? null
+                                      : result.getError().message;
                                 },
-                                decoration: inputDecorationBuilderRegister.buildInputDecorationRegister
-                                  ('Nombre de Usuario Nuevo'),
+                                decoration: inputDecorationBuilderRegister
+                                    .buildInputDecorationRegister(
+                                        'Nombre de Usuario Nuevo'),
                                 textCapitalization: TextCapitalization.words,
                               ),
                               const SizedBox(height: 14),
                               TextFormField(
-                                onChanged: context.read<RegisterBloc>().emailChanged,
+                                onChanged:
+                                    context.read<RegisterBloc>().emailChanged,
                                 controller: _emailController,
                                 validator: (value) {
-                                  final result = registrationValidator.emailValidator.validate(value);
-                                  return result.isSuccessful() ? null : result.getError().message;
+                                  final result = registrationValidator
+                                      .emailValidator
+                                      .validate(value);
+                                  return result.isSuccessful()
+                                      ? null
+                                      : result.getError().message;
                                 },
                                 keyboardType: TextInputType.emailAddress,
-                                decoration: inputDecorationBuilderRegister.buildInputDecorationRegister
-                                  (
-                                    'Correo electrónico'),
+                                decoration: inputDecorationBuilderRegister
+                                    .buildInputDecorationRegister(
+                                        'Correo electrónico'),
                               ),
                               const SizedBox(height: 14),
                               Row(
@@ -211,7 +230,8 @@ class RegisterFormState  extends State<RegisterForm> {
                                     width: 70,
                                     child: TextFormField(
                                       controller: _countryCodeController,
-                                      decoration: inputDecorationBuilderRegister.buildInputDecorationRegister('+58'),
+                                      decoration: inputDecorationBuilderRegister
+                                          .buildInputDecorationRegister('+58'),
                                       keyboardType: TextInputType.number,
                                       inputFormatters: [
                                         FilteringTextInputFormatter.digitsOnly,
@@ -220,8 +240,11 @@ class RegisterFormState  extends State<RegisterForm> {
                                       textAlign: TextAlign.center,
                                       onChanged: (countryCode) {
                                         // Combine both values and send to bloc
-                                        final completePhone = '$countryCode${_phoneController.text}';
-                                        context.read<RegisterBloc>().phoneChanged(completePhone);
+                                        final completePhone =
+                                            '$countryCode${_phoneController.text}';
+                                        context
+                                            .read<RegisterBloc>()
+                                            .phoneChanged(completePhone);
                                       },
                                     ),
                                   ),
@@ -230,19 +253,28 @@ class RegisterFormState  extends State<RegisterForm> {
                                     child: TextFormField(
                                       controller: _phoneController,
                                       validator: (value) {
-                                        final result = registrationValidator.phoneValidator.validate(value);
-                                        return result.isSuccessful() ? null : result.getError().message;
+                                        final result = registrationValidator
+                                            .phoneValidator
+                                            .validate(value);
+                                        return result.isSuccessful()
+                                            ? null
+                                            : result.getError().message;
                                       },
                                       keyboardType: TextInputType.phone,
-                                      decoration: inputDecorationBuilderRegister.buildInputDecorationRegister('Número de teléfono'),
+                                      decoration: inputDecorationBuilderRegister
+                                          .buildInputDecorationRegister(
+                                              'Número de teléfono'),
                                       inputFormatters: [
                                         FilteringTextInputFormatter.digitsOnly,
                                         LengthLimitingTextInputFormatter(10),
                                       ],
                                       onChanged: (phone) {
                                         // Combine both values and send to bloc
-                                        final completePhone = '${_countryCodeController.text}$phone';
-                                        context.read<RegisterBloc>().phoneChanged(completePhone);
+                                        final completePhone =
+                                            '${_countryCodeController.text}$phone';
+                                        context
+                                            .read<RegisterBloc>()
+                                            .phoneChanged(completePhone);
                                       },
                                     ),
                                   ),
@@ -250,57 +282,67 @@ class RegisterFormState  extends State<RegisterForm> {
                               ),
                               const SizedBox(height: 14),
                               TextFormField(
-                                onChanged: context.read<RegisterBloc>().passwordChanged,
+                                onChanged: context
+                                    .read<RegisterBloc>()
+                                    .passwordChanged,
                                 controller: _passwordController,
                                 validator: (value) {
-                                  final result = registrationValidator.passwordValidator.validate(value);
-                                  return result.isSuccessful() ? null : result.getError().message;
+                                  final result = registrationValidator
+                                      .passwordValidator
+                                      .validate(value);
+                                  return result.isSuccessful()
+                                      ? null
+                                      : result.getError().message;
                                 },
                                 obscureText: _obscurePassword,
-                                decoration: inputDecorationBuilderRegister.buildInputDecorationRegister
-                                  ('Contraseña')
+                                decoration: inputDecorationBuilderRegister
+                                    .buildInputDecorationRegister('Contraseña')
                                     .copyWith(
-                                  suffixIcon: IconButton(
-                                    icon: Icon(
-                                      _obscurePassword ? Icons.visibility_off : Icons
-                                          .visibility,
-                                      color: Colors.grey,
+                                      suffixIcon: IconButton(
+                                        icon: Icon(
+                                          _obscurePassword
+                                              ? Icons.visibility_off
+                                              : Icons.visibility,
+                                          color: Colors.grey,
+                                        ),
+                                        onPressed: () => setState(() =>
+                                            _obscurePassword =
+                                                !_obscurePassword),
+                                      ),
                                     ),
-                                    onPressed: () =>
-                                        setState(() =>
-                                        _obscurePassword = !_obscurePassword),
-                                  ),
-                                ),
                               ),
                               const SizedBox(height: 14),
                               TextFormField(
                                 controller: _confirmPasswordController,
                                 validator: _validateConfirmPassword,
                                 obscureText: _obscureConfirmPassword,
-                                decoration: inputDecorationBuilderRegister.buildInputDecorationRegister
-                                  ('Confirmar contraseña').copyWith(
-                                  suffixIcon: IconButton(
-                                    icon: Icon(
-                                      _obscureConfirmPassword
-                                          ? Icons.visibility_off
-                                          : Icons.visibility,
-                                      color: Colors.grey,
+                                decoration: inputDecorationBuilderRegister
+                                    .buildInputDecorationRegister(
+                                        'Confirmar contraseña')
+                                    .copyWith(
+                                      suffixIcon: IconButton(
+                                        icon: Icon(
+                                          _obscureConfirmPassword
+                                              ? Icons.visibility_off
+                                              : Icons.visibility,
+                                          color: Colors.grey,
+                                        ),
+                                        onPressed: () => setState(() =>
+                                            _obscureConfirmPassword =
+                                                !_obscureConfirmPassword),
+                                      ),
                                     ),
-                                    onPressed: () =>
-                                        setState(() =>
-                                        _obscureConfirmPassword =
-                                        !_obscureConfirmPassword),
-                                  ),
-                                ),
                               ),
                               const SizedBox(height: 24),
                               ElevatedButton(
-                                onPressed: state.registerFormStatus == RegisterFormStatus.posting
+                                onPressed: state.registerFormStatus ==
+                                        RegisterFormStatus.posting
                                     ? null
                                     : _handleRegistration,
                                 style: ElevatedButton.styleFrom(
-                                  backgroundColor: const Color(0xFF02066F),
-                                  padding: const EdgeInsets.symmetric(vertical: 16),
+                                  backgroundColor: primaryColor,
+                                  padding:
+                                      const EdgeInsets.symmetric(vertical: 16),
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(12),
                                   ),
@@ -308,22 +350,24 @@ class RegisterFormState  extends State<RegisterForm> {
                                 ),
                                 child: _isLoading
                                     ? const SizedBox(
-                                  height: 20,
-                                  width: 20,
-                                  child: CircularProgressIndicator(
-                                    strokeWidth: 2,
-                                    valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                                  ),
-                                )
+                                        height: 20,
+                                        width: 20,
+                                        child: CircularProgressIndicator(
+                                          strokeWidth: 2,
+                                          valueColor:
+                                              AlwaysStoppedAnimation<Color>(
+                                                  Colors.white),
+                                        ),
+                                      )
                                     : const Text(
-                                  'Registrarse',
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontFamily: 'Montserrat',
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w700,
-                                  ),
-                                ),
+                                        'Registrarse',
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontFamily: 'Montserrat',
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w700,
+                                        ),
+                                      ),
                               ),
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
@@ -333,13 +377,15 @@ class RegisterFormState  extends State<RegisterForm> {
                                     style: TextStyle(fontFamily: 'Montserrat'),
                                   ),
                                   TextButton(
-                                    onPressed: () { context.push('/login'); },
-                                    child: const Text(
+                                    onPressed: () {
+                                      context.push('/login');
+                                    },
+                                    child: Text(
                                       'Iniciar sesión',
                                       style: TextStyle(
                                         fontFamily: 'Montserrat',
                                         fontWeight: FontWeight.w600,
-                                        color: Color(0xFF02066F),
+                                        color: primaryColor,
                                       ),
                                     ),
                                   ),
@@ -353,9 +399,7 @@ class RegisterFormState  extends State<RegisterForm> {
                   ),
                 ],
               ),
-            )
-        )
-    );
+            )));
   }
 
   @override
@@ -368,6 +412,4 @@ class RegisterFormState  extends State<RegisterForm> {
     _countryCodeController.dispose();
     super.dispose();
   }
-
-
 }

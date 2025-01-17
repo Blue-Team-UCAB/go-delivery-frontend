@@ -1,13 +1,20 @@
+import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:go_delivery_frontend/application/BLoc/themes/themes_bloc.dart';
+import 'package:go_delivery_frontend/application/BLoc/notifications/bloc/notifications_bloc.dart';
 import 'package:go_delivery_frontend/presentation/screens/auth/login/login_validators.dart';
 import 'package:go_router/go_router.dart';
-
-import '../../../../application/BLoc/auth/login/login_bloc.dart';
-import '../../../../injector.dart';
-import 'inputDecorationLogin.dart';
+import 'package:go_delivery_frontend/application/BLoc/auth/login/login_bloc.dart';
+import 'package:go_delivery_frontend/injector.dart';
+import 'package:go_delivery_frontend/presentation/screens/auth/login/inputDecorationLogin.dart';
+import 'package:go_delivery_frontend/application/BLoc/themes/themes_bloc.dart';
+import 'package:go_delivery_frontend/infrastructure/datasources/localstorage/localstorage_impl.dart';
+import 'package:go_delivery_frontend/presentation/core/theme/theme.dart';
+import 'package:go_delivery_frontend/application/BLoc/cart/cart_bloc.dart';
+import 'package:go_delivery_frontend/presentation/widgets/dialog_darken_window.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -20,8 +27,7 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return BlocProvider<LoginBloc>(
-      // BlocProvider in LoginScreen
-      create: (context) => getIt<LoginBloc>(), // Or your creation logic
+      create: (context) => getIt<LoginBloc>(),
       child: const LoginForm(),
     );
   }
@@ -37,7 +43,6 @@ class LoginForm extends StatefulWidget {
 }
 
 class LoginFormState extends State<LoginForm> {
-  // Corrected line
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   bool _obscurePassword = true;
@@ -66,166 +71,388 @@ class LoginFormState extends State<LoginForm> {
 
   @override
   Widget build(BuildContext context) {
-    bool isDarkMode = context.watch<ThemesBloc>().isDarkMode;
+    final AppColorMode currentColorMode =
+        context.watch<ThemesBloc>().currentColorMode;
 
     return BlocConsumer<LoginBloc, LoginState>(
-        listenWhen: (previous, current) =>
-            previous.formStatus != current.formStatus,
-        listener: (context, state) {
-          if (state.formStatus == LoginFormStatus.valid) {
-            context.go('/');
-          } else if (state.formStatus == LoginFormStatus.invalid &&
-              state.errorMessage.isNotEmpty) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                  duration: const Duration(milliseconds: 1000),
-                  content: Text(state.errorMessage)),
-            );
-          }
-        },
-        builder: (context, state) {
-          return Scaffold(
-            backgroundColor: const Color(0xFF02066F),
+      listenWhen: (previous, current) =>
+          previous.formStatus != current.formStatus,
+      listener: (context, state) {
+        if (state.formStatus == LoginFormStatus.valid) {
+          context.read<NotificationsBloc>().sendFCMToken();
+          context.go('/');
+        } else if (state.formStatus == LoginFormStatus.invalid &&
+            state.errorMessage.isNotEmpty) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              duration: const Duration(seconds: 2),
+              content: Text(state.errorMessage),
+            ),
+          );
+        }
+      },
+      builder: (context, state) {
+        return AnimatedContainer(
+          duration: const Duration(milliseconds: 500),
+          curve: Curves.easeInOut,
+          color: currentColorMode == AppColorMode.blue
+              ? const Color(0xFF02066F)
+              : const Color(0xFF8F0000),
+          child: Scaffold(
+            backgroundColor: Colors.transparent,
             body: SafeArea(
               child: Column(
                 children: [
-                  Expanded(
-                    flex: 2,
-                    child: SvgPicture.asset(
-                      'assets/icon/logo.svg',
-                      fit: BoxFit.contain,
-                    ),
-                  ),
-                  Expanded(
-                    flex: 4,
-                    child: Container(
-                      decoration: const BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(30),
-                          topRight: Radius.circular(30),
+                  // Theme switcher
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Align(
+                      alignment: Alignment.topRight,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Colors.white.withOpacity(0.2),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: PopupMenuButton<AppColorMode>(
+                          offset: const Offset(0, 50),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 12, vertical: 8),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text(
+                                  'Datasource',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontFamily: 'Montserrat',
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                                const SizedBox(width: 8),
+                                Icon(
+                                  Icons.dataset,
+                                  color: Colors.white,
+                                  size: 20,
+                                ),
+                              ],
+                            ),
+                          ),
+                          itemBuilder: (BuildContext context) {
+                            final currentColorMode =
+                                context.read<ThemesBloc>().currentColorMode;
+
+                            return [
+                              PopupMenuItem<AppColorMode>(
+                                value: AppColorMode.blue,
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      'Azul',
+                                      style: TextStyle(
+                                        fontFamily: 'Montserrat',
+                                        color: currentColorMode ==
+                                                AppColorMode.blue
+                                            ? Color(0xFF02066F)
+                                            : Colors.black,
+                                        fontWeight: currentColorMode ==
+                                                AppColorMode.blue
+                                            ? FontWeight.bold
+                                            : FontWeight.normal,
+                                      ),
+                                    ),
+                                    if (currentColorMode == AppColorMode.blue)
+                                      Icon(Icons.check,
+                                          color: Color(0xFF02066F)),
+                                  ],
+                                ),
+                              ),
+                              PopupMenuItem<AppColorMode>(
+                                value: AppColorMode.red,
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      'Rojo',
+                                      style: TextStyle(
+                                        fontFamily: 'Montserrat',
+                                        color:
+                                            currentColorMode == AppColorMode.red
+                                                ? Color(0xFF8F0000)
+                                                : Colors.black,
+                                        fontWeight:
+                                            currentColorMode == AppColorMode.red
+                                                ? FontWeight.bold
+                                                : FontWeight.normal,
+                                      ),
+                                    ),
+                                    if (currentColorMode == AppColorMode.red)
+                                      Icon(Icons.check,
+                                          color: Color(0xFF8F0000)),
+                                  ],
+                                ),
+                              ),
+                            ];
+                          },
+                          onSelected: (AppColorMode? newMode) async {
+                            if (newMode != null &&
+                                newMode !=
+                                    context
+                                        .read<ThemesBloc>()
+                                        .state
+                                        .appTheme
+                                        .colorMode) {
+                              context.read<ThemesBloc>().changeTheme();
+
+                              context.read<CartBloc>().emptyCart();
+
+                              final localStorageService = LocalStorageService();
+
+                              String apiUrl;
+                              String stripeKey = dotenv.env['STRIPE_PUBLISHABLE_KEY']!;
+                              if (newMode == AppColorMode.blue) {
+                                stripeKey = dotenv.env['STRIPE_PUBLISHABLE_KEY']!;
+                                apiUrl = dotenv.env['API_URL']!;
+                              } else if (newMode == AppColorMode.red) {
+                                apiUrl = dotenv.env['RED_API_URL']!;
+                                stripeKey = dotenv.env['STRIPE_PUBLISHABLE_KEY_RED']!;
+                              } else {
+                                apiUrl = dotenv.env['API_URL']!;
+                              }
+
+                              await localStorageService.setKeyValue<String>(
+                                  "CURRENT_API_URL", apiUrl);
+                              await localStorageService.setKeyValue<String>(
+                                  'colorMode', newMode.toString());
+                              await localStorageService.setKeyValue<String>(
+                                  'stripeKey', stripeKey);
+
+                              Future.delayed(const Duration(seconds: 2), () {
+                                showDialog(
+                                  context: context,
+                                  barrierDismissible: false,
+                                  builder: (BuildContext context) {
+                                    return AnimatedSuccessDialog(
+                                      title: 'Hay que Reiniciar la app!',
+                                      message: 'para aplicar cambios!',
+                                      buttonText: 'Okey',
+                                      icon: Icons.warning,
+                                      iconColor: Colors.grey,
+                                      buttonColor: Colors.grey,
+                                      onButtonPressed: () {
+                                        context.pop();
+                                      },
+                                    );
+                                  },
+                                );
+                              });
+
+                              Future.delayed(const Duration(seconds: 4), () {
+                                SystemChannels.platform
+                                    .invokeMethod('SystemNavigator.pop');
+                              });
+                            }
+                          },
                         ),
                       ),
-                      child: Form(
+                    ),
+                  ),
+
+                  // Animated Logo
+                  Expanded(
+                    flex: 3,
+                    child: FadeIn(
+                      duration: const Duration(milliseconds: 500),
+                      key: ValueKey(currentColorMode),
+                      child: SlideInUp(
+                        duration: const Duration(milliseconds: 500),
+                        child: SvgPicture.asset(
+                          currentColorMode == AppColorMode.blue
+                              ? 'assets/icon/logo.svg'
+                              : 'assets/icon/logo_red.svg',
+                          fit: BoxFit.contain,
+                        ),
+                      ),
+                    ),
+                  ),
+
+                  // Animated Form Container
+                  Expanded(
+                    flex: 4,
+                    child: FadeInUp(
+                      duration: const Duration(milliseconds: 500),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: const BorderRadius.only(
+                            topLeft: Radius.circular(30),
+                            topRight: Radius.circular(30),
+                          ),
+                          boxShadow: [
+                            BoxShadow(
+                              color: currentColorMode == AppColorMode.blue
+                                  ? const Color(0xFF02066F).withOpacity(0.3)
+                                  : const Color(0xFF8F0000).withOpacity(0.3),
+                              spreadRadius: 2,
+                              blurRadius: 10,
+                              offset: const Offset(0, -3),
+                            ),
+                          ],
+                        ),
+                        child: Form(
                           key: _formKey,
                           child: SingleChildScrollView(
                             padding: const EdgeInsets.all(24),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.stretch,
                               children: [
-                                const Text(
-                                  'Bienvenido',
-                                  style: TextStyle(
-                                    fontFamily: 'Montserrat',
-                                    fontSize: 28,
-                                    fontWeight: FontWeight.w800,
-                                    color: Colors.black,
+                                // Animated Welcome Text
+                                FadeInRight(
+                                  duration: const Duration(milliseconds: 500),
+                                  child: const Text(
+                                    'Bienvenido',
+                                    style: TextStyle(
+                                      fontFamily: 'Montserrat',
+                                      fontSize: 28,
+                                      fontWeight: FontWeight.w800,
+                                      color: Colors.black,
+                                    ),
                                   ),
                                 ),
+
                                 const SizedBox(height: 24),
-                                TextFormField(
-                                  onChanged: (value) => context
-                                      .read<LoginBloc>()
-                                      .changeEmail(value),
-                                  controller: _emailController,
-                                  validator: (value) {
-                                    final result = loginValidator.emailValidator
-                                        .validate(value);
-                                    return result.isSuccessful()
-                                        ? null
-                                        : result.getError().message;
-                                  },
-                                  keyboardType: TextInputType.emailAddress,
-                                  style:
-                                      const TextStyle(fontFamily: 'Montserrat'),
-                                  decoration: inputDecorationBuilderLogin
-                                      .buildInputDecorationLogin(
-                                          'Correo electrónico'),
+                                FadeInLeft(
+                                  duration: const Duration(milliseconds: 500),
+                                  child: TextFormField(
+                                    onChanged: (value) => context
+                                        .read<LoginBloc>()
+                                        .changeEmail(value),
+                                    controller: _emailController,
+                                    validator: (value) {
+                                      final result = LoginValidator
+                                          .emailValidator
+                                          .validate(value);
+                                      return result.isSuccessful()
+                                          ? null
+                                          : result.getError().message;
+                                    },
+                                    keyboardType: TextInputType.emailAddress,
+                                    style: const TextStyle(
+                                        fontFamily: 'Montserrat'),
+                                    decoration: inputDecorationBuilderLogin
+                                        .buildInputDecorationLogin(
+                                            'Correo electrónico'),
+                                  ),
                                 ),
+
                                 const SizedBox(height: 16),
-                                TextFormField(
-                                  onChanged: (value) => context
-                                      .read<LoginBloc>()
-                                      .changePassword(value),
-                                  controller: _passwordController,
-                                  validator: (value) {
-                                    final result = loginValidator
-                                        .passwordValidator
-                                        .validate(value);
-                                    return result.isSuccessful()
-                                        ? null
-                                        : result.getError().message;
-                                  },
-                                  obscureText: _obscurePassword,
-                                  style:
-                                      const TextStyle(fontFamily: 'Montserrat'),
-                                  decoration: inputDecorationBuilderLogin
-                                      .buildInputDecorationLogin('Contraseña')
-                                      .copyWith(
-                                        suffixIcon: IconButton(
-                                          icon: Icon(
-                                            _obscurePassword
-                                                ? Icons.visibility_off
-                                                : Icons.visibility,
-                                            color: Colors.grey,
+                                FadeInRight(
+                                  duration: const Duration(milliseconds: 500),
+                                  child: TextFormField(
+                                    onChanged: (value) => context
+                                        .read<LoginBloc>()
+                                        .changePassword(value),
+                                    controller: _passwordController,
+                                    validator: (value) {
+                                      final result = LoginValidator
+                                          .passwordValidator
+                                          .validate(value);
+                                      return result.isSuccessful()
+                                          ? null
+                                          : result.getError().message;
+                                    },
+                                    obscureText: _obscurePassword,
+                                    style: const TextStyle(
+                                        fontFamily: 'Montserrat'),
+                                    decoration: inputDecorationBuilderLogin
+                                        .buildInputDecorationLogin('Contraseña')
+                                        .copyWith(
+                                          suffixIcon: IconButton(
+                                            icon: Icon(
+                                              _obscurePassword
+                                                  ? Icons.visibility_off
+                                                  : Icons.visibility,
+                                              color: Colors.grey,
+                                            ),
+                                            onPressed: () => setState(() =>
+                                                _obscurePassword =
+                                                    !_obscurePassword),
                                           ),
-                                          onPressed: () => setState(() =>
-                                              _obscurePassword =
-                                                  !_obscurePassword),
                                         ),
-                                      ),
+                                  ),
                                 ),
+
                                 Align(
                                   alignment: Alignment.centerLeft,
-                                  child: TextButton(
-                                    onPressed: () {
-                                      context.push('/password/reset');
-                                    },
-                                    style: TextButton.styleFrom(
-                                      foregroundColor: const Color(0xFF02066F),
-                                    ),
-                                    child: const Text(
-                                      '¿Olvidaste la contraseña?',
-                                      style: TextStyle(
-                                        fontFamily: 'Montserrat',
-                                        fontWeight: FontWeight.w500,
+                                  child: ElasticIn(
+                                    duration: const Duration(milliseconds: 500),
+                                    child: TextButton(
+                                      onPressed: () {
+                                        context.push('/password/forgot');
+                                      },
+                                      style: TextButton.styleFrom(
+                                        foregroundColor: currentColorMode ==
+                                                AppColorMode.blue
+                                            ? const Color(0xFF02066F)
+                                            : const Color(0xFF8F0000),
+                                      ),
+                                      child: const Text(
+                                        '¿Olvidaste la contraseña?',
+                                        style: TextStyle(
+                                          fontFamily: 'Montserrat',
+                                          fontWeight: FontWeight.w500,
+                                        ),
                                       ),
                                     ),
                                   ),
                                 ),
+
                                 BlocBuilder<LoginBloc, LoginState>(
                                   builder: (context, state) {
-                                    return ElevatedButton(
-                                      onPressed: state.formStatus ==
-                                              LoginFormStatus.posting
-                                          ? null
-                                          : _pressSubmit,
-                                      style: ElevatedButton.styleFrom(
-                                        backgroundColor:
-                                            const Color(0xFF02066F),
-                                        padding: const EdgeInsets.symmetric(
-                                            vertical: 16),
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(12),
+                                    return ZoomIn(
+                                      duration:
+                                          const Duration(milliseconds: 500),
+                                      child: ElevatedButton(
+                                        onPressed: state.formStatus ==
+                                                LoginFormStatus.posting
+                                            ? null
+                                            : _pressSubmit,
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor: currentColorMode ==
+                                                  AppColorMode.blue
+                                              ? const Color(0xFF02066F)
+                                              : const Color(0xFF8F0000),
+                                          padding: const EdgeInsets.symmetric(
+                                              vertical: 16),
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(12),
+                                          ),
                                         ),
-                                      ),
-                                      child: state.formStatus ==
-                                              LoginFormStatus.posting
-                                          ? const CircularProgressIndicator(
-                                              color: Colors.white)
-                                          : const Text(
-                                              'Iniciar sesión',
-                                              style: TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 16,
-                                                fontFamily: 'Montserrat',
-                                                fontWeight: FontWeight.w700,
+                                        child: state.formStatus ==
+                                                LoginFormStatus.posting
+                                            ? const CircularProgressIndicator(
+                                                color: Colors.white)
+                                            : const Text(
+                                                'Iniciar sesión',
+                                                style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 16,
+                                                  fontFamily: 'Montserrat',
+                                                  fontWeight: FontWeight.w700,
+                                                ),
                                               ),
-                                            ),
+                                      ),
                                     );
                                   },
                                 ),
+
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
@@ -236,71 +463,45 @@ class LoginFormState extends State<LoginForm> {
                                         fontSize: 12,
                                       ),
                                     ),
-                                    TextButton(
-                                      onPressed: () {
-                                        context.push('/register');
-                                      },
-                                      style: TextButton.styleFrom(
-                                        foregroundColor:
-                                            const Color(0xFF02066F),
-                                      ),
-                                      child: const Text(
-                                        'Regístrate ahora',
-                                        style: TextStyle(
-                                          fontFamily: 'Montserrat',
-                                          fontWeight: FontWeight.w600,
-                                          fontSize: 12,
+                                    FadeIn(
+                                      duration:
+                                          const Duration(milliseconds: 500),
+                                      child: TextButton(
+                                        onPressed: () {
+                                          context.push('/register');
+                                        },
+                                        style: TextButton.styleFrom(
+                                          foregroundColor: currentColorMode ==
+                                                  AppColorMode.blue
+                                              ? const Color(0xFF02066F)
+                                              : const Color(0xFF8F0000),
+                                        ),
+                                        child: const Text(
+                                          'Regístrate ahora',
+                                          style: TextStyle(
+                                            fontFamily: 'Montserrat',
+                                            fontWeight: FontWeight.w600,
+                                            fontSize: 12,
+                                          ),
                                         ),
                                       ),
                                     ),
                                   ],
                                 ),
-                                const Text(
-                                  'O continúa con',
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    fontFamily: 'Montserrat',
-                                    color: Colors.grey,
-                                  ),
-                                ),
-                                const SizedBox(height: 16),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    for (final icon in [
-                                      'google',
-                                      'apple',
-                                      'facebook'
-                                    ]) ...[
-                                      if (icon != 'google')
-                                        const SizedBox(width: 16),
-                                      CircleAvatar(
-                                        radius: 24,
-                                        backgroundColor: {
-                                          'google': const Color(0xFFEA4335),
-                                          'apple': Colors.black,
-                                          'facebook': const Color(0xFF1877F2),
-                                        }[icon],
-                                        child: SvgPicture.asset(
-                                          'assets/icon/$icon.svg',
-                                          colorFilter: const ColorFilter.mode(
-                                              Colors.white, BlendMode.srcIn),
-                                          height: 24,
-                                        ),
-                                      ),
-                                    ],
-                                  ],
-                                ),
                               ],
                             ),
-                          )),
+                          ),
+                        ),
+                      ),
                     ),
                   ),
                 ],
               ),
             ),
-          );
-        });
+          ),
+        );
+      },
+    );
   }
 
   @override

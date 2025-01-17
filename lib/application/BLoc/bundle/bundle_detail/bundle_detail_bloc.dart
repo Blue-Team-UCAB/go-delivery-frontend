@@ -30,16 +30,9 @@ class BundleDetailBloc extends Bloc<BundleDetailEvent, BundleDetailState> {
 
         if (result.isSuccessful()) {
           final bundle = result.getValue();
-
-          // Imprimir la data de los productos del bundle
-          print('Productos en el bundle:');
-          bundle.products.forEach((product) {
-            print('Producto: ${product.name}, URL imagen: ${product.imageUrl}');
-          });
-
-          // Si la URL de la imagen está vacía, asignar la imagen predeterminada
-          if (bundle.imageUrl.isEmpty) {
-            bundle.imageUrl = 'https://via.placeholder.com/150';
+          {}
+          if (bundle.images.first.isEmpty) {
+            bundle.images.first = 'https://via.placeholder.com/150';
           }
 
           emit(BundleDetailLoaded(bundle));
@@ -47,7 +40,6 @@ class BundleDetailBloc extends Bloc<BundleDetailEvent, BundleDetailState> {
           emit(BundleDetailFailed(result));
         }
       } catch (e) {
-        print('Error in BundleDetailBloc: $e');
         emit(BundleDetailFailed(Result.fail(e.toString() as Failure)));
       }
     }

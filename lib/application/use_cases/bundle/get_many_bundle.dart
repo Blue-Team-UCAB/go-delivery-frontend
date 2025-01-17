@@ -5,11 +5,21 @@ import 'package:go_delivery_frontend/domain/repositories/bundle/bundle_repositor
 
 class GetBundlesUseCaseInput extends IUseCaseInput {
   final int page;
-  final int take;
+  final int perpage;
+  final List<String>? categories;
+  final String? name;
+  final int? price;
+  final String? popular;
+  final String? discount;
 
   GetBundlesUseCaseInput({
     required this.page,
-    required this.take,
+    required this.perpage,
+    this.categories,
+    this.name,
+    this.price,
+    this.popular,
+    this.discount,
   });
 }
 
@@ -22,7 +32,12 @@ class GetBundlesUseCase {
   Future<Result<List<Bundle>>> execute(GetBundlesUseCaseInput input) {
     return _bundleRepository.getBundles(
       page: input.page,
-      take: input.take,
+      perpage: input.perpage,
+      categories: input.categories!,
+      name: input.name!,
+      price: input.price!,
+      popular: input.popular!,
+      discount: input.discount!,
     );
   }
 }

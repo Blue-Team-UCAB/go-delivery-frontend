@@ -14,78 +14,117 @@ class ProductListBloc extends Bloc<ProductListEvent, ProductListState> {
   }
 
   Future<void> _onLoadProductList(
-      LoadProductList event,
-      Emitter<ProductListState> emit,
-      ) async {
-    await _loadProducts('', event.page, event.take, emit);
+    LoadProductList event,
+    Emitter<ProductListState> emit,
+  ) async {
+    await _loadProducts(
+      name: event.name ?? '',
+      categories: event.categories ?? [''],
+      price: event.price ?? 0,
+      discount: event.discount ?? '',
+      popular: event.popular ?? '',
+      page: event.page,
+      perPage: event.perpage,
+      emit: emit,
+    );
   }
 
   Future<void> _onSearchProductList(
-      SearchProductList event,
-      Emitter<ProductListState> emit,
-      ) async {
-    await _loadProducts(event.search,event.page, event.take, emit);
+    SearchProductList event,
+    Emitter<ProductListState> emit,
+  ) async {
+    await _loadProducts(
+      name: event.name,
+      categories: event.categories ?? [''],
+      price: event.price ?? 0,
+      discount: event.discount ?? '',
+      popular: event.popular ?? '',
+      page: event.page,
+      perPage: event.perpage,
+      emit: emit,
+    );
   }
 
-  Future<void> _loadProducts(
-      String? search,
-      int page,
-      int take,
-      Emitter<ProductListState> emit,
-      ) async {
+  Future<void> _loadProducts({
+    String name = '',
+    List<String> categories = const [''],
+    int price = 0,
+    String discount = '',
+    String popular = '',
+    required int page,
+    required int perPage,
+    required Emitter<ProductListState> emit,
+  }) async {
     try {
-      print('Debug: Entering _loadProducts method');
-      print('Debug: search: $search, page: $page, take: $take');
-
+      // Determine the current state
       final currentState = state is ProductListLoaded
           ? state as ProductListLoaded
-          : const ProductListLoaded(products: [], hasReachedMax: false, page: 1);
+          : ProductListLoaded(
+              products: [],
+              hasReachedMax: false,
+              page: 1,
+              name: name,
+              categories: categories,
+              price: price,
+              discount: discount,
+              popular: popular,
+            );
 
-      print('Debug: Current state: $currentState');
-      emit(ProductListLoading(currentState.products));
+      // Check if we need to reset the list
+      final shouldResetList = (name != currentState.name) ||
+          (categories != currentState.categories) ||
+          (price != currentState.price) ||
+          (discount != currentState.discount) ||
+          (popular != currentState.popular);
 
-      print('Debug: Calling _getProductsUseCase.execute');
-      final result = await _getProductsUseCase.execute(
-        GetProductsUseCaseInput(
-          page: page,
-          take: take,
-          search: search,
-        ),
-      );
-
-      print('Debug: Result received: $result');
-
-      if (result == null) {
-        print('Error: Result is null');
-        emit(ProductListFailed(Result.fail(const ServerFailure())));
-        return;
+      // Prepare initial state if resetting
+      if (shouldResetList) {
+        emit(ProductListLoaded(
+          products: [],
+          hasReachedMax: false,
+          page: 1,
+          name: name,
+          categories: categories,
+          price: price,
+          discount: discount,
+          popular: popular,
+        ));
       }
 
+      // Prepare input for use case
+      final input = GetProductsUseCaseInput(
+        page: page,
+        perpage: perPage,
+        name: name,
+        categories: categories,
+        price: price,
+        discount: discount, // Ensure this line is present
+        popular: popular,
+      );
+
+      // Execute use case
+      final result = await _getProductsUseCase.execute(input);
+
       if (result.isSuccessful()) {
-        print('Debug: Result is successful');
         final newProducts = result.getValue();
-
-        if (newProducts == null) {
-          print('Error: New products are null');
-          emit(ProductListFailed(Result.fail(const ServerFailure())));
-          return;
-        }
-
-        print('Debug: New products count: ${newProducts.length}');
         final hasReachedMax = newProducts.isEmpty;
 
         emit(ProductListLoaded(
-          products: page == 1 ? newProducts : [...currentState.products, ...newProducts],
+          products: page == 1 || shouldResetList
+              ? newProducts
+              : [...currentState.products, ...newProducts],
           hasReachedMax: hasReachedMax,
           page: page,
+          name: name,
+          categories: categories,
+          price: price,
+          discount: discount,
+          popular: popular,
         ));
       } else {
-        print('Debug: Result is not successful');
         emit(ProductListFailed(result));
       }
     } catch (e) {
-      print('Error in ProductListBloc: $e');
-      print('Stack trace: ${StackTrace.current}');
       emit(ProductListFailed(Result.fail(const ServerFailure())));
     }
   }

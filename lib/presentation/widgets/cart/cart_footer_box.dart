@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_delivery_frontend/application/BLoc/cart/cart_bloc.dart';
+import 'package:go_router/go_router.dart';
 
-import '../../../application/BLoc/cart/cart_bloc.dart';
+import '../../core/theme/theme_getter.dart';
 
 class CartFooterBox extends StatelessWidget {
   const CartFooterBox({super.key});
@@ -10,6 +12,8 @@ class CartFooterBox extends StatelessWidget {
   Widget build(BuildContext context) {
     final cartBloc = context.watch<CartBloc>();
     final double total = cartBloc.state.totalPrice;
+
+    final currentSecondaryThemeColor = AppThemesGetter.getSecondaryColor(context);
 
     return Column(
       children: [
@@ -36,14 +40,16 @@ class CartFooterBox extends StatelessWidget {
           child: FilledButton(
               style: ButtonStyle(
                 backgroundColor:
-                    const WidgetStatePropertyAll(Color(0xFF2000B1)),
+                      WidgetStatePropertyAll(currentSecondaryThemeColor),
                 shape: WidgetStatePropertyAll<RoundedRectangleBorder>(
                   RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12.0),
                   ),
                 ),
               ),
-              onPressed: () {},
+              onPressed: () {
+                context.push('/checkout', extra: total);
+              },
               child: const Text('Comprar',
                   style: TextStyle(
                       fontFamily: 'Inter',

@@ -1,7 +1,9 @@
+// ignore_for_file: library_private_types_in_public_api
+
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_delivery_frontend/presentation/widgets/card.dart';
+import 'package:go_delivery_frontend/presentation/widgets/related_products.dart';
 import 'package:go_delivery_frontend/presentation/widgets/cart/add_product_carrito_button.dart';
 import 'package:go_delivery_frontend/application/BLoc/product/product_detail/product_detail_bloc.dart';
 import 'package:go_delivery_frontend/application/BLoc/product/product_detail/product_detail_event.dart';
@@ -43,6 +45,7 @@ class ProductDetailScreen extends StatelessWidget {
 
             if (state is ProductDetailLoaded) {
               final product = state.product;
+              final int discount = (product?.discounts.isNotEmpty ?? true)? product!.discounts[0].percentage.round() : 0;
 
               return SingleChildScrollView(
                 padding:
@@ -52,7 +55,7 @@ class ProductDetailScreen extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Image.network(
-                      product!.imageUrl,
+                      product!.images.first,
                       fit: BoxFit.fill,
                       alignment: Alignment.center,
                       height: 400,
@@ -69,13 +72,50 @@ class ProductDetailScreen extends StatelessWidget {
                           ),
                         ),
                         const SizedBox(height: 6),
-                        Text(
-                          '\$${product.price}',
-                          style: const TextStyle(
-                            fontFamily: 'Inter',
-                            fontWeight: FontWeight.w500,
-                            fontSize: 20,
-                          ),
+                        Row(
+                          children: [
+                            product.discounts.isNotEmpty ?
+                            Text(
+                              '\$${(product.price*(1-(discount)/100)).toStringAsFixed(2)}',
+                              style: const TextStyle(
+                                  fontFamily: 'Inter',
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.w500,
+                                  color: Color(0xFF000000)),
+                            ):SizedBox(),
+                            SizedBox(width: 5,),
+                            Text(
+                              '\$${product.price}',
+                              style: TextStyle(
+                                fontFamily: 'Inter',
+                                fontWeight: FontWeight.w500,
+                                fontSize: 20,
+                                decoration: discount == 0 ? TextDecoration.none: TextDecoration.lineThrough,
+                                decorationColor: Color(0x55FF0000),
+                                color: discount == 0 ? Color(0xFF000000):Color(0x55FF0000)
+                              ),
+                            ),
+                            Expanded(child: SizedBox()),
+                            product.discounts.isNotEmpty ?
+                            Container(
+                              padding: EdgeInsets.symmetric(vertical: 2,horizontal: 6),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.all(Radius.circular(12)),
+                                color: Color(0x22FF0000)
+                              ),
+                              child: Text(
+                                '-$discount%',
+                                style: const TextStyle(
+                                  fontFamily: 'Inter',
+                                  fontWeight: FontWeight.w800,
+                                  fontSize: 22,
+                                  color: Color(0x55FF0000)
+                                )
+                              ),
+                            ):SizedBox(),
+                            SizedBox(width: 8,)
+
+                          ],
                         ),
                         const SizedBox(height: 24),
                         Text(
@@ -118,8 +158,20 @@ class ProductDetailScreen extends StatelessWidget {
                           ),
                         ),
                         const SizedBox(height: 8),
-                        const Row(
-                          children: [Text('CHUCHERIAS'), Text('  BOTANA')],
+                        Wrap(
+                          spacing: 8.0,
+                          children: product.categories.isNotEmpty
+                              ? product.categories
+                                  .map((category) => ElevatedButton(
+                                        onPressed: () {
+                                          context.push('/catalog',
+                                              extra: category
+                                                  .name); // Modify this line
+                                        },
+                                        child: Text(category.name),
+                                      ))
+                                  .toList()
+                              : const [Text('Sin categorías')],
                         ),
                         const SizedBox(height: 10),
                         const Text(
@@ -131,30 +183,14 @@ class ProductDetailScreen extends StatelessWidget {
                           ),
                         ),
                         const SizedBox(height: 10),
-                        SingleChildScrollView(
-                          scrollDirection: Axis.horizontal,
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              SizedBox(
-                                width: 200,
-                                height: 255,
-                                child: ProductCard(product: product),
-                              ),
-                              const SizedBox(width: 20),
-                              SizedBox(
-                                width: 200,
-                                height: 255,
-                                child: ProductCard(product: product),
-                              ),
-                              const SizedBox(width: 20),
-                              SizedBox(
-                                width: 200,
-                                height: 255,
-                                child: ProductCard(product: product),
-                              ),
-                            ],
-                          ),
+                        RelatedProductsSection(
+                          category: product.categories.isNotEmpty
+                              ? product.categories.first.name
+                              : '',
+                          onCategoryTap: (category) {
+                            context.push('/catalog',
+                                extra: category); // Modify this line
+                          },
                         ),
                       ],
                     ),
@@ -171,7 +207,6 @@ class ProductDetailScreen extends StatelessWidget {
                 ),
               );
             }
-
             return const Center(child: Text('Estado desconocido'));
           },
         ),

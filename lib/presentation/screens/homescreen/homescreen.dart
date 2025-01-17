@@ -1,27 +1,40 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_delivery_frontend/application/BLoc/blocs.dart';
+import 'package:go_delivery_frontend/application/BLoc/category/category_bloc.dart';
+import 'package:go_delivery_frontend/application/BLoc/category/category_event.dart';
 import 'package:go_delivery_frontend/presentation/screens/homescreen/category_tab.dart';
 import 'package:go_delivery_frontend/presentation/screens/homescreen/homescreen_combo_section.dart';
+import 'package:go_delivery_frontend/presentation/screens/homescreen/homescreen_placeholder.dart';
+import 'package:go_delivery_frontend/presentation/screens/homescreen/sidebar_screen.dart';
+import 'package:go_delivery_frontend/presentation/widgets/random_products/random_popular_section.dart';
 import 'package:go_router/go_router.dart';
-import '../../../infrastructure/datasources/localstorage/localstorage_impl.dart';
-import '../../widgets/dialog_darken_window.dart';
-import '../../widgets/navbar.dart';
-import '../../widgets/sidebar.dart';
-import 'homescreen_locationbar.dart';
-import 'homescreen_popular_section.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_delivery_frontend/application/BLoc/product/product_many/product_many_bloc.dart';
-import 'package:go_delivery_frontend/application/BLoc/product/product_many/product_many_state.dart';
-import 'package:go_delivery_frontend/application/BLoc/product/product_many/product_many_event.dart';
+import 'package:go_delivery_frontend/application/BLoc/user/current/current_user_event.dart';
+import 'package:go_delivery_frontend/application/BLoc/user/current/current_user_state.dart';
+import 'package:go_delivery_frontend/presentation/widgets/dialog_darken_window.dart';
+import 'package:go_delivery_frontend/presentation/widgets/navbar.dart';
+import 'package:go_delivery_frontend/presentation/screens/homescreen/homescreen_locationbar.dart';
 
-class HomeScreenChildView extends StatelessWidget {
+import 'package:go_delivery_frontend/presentation/core/theme/theme_getter.dart';
+
+class HomeScreenParentView extends StatelessWidget {
   static const name = 'home-screen';
-  final Widget childView;
-
-  const HomeScreenChildView({super.key, required this.childView});
+  final int initialCounterNavbar;
+  const HomeScreenParentView({super.key, required this.initialCounterNavbar});
 
   @override
   Widget build(BuildContext context) {
-    return childView;
+    final currentPrimaryThemeColor = AppThemesGetter.getPrimaryColor(context);
+
+    return Scaffold(
+      backgroundColor: currentPrimaryThemeColor,
+      body: Stack(
+        children: [
+          const SidebarScreen(),
+          HomeScreen(initialCounterNavbar: initialCounterNavbar)
+        ],
+      ),
+    );
   }
 }
 
@@ -36,9 +49,21 @@ class HomeScreen extends StatefulWidget {
 
 class HomeScreenState extends State<HomeScreen> {
   int _counter = 0;
+  final List<String> _selectedCategories = [];
   final ScrollController _scrollController = ScrollController();
-  final bool _isLoading = false;
-  final bool _hasMore = true;
+
+  double xOffset = 0;
+  double yOffset = 0;
+  double scaleFactor = 1;
+
+  bool isDrawerOpen = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _counter = widget.initialCounterNavbar;
+    context.read<CurrentUserBloc>().add(FetchCurrentUser());
+  }
 
   void _onNavItemTapped(int valueIndex) {
     setState(() {
@@ -47,145 +72,207 @@ class HomeScreenState extends State<HomeScreen> {
   }
 
   @override
-  void initState() {
-    super.initState();
-    _counter = widget.initialCounterNavbar;
-  }
-
-  void _scrollListener() {
-    if (_scrollController.position.pixels ==
-        _scrollController.position.maxScrollExtent) {
-      if (!_isLoading && _hasMore) {
-        context.read<ProductListBloc>().add(
-              LoadProductList(
-                  page: (context.read<ProductListBloc>().state
-                              as ProductListLoaded)
-                          .page +
-                      1,
-                  take: 4),
-            );
-      }
-    }
-  }
-
-  void showLogoutDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AnimatedSuccessDialog(
-          title: 'Salir Sesion',
-          message: '¿Estás seguro de salir de tu sesión?',
-          buttonText: 'Salir',
-          rejectButtonText: 'Cancelar',
-          onButtonPressed: () {
-            Navigator.of(context).pop();
-            LocalStorageService().removeKey('appToken');
-            context.go('/login');
-          },
-          onRejectPressed: () {
-            Navigator.of(context).pop();
-            context.push('/');
-          },
-          icon: Icons.warning,
-        );
-      },
-    );
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: SafeArea(
-        child: Stack(
-          children: [
-            Column(
-              children: [
-                _buildHeader(),
-                Expanded(
-                  child: Container(
-                    margin: const EdgeInsets.only(top: 30),
-                    decoration: const BoxDecoration(
-                      color: Colors.white,
-                    ),
-                    child: _buildContent(),
-                  ),
-                ),
-              ],
-            ),
-            Positioned(
-              top: _getLocationBarPosition(context),
-              left: 16,
-              right: 16,
-              child: const LocationBar(),
-            ),
-          ],
-        ),
-      ),
-      bottomNavigationBar: CustomNavBar(
-        selectedIndex: _counter,
-        onItemTapped: _onNavItemTapped,
-      ),
-      endDrawer: Sidebar(
-        userName: 'User Name',
-        userEmail: 'user@example.com',
-        onLogout: () {
-          Navigator.pop(context);
-          showLogoutDialog(context);
+    return BlocListener<CurrentUserBloc, CurrentUserState>(
+      listener: (context, state) {
+        if (state is CurrentUserError) {
+          _showSessionExpiredDialog(context);
+        }
+      },
+      child: BlocBuilder<CurrentUserBloc, CurrentUserState>(
+        builder: (context, state) {
+          if (state is CurrentUserLoading) {
+            return const HomescreenPlaceholder();
+          }
+          if (state is CurrentUserInitial || state is CurrentUserError) {
+            return const Center(child: Text('Usuario no cargado'));
+          }
+
+          if (state is CurrentUserLoaded) {
+            return _buildMainScreen(state, context);
+          }
+
+          return const Center(child: Text('Something went wrong'));
         },
       ),
     );
   }
 
+  void _showSessionExpiredDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AnimatedSuccessDialog(
+          title: 'Sesión Expirada',
+          message:
+              'Tu sesión ha caducado. Por favor, inicia sesión nuevamente.',
+          buttonText: 'Iniciar Sesión',
+          icon: Icons.warning_amber_rounded,
+          iconColor: Colors.orange,
+          onButtonPressed: () {
+            context.go('/login');
+          },
+        );
+      },
+    );
+  }
+
+  Widget _buildMainScreen(CurrentUserLoaded userState, BuildContext context) {
+    final currentSecondaryThemeColor =
+        AppThemesGetter.getSecondaryColor(context);
+
+    return AnimatedContainer(
+      transform: Matrix4.translationValues(xOffset, yOffset, 0)
+        ..scale(scaleFactor)
+        ..rotateY(isDrawerOpen ? 0 : 0),
+      duration: const Duration(milliseconds: 250),
+      child: ClipRRect(
+        borderRadius: BorderRadius.all(Radius.circular(isDrawerOpen ? 16 : 0)),
+        child: Scaffold(
+          backgroundColor: const Color(0xFFEBEAED),
+          body: Container(
+            color: currentSecondaryThemeColor,
+            child: SafeArea(
+              child: Stack(
+                children: [
+                  Column(
+                    children: [
+                      _buildHeader(),
+                      Expanded(
+                        child: Container(
+                          margin: const EdgeInsets.only(top: 0),
+                          decoration: const BoxDecoration(
+                            color: Color(0xFFEBEAED),
+                          ),
+                          child: _buildContent(),
+                        ),
+                      ),
+                    ],
+                  ),
+                  Positioned(
+                    top: _getLocationBarPosition(context),
+                    left: 16,
+                    right: 16,
+                    child: Container(
+                        decoration: const BoxDecoration(
+                            color: Color(0xFFFFFFFF),
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(12))),
+                        child: const LocationBar()),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          bottomNavigationBar: CustomNavBar(
+            selectedIndex: _counter,
+            onItemTapped: _onNavItemTapped,
+          ),
+        ),
+      ),
+    );
+  }
+
   double _getLocationBarPosition(BuildContext context) {
-    return MediaQuery.of(context).size.height * 0.11;
+    return MediaQuery.of(context).size.height * 0.1;
   }
 
   Widget _buildHeader() {
+    final currentSecondaryThemeColor =
+        AppThemesGetter.getSecondaryColor(context);
+
     return Container(
-      color: const Color(0xFF2000B1),
-      padding: const EdgeInsets.fromLTRB(16, 16, 16, 50),
+      color: currentSecondaryThemeColor,
+      padding: const EdgeInsets.fromLTRB(8, 16, 16, 50),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          const Column(
+          isDrawerOpen
+              ? IconButton(
+                  icon: const Icon(Icons.arrow_back_ios, color: Colors.white),
+                  onPressed: () {
+                    setState(() {
+                      xOffset = 0;
+                      yOffset = 0;
+                      scaleFactor = 1;
+                      isDrawerOpen = false;
+                    });
+                  })
+              : IconButton(
+                  icon: const Icon(Icons.menu, color: Colors.white),
+                  onPressed: () {
+                    setState(() {
+                      xOffset = 288;
+                      scaleFactor = 0.8;
+                      yOffset = MediaQuery.of(context).size.height *
+                          ((1 - scaleFactor) / 2);
+                      isDrawerOpen = true;
+                    });
+                  }),
+          const SizedBox(width: 5),
+          Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                'Hola',
-                style: TextStyle(
-                  fontFamily: 'Montserrat',
-                  color: Colors.white,
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                ),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  const Text(
+                    'Hola,',
+                    style: TextStyle(
+                      fontFamily: 'Montserrat',
+                      color: Colors.white,
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(width: 5),
+                  Builder(
+                    builder: (BuildContext innerContext) {
+                      return BlocBuilder<CurrentUserBloc, CurrentUserState>(
+                        builder: (context, state) {
+                          String firstName = "Usuario";
+                          if (state is CurrentUserLoaded) {
+                            firstName = state.name.split(' ').first;
+                          }
+                          return Text(
+                            firstName,
+                            style: const TextStyle(
+                              fontFamily: 'Montserrat',
+                              color: Colors.white,
+                              fontSize: 24,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          );
+                        },
+                      );
+                    },
+                  ),
+                ],
               ),
-              Text(
+              const Text(
                 'Compra tus productos favoritos',
                 style: TextStyle(
                   fontFamily: 'Montserrat',
-                  color: Colors.white70,
+                  color: Colors.white,
                   fontSize: 14,
+                  fontWeight: FontWeight.w400,
                 ),
               ),
             ],
           ),
+          const Expanded(
+            flex: 1,
+            child: SizedBox(),
+          ),
           Row(
             children: [
-              IconButton(
-                icon: const Icon(Icons.notifications_outlined,
-                    color: Colors.white),
-                onPressed: () {
-                  print('Notification button pressed');
-                },
-              ),
-              const SizedBox(width: 16),
               Builder(
                 builder: (BuildContext innerContext) {
                   return IconButton(
-                    icon: const Icon(Icons.menu),
+                    icon: const Icon(Icons.notifications_none),
                     onPressed: () {
-                      Scaffold.of(innerContext).openEndDrawer();
+                      context.push('/notification');
                     },
                     color: Colors.white,
                   );
@@ -200,16 +287,50 @@ class HomeScreenState extends State<HomeScreen> {
 
   Widget _buildContent() {
     return SingleChildScrollView(
-      controller: _scrollController, // Aquí agregamos el ScrollController
-      child: const Padding(
-        padding: EdgeInsets.only(top: 10),
+      controller: _scrollController,
+      child: Padding(
+        padding: const EdgeInsets.only(top: 30),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            CategoryTabs(),
-            ComboSection(),
-            SizedBox(height: 14),
-            PopularSection(), // Este widget sigue siendo el mismo
+            SizedBox(height: 4),
+            CategoryTabs(
+              onCategorySelected: (List<String> selectedCategories) {
+                setState(() {
+                  // Añadir las categorías seleccionadas a _selectedCategories
+                  for (var category in selectedCategories) {
+                    if (!_selectedCategories.contains(category)) {
+                      print('Añadiendo categoría: $category');
+                      _selectedCategories.add(category);
+                    }
+                  }
+
+                  // Eliminar las categorías que no están en selectedCategories
+                  _selectedCategories.removeWhere((category) {
+                    bool shouldRemove = !selectedCategories.contains(category);
+                    if (shouldRemove) {
+                      print('Eliminando categoría: $category');
+                    }
+                    return shouldRemove;
+                  });
+
+                  print(
+                      'Categorías seleccionadas después de actualizar: $_selectedCategories');
+                });
+                print(
+                    'Categorías seleccionadas después de actualizarrrrrrrrrrrrrrr: $_selectedCategories');
+                // Notificar al Bloc para que se actualicen las categorías seleccionadas
+                context.read<CategoryBloc>().add(
+                      SelectCategory(categoryNames: _selectedCategories),
+                    );
+                print(
+                    'Categorías seleccionadas después de actualizarAAAAAAAAAAAAAAAAAAA: $_selectedCategories');
+              },
+              selectedCategories: [],
+            ),
+            ComboSection(selectedCategories: _selectedCategories),
+            const SizedBox(height: 14),
+            RandomSection(selectedCategoryNames: _selectedCategories),
           ],
         ),
       ),

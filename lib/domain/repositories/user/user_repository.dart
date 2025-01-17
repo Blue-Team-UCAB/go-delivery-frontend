@@ -1,4 +1,6 @@
-import '../../../common/result.dart';
+import 'dart:io';
+import 'package:go_delivery_frontend/common/result.dart';
+import 'package:go_delivery_frontend/infrastructure/models/user_model.dart';
 
 abstract class UserRepository {
   Future<Result<bool>> register(
@@ -11,4 +13,6 @@ abstract class UserRepository {
   Future<Result<bool>> validateRecoveryCode(String email, String code);
   Future<Result<bool>> changePassword(
       String email, String code, String password);
+  Future<Result<User>> getCurrent();
+  Future<Result<bool>> updateUserImage(File image);
 }

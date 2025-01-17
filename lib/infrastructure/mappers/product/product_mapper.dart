@@ -1,16 +1,66 @@
+import 'package:go_delivery_frontend/domain/entities/bundle/bundle_product.dart';
 import 'package:go_delivery_frontend/domain/entities/product/product.dart';
+
 import 'package:go_delivery_frontend/domain/entities/category/category.dart';
-import 'package:go_delivery_frontend/infrastructure/mappers/category/category_mapper.dart';
+import 'package:go_delivery_frontend/domain/entities/discount/discount.dart';
 
 class ProductMapper {
   static Product fromJson(Map<String, dynamic> json) {
+    return _parseProduct(json);
+  }
+
+  static Product fromJsonDetail(Map<String, dynamic> json, String productId) {
     try {
-      final category = json['category'] != null
-          ? CategoryMapper.fromJson(json['category'])
-          : Category(id: '', name: 'Sin categoría', icon: '');
+      return Product(
+        id: productId as String? ?? '',
+        name: json['name'] as String? ?? 'Sin nombre',
+        description:
+            json['description'] as String? ?? 'Descripción no disponible',
+        currency: json['currency'] as String? ?? 'USD',
+        price: (json['price'] as num?)?.toDouble() ?? 0.0,
+        stock: json['stock'] as int? ?? 0,
+        weight: (json['weight'] as num?)?.toDouble() ?? 0.0,
+        measurement: json['measurement'] as String? ?? '',
 
-      final String imageUrl = json['imageUrl'] as String? ?? '';
+        // Image handling (flexible for both structures)
+        images: _parseImageUrl(json['images'] ?? json['imageUrl']),
 
+        // Category handling (optional)
+        categories: _parseCategories(json['category']),
+
+        // Discount handling (optional)
+        discounts: _parseDiscounts(json['discount']),
+
+        // Caducity date handling (optional)
+        caducityDate: _parseCaducityDate(json['caducityDate']),
+      );
+    } catch (e) {
+      print('Error parsing product: $e');
+      rethrow;
+    }
+  }
+
+  // Multiple products mapping
+  static List<Product> fromJsonList(List<dynamic> jsonList) {
+    return jsonList.map((json) => _parseProduct(json)).toList();
+  }
+
+  static Product fromBundleProduct(BundleProduct bundleProduct) {
+    return Product(
+        id: bundleProduct.id,
+        name: bundleProduct.name,
+        description: '',
+        currency: 'USD',
+        price: bundleProduct.price,
+        stock: 0,
+        measurement: '',
+        weight: bundleProduct.weight ?? 1,
+        images: bundleProduct.images);
+  }
+
+  static Product _parseProduct(Map<String, dynamic> json) {
+    print('Parsing product: $json');
+    try {
       return Product(
         id: json['id'] as String? ?? '',
         name: json['name'] as String? ?? 'Sin nombre',
@@ -18,15 +68,80 @@ class ProductMapper {
             json['description'] as String? ?? 'Descripción no disponible',
         currency: json['currency'] as String? ?? 'USD',
         price: (json['price'] as num?)?.toDouble() ?? 0.0,
-        weight: (json['weight'] as num?)?.toDouble() ?? 0.0,
         stock: json['stock'] as int? ?? 0,
-        category: category,
-        imageUrl: imageUrl,
+        weight: (json['weight'] as num?)?.toDouble() ?? 0.0,
+        measurement: json['measurement'] as String? ?? '',
+        images: _parseImageUrl(json['images'] ?? json['imageUrl']),
+        categories: _parseCategories(json['category']),
+        discounts: _parseDiscounts(json['discount']),
+        caducityDate: _parseCaducityDate(json['caducityDate']),
       );
     } catch (e) {
-      print('Error in ProductMapper.fromJson: $e');
+      print('Error parsing product: $e');
       rethrow;
     }
+  }
+
+  static List<String> _parseImageUrl(dynamic images) {
+    if (images == null) return [];
+
+    if (images is List<String>) {
+      return images.where((image) => image.isNotEmpty).toList();
+    }
+
+    if (images is List) {
+      return images
+          .map((image) => image.toString())
+          .where((image) => image.isNotEmpty)
+          .toList();
+    }
+
+    if (images is String) {
+      return images.isNotEmpty ? [images] : [];
+    }
+
+    return [];
+  }
+
+  static List<Category> _parseCategories(dynamic categoryData) {
+    if (categoryData is List) {
+      return categoryData
+          .map((categoryJson) => Category(
+                id: categoryJson['id'] as String? ?? '',
+                name: categoryJson['name'] as String? ?? '',
+                imageUrl: '',
+              ))
+          .toList();
+    }
+    print('Unexpected category data format: $categoryData');
+    return [];
+  }
+
+  static List<Discount> _parseDiscounts(dynamic discountData) {
+    if (discountData is List) {
+      return discountData
+          .map((discountJson) => Discount(
+                id: discountJson['id'] as String? ?? '',
+                // percentage:
+                //     (discountJson['percentage'] as num?)?.toDouble() ?? 0.0,
+                percentage: discountJson["percentage"]?.toDouble() >= 1 
+                  ? discountJson["percentage"]?.toDouble()??0.0 
+                  : discountJson["percentage"]?.toDouble() / 100,
+              ))
+          .toList();
+    }
+    return [];
+  }
+
+  static DateTime _parseCaducityDate(dynamic caducityDate) {
+    if (caducityDate is String) {
+      try {
+        return DateTime.parse(caducityDate);
+      } catch (e) {
+        print('Error parsing caducity date: $e');
+      }
+    }
+    return DateTime.now().add(Duration(days: 365));
   }
 
   static Map<String, dynamic> toJson(Product product) {
@@ -36,10 +151,18 @@ class ProductMapper {
       'description': product.description,
       'currency': product.currency,
       'price': product.price,
-      'weight': product.weight,
       'stock': product.stock,
-      'category': product.category.name,
-      'imageUrl': product.imageUrl,
+      'weight': product.weight,
+      'measurement': product.measurement,
+      'images': [product.imageUrl],
+      'category': product.categories
+          .map((category) => {'id': category.id, 'name': category.name})
+          .toList(),
+      'discount': product.discounts
+          .map((discount) =>
+              {'id': discount.id, 'percentage': discount.percentage})
+          .toList(),
+      'caducityDate': product.caducityDate.toIso8601String(),
     };
   }
 }

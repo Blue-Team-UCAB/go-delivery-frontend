@@ -19,7 +19,7 @@ class BundleListBloc extends Bloc<BundleListEvent, BundleListState> {
     if (state is BundleListInitial || state is BundleListLoaded) {
       try {
         final currentState = state is BundleListLoaded
-            ? state
+            ? state as BundleListLoaded
             : const BundleListLoaded(
                 bundles: [], hasReachedMax: false, page: 1);
 
@@ -28,7 +28,12 @@ class BundleListBloc extends Bloc<BundleListEvent, BundleListState> {
         final result = await _getBundlesUseCase.execute(
           GetBundlesUseCaseInput(
             page: event.page,
-            take: event.take,
+            perpage: event.perpage,
+            categories: event.categories ?? [''],
+            name: event.name ?? '',
+            price: event.price ?? 0,
+            popular: event.popular ?? '',
+            discount: event.discount ?? '',
           ),
         );
 
@@ -45,8 +50,7 @@ class BundleListBloc extends Bloc<BundleListEvent, BundleListState> {
           emit(BundleListFailed(result));
         }
       } catch (e) {
-        print('Error in BundleListBloc: $e');
-        emit(BundleListFailed(Result.fail(e.toString() as Failure)));
+        emit(BundleListFailed(Result.fail(BadReponseFailure())));
       }
     }
   }

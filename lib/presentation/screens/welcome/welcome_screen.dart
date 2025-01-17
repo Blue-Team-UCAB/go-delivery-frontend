@@ -3,8 +3,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../application/BLoc/themes/themes_bloc.dart';
-import '../../../infrastructure/datasources/localstorage/localstorage_impl.dart';
+import 'package:go_delivery_frontend/application/BLoc/themes/themes_bloc.dart';
+import 'package:go_delivery_frontend/infrastructure/datasources/localstorage/localstorage_impl.dart';
+
+import 'package:go_delivery_frontend/presentation/core/theme/theme.dart';
 
 class WelcomeScreen extends StatefulWidget {
   const WelcomeScreen({super.key, this.onPressSkip});
@@ -18,19 +20,36 @@ class WelcomeScreen extends StatefulWidget {
 class WelcomeScreenState extends State<WelcomeScreen> {
   @override
   Widget build(BuildContext context) {
-    final bool isDarkMode = context.watch<ThemesBloc>().isDarkMode;
+    final AppColorMode currentColorMode =
+        context.watch<ThemesBloc>().currentColorMode;
+
+    // Define colors based on current color mode
+    Color backgroundColor;
+    Color buttonTextColor;
+    String logoAsset;
+
+    switch (currentColorMode) {
+      case AppColorMode.blue:
+        backgroundColor = const Color(0xFF02066F);
+        buttonTextColor = const Color(0xFF02066F);
+        logoAsset = 'assets/icon/logo.svg';
+        break;
+      case AppColorMode.red:
+        backgroundColor = const Color(0xFF8F0000); // Dark Crimson
+        buttonTextColor = const Color(0xFF8F0000);
+        logoAsset = 'assets/icon/logo_red.svg';
+        break;
+    }
 
     return Scaffold(
-      backgroundColor: isDarkMode ? Colors.black26 : const Color(0xFF02066F), // Decimal value for #2000B1
+      backgroundColor: backgroundColor,
       body: SafeArea(
         child: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               SvgPicture.asset(
-                isDarkMode
-                    ? 'assets/icon/logo-white.svg'
-                    : 'assets/icon/logo.svg',
+                logoAsset,
                 height: 300,
                 width: 300,
               ),
@@ -59,14 +78,15 @@ class WelcomeScreenState extends State<WelcomeScreen> {
               TextButton(
                 onPressed: skipPressedCallback,
                 style: TextButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
                   backgroundColor: Colors.white,
                 ),
-                child:  Text(
+                child: Text(
                   'Ingresar',
                   style: TextStyle(
                     fontFamily: 'Montserrat',
-                    color: isDarkMode ? Colors.black26 : const Color(0xFF02066F), // Same color for button text
+                    color: buttonTextColor,
                     fontSize: 16,
                     fontWeight: FontWeight.w500,
                   ),
@@ -83,6 +103,4 @@ class WelcomeScreenState extends State<WelcomeScreen> {
     LocalStorageService().setKeyValue('initialized', true);
     context.go('/login');
   }
-
-
 }

@@ -1,7 +1,7 @@
 import 'package:dio/dio.dart';
-import '../../../application/api/api_request.dart';
-import '../../../common/failure.dart';
-import '../../../common/result.dart';
+import 'package:go_delivery_frontend/application/api/api_request.dart';
+import 'package:go_delivery_frontend/common/failure.dart';
+import 'package:go_delivery_frontend/common/result.dart';
 
 class ApiRequestManagerImpl extends IApiRequestManager {
   final Dio _dio;
@@ -28,6 +28,7 @@ class ApiRequestManagerImpl extends IApiRequestManager {
       return Result.success(mapper(response.data));
     } on DioException catch (e) {
       print('DioError in request: $e');
+      print(e.error);
       return Result.fail(handleException(e));
     } catch (e) {
       print('Error in request: $e');
@@ -35,7 +36,7 @@ class ApiRequestManagerImpl extends IApiRequestManager {
     }
   }
 
-  // Método para manejar las excepciones de Dio
+  // Metodo para manejar las excepciones de Dio
   Failure handleException(DioException e) {
     print('Handling DioError: $e');
     switch (e.type) {
@@ -44,11 +45,11 @@ class ApiRequestManagerImpl extends IApiRequestManager {
       case DioExceptionType.receiveTimeout:
         return const NoInternetFailure();
       case DioExceptionType.badResponse:
-        if (e.response?.data['message'] is String) {
-          print("Error en autorización");
-          return NoAuthorizeFailure(message: e.response?.data['message']);
+        if (e.response?.data is Map<String, dynamic>) {
+          String errorMessage = e.response?.data['message'] ?? 'Unknown error';
+          return BadReponseFailure(message: errorMessage);
         } else {
-          return const NoAuthorizeFailure(message: 'Error desconocido');
+          return const NoAuthorizeFailure(message: 'Unknown error');
         }
       case DioExceptionType.connectionError:
         if (e.message?.contains('SocketException') ?? false) {

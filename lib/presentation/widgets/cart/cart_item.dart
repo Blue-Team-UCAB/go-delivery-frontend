@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_delivery_frontend/domain/entities/cart/cartitem.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
-import '../../../application/BLoc/cart/cart_bloc.dart';
+import 'package:go_delivery_frontend/application/BLoc/cart/cart_bloc.dart';
 
 class CartItemWidget extends StatelessWidget {
   final CartItem item;
@@ -77,8 +77,7 @@ class DataBox extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final double totalItem =
-        double.parse((price * quantity).toStringAsFixed(2));
+    final double totalItem = (price * quantity) * 100.truncateToDouble() / 100;
 
     return Flexible(
       flex: 1,

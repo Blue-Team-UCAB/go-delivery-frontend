@@ -8,7 +8,8 @@ import 'package:go_delivery_frontend/application/BLoc/product/product_many/produ
 class ProductPopularListBloc extends Bloc<ProductListEvent, ProductListState> {
   final GetProductsUseCase _getProductsUseCase;
 
-  ProductPopularListBloc(this._getProductsUseCase) : super(ProductListInitial()) {
+  ProductPopularListBloc(this._getProductsUseCase)
+      : super(ProductListInitial()) {
     on<LoadProductList>(_onLoadProductList);
   }
 
@@ -27,9 +28,13 @@ class ProductPopularListBloc extends Bloc<ProductListEvent, ProductListState> {
 
         final result = await _getProductsUseCase.execute(
           GetProductsUseCaseInput(
-            search: '',
+            name: '',
+            categories: [''],
+            price: 0,
+            discount: '',
+            popular: '',
             page: event.page,
-            take: event.take,
+            perpage: event.perpage,
           ),
         );
 
@@ -41,12 +46,12 @@ class ProductPopularListBloc extends Bloc<ProductListEvent, ProductListState> {
             products: [...newProducts],
             hasReachedMax: hasReachedMax,
             page: event.page,
+            categories: [''],
           ));
         } else {
           emit(ProductListFailed(result));
         }
       } catch (e) {
-        print('Error in ProductListBloc: $e');
         emit(ProductListFailed(Result.fail(e.toString() as Failure)));
       }
     }

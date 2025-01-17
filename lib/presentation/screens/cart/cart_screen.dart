@@ -1,28 +1,33 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_delivery_frontend/domain/entities/cart/cartitem.dart';
+import 'package:go_delivery_frontend/presentation/widgets/cart/cart_empty_state_widget.dart';
 import 'package:go_delivery_frontend/presentation/widgets/cart/cart_item.dart';
 import 'package:go_delivery_frontend/presentation/widgets/cart/cart_footer_box.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../application/BLoc/cart/cart_bloc.dart';
+import 'package:go_delivery_frontend/application/BLoc/cart/cart_bloc.dart';
+
+import '../../../application/BLoc/themes/themes_bloc.dart';
+import '../../core/theme/theme.dart';
 
 class CartScreen extends StatelessWidget {
   static const name = 'cart-screen';
   const CartScreen({super.key});
-
-  final CartItem testing = const CartItem(
-      id: 'fe',
-      name: 'Pringles FlamingHot Queso',
-      imgUrl: 'imgUrl',
-      price: 2.30,
-      presentation: '150 gr',
-      quantity: 1);
+  
 
   @override
   Widget build(BuildContext context) {
+    final cartBloc = context.watch<CartBloc>();
+
+    final themesBloc = context.watch<ThemesBloc>();
+    final appTheme = themesBloc.state.appTheme;
+    final isPrimaryRed = appTheme.colorMode == AppColorMode.red;
+
     return Scaffold(
+      backgroundColor: const Color(0xFFFFFFFF),
       appBar: AppBar(
+        backgroundColor: const Color(0xFFFFFFFF),
         leading: Padding(
           padding: const EdgeInsets.all(4.0),
           child: IconButton(
@@ -32,18 +37,41 @@ class CartScreen extends StatelessWidget {
             },
           ),
         ),
-        title: const Text('Carrito'),
-        centerTitle: true,
+        title: const Text(
+          'Mi Carrito',
+          style: TextStyle(fontFamily: 'Montserrat',fontSize: 24,fontWeight: FontWeight.w700 ,color: Color(0xFF000000))
+        ),
+        actions: [
+          if(!isPrimaryRed)
+            Padding(
+              padding: const EdgeInsets.all(4.0),
+              child:
+              IconButton(
+                icon: Icon(Icons.bubble_chart_outlined,color: Color(0xFF0000FF),),
+                iconSize: 35,
+                onPressed: (){
+                  cartBloc.loadAiCart();
+                },
+                ),
+            )
+        ],
       ),
-      body: _CartView(),
+      body: cartBloc.state.items.isEmpty
+        ?  CartEmptyStateWidget()
+        : _CartView(itemQuantity: cartBloc.state.howManyItems,cartItems: cartBloc.state.items,),
     );
   }
 }
 
 class _CartView extends StatelessWidget {
+
+  final int itemQuantity;
+  final List<CartItem> cartItems;
+
+  const _CartView({required this.itemQuantity, required this.cartItems});
+
   @override
   Widget build(BuildContext context) {
-    final cartBloc = context.watch<CartBloc>();
 
     return SafeArea(
       child: Padding(
@@ -52,13 +80,11 @@ class _CartView extends StatelessWidget {
           children: [
             Expanded(
                 child: ListView.builder(
-                    itemCount: cartBloc.state.howManyItems,
+                    itemCount: itemQuantity,
                     itemBuilder: (context, index) {
-                      final cartItem = cartBloc.state.items[index];
+                      final cartItem = cartItems[index];
                       return CartItemWidget(item: cartItem);
                     })),
-
-            /// caja de texto
             const CartFooterBox()
           ],
         ),

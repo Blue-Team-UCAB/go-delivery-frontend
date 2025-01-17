@@ -1,14 +1,14 @@
-import '../../../core/common/validator.dart';
+import 'package:go_delivery_frontend/presentation/core/common/validator.dart';
 
-class loginValidator {
-
+class LoginValidator {
   static final passwordValidator = Validator<String>(rules: [
     Validator.required(
       failure: ValidationFailure('La contraseña es requerida'),
     ),
     Validator.minLength(
-      6,
-      failure: ValidationFailure('La contraseña debe tener al menos 6 caracteres'),
+      8,
+      failure:
+          ValidationFailure('La contraseña debe tener al menos 8 caracteres'),
     ),
     Validator.regex(
       r'^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&/#_.,:;()\-+])[A-Za-z\d@$!%*?&/#_.,:;()\-+]+$',
@@ -24,6 +24,4 @@ class loginValidator {
     ),
     Validator.email(),
   ]);
-
-
 }

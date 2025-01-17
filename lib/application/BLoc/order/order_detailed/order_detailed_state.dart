@@ -1,0 +1,51 @@
+import 'package:latlong2/latlong.dart';
+
+import 'package:go_delivery_frontend/domain/entities/bundle/bundle.dart';
+import 'package:go_delivery_frontend/domain/entities/courier/courier.dart';
+import 'package:go_delivery_frontend/domain/entities/direction/direction.dart';
+import 'package:go_delivery_frontend/domain/entities/order/order.dart';
+import 'package:go_delivery_frontend/domain/entities/product/product.dart';
+
+abstract class OrderDetailState {}
+
+class OrderDetailInitialState extends OrderDetailState {}
+
+class OrderDetailLoadingState extends OrderDetailState {}
+
+class OrderDetailLoadedState extends OrderDetailState {
+  final String id;
+  final List<OrderState> state;
+  final double totalAmount;
+  final double subtotalAmount;
+  final String timeCreated;
+  final DirectionOrder direction;
+  final Courier? courier;
+  final List<OrderProduct> products;
+  final List<OrderBundle> bundles;
+
+  OrderDetailLoadedState({
+    required this.id,
+    required this.state,
+    required this.totalAmount,
+    required this.subtotalAmount,
+    required this.timeCreated,
+    required this.direction,
+    required this.products,
+    required this.bundles,
+    this.courier,
+  });
+
+  String get orderNumber => id;
+  String get date => state.isNotEmpty ? state.first.date : '';
+  String get time => state.isNotEmpty ? state.first.date.split(' ')[1] : '';
+  DirectionOrder get location => direction;
+  String get price => totalAmount.toString();
+  String get lastState => state.isNotEmpty ? state.last.state : '';
+  LatLng get coordinates => LatLng(direction.latitude, direction.longitude);
+}
+
+class OrderDetailErrorState extends OrderDetailState {
+  final String error;
+
+  OrderDetailErrorState({required this.error});
+}

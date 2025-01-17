@@ -1,35 +1,49 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'router/app_router.dart';
-import 'theme/theme.dart';
+import 'package:go_delivery_frontend/presentation/core/router/app_router.dart';
+import 'package:go_delivery_frontend/presentation/core/theme/theme.dart';
+import 'package:go_delivery_frontend/application/BLoc/themes/themes_bloc.dart';
+import 'package:go_delivery_frontend/infrastructure/datasources/localstorage/localstorage_impl.dart';
 
-import '../../application/BLoc/themes/themes_bloc.dart';
-import '../../infrastructure/datasources/localstorage/localstorage_impl.dart';
-
-class GoDelyApp extends StatelessWidget {
+class GoDelyApp extends StatefulWidget {
   const GoDelyApp({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    final LocalStorageService localStorage = LocalStorageService();
-    final AppTheme appTheme = context.watch<ThemesBloc>().state.appTheme;
-    final bool isThemeInit = context.watch<ThemesBloc>().state.isInitialized;
-    var brightness =
-        SchedulerBinding.instance.platformDispatcher.platformBrightness;
-    final isDarkMode = brightness == Brightness.dark;
-    if (!isThemeInit) {
-      localStorage.getValue<bool>('theme').then((value) {
-        if (value == null) {
-          localStorage.setKeyValue('theme', isDarkMode);
-          context.read<ThemesBloc>().setInitTheme(isDarkMode);
-        } else {
-          context.read<ThemesBloc>().setInitTheme(value);
-        }
-      });
-    } else {
-      localStorage.setKeyValue('theme', appTheme.isDarkMode);
+  GoDelyAppState createState() => GoDelyAppState();
+}
+
+class GoDelyAppState extends State<GoDelyApp> {
+  late LocalStorageService localStorage;
+
+  @override
+  void initState() {
+    super.initState();
+    localStorage = LocalStorageService();
+    _initializeTheme();
+  }
+
+  Future<void> _initializeTheme() async {
+    final themeBloc = context.read<ThemesBloc>();
+
+    if (!themeBloc.state.isInitialized) {
+      String? value = await localStorage.getValue<String>('colorMode');
+      AppColorMode savedColorMode;
+
+      if (value == null) {
+        await localStorage.setKeyValue(
+            'colorMode', AppColorMode.blue.toString());
+        themeBloc.setInitTheme(false);
+      } else {
+        savedColorMode =
+            value.contains('blue') ? AppColorMode.blue : AppColorMode.red;
+        themeBloc.setInitTheme(savedColorMode == AppColorMode.red);
+      }
     }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final AppTheme appTheme = context.watch<ThemesBloc>().state.appTheme;
 
     return MaterialApp.router(
       debugShowCheckedModeBanner: false,

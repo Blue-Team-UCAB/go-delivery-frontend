@@ -1,28 +1,38 @@
 part of 'notifications_bloc.dart';
 
+enum TokenSendStatus { initial, sent, error }
+
+enum NotificationPermissionStatus { initial, granted, denied }
+
 class NotificationsState extends Equatable {
-  final bool status;
-  final String token;
-  final String recoveryCode;
+  final TokenSendStatus tokenSendStatus;
+  final NotificationPermissionStatus notificationPermissionStatus;
+  final String? fcmToken;
+  final List<PushMessageModel> notifications;
 
   const NotificationsState({
-    this.token = '',
-    this.status = false,
-    this.recoveryCode = '',
+    this.tokenSendStatus = TokenSendStatus.initial,
+    this.notificationPermissionStatus = NotificationPermissionStatus.initial,
+    this.fcmToken,
+    this.notifications = const [],
   });
 
   NotificationsState copyWith({
-    bool? status,
-    String? token,
-    String? recoveryCode,
+    TokenSendStatus? tokenSendStatus,
+    NotificationPermissionStatus? notificationPermissionStatus,
+    String? fcmToken,
+    List<PushMessageModel>? notifications,
   }) {
     return NotificationsState(
-      status: status ?? this.status,
-      token: token ?? this.token,
-      recoveryCode: recoveryCode ?? this.recoveryCode,
+      tokenSendStatus: tokenSendStatus ?? this.tokenSendStatus,
+      notificationPermissionStatus:
+          notificationPermissionStatus ?? this.notificationPermissionStatus,
+      fcmToken: fcmToken ?? this.fcmToken,
+      notifications: notifications ?? this.notifications,
     );
   }
 
   @override
-  List<Object> get props => [status, token, recoveryCode];
+  List<Object?> get props =>
+      [tokenSendStatus, notificationPermissionStatus, fcmToken, notifications];
 }
