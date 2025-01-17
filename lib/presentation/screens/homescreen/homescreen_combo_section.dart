@@ -8,7 +8,6 @@ import 'package:go_delivery_frontend/application/BLoc/bundle/bundle_many/bundle_
 import 'package:go_delivery_frontend/application/BLoc/bundle/bundle_many/bundle_many_state.dart';
 import 'package:go_delivery_frontend/presentation/widgets/homescreen/bundle_section_placeholder.dart';
 
-import '../../core/theme/theme_getter.dart';
 
 class ComboSection extends StatefulWidget {
   final List<String>? selectedCategories;
@@ -33,7 +32,6 @@ class _ComboSectionState extends State<ComboSection> {
 
   @override
   Widget build(BuildContext context) {
-    final currentSecondaryThemeColor = AppThemesGetter.getSecondaryColor(context);
 
     return BlocListener<CategoryBloc, CategoryState>(
       listener: (context, state) {
@@ -55,31 +53,17 @@ class _ComboSectionState extends State<ComboSection> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-           Padding(
+          Padding(
             padding: EdgeInsets.symmetric(horizontal: 16),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  'Combos ofertados',
-                  style: TextStyle(
-                    fontFamily: 'Montserrat',
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                Text(
-                  'Ver todos',
-                  style: TextStyle(
-                    fontFamily: 'Montserrat',
-                    color: currentSecondaryThemeColor,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ],
+            child: Text(
+              'Combos ofertados',
+              style: TextStyle(
+                fontFamily: 'Montserrat',
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ),
-          const SizedBox(height: 16),
           BlocBuilder<CategoryBloc, CategoryState>(
             builder: (context, state) {
               if (state is CategoryLoading) {
