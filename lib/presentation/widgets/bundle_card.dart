@@ -7,8 +7,7 @@ import 'package:go_router/go_router.dart';
 import 'package:go_delivery_frontend/application/BLoc/cart/cart_bloc.dart';
 import 'package:go_delivery_frontend/infrastructure/mappers/cart/cart_item_mapper.dart';
 import 'package:shimmer/shimmer.dart';
-
-import '../core/theme/theme_getter.dart';
+import 'package:go_delivery_frontend/presentation/core/theme/theme_getter.dart';
 
 class BundleCard extends StatelessWidget {
   final Bundle bundle;
@@ -79,7 +78,7 @@ class BundleCard extends StatelessWidget {
                   children: [
                     Text(
                       bundle.name,
-                      maxLines: 2,
+                      maxLines: 1,
                       style: const TextStyle(
                           fontFamily: 'Inter',
                           fontSize: 14.0,
