@@ -203,7 +203,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
               _phoneController.text = state.phone;
               _profileImage ??=
                   state.image.isNotEmpty ? null : File(state.image);
-              return ProfileScreenPlaceholder();
               return SafeArea(
                 child: SingleChildScrollView(
                   padding: const EdgeInsets.symmetric(vertical: 16.0),

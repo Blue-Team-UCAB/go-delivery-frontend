@@ -16,7 +16,7 @@ class ProfileScreenPlaceholder extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SizedBox(height: 20),
+              SizedBox(height: 32),
               Center(
                 child: Container(
                   width: 160,
@@ -27,18 +27,18 @@ class ProfileScreenPlaceholder extends StatelessWidget {
                   ),
                 ),
               ),
-              SizedBox(height: 20),
+              SizedBox(height: 18),
               Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    TextPlaceholder(height: 14, width: 80),
-                    SizedBox(height: 8,),
+                    TextPlaceholder(height: 14, width: 120),
+                    SizedBox(height: 16,),
                     TextPlaceholder(height: 16, width: 260),
-                    SizedBox(height: 24,),
+                    SizedBox(height: 44,),
                     TextPlaceholder(height: 14, width: 100),
-                    SizedBox(height: 8),
+                    SizedBox(height: 16),
                     TextPlaceholder(height: 16, width: 200),
                   ],
                 ),
