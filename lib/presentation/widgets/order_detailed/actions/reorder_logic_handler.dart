@@ -16,9 +16,7 @@ import 'package:go_delivery_frontend/application/BLoc/product/product_detail/pro
 import 'package:go_delivery_frontend/application/BLoc/product/product_detail/product_detail_state.dart';
 import 'package:go_delivery_frontend/domain/entities/cart/cartitem.dart';
 import 'package:go_delivery_frontend/presentation/widgets/dialog_darken_window.dart';
-
-import '../../../../application/BLoc/themes/themes_bloc.dart';
-import '../../../core/theme/theme_getter.dart';
+import 'package:go_delivery_frontend/presentation/core/theme/theme_getter.dart';
 
 class ReorderOrderWidget extends StatefulWidget {
   final String orderNumber;
@@ -108,7 +106,6 @@ class _ReorderOrderWidgetState extends State<ReorderOrderWidget> {
   }
 
   void _checkCartCompletion(BuildContext context) {
-
     // Check if all required items are loaded
     bool allProductsLoaded = _loadedProductIds.containsAll(_productIdsToLoad);
     bool allBundlesLoaded = _loadedBundleIds.containsAll(_bundleIdsToLoad);
@@ -153,7 +150,8 @@ class _ReorderOrderWidgetState extends State<ReorderOrderWidget> {
 
   @override
   Widget build(BuildContext context) {
-    final currentSecondaryThemeColor = AppThemesGetter.getSecondaryColor(context);
+    final currentSecondaryThemeColor =
+        AppThemesGetter.getSecondaryColor(context);
 
     return Scaffold(
       body: MultiBlocListener(
@@ -168,7 +166,6 @@ class _ReorderOrderWidgetState extends State<ReorderOrderWidget> {
 
                 // Empty cart first
                 cartBloc.add(const EmptyCart());
-
 
                 // Prepare sets of IDs to load
                 setState(() {
@@ -336,7 +333,7 @@ class _ReorderOrderWidgetState extends State<ReorderOrderWidget> {
                     Text(
                       'Preparando su pedido...',
                       style: TextStyle(
-                        fontFamily: "Montserrat" ,
+                        fontFamily: "Montserrat",
                         color: currentSecondaryThemeColor,
                         fontSize: 20,
                       ),

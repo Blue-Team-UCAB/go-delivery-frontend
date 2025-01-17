@@ -9,12 +9,12 @@ import 'package:go_delivery_frontend/presentation/core/theme/theme_getter.dart';
 
 class CategoryTabs extends StatefulWidget {
   final Function(List<String>)? onCategorySelected;
-  final List<String> selectedCategories; // Add this field
+  final List<String> selectedCategories;
 
   const CategoryTabs({
     super.key,
     this.onCategorySelected,
-    required this.selectedCategories, // Add this parameter
+    required this.selectedCategories,
   });
 
   @override
@@ -22,13 +22,15 @@ class CategoryTabs extends StatefulWidget {
 }
 
 class CategoryTabsState extends State<CategoryTabs> {
-  late List<String> _selectedCategories; // Change this to late
+  late String _selectedCategory; // A single selected category
 
   @override
   void initState() {
     super.initState();
-    _selectedCategories = List.from(
-        widget.selectedCategories); // Initialize with widget.selectedCategories
+    // Initialize with the first selected category or an empty string
+    _selectedCategory = widget.selectedCategories.isNotEmpty
+        ? widget.selectedCategories.first
+        : '';
     WidgetsBinding.instance.addPostFrameCallback((_) {
       context.read<CategoryBloc>().add(LoadCategories(page: 1, perpage: 10));
     });
@@ -115,7 +117,6 @@ class CategoryTabsState extends State<CategoryTabs> {
 
   Widget _buildLoadedTabs(List<Category> categories, BuildContext context) {
     final allCategories = [
-      // Category(id: '', name: 'Todo', imageUrl: ''),
       ...categories,
     ];
 
@@ -130,7 +131,8 @@ class CategoryTabsState extends State<CategoryTabs> {
               allCategories.length,
               (index) => _buildTab(
                   allCategories[index],
-                  _selectedCategories.contains(allCategories[index].name),
+                  _selectedCategory ==
+                      allCategories[index].name, // Compare to selected category
                   index,
                   context),
             ),
@@ -148,13 +150,18 @@ class CategoryTabsState extends State<CategoryTabs> {
     return GestureDetector(
       onTap: () {
         setState(() {
-          if (_selectedCategories.contains(category.name)) {
-            _selectedCategories.remove(category.name);
+          // Toggle selection: if already selected, deselect; if not, select
+          if (_selectedCategory == category.name) {
+            _selectedCategory = ''; // Deselect if it's already selected
           } else {
-            _selectedCategories.add(category.name);
+            _selectedCategory = category.name; // Select this category
           }
         });
-        widget.onCategorySelected?.call(_selectedCategories);
+
+        // Pass the selected category to the parent
+        widget.onCategorySelected?.call(_selectedCategory.isEmpty
+            ? [] // No category selected
+            : [_selectedCategory]); // Only pass the selected category
       },
       child: Container(
         margin: const EdgeInsets.only(right: 8),

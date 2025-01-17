@@ -38,7 +38,7 @@ class SearchCategories extends CategoryEvent {
 }
 
 class SelectCategory extends CategoryEvent {
-  final List<String> categoryNames; // changed from a single string
+  final List<String> categoryNames;
 
   const SelectCategory({required this.categoryNames});
 

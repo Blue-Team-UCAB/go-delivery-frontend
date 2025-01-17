@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_delivery_frontend/application/BLoc/category/category_bloc.dart';
@@ -12,8 +13,7 @@ import 'package:go_delivery_frontend/application/BLoc/product/product_many/produ
 import 'package:go_delivery_frontend/domain/entities/product/product.dart';
 import 'package:go_delivery_frontend/infrastructure/mappers/cart/cart_item_mapper.dart';
 import 'package:shimmer/shimmer.dart';
-
-import '../../core/theme/theme_getter.dart';
+import 'package:go_delivery_frontend/presentation/core/theme/theme_getter.dart';
 
 class RandomSection extends StatefulWidget {
   final List<String>? selectedCategoryNames;
@@ -30,21 +30,26 @@ class RandomSection extends StatefulWidget {
 class RandomSectionState extends State<RandomSection> {
   bool _mounted = true;
   List<String> _currentCategoryNames = [];
+  List<String> _previousCategoryNames = [];
 
   @override
   void initState() {
     super.initState();
     _currentCategoryNames = widget.selectedCategoryNames ?? [];
+    _previousCategoryNames = List.from(_currentCategoryNames);
     _loadRandomProducts();
   }
 
   @override
   void didUpdateWidget(covariant RandomSection oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (widget.selectedCategoryNames != oldWidget.selectedCategoryNames) {
+
+    if (!listEquals(widget.selectedCategoryNames, _previousCategoryNames)) {
       setState(() {
-        _currentCategoryNames = widget.selectedCategoryNames ?? [];
+        _currentCategoryNames = List.from(widget.selectedCategoryNames ?? []);
+        _previousCategoryNames = List.from(_currentCategoryNames);
       });
+
       _loadRandomProducts();
     }
   }
@@ -54,11 +59,21 @@ class RandomSectionState extends State<RandomSection> {
 
     final categories = _currentCategoryNames;
 
-    context.read<ProductRandomListBloc>().add(LoadProductList(
-          page: 1,
-          perpage: 5,
-          categories: categories.isNotEmpty ? categories : null,
-        ));
+    if (categories.isNotEmpty) {
+      for (var category in categories) {
+        context.read<ProductRandomListBloc>().add(LoadProductList(
+              page: 1,
+              perpage: 5,
+              categories: [category],
+            ));
+      }
+    } else {
+      context.read<ProductRandomListBloc>().add(LoadProductList(
+            page: 1,
+            perpage: 5,
+            categories: null,
+          ));
+    }
   }
 
   @override
@@ -70,7 +85,6 @@ class RandomSectionState extends State<RandomSection> {
             _currentCategoryNames = state.name != null ? [state.name!] : [];
           });
 
-          // Llamamos a _loadRandomProducts cada vez que se recibe un cambio
           _loadRandomProducts();
         }
       },
@@ -200,12 +214,11 @@ class RandomItem extends StatelessWidget {
             ),
             trailing: OutlinedButton(
               style: ButtonStyle(
-                alignment: Alignment.center,
-                side: WidgetStatePropertyAll(
-                    BorderSide(color: currentSecondaryThemeColor)),
-                shape: WidgetStatePropertyAll(RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12))),
-              ),
+                  alignment: Alignment.center,
+                  side: WidgetStatePropertyAll(
+                      BorderSide(color: currentSecondaryThemeColor)),
+                  shape: WidgetStatePropertyAll(RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12)))),
               onPressed: () {
                 context.read<CartBloc>().addCartItem(
                     CartItemMapper.fromProduct(product).toCartItemEntity());
