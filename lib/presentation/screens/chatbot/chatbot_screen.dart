@@ -42,10 +42,9 @@ class _ChatBotViewState extends State<_ChatBotView>
     with TickerProviderStateMixin {
   final List<types.Message> _messages = [];
   String? lastBotResponse;
-
   late AnimationController _dotsAnimationController;
   late Animation<String> _dotsAnimation;
-  bool isTyping = false; // Controla el estado de la animación
+  bool isTyping = false;
 
   @override
   void initState() {
@@ -124,9 +123,9 @@ class _ChatBotViewState extends State<_ChatBotView>
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<ChatBotBloc, ChatBotState>(
+    return BlocListener<ChatBotBloc, ChatBotState>(
       bloc: widget.chatBotBloc,
-      builder: (context, state) {
+      listener: (context, state) {
         if (state is ChatBotFailure) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
             ScaffoldMessenger.of(context).showSnackBar(
@@ -134,62 +133,72 @@ class _ChatBotViewState extends State<_ChatBotView>
             );
           });
         }
-
-        if (state is ChatBotLoading) {
-          // Controla la animación de "escribiendo..." sin añadir repetidamente el mismo mensaje.
-          if (!isTyping) {
-            setState(() {
-              isTyping = true;
-              final typingMessage = types.TextMessage(
-                author: types.User(id: 'bot-id'),
-                id: const Uuid().v4(),
-                text:
-                    'Bluey está escribiendo${'.' * (_dotsAnimation.value.length)}',
-                createdAt: DateTime.now().millisecondsSinceEpoch,
-              );
-              _messages.insert(0, typingMessage);
-              _trimMessages();
-            });
-          }
-        }
-
-        if (state is ChatBotMessageSent) {
-          if (state.botResponse != lastBotResponse) {
-            if (_messages.isNotEmpty &&
-                _messages.first is types.TextMessage &&
-                (_messages.first as types.TextMessage).text ==
-                    'Bluey está escribiendo...') {
-              _messages.removeAt(0); // Elimina el mensaje de "escribiendo..."
-              isTyping = false; // Marca que la animación ha finalizado
-            }
-
-            final botMessage = types.TextMessage(
-              author: types.User(id: 'bot-id'),
-              id: const Uuid().v4(),
-              text: state.botResponse.replaceFirst('Bluey: ', ''),
-              createdAt: DateTime.now().millisecondsSinceEpoch,
-            );
-
-            setState(() {
-              _messages.insert(0, botMessage);
-              lastBotResponse = state.botResponse;
-              _trimMessages();
-            });
-          }
-        }
-
-        return Chat(
-          messages: _messages,
-          onSendPressed: _handleSendPressed,
-          user: types.User(id: 'user-id'),
-          emptyState: Center(
-            child: Text(
-              'No hay mensajes por el momento.',
-              style: TextStyle(color: Colors.grey, fontSize: 16),
-            ),
-          ),
-        );
       },
+      child: BlocBuilder<ChatBotBloc, ChatBotState>(
+        bloc: widget.chatBotBloc,
+        builder: (context, state) {
+          if (state is ChatBotLoading) {
+            _handleTypingAnimation();
+          }
+
+          if (state is ChatBotMessageSent) {
+            _handleBotMessage(state);
+          }
+
+          return Chat(
+            messages: _messages,
+            onSendPressed: _handleSendPressed,
+            user: types.User(id: 'user-id'),
+            emptyState: Center(
+              child: Text(
+                'No hay mensajes por el momento.',
+                style: TextStyle(color: Colors.grey, fontSize: 16),
+              ),
+            ),
+          );
+        },
+      ),
     );
+  }
+
+  void _handleTypingAnimation() {
+    if (!isTyping) {
+      setState(() {
+        isTyping = true;
+        final typingMessage = types.TextMessage(
+          author: types.User(id: 'bot-id'),
+          id: const Uuid().v4(),
+          text: 'Bluey está escribiendo${'.' * (_dotsAnimation.value.length)}',
+          createdAt: DateTime.now().millisecondsSinceEpoch,
+        );
+        _messages.insert(0, typingMessage);
+        _trimMessages();
+      });
+    }
+  }
+
+  void _handleBotMessage(ChatBotMessageSent state) {
+    if (state.botResponse != lastBotResponse) {
+      if (_messages.isNotEmpty &&
+          _messages.first is types.TextMessage &&
+          (_messages.first as types.TextMessage).text ==
+              'Bluey está escribiendo...') {
+        _messages.removeAt(0);
+        isTyping = false;
+      }
+
+      final botMessage = types.TextMessage(
+        author: types.User(id: 'bot-id'),
+        id: const Uuid().v4(),
+        text: state.botResponse.replaceFirst('Bluey: ', ''),
+        createdAt: DateTime.now().millisecondsSinceEpoch,
+      );
+
+      setState(() {
+        _messages.insert(0, botMessage);
+        lastBotResponse = state.botResponse;
+        _trimMessages();
+      });
+    }
   }
 }
