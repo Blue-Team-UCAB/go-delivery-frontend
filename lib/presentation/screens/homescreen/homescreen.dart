@@ -303,6 +303,7 @@ class HomeScreenState extends State<HomeScreen> {
                       SelectCategory(categoryNames: selectedCategories),
                     );
               },
+              selectedCategories: [],
             ),
             ComboSection(selectedCategories: _selectedCategories),
             const SizedBox(height: 14),
