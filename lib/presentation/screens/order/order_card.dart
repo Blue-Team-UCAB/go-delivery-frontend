@@ -160,7 +160,6 @@ class OrderCardState extends State<OrderCard> {
   }
 
   void _showCancelMenu(BuildContext context) {
-    final currentSecondaryThemeColor = AppThemesGetter.getSecondaryColor(context);
 
     showDialog(
       context: context,
@@ -171,6 +170,7 @@ class OrderCardState extends State<OrderCard> {
           ),
           child: BlocConsumer<OrderCancelBloc, OrderCancelState>(
             listener: (context, state) {
+
               if (state is OrderCancelSuccessState) {
                 Navigator.of(context).pop();
                 context.go('/order');
@@ -193,6 +193,8 @@ class OrderCardState extends State<OrderCard> {
               }
             },
             builder: (context, state) {
+              final currentSecondaryThemeColor = AppThemesGetter.getSecondaryColor(context);
+
               return AnimatedSuccessDialog(
                 title: 'Cancelar Orden?',
                 message: 'Cancelar Orden #${widget.order.id}?',
