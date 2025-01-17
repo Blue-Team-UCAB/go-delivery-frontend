@@ -43,7 +43,7 @@ class CategoryTabsState extends State<CategoryTabs> {
         }
 
         if (state is CategoryLoaded) {
-          return _buildLoadedTabs(state.categories,context);
+          return _buildLoadedTabs(state.categories, context);
         }
 
         return _buildLoadingTabs();
@@ -109,9 +109,9 @@ class CategoryTabsState extends State<CategoryTabs> {
     );
   }
 
-  Widget _buildLoadedTabs(List<Category> categories,BuildContext context) {
+  Widget _buildLoadedTabs(List<Category> categories, BuildContext context) {
     final allCategories = [
-      Category(id: '', name: 'Todo', imageUrl: ''),
+      // Category(id: '', name: 'Todo', imageUrl: ''),
       ...categories,
     ];
 
@@ -127,7 +127,8 @@ class CategoryTabsState extends State<CategoryTabs> {
               (index) => _buildTab(
                   allCategories[index],
                   _selectedCategories.contains(allCategories[index].name),
-                  index, context),
+                  index,
+                  context),
             ),
           ],
         ),
@@ -135,21 +136,18 @@ class CategoryTabsState extends State<CategoryTabs> {
     );
   }
 
-  Widget _buildTab(Category category, bool isSelected, int index, BuildContext context) {
-
-    final currentSecondaryThemeColor = AppThemesGetter.getSecondaryColor(context);
+  Widget _buildTab(
+      Category category, bool isSelected, int index, BuildContext context) {
+    final currentSecondaryThemeColor =
+        AppThemesGetter.getSecondaryColor(context);
 
     return GestureDetector(
       onTap: () {
         setState(() {
-          if (category.name == 'Todo') {
-            _selectedCategories.clear();
+          if (_selectedCategories.contains(category.name)) {
+            _selectedCategories.remove(category.name);
           } else {
-            if (_selectedCategories.contains(category.name)) {
-              _selectedCategories.remove(category.name);
-            } else {
-              _selectedCategories.add(category.name);
-            }
+            _selectedCategories.add(category.name);
           }
         });
         widget.onCategorySelected?.call(_selectedCategories);
@@ -158,7 +156,8 @@ class CategoryTabsState extends State<CategoryTabs> {
         margin: const EdgeInsets.only(right: 8),
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         decoration: BoxDecoration(
-          color: isSelected ? currentSecondaryThemeColor : const Color(0xFFFFFFFF),
+          color:
+              isSelected ? currentSecondaryThemeColor : const Color(0xFFFFFFFF),
           borderRadius: BorderRadius.circular(20),
           boxShadow: [
             if (!isSelected)

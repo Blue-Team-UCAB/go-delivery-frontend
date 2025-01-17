@@ -34,7 +34,19 @@ class RandomSectionState extends State<RandomSection> {
   @override
   void initState() {
     super.initState();
+    _currentCategoryNames = widget.selectedCategoryNames ?? [];
     _loadRandomProducts();
+  }
+
+  @override
+  void didUpdateWidget(covariant RandomSection oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.selectedCategoryNames != oldWidget.selectedCategoryNames) {
+      setState(() {
+        _currentCategoryNames = widget.selectedCategoryNames ?? [];
+      });
+      _loadRandomProducts();
+    }
   }
 
   void _loadRandomProducts() {
@@ -45,7 +57,7 @@ class RandomSectionState extends State<RandomSection> {
     context.read<ProductRandomListBloc>().add(LoadProductList(
           page: 1,
           perpage: 5,
-          categories: categories,
+          categories: categories.isNotEmpty ? categories : null,
         ));
   }
 
@@ -127,7 +139,8 @@ class RandomItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final currentSecondaryThemeColor = AppThemesGetter.getSecondaryColor(context);
+    final currentSecondaryThemeColor =
+        AppThemesGetter.getSecondaryColor(context);
 
     return Column(
       children: [
@@ -146,26 +159,26 @@ class RandomItem extends StatelessWidget {
               imageUrl: product.images.first,
               width: 60,
               fit: BoxFit.contain,
-              placeholder: (context,url) => Shimmer.fromColors(
-                baseColor: const Color(0xFFd8d5dd),
-                highlightColor: const Color(0xFFF4F4F4),
-                child: Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.all(Radius.circular(12)),
-                    color: Color(0xFFd8d5dd),
-                  ),
-                )
-              ),
-              errorWidget: (context, url, error) => Shimmer.fromColors(
-                    baseColor: const Color(0xFFd8d5dd),
-                    highlightColor: const Color(0xFFF4F4F4),
-                    child: Container(
-                      height: 60,
-                      width: double.infinity,
+              placeholder: (context, url) => Shimmer.fromColors(
+                  baseColor: const Color(0xFFd8d5dd),
+                  highlightColor: const Color(0xFFF4F4F4),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.all(Radius.circular(12)),
                       color: Color(0xFFd8d5dd),
-                      child: Center(child: Text('$error'),),
-                    )
-                  ),
+                    ),
+                  )),
+              errorWidget: (context, url, error) => Shimmer.fromColors(
+                  baseColor: const Color(0xFFd8d5dd),
+                  highlightColor: const Color(0xFFF4F4F4),
+                  child: Container(
+                    height: 60,
+                    width: double.infinity,
+                    color: Color(0xFFd8d5dd),
+                    child: Center(
+                      child: Text('$error'),
+                    ),
+                  )),
             ),
             title: Text(
               product.name,
@@ -188,7 +201,7 @@ class RandomItem extends StatelessWidget {
             trailing: OutlinedButton(
               style: ButtonStyle(
                 alignment: Alignment.center,
-                side:  WidgetStatePropertyAll(
+                side: WidgetStatePropertyAll(
                     BorderSide(color: currentSecondaryThemeColor)),
                 shape: WidgetStatePropertyAll(RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12))),
@@ -203,7 +216,7 @@ class RandomItem extends StatelessWidget {
                     backgroundColor: Color(0xfc009e4f),
                     content: Text('Agregado Satisfactoriamente')));
               },
-              child:  Text('Añadir',
+              child: Text('Añadir',
                   style: TextStyle(
                     fontFamily: 'Inter',
                     fontSize: 13,
