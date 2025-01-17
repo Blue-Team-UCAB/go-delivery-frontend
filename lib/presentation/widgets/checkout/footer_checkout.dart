@@ -106,6 +106,7 @@ class ContinueButton extends StatelessWidget {
       context.read<CouponBloc>().add(LoadCoupon(coupon: state.appliedCoupon!));
     }
 
+
     context.read<CheckoutBloc>().add(
           ProcessCheckoutEvent(
             stripePaymentMethod: selectedCardId,

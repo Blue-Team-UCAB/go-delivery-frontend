@@ -8,6 +8,9 @@ import 'package:go_router/go_router.dart';
 
 import 'package:go_delivery_frontend/application/BLoc/cart/cart_bloc.dart';
 
+import '../../../application/BLoc/themes/themes_bloc.dart';
+import '../../core/theme/theme.dart';
+
 class CartScreen extends StatelessWidget {
   static const name = 'cart-screen';
   const CartScreen({super.key});
@@ -16,6 +19,11 @@ class CartScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cartBloc = context.watch<CartBloc>();
+
+    final themesBloc = context.watch<ThemesBloc>();
+    final appTheme = themesBloc.state.appTheme;
+    final isPrimaryRed = appTheme.colorMode == AppColorMode.red;
+
     return Scaffold(
       backgroundColor: const Color(0xFFFFFFFF),
       appBar: AppBar(
@@ -34,17 +42,18 @@ class CartScreen extends StatelessWidget {
           style: TextStyle(fontFamily: 'Montserrat',fontSize: 24,fontWeight: FontWeight.w700 ,color: Color(0xFF000000))
         ),
         actions: [
-          //TODO: agregar condicional del team Rojo, ellos no tienen esta IA
-          Padding(
-            padding: const EdgeInsets.all(4.0),
-            child: IconButton(
-              icon: Icon(Icons.bubble_chart_outlined,color: Color(0xFF0000FF),),
-              iconSize: 35,
-              onPressed: (){
-                cartBloc.loadAiCart();
-              }, 
-              ),
-          )
+          if(!isPrimaryRed)
+            Padding(
+              padding: const EdgeInsets.all(4.0),
+              child:
+              IconButton(
+                icon: Icon(Icons.bubble_chart_outlined,color: Color(0xFF0000FF),),
+                iconSize: 35,
+                onPressed: (){
+                  cartBloc.loadAiCart();
+                },
+                ),
+            )
         ],
       ),
       body: cartBloc.state.items.isEmpty
