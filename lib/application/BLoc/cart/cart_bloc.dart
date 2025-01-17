@@ -1,6 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_delivery_frontend/domain/entities/cart/cartitem.dart';
+import 'package:go_delivery_frontend/domain/repositories/cart/cart_get_ai_repository.dart';
 import 'package:go_delivery_frontend/domain/repositories/cart/cart_local_storage_repository.dart';
 
 part 'cart_event.dart';
@@ -8,8 +9,9 @@ part 'cart_state.dart';
 
 class CartBloc extends Bloc<CartEvent, CartState> {
   final CartLocalStorageRepository _cartLocalStorageRepository;
+  final CartGetAiRepository _cartGetAiRepository;
 
-  CartBloc(this._cartLocalStorageRepository)
+  CartBloc(this._cartLocalStorageRepository, this._cartGetAiRepository)
       : super(const CartState(items: [])) {
     loadCartItems();
     on<AddCartItem>(_addCartItemHandler);
@@ -17,6 +19,7 @@ class CartBloc extends Bloc<CartEvent, CartState> {
     on<MinusOneQuantity>(_minusOneQuantity);
     on<DeleteCartItem>(_deleteCartItemHandler);
     on<EmptyCart>(_emptyCartHandler);
+    on<LoadAICart>(_loadAiCartHandler);
   }
 
   void loadCartItems() async {
@@ -36,6 +39,10 @@ class CartBloc extends Bloc<CartEvent, CartState> {
 
   void addCartItem(CartItem item) {
     add(AddCartItem(item));
+  }
+
+  void loadAiCart(){
+    add(LoadAICart());
   }
 
   void deleteCartItem(CartItem item) {
@@ -102,4 +109,17 @@ class CartBloc extends Bloc<CartEvent, CartState> {
     _cartLocalStorageRepository.operateCartItem(event.id, -1);
     emit(state.copyWith(items: newItems));
   }
+
+  void _loadAiCartHandler(LoadAICart event, Emitter<CartState> emit) async {
+    final items = await _cartGetAiRepository.loadAICart();
+    if (items.isSuccess){
+      final cart = items.value;
+      for (var item in cart!) {
+        add(AddCartItem(item));
+      }
+    }
+  }
+
+
+
 }

@@ -128,7 +128,9 @@ class BundleMapper {
     if (json == null) return null;
     return Discount(
       id: json['id']?.toString() ?? '',
-      percentage: _parseDouble(json['percentage']),
+      percentage: json["percentage"]?.toDouble() >= 1 
+                  ? json["percentage"]?.toDouble()??0.0 
+                  : json["percentage"]?.toDouble() / 100,
     );
   }
 

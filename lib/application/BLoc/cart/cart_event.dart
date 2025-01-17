@@ -33,3 +33,7 @@ final class DeleteCartItem extends CartEvent{
 final class EmptyCart extends CartEvent {
   const EmptyCart();
 }
+
+final class LoadAICart extends CartEvent {
+  const LoadAICart();
+}

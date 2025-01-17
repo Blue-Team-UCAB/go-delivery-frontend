@@ -1,3 +1,4 @@
+import 'package:dotted_separator/dotted_separator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_delivery_frontend/application/BLoc/blocs.dart';
@@ -12,6 +13,7 @@ import 'package:go_delivery_frontend/application/BLoc/order/order_create/order_c
 import 'package:go_delivery_frontend/application/BLoc/order/order_create/order_create_event.dart';
 
 import 'package:go_delivery_frontend/presentation/core/theme/theme_getter.dart';
+import 'package:ticket_clippers/ticket_clippers.dart';
 
 
 class CouponScreen extends StatefulWidget {
@@ -126,72 +128,7 @@ Widget _buildAddressList(CouponListState state) {
                 final coupon = coupons[index];
                 String formattedDate =
                     "${coupon.expirationDate!.day}/${coupon.expirationDate!.month}/${coupon.expirationDate!.year}";
-                return Column(
-                  children: [
-                    Container(
-                        decoration: BoxDecoration(
-                          color: Color(0xFFFFFFFF),
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: ListTile(
-                            leading: Container(
-                              width: 60,
-                              child: Text('${coupon.porcentage}%',
-                                  style: TextStyle(
-                                    fontFamily: 'Inter',
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.w600,
-                                    color: currentSecondaryThemeColor,
-                                  )
-                              ),
-                            ),
-                            title: Text(coupon.code!),
-                            subtitle: Text(formattedDate),
-                            trailing: OutlinedButton(
-                              style: ButtonStyle(
-                                alignment: Alignment.center,
-                                side:  WidgetStatePropertyAll(
-                                    BorderSide(color: currentSecondaryThemeColor)),
-                                shape: WidgetStatePropertyAll(RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(12))),
-                              ),
-                              onPressed: () {
-                                // Debug print to verify the correct coupon is being selected
-                                print('Applying coupon: ${coupon.id} - ${coupon.code}');
-
-                                // Dispatch events for the specific coupon
-                                context.read<CouponBloc>().add(
-                                    LoadCoupon(coupon: coupon)
-                                );
-
-                                context.read<CheckoutBloc>().add(
-                                    ApplyCouponEvent(coupon: coupon)
-                                );
-
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
-                                      content: Text('Cupon ${coupon.code} agregado satisfactoriamente'),
-                                      duration: Duration(seconds: 1),
-                                      behavior: SnackBarBehavior.floating,
-                                      margin: EdgeInsets.only(bottom: 25, right: 20, left: 20),
-                                      backgroundColor: Color(0xfc009e4f),
-                                    )
-                                );
-                              },
-                              child:  Text('Aplicar',
-                                  style: TextStyle(
-                                    fontFamily: 'Inter',
-                                    fontSize: 13,
-                                    fontWeight: FontWeight.w600,
-                                    color: currentSecondaryThemeColor
-                                  )
-                              ),
-                            )
-                        )
-                    ),
-                    SizedBox(height: 12,)
-                  ],
-                );
+                return CouponListWidget(coupon: coupon, currentSecondaryThemeColor: currentSecondaryThemeColor, formattedDate: formattedDate);
               },
             ),
           ),
@@ -347,6 +284,136 @@ Widget _buildAddressList(CouponListState state) {
           ],
         );
       },
+    );
+  }
+}
+
+class CouponListWidget extends StatelessWidget {
+  const CouponListWidget({
+    super.key,
+    required this.coupon,
+    required this.currentSecondaryThemeColor,
+    required this.formattedDate,
+  });
+
+  final Coupon coupon;
+  final Color currentSecondaryThemeColor;
+  final String formattedDate;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        ClipPath(
+          clipper: TicketRoundedEdgeClipper(
+            edge: Edge.horizontal,
+            position: 55,
+            radius: 30
+          ),
+          child: Container(
+            padding: EdgeInsets.symmetric(horizontal: 20),
+            height: 100,
+            decoration: BoxDecoration(
+              color: Color(0xFFFFFFFF),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Row(
+              children: [
+                SizedBox(
+                  width: 100,
+                  child: Column(
+                    children: [
+                      Text('${coupon.porcentage}',
+                        style: TextStyle(
+                          fontFamily: 'Inter',
+                          fontSize: 36,
+                          fontWeight: FontWeight.w800,
+                          color: currentSecondaryThemeColor,
+                        )
+                      ),
+                      Text('%',
+                        style: TextStyle(
+                          fontFamily: 'Inter',
+                          fontSize: 24,
+                          fontWeight: FontWeight.w800,
+                          color: currentSecondaryThemeColor,
+                        )
+                      ),
+                    ],
+                  ),
+                ),
+                DashedLine(
+                  axis: Axis.vertical, 
+                  color: Color(0xFFCECECE), 
+                  dashSpace: 6, 
+                  dashWidth: 10, 
+                  strokeWidth: 4, 
+                  padding: EdgeInsets.all(12), 
+                  width: 2, 
+                  height: 90)
+              ],
+                
+          
+              ),
+              // child: ListTile(
+              //     leading: Container(
+              //       width: 60,
+              //       child: Text('${coupon.porcentage}%',
+              //           style: TextStyle(
+              //             fontFamily: 'Inter',
+              //             fontSize: 20,
+              //             fontWeight: FontWeight.w600,
+              //             color: currentSecondaryThemeColor,
+              //           )
+              //       ),
+              //     ),
+              //     title: Text(coupon.code!),
+              //     subtitle: Text(formattedDate),
+              //     trailing: OutlinedButton(
+              //       style: ButtonStyle(
+              //         alignment: Alignment.center,
+              //         side:  WidgetStatePropertyAll(
+              //             BorderSide(color: currentSecondaryThemeColor)),
+              //         shape: WidgetStatePropertyAll(RoundedRectangleBorder(
+              //             borderRadius: BorderRadius.circular(12))),
+              //       ),
+              //       onPressed: () {
+              //         // Debug print to verify the correct coupon is being selected
+              //         print('Applying coupon: ${coupon.id} - ${coupon.code}');
+              
+              //         // Dispatch events for the specific coupon
+              //         context.read<CouponBloc>().add(
+              //             LoadCoupon(coupon: coupon)
+              //         );
+              
+              //         context.read<CheckoutBloc>().add(
+              //             ApplyCouponEvent(coupon: coupon)
+              //         );
+              
+              //         ScaffoldMessenger.of(context).showSnackBar(
+              //             SnackBar(
+              //               content: Text('Cupon ${coupon.code} agregado satisfactoriamente'),
+              //               duration: Duration(seconds: 1),
+              //               behavior: SnackBarBehavior.floating,
+              //               margin: EdgeInsets.only(bottom: 25, right: 20, left: 20),
+              //               backgroundColor: Color(0xfc009e4f),
+              //             )
+              //         );
+              //       },
+              //       child:  Text('Aplicar',
+              //           style: TextStyle(
+              //             fontFamily: 'Inter',
+              //             fontSize: 13,
+              //             fontWeight: FontWeight.w600,
+              //             color: currentSecondaryThemeColor
+              //           )
+              //       ),
+              //     )
+              // )
+          ),
+        ),
+        SizedBox(height: 12,)
+      ],
     );
   }
 }

@@ -122,8 +122,11 @@ class ProductMapper {
       return discountData
           .map((discountJson) => Discount(
                 id: discountJson['id'] as String? ?? '',
-                percentage:
-                    (discountJson['percentage'] as num?)?.toDouble() ?? 0.0,
+                // percentage:
+                //     (discountJson['percentage'] as num?)?.toDouble() ?? 0.0,
+                percentage: discountJson["percentage"]?.toDouble() >= 1 
+                  ? discountJson["percentage"]?.toDouble()??0.0 
+                  : discountJson["percentage"]?.toDouble() / 100,
               ))
           .toList();
     }
