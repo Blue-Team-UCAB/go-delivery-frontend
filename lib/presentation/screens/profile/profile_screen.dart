@@ -174,17 +174,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
       appBar: AppBar(
         backgroundColor: Color(0xFFFFFFFF),
         title: const Text(
-          'Perfil', 
+          'Perfil',
           style: TextStyle(
-            color: Colors.black,
-            fontFamily: 'Inter',
-            fontWeight: FontWeight.bold
-          ),
-
+              color: Colors.black,
+              fontFamily: 'Inter',
+              fontWeight: FontWeight.bold),
         ),
         centerTitle: true,
-        
-        
       ),
       body: BlocListener<UserImageBloc, UserImageState>(
         listener: (context, state) {
@@ -209,7 +205,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
               _nameController.text = state.name;
               _phoneController.text = state.phone;
               _profileImage ??=
-                  state.image.isNotEmpty ? null : File(state.image);
+                  state.image.isNotEmpty ? File(state.image) : null;
+
               return SafeArea(
                 child: SingleChildScrollView(
                   padding: const EdgeInsets.symmetric(vertical: 16.0),
@@ -271,8 +268,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         _buildButton(context, "GoDely Wallet",
                             route: "/wallet"),
                         const SizedBox(height: 20),
-                        if(!isPrimaryRed)
-                          _buildButton(context, "Cupones",route: "/coupon"),
+                        if (!isPrimaryRed)
+                          _buildButton(context, "Cupones", route: "/coupon"),
                         const SizedBox(height: 20),
                         _buildButton(context, "Direcciones",
                             route: "/addresses"),
