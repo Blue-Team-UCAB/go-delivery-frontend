@@ -10,6 +10,8 @@ import 'package:go_delivery_frontend/domain/entities/bundle/bundle.dart';
 import 'package:go_delivery_frontend/domain/entities/product/product.dart';
 import 'package:go_delivery_frontend/presentation/widgets/dialog_darken_window.dart';
 
+import '../../../application/BLoc/themes/themes_bloc.dart';
+import '../../core/theme/theme.dart';
 import '../../core/theme/theme_getter.dart';
 
 class ContinueButton extends StatelessWidget {
@@ -132,6 +134,10 @@ class ContinueButton extends StatelessWidget {
         final currentSecondaryThemeColor =
             AppThemesGetter.getSecondaryColor(context);
 
+        final themesBloc = context.watch<ThemesBloc>();
+        final appTheme = themesBloc.state.appTheme;
+        final isPrimaryRed = appTheme.colorMode == AppColorMode.red;
+
         return AnimatedSuccessDialog(
           title: 'Orden Creada!',
           message: '',
@@ -140,8 +146,12 @@ class ContinueButton extends StatelessWidget {
           iconColor: currentSecondaryThemeColor,
           buttonColor: currentSecondaryThemeColor,
           onButtonPressed: () {
-            context
-                .go('/orderdetail/$orderId'); // Navigate to order detail screen
+
+            if(!isPrimaryRed) {
+              context.go('/orderdetail/$orderId');
+            }else{
+              context.go('/order');// Navigate to order detail screen
+            }
             context.read<CartBloc>().emptyCart();
             context.read<CouponBloc>().clearCoupon();
           },

@@ -44,7 +44,7 @@ class ProductCard extends StatelessWidget {
                 ),
                 child: CachedNetworkImage(
                   imageUrl: _getImageUrl(),
-                  height: 100,
+                  height: 98,
                   fit: BoxFit.fill,
                   placeholder: (context, url) => Shimmer.fromColors(
                     baseColor: const Color(0xFFd8d5dd),

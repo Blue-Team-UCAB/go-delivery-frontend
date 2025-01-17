@@ -44,9 +44,6 @@ class CheckoutOrderScreenState extends State<CheckoutOrderScreen> {
 
         var total = context.read<CartBloc>().state.totalPrice;
 
-        if(!isPrimaryRed) {
-          context.read<CouponBloc>().clearCoupon();
-        }
 
         return Scaffold(
           appBar: AppBar(
