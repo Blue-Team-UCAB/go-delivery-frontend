@@ -7,6 +7,7 @@ import 'package:go_delivery_frontend/application/BLoc/user/current/current_user_
 import 'package:go_delivery_frontend/application/BLoc/user/update_image/update_image_bloc.dart';
 import 'package:go_delivery_frontend/application/BLoc/user/update_image/update_image_event.dart';
 import 'package:go_delivery_frontend/application/BLoc/user/update_image/update_image_state.dart';
+import 'package:go_delivery_frontend/presentation/screens/profile/profile_screen_placeholder.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
@@ -134,7 +135,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       child: GestureDetector(
         onTap: () {
           if (route != null) {
-            context.go(route);
+            context.push(route);
           }
         },
         child: Container(
@@ -166,13 +167,21 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Color(0xFFFFFFFF),
       appBar: AppBar(
-        title: const Text('Perfil', style: TextStyle(color: Colors.black)),
+        backgroundColor: Color(0xFFFFFFFF),
+        title: const Text(
+          'Perfil', 
+          style: TextStyle(
+            color: Colors.black,
+            fontFamily: 'Inter',
+            fontWeight: FontWeight.bold
+          ),
+
+        ),
         centerTitle: true,
-        backgroundColor: Colors.white,
-        elevation: 1,
-        iconTheme: const IconThemeData(color: Colors.black),
+        
+        
       ),
       body: BlocListener<UserImageBloc, UserImageState>(
         listener: (context, state) {
@@ -188,13 +197,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
         child: BlocBuilder<CurrentUserBloc, CurrentUserState>(
           builder: (context, state) {
             if (state is CurrentUserLoading) {
-              return const Center(child: CircularProgressIndicator());
+              return ProfileScreenPlaceholder();
             } else if (state is CurrentUserLoaded) {
               _nameController.text = state.name;
               _phoneController.text = state.phone;
               _profileImage ??=
                   state.image.isNotEmpty ? null : File(state.image);
-
+              return ProfileScreenPlaceholder();
               return SafeArea(
                 child: SingleChildScrollView(
                   padding: const EdgeInsets.symmetric(vertical: 16.0),
@@ -249,12 +258,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           hintText: 'Ingrese su número de teléfono',
                           keyboardType: TextInputType.phone,
                         ),
-                        const SizedBox(height: 20),
-                        _buildButton(context, "Preferencias",
-                            route: "/preferences"),
+                        // const SizedBox(height: 20),
+                        // _buildButton(context, "Preferencias",
+                        //     route: "/preferences"),
                         const SizedBox(height: 20),
                         _buildButton(context, "GoDely Wallet",
                             route: "/wallet"),
+                        const SizedBox(height: 20),
+                        _buildButton(context, "Cupones",
+                            route: "/coupon"),
                         const SizedBox(height: 20),
                         _buildButton(context, "Direcciones",
                             route: "/addresses"),

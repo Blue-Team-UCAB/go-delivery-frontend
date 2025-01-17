@@ -7,7 +7,7 @@ import 'package:go_delivery_frontend/presentation/widgets/order_detailed/active/
 import 'package:go_delivery_frontend/presentation/widgets/order_detailed/active/driver_card.dart';
 import 'package:go_delivery_frontend/presentation/widgets/order_detailed/past/order_items_list.dart';
 
-import '../../../../core/theme/theme_getter.dart';
+import 'package:go_delivery_frontend/presentation/core/theme/theme_getter.dart';
 
 class ActiveOrderDetails extends StatelessWidget {
   final OrderDetailLoadedState state;
@@ -57,7 +57,7 @@ class ActiveOrderDetails extends StatelessWidget {
           FadeInDown(
             delay: const Duration(milliseconds: 20),
             child: OrderHeaderInfo(
-              id: state.id,
+              id: state.id.substring(state.id.length-5),
               lat: state.direction.latitude.toString(),
               lng: state.direction.longitude.toString(),
             ),

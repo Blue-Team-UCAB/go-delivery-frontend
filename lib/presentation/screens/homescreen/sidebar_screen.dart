@@ -4,11 +4,9 @@ import 'package:go_delivery_frontend/application/BLoc/user/current/current_user_
 import 'package:go_delivery_frontend/application/BLoc/user/current/current_user_state.dart';
 import 'package:go_router/go_router.dart';
 import 'package:go_delivery_frontend/presentation/screens/catalog/logout_from_catalog.dart';
-
 import 'package:go_delivery_frontend/presentation/core/theme/theme_getter.dart';
-
-import '../../../application/BLoc/themes/themes_bloc.dart';
-import '../../core/theme/theme.dart';
+import 'package:go_delivery_frontend/application/BLoc/themes/themes_bloc.dart';
+import 'package:go_delivery_frontend/presentation/core/theme/theme.dart';
 
 class SidebarScreen extends StatelessWidget {
   const SidebarScreen({super.key});
@@ -45,6 +43,7 @@ class SidebarScreen extends StatelessWidget {
                     ),
                     subtitle: Text(
                       _truncateText(state.email, 25),
+                      maxLines: 1,
                       style: const TextStyle(
                         fontFamily: 'Inter',
                         fontWeight: FontWeight.w400,

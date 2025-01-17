@@ -21,7 +21,7 @@ class OrderHeaderInfo extends StatelessWidget {
         children: [
           Row(
             children: [
-              const Icon(Icons.abc,
+              const Icon(Icons.info_outline_rounded,
                   size: 16, color: Colors.grey),
               const SizedBox(width: 4),
               Text(
