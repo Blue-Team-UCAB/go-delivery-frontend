@@ -7,3 +7,4 @@ export 'package:go_delivery_frontend/infrastructure/repositories/payment/payment
 export 'package:go_delivery_frontend/infrastructure/repositories/coupon/coupon_repository_impl.dart';
 export 'package:go_delivery_frontend/infrastructure/repositories/directions/direction_repository_impl.dart';
 export 'package:go_delivery_frontend/infrastructure/repositories/payment/wallet_repository_impl.dart';
+export 'package:go_delivery_frontend/infrastructure/repositories/chatbot/chat_bot_repository_impl.dart';

@@ -46,8 +46,8 @@ class OrderRepositoryImpl extends OrderRepository {
     };
 
     final response = await _apiRequestManager.request(
-        '/api/order/user/many/?status=$status', 'GET', queryParameters: queryParameters,
-        (data) {
+        '/api/order/user/many/?status=$status', 'GET',
+        queryParameters: queryParameters, (data) {
       return OrderManyMapper.fromJson(data).orders;
     });
     return response;
@@ -73,26 +73,29 @@ class OrderRepositoryImpl extends OrderRepository {
   }
 
   @override
-  Future<Result<Order>> createOrder({
-    String? paymentId,
-    String? stripePaymentMethod,
-    String? paymentMethod,
-    String? couponId,
-    required String idUserDirection,
-    List<CheckoutProduct>? products,
-    List<CheckoutBundle>? bundles
-  }) async {
+  Future<Result<Order>> createOrder(
+      {String? paymentId,
+      String? stripePaymentMethod,
+      String? paymentMethod,
+      String? couponId,
+      String? currency,
+      required String idUserDirection,
+      List<CheckoutProduct>? products,
+      List<CheckoutBundle>? bundles}) async {
     await _addAuthorizationHeader();
 
     // Prepare the body
     final body = {
       'idUserDirection': idUserDirection,
-      if (products != null) 'products': CheckoutProductMapper.toJsonList(products),
+      if (products != null)
+        'products': CheckoutProductMapper.toJsonList(products),
       if (bundles != null) 'bundles': CheckoutBundleMapper.toJsonList(bundles),
       if (paymentId != null) 'paymentId': paymentId,
-      if (stripePaymentMethod != null) 'stripePaymentMethod': stripePaymentMethod,
+      if (stripePaymentMethod != null)
+        'stripePaymentMethod': stripePaymentMethod,
       if (paymentMethod != null) 'paymentMethod': paymentMethod,
       if (couponId != null) 'idCupon': couponId,
+      if (currency != null) 'currency': currency,
     };
 
     print('Query Parameters JSON:');
@@ -101,16 +104,17 @@ class OrderRepositoryImpl extends OrderRepository {
     final response = await _apiRequestManager.request(
       '/api/order/pay/stripe',
       'POST',
-          (data) {
-              final responseOrderCreated = OrderCreationMapper.fromJson(data);
-              return responseOrderCreated;
+      (data) {
+        final responseOrderCreated = OrderCreationMapper.fromJson(data);
+        return responseOrderCreated;
       },
       body: body,
     );
     if (response.isSuccess) {
-        return Result.success(response.value!);
+      return Result.success(response.value!);
     } else {
-      final message = response.error?.toString() ?? 'Algo Ocurrió en el checkout';
+      final message =
+          response.error?.toString() ?? 'Algo Ocurrió en el checkout';
       return Result.fail(CustomFailure(message: message));
     }
   }
@@ -122,62 +126,56 @@ class OrderRepositoryImpl extends OrderRepository {
       '/api/order/cancel',
       'POST',
       (data) {
-          return true;
+        return true;
       },
       body: {'orderId': orderId},
     );
     if (response.isSuccess) {
-        return Result.success(true);
+      return Result.success(true);
     } else {
-      return Result.fail(CustomFailure(message: response.error!.message.toString()));
+      return Result.fail(
+          CustomFailure(message: response.error!.message.toString()));
     }
   }
 
   @override
-  Future<Result<bool>> reportOrder({
-    required String orderId,
-    required String desc
-  }) async {
-
+  Future<Result<bool>> reportOrder(
+      {required String orderId, required String desc}) async {
     await _addAuthorizationHeader();
 
     final response = await _apiRequestManager.request(
       '/api/order/report',
       'POST',
-          (data) {
-            return true;
+      (data) {
+        return true;
       },
-      body: {
-        'orderId': orderId,
-        'description': desc
-      },
+      body: {'orderId': orderId, 'description': desc},
     );
     if (response.isSuccess) {
       return Result.success(true);
     } else {
-      return Result.fail(CustomFailure(message: response.error!.message.toString()));
+      return Result.fail(
+          CustomFailure(message: response.error!.message.toString()));
     }
   }
 
   @override
   Future<Result<CourierPosition>> courierPositionOrder(String orderId) async {
-
     await _addAuthorizationHeader();
     final response = await _apiRequestManager.request(
       '/api/order/courier/position/$orderId',
       'GET',
-          (data) {
-            final courierPosition = CourierPositionMapper.fromJson(data);
-            return courierPosition;
+      (data) {
+        final courierPosition = CourierPositionMapper.fromJson(data);
+        return courierPosition;
       },
       body: {'orderId': orderId},
     );
-    if(response.isSuccess) {
+    if (response.isSuccess) {
       return Result.success(response.value!);
-    }else {
+    } else {
       return Result.fail(
           new CustomFailure(message: response.error!.message.toString()));
     }
   }
-
 }

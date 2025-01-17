@@ -62,14 +62,13 @@ void main() async {
         BlocProvider(create: (_) => getIt<BundleDetailBloc>()),
         BlocProvider(create: (_) => getIt<OrderReportBloc>()),
         BlocProvider(create: (_) => getIt<ProductPopularListBloc>()),
-        BlocProvider(
-            create: (_) => getIt<
-                ProductRandomListBloc>()), //THIS IS A PLACEHOLDER. Pronto estará el Popular list definitivo despues de tener casi listo la app //THIS IS A PLACEHOLDER. Pronto estará el Popular list definitivo despues de tener casi listo la app
+        BlocProvider(create: (_) => getIt<ProductRandomListBloc>()),
         BlocProvider(create: (_) => getIt<OrderDetailBloc>()),
         BlocProvider(create: (_) => getIt<ManyOrdersBloc>()),
         BlocProvider(create: (_) => getIt<CategoryBloc>()),
         BlocProvider(create: (_) => getIt<OrderDriverPositionBloc>()),
-        BlocProvider(create: (_) => getIt<FilterBloc>()), // Add this line
+        BlocProvider(create: (_) => getIt<FilterBloc>()),
+        BlocProvider(create: (_) => getIt<ChatBotBloc>()),
       ],
       child: BlocBuilder<ThemesBloc, ThemesState>(
         builder: (context, state) {

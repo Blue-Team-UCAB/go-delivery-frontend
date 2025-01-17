@@ -380,5 +380,21 @@ class InjectManager {
     getIt.registerSingleton(AddDirectionBloc(addDirectionUseCase));
     getIt.registerSingleton(UpdateDirectionBloc(updateDirectionUseCase));
     getIt.registerSingleton(DeleteAddressBloc(deleteAddressUseCase));
+
+    // ============================= CHATBOT =================================== //
+
+    //Repositorio
+    final chatrepository = ChatBotRepositoryImpl(
+        apiRequestManager: apiRequestManagerImpl,
+        localStorage: localStorageService);
+
+    //Casos de uso
+    final sendMessageUseCase =
+        SendMessageUseCase(chatBotRepository: chatrepository);
+
+    getIt.registerSingleton<SendMessageUseCase>(sendMessageUseCase);
+
+    //Blocs
+    getIt.registerSingleton(ChatBotBloc(sendMessageUseCase));
   }
 }
