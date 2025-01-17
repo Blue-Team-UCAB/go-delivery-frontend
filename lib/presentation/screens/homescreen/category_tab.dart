@@ -5,14 +5,16 @@ import 'package:go_delivery_frontend/application/BLoc/category/category_event.da
 import 'package:go_delivery_frontend/application/BLoc/category/category_state.dart';
 import 'package:go_delivery_frontend/domain/entities/category/category.dart';
 
-import '../../core/theme/theme_getter.dart';
+import 'package:go_delivery_frontend/presentation/core/theme/theme_getter.dart';
 
 class CategoryTabs extends StatefulWidget {
   final Function(List<String>)? onCategorySelected;
+  final List<String> selectedCategories; // Add this field
 
   const CategoryTabs({
     super.key,
     this.onCategorySelected,
+    required this.selectedCategories, // Add this parameter
   });
 
   @override
@@ -20,11 +22,13 @@ class CategoryTabs extends StatefulWidget {
 }
 
 class CategoryTabsState extends State<CategoryTabs> {
-  final List<String> _selectedCategories = [];
+  late List<String> _selectedCategories; // Change this to late
 
   @override
   void initState() {
     super.initState();
+    _selectedCategories = List.from(
+        widget.selectedCategories); // Initialize with widget.selectedCategories
     WidgetsBinding.instance.addPostFrameCallback((_) {
       context.read<CategoryBloc>().add(LoadCategories(page: 1, perpage: 10));
     });

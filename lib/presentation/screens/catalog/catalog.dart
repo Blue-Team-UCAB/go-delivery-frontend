@@ -17,6 +17,7 @@ class CatalogScreen extends StatefulWidget {
   final String? selectedCategory;
   final RangeValues? selectedPriceRange;
   final bool? hasDiscount;
+  final List<String>? selectedCategories; // Add this field
 
   const CatalogScreen({
     super.key,
@@ -24,6 +25,7 @@ class CatalogScreen extends StatefulWidget {
     this.selectedCategory,
     this.selectedPriceRange,
     this.hasDiscount,
+    this.selectedCategories, // Add this argument
   });
 
   @override
@@ -44,6 +46,7 @@ class CatalogScreenState extends State<CatalogScreen>
   String? _selectedCategory;
   RangeValues? _selectedPriceRange;
   bool? _hasDiscount;
+  List<String>? _selectedCategories; // Add this field
 
   @override
   bool get wantKeepAlive => true;
@@ -55,6 +58,7 @@ class CatalogScreenState extends State<CatalogScreen>
     _selectedCategory = widget.selectedCategory;
     _selectedPriceRange = widget.selectedPriceRange;
     _hasDiscount = widget.hasDiscount;
+    _selectedCategories = widget.selectedCategories; // Store it
     _loadProducts();
 
     BlocProvider.of<ProductListBloc>(context).add(
@@ -82,13 +86,11 @@ class CatalogScreenState extends State<CatalogScreen>
   @override
   void didUpdateWidget(CatalogScreen oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (widget.selectedCategory != oldWidget.selectedCategory ||
+    if (widget.selectedCategories != oldWidget.selectedCategories ||
         widget.selectedPriceRange != oldWidget.selectedPriceRange ||
         widget.hasDiscount != oldWidget.hasDiscount) {
       setState(() {
-        _selectedCategory = widget.selectedCategory;
-        _selectedPriceRange = widget.selectedPriceRange;
-        _hasDiscount = widget.hasDiscount;
+        _selectedCategories = widget.selectedCategories;
         _currentPage = 1;
         _products.clear();
         _loadProducts();
@@ -109,7 +111,7 @@ class CatalogScreenState extends State<CatalogScreen>
       LoadProductList(
         page: _currentPage,
         perpage: 6,
-        categories: [_selectedCategory ?? ''],
+        categories: _selectedCategories ?? [],
         discount: _hasDiscount == true ? 'true' : null,
       ),
     );
@@ -157,7 +159,7 @@ class CatalogScreenState extends State<CatalogScreen>
         name: query,
         page: _currentPage,
         perpage: 6,
-        categories: [_selectedCategory ?? ''],
+        categories: _selectedCategories ?? [],
         discount: _hasDiscount == true ? 'true' : null, // Add this line
       ),
     );
