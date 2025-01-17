@@ -215,10 +215,13 @@ class LoginFormState extends State<LoginForm> {
                               final localStorageService = LocalStorageService();
 
                               String apiUrl;
+                              String stripeKey = dotenv.env['STRIPE_PUBLISHABLE_KEY']!;
                               if (newMode == AppColorMode.blue) {
+                                stripeKey = dotenv.env['STRIPE_PUBLISHABLE_KEY']!;
                                 apiUrl = dotenv.env['API_URL']!;
                               } else if (newMode == AppColorMode.red) {
                                 apiUrl = dotenv.env['RED_API_URL']!;
+                                stripeKey = dotenv.env['STRIPE_PUBLISHABLE_KEY_RED']!;
                               } else {
                                 apiUrl = dotenv.env['API_URL']!;
                               }
@@ -227,6 +230,8 @@ class LoginFormState extends State<LoginForm> {
                                   "CURRENT_API_URL", apiUrl);
                               await localStorageService.setKeyValue<String>(
                                   'colorMode', newMode.toString());
+                              await localStorageService.setKeyValue<String>(
+                                  'stripeKey', stripeKey);
 
                               Future.delayed(const Duration(seconds: 2), () {
                                 showDialog(
