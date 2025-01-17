@@ -38,21 +38,43 @@ class _ChatBotView extends StatefulWidget {
   _ChatBotViewState createState() => _ChatBotViewState();
 }
 
-class _ChatBotViewState extends State<_ChatBotView> {
+class _ChatBotViewState extends State<_ChatBotView>
+    with TickerProviderStateMixin {
   final List<types.Message> _messages = [];
   String? lastBotResponse;
+
+  late AnimationController _dotsAnimationController;
+  late Animation<String> _dotsAnimation;
+  bool isTyping = false; // Controla el estado de la animación
 
   @override
   void initState() {
     super.initState();
     _addInitialMessage();
+
+    _dotsAnimationController = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 1),
+    )..repeat();
+    _dotsAnimation = StepTween(begin: 0, end: 3).animate(
+      CurvedAnimation(
+        parent: _dotsAnimationController,
+        curve: Curves.easeInOut,
+      ),
+    ) as Animation<String>;
+  }
+
+  @override
+  void dispose() {
+    _dotsAnimationController.dispose();
+    super.dispose();
   }
 
   void _addInitialMessage() {
     final initialBotMessage = types.TextMessage(
       author: types.User(id: 'bot-id'),
       id: const Uuid().v4(),
-      text: '¡Hola! ¿En qué te puedo ayudar hoy?',
+      text: '¡Hola! Soy Bluey ¿En qué te puedo ayudar hoy?',
       createdAt: DateTime.now().millisecondsSinceEpoch,
     );
 
@@ -62,7 +84,25 @@ class _ChatBotViewState extends State<_ChatBotView> {
   }
 
   void _handleSendPressed(types.PartialText message) {
-    widget.chatBotBloc.add(SendMessageEvent(message: message.text));
+    final contextMessages = _messages
+        .take(5)
+        .map((msg) {
+          if (msg is types.TextMessage) {
+            final authorName = msg.author.id == 'bot-id' ? 'Bluey' : 'User';
+            return '$authorName: ${msg.text}';
+          }
+          return '';
+        })
+        .where((msg) => msg.isNotEmpty)
+        .join(' ');
+
+    widget.chatBotBloc.add(
+      SendMessageEvent(
+        message: message.text,
+        context: contextMessages.isNotEmpty ? contextMessages : null,
+      ),
+    );
+
     final userMessage = types.TextMessage(
       author: types.User(id: 'user-id'),
       id: const Uuid().v4(),
@@ -95,21 +135,45 @@ class _ChatBotViewState extends State<_ChatBotView> {
           });
         }
 
+        if (state is ChatBotLoading) {
+          // Controla la animación de "escribiendo..." sin añadir repetidamente el mismo mensaje.
+          if (!isTyping) {
+            setState(() {
+              isTyping = true;
+              final typingMessage = types.TextMessage(
+                author: types.User(id: 'bot-id'),
+                id: const Uuid().v4(),
+                text:
+                    'Bluey está escribiendo${'.' * (_dotsAnimation.value.length)}',
+                createdAt: DateTime.now().millisecondsSinceEpoch,
+              );
+              _messages.insert(0, typingMessage);
+              _trimMessages();
+            });
+          }
+        }
+
         if (state is ChatBotMessageSent) {
           if (state.botResponse != lastBotResponse) {
+            if (_messages.isNotEmpty &&
+                _messages.first is types.TextMessage &&
+                (_messages.first as types.TextMessage).text ==
+                    'Bluey está escribiendo...') {
+              _messages.removeAt(0); // Elimina el mensaje de "escribiendo..."
+              isTyping = false; // Marca que la animación ha finalizado
+            }
+
             final botMessage = types.TextMessage(
               author: types.User(id: 'bot-id'),
               id: const Uuid().v4(),
-              text: state.botResponse,
+              text: state.botResponse.replaceFirst('Bluey: ', ''),
               createdAt: DateTime.now().millisecondsSinceEpoch,
             );
 
-            WidgetsBinding.instance.addPostFrameCallback((_) {
-              setState(() {
-                _messages.insert(0, botMessage);
-                lastBotResponse = state.botResponse;
-                _trimMessages();
-              });
+            setState(() {
+              _messages.insert(0, botMessage);
+              lastBotResponse = state.botResponse;
+              _trimMessages();
             });
           }
         }

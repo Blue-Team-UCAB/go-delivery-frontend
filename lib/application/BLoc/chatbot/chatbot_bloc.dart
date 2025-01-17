@@ -20,6 +20,7 @@ class ChatBotBloc extends Bloc<ChatBotEvent, ChatBotState> {
         SendMessageInput(
           userId: 'user-id',
           message: event.message,
+          context: event.context,
         ),
       );
 

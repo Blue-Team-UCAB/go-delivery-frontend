@@ -7,6 +7,7 @@ abstract class ChatBotRepository {
   Future<Result<String>> sendMessage({
     required String userId,
     required String message,
+    String? context,
   });
 }
 
@@ -29,8 +30,8 @@ class ChatBotRepositoryImpl extends ChatBotRepository {
   Future<Result<String>> sendMessage({
     required String userId,
     required String message,
+    String? context, // Nuevo parámetro
   }) async {
-    // Añadimos el encabezado de autorización
     await _addAuthorizationHeader();
 
     final response = await _apiRequestManager.request<Map<String, dynamic>>(
@@ -45,6 +46,7 @@ class ChatBotRepositoryImpl extends ChatBotRepository {
       body: {
         'user_id': userId,
         'message': message,
+        'context': context,
       },
     );
 
