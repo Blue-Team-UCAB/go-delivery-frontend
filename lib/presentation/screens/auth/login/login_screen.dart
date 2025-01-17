@@ -1,8 +1,8 @@
 import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_delivery_frontend/application/BLoc/notifications/bloc/notifications_bloc.dart';
 import 'package:go_delivery_frontend/presentation/screens/auth/login/login_validators.dart';
@@ -17,6 +17,9 @@ import 'package:go_delivery_frontend/presentation/core/theme/theme.dart';
 
 import 'package:go_delivery_frontend/application/BLoc/cart/cart_bloc.dart';
 import 'package:go_delivery_frontend/presentation/core/app.dart';
+
+import '../../../core/theme/theme_getter.dart';
+import '../../../widgets/dialog_darken_window.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -225,6 +228,29 @@ class LoginFormState extends State<LoginForm> {
                               await localStorageService.setKeyValue<String>(
                                   'colorMode', newMode.toString());
 
+                              Future.delayed(const Duration(seconds: 2), () {
+                                showDialog(
+                                  context: context,
+                                  barrierDismissible: false,
+                                  builder: (BuildContext context) {
+                                    return AnimatedSuccessDialog(
+                                      title: 'Hay que Reiniciar la app!',
+                                      message: 'para aplicar cambios!',
+                                      buttonText: 'Okey',
+                                      icon: Icons.warning,
+                                      iconColor: Colors.grey,
+                                      buttonColor: Colors.grey,
+                                      onButtonPressed: () {
+                                        context.pop();
+                                      },
+                                    );
+                                  },
+                                );
+                              });
+
+                              Future.delayed(const Duration(seconds: 4), () {
+                                SystemChannels.platform.invokeMethod('SystemNavigator.pop');
+                              });
 
                             }
                           },
