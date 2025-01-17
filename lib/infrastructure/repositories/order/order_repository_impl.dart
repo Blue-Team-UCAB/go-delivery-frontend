@@ -47,9 +47,16 @@ class OrderRepositoryImpl extends OrderRepository {
 
     final response = await _apiRequestManager.request(
         '/api/order/user/many/?state=$status', 'GET',
-        queryParameters: queryParameters, (data) {
-      return OrderManyMapper.fromJson(data).orders;
-    });
+        queryParameters: queryParameters,
+            (data) {
+            if(data is Map<String, dynamic>){
+              final order = OrderManyMapper.fromJson(data['orders']).orders;
+              return order;
+            }
+
+            return OrderManyMapper.fromJson(data).orders;
+        }
+        );
     return response;
   }
 
@@ -61,8 +68,8 @@ class OrderRepositoryImpl extends OrderRepository {
         '/api/order/$orderId',
         'GET',
         (data) {
-          final order = OrderMapper.fromJson(data);
-          return order;
+            final order = OrderMapper.fromJson(data);
+            return order;
         },
       );
       return response;

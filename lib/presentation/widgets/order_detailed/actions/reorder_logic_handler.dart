@@ -17,6 +17,9 @@ import 'package:go_delivery_frontend/application/BLoc/product/product_detail/pro
 import 'package:go_delivery_frontend/domain/entities/cart/cartitem.dart';
 import 'package:go_delivery_frontend/presentation/widgets/dialog_darken_window.dart';
 
+import '../../../../application/BLoc/themes/themes_bloc.dart';
+import '../../../core/theme/theme_getter.dart';
+
 class ReorderOrderWidget extends StatefulWidget {
   final String orderNumber;
 
@@ -150,6 +153,8 @@ class _ReorderOrderWidgetState extends State<ReorderOrderWidget> {
 
   @override
   Widget build(BuildContext context) {
+    final currentSecondaryThemeColor = AppThemesGetter.getSecondaryColor(context);
+
     return Scaffold(
       body: MultiBlocListener(
         listeners: [
@@ -163,6 +168,7 @@ class _ReorderOrderWidgetState extends State<ReorderOrderWidget> {
 
                 // Empty cart first
                 cartBloc.add(const EmptyCart());
+
 
                 // Prepare sets of IDs to load
                 setState(() {
@@ -324,14 +330,15 @@ class _ReorderOrderWidgetState extends State<ReorderOrderWidget> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     CircularProgressIndicator(
-                      color: const Color(0xFF2000B1),
+                      color: currentSecondaryThemeColor,
                     ),
                     SizedBox(height: 16),
                     Text(
                       'Preparando su pedido...',
                       style: TextStyle(
-                        color: const Color(0xFF2000B1),
-                        fontSize: 16,
+                        fontFamily: "Montserrat" ,
+                        color: currentSecondaryThemeColor,
+                        fontSize: 20,
                       ),
                     ),
                   ],
