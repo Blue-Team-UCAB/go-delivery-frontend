@@ -80,6 +80,7 @@ class PaymentRepositoryImpl extends PaymentRepository {
   @override
   Future<Result<bool>> processCard(Card card) async {
     await _addAuthorizationHeader();
+
     final response = await _apiRequestManager.request<bool>(
       '/api/payment/method/user/add/card',
       'POST',
@@ -107,14 +108,16 @@ class PaymentRepositoryImpl extends PaymentRepository {
   @override
   Future<Result<List<Card>>> getCard() async {
     await _addAuthorizationHeader();
+
     final response = await _apiRequestManager.request<List<Card>>(
       '/api/payment/method/user/card/many',
       'GET',
       (data) {
         if (data is List) {
-          return data
-              .map((item) => PaymentMethodMapper.cardFromJson(item))
-              .toList();
+          final cards = data.map((item) {
+            return PaymentMethodMapper.cardFromJson(item);
+          }).toList();
+          return cards;
         }
         throw Exception('Respuesta inesperada');
       },
