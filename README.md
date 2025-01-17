@@ -74,7 +74,7 @@ La aplicación **GoDely** en su frontend está desarrollada utilizando **Flutter
         <p><strong>Jesús Pérez</strong></p>
       </td>
       <td align="center">
-        <img src="https://godely.s3.us-east-1.amazonaws.com/Estefany+Torres.jpg" alt="Moises Berrios" width="140" height="170">
+        <img src="https://godely.s3.us-east-1.amazonaws.com/Moises.jpg" alt="Moises Berrios" width="140" height="170">
         <p><strong>Moises Berrios</strong></p>
       </td>
     </tr>
