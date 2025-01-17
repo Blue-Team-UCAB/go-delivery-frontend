@@ -7,12 +7,19 @@ import 'package:go_delivery_frontend/presentation/screens/catalog/logout_from_ca
 
 import 'package:go_delivery_frontend/presentation/core/theme/theme_getter.dart';
 
+import '../../../application/BLoc/themes/themes_bloc.dart';
+import '../../core/theme/theme.dart';
+
 class SidebarScreen extends StatelessWidget {
   const SidebarScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     final currentPrimaryThemeColor = AppThemesGetter.getPrimaryColor(context);
+
+    final themesBloc = context.watch<ThemesBloc>();
+    final appTheme = themesBloc.state.appTheme;
+    final isPrimaryRed = appTheme.colorMode == AppColorMode.red;
 
     return SafeArea(
       child: Container(
@@ -105,50 +112,54 @@ class SidebarScreen extends StatelessWidget {
                 context.push('/category');
               },
             ),
-            ListTile(
-              leading: const Icon(Icons.track_changes, color: Colors.white),
-              title: const Text(
-                'Rastrea tu orden',
-                style: TextStyle(
-                  fontFamily: 'Inter',
-                  fontWeight: FontWeight.w600,
-                  fontSize: 16,
-                  color: Color(0xFFFFFFFF),
+              ListTile(
+                leading: const Icon(Icons.track_changes, color: Colors.white),
+                title: const Text(
+                  'Rastrea tu orden',
+                  style: TextStyle(
+                    fontFamily: 'Inter',
+                    fontWeight: FontWeight.w600,
+                    fontSize: 16,
+                    color: Color(0xFFFFFFFF),
+                  ),
                 ),
+                onTap: () {
+                  context.push('/order');
+                },
               ),
-              onTap: () {},
-            ),
-            ListTile(
-              leading:
-                  const Icon(Icons.local_attraction_sharp, color: Colors.white),
-              title: const Text(
-                'Cupones',
-                style: TextStyle(
-                  fontFamily: 'Inter',
-                  fontWeight: FontWeight.w600,
-                  fontSize: 16,
-                  color: Color(0xFFFFFFFF),
+            if(!isPrimaryRed)
+                ListTile(
+                  leading:
+                      const Icon(Icons.local_attraction_sharp, color: Colors.white),
+                  title: const Text(
+                    'Cupones',
+                    style: TextStyle(
+                      fontFamily: 'Inter',
+                      fontWeight: FontWeight.w600,
+                      fontSize: 16,
+                      color: Color(0xFFFFFFFF),
+                    ),
+                  ),
+                  onTap: () {
+                    context.push('/coupon');
+                  },
                 ),
-              ),
-              onTap: () {
-                context.push('/coupon');
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.android_outlined, color: Colors.white),
-              title: const Text(
-                'ChatBot',
-                style: TextStyle(
-                  fontFamily: 'Inter',
-                  fontWeight: FontWeight.w600,
-                  fontSize: 16,
-                  color: Color(0xFFFFFFFF),
+            if(!isPrimaryRed)
+                ListTile(
+                  leading: const Icon(Icons.android_outlined, color: Colors.white),
+                  title: const Text(
+                    'ChatBot',
+                    style: TextStyle(
+                      fontFamily: 'Inter',
+                      fontWeight: FontWeight.w600,
+                      fontSize: 16,
+                      color: Color(0xFFFFFFFF),
+                    ),
+                  ),
+                  onTap: () {
+                    context.push('/chatbot');
+                  },
                 ),
-              ),
-              onTap: () {
-                context.push('/chatbot');
-              },
-            ),
             const Spacer(),
             ListTile(
               leading: const Icon(Icons.logout, color: Color(0xFFFFFFFF)),
