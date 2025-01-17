@@ -10,6 +10,8 @@ import 'package:go_delivery_frontend/domain/entities/bundle/bundle.dart';
 import 'package:go_delivery_frontend/domain/entities/product/product.dart';
 import 'package:go_delivery_frontend/presentation/widgets/dialog_darken_window.dart';
 
+import '../../core/theme/theme_getter.dart';
+
 class ContinueButton extends StatelessWidget {
   final Map<String, dynamic>? selectedAddress;
   final String? selectedCardId;
@@ -43,6 +45,8 @@ class ContinueButton extends StatelessWidget {
         final bool isProcessing =
             state is CheckoutLoading || state is CheckoutCouponLoading;
 
+        final currentSecondaryThemeColor = AppThemesGetter.getSecondaryColor(context);
+
         return Padding(
           padding: const EdgeInsets.all(16.0),
           child: SizedBox(
@@ -51,7 +55,7 @@ class ContinueButton extends StatelessWidget {
               onPressed:
                   isProcessing ? null : () => _onButtonPressed(context, state),
               style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF2000B1),
+                backgroundColor: currentSecondaryThemeColor,
                 disabledBackgroundColor: Colors.grey,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8.0),
@@ -133,13 +137,15 @@ class ContinueButton extends StatelessWidget {
       context: context,
       barrierDismissible: false,
       builder: (BuildContext context) {
+        final currentSecondaryThemeColor = AppThemesGetter.getSecondaryColor(context);
+
         return AnimatedSuccessDialog(
           title: 'Orden Creada!',
           message: '',
           buttonText: 'Ver Ordenes',
           icon: Icons.check,
-          iconColor: const Color(0xFF2000B1),
-          buttonColor: const Color(0xFF2000B1),
+          iconColor: currentSecondaryThemeColor,
+          buttonColor: currentSecondaryThemeColor,
           onButtonPressed: () {
             context
                 .go('/orderdetail/$orderId'); // Navigate to order detail screen

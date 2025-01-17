@@ -7,6 +7,10 @@ import 'package:go_delivery_frontend/application/BLoc/order/order_create/order_c
 
 import 'package:go_delivery_frontend/application/BLoc/coupons/coupon/coupon_bloc.dart';
 
+import '../../../application/BLoc/cart/cart_bloc.dart';
+import '../../../application/BLoc/themes/themes_bloc.dart';
+import '../../core/theme/theme.dart';
+
 class CheckoutOrderScreen extends StatefulWidget {
   static const name = 'checkout-screen';
   final double total;
@@ -34,6 +38,12 @@ class CheckoutOrderScreenState extends State<CheckoutOrderScreen> {
 
     return BlocBuilder<CheckoutBloc, CheckoutState>(
       builder: (context, state) {
+        final themesBloc = context.watch<ThemesBloc>();
+        final appTheme = themesBloc.state.appTheme;
+        final isPrimaryRed = appTheme.colorMode == AppColorMode.red;
+
+        var total = context.read<CartBloc>().state.totalPrice;
+
         return Scaffold(
           appBar: AppBar(
             backgroundColor: Colors.white,
@@ -48,7 +58,9 @@ class CheckoutOrderScreenState extends State<CheckoutOrderScreen> {
             leading: IconButton(
               icon: const Icon(Icons.arrow_back_ios_new),
               onPressed: () {
-                context.read<CouponBloc>().clearCoupon();
+                if(!isPrimaryRed) {
+                  context.read<CouponBloc>().clearCoupon();
+                }
                 Navigator.pop(context);
               },
             ),
@@ -74,10 +86,11 @@ class CheckoutOrderScreenState extends State<CheckoutOrderScreen> {
                   },
                 ),
                 const SizedBox(height: 8),
-                const ApplyCouponSection(),
+                if(!isPrimaryRed)
+                    ApplyCouponSection(),
                 const SizedBox(height: 8),
                 TotalAmountSection(
-                  total: state.total > 0 ? state.productTotal : widget.total,
+                  total: total >= 0 ? total : widget.total,
                 ),
                 const SizedBox(height: 16),
                 ContinueButton(

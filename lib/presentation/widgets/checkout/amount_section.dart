@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_delivery_frontend/application/BLoc/blocs.dart';
 
+import '../../core/theme/theme.dart';
+
 class TotalAmountSection extends StatelessWidget {
   final double total;
 
@@ -10,6 +12,11 @@ class TotalAmountSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final couponBloc = context.watch<CouponBloc>();
+
+    final themesBloc = context.watch<ThemesBloc>();
+    final appTheme = themesBloc.state.appTheme;
+    final isPrimaryRed = appTheme.colorMode == AppColorMode.red;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -17,11 +24,12 @@ class TotalAmountSection extends StatelessWidget {
         const SizedBox(height: 16),
         _buildAmountRow('Tarifa de viaje', '\$ 0.00'),
         const SizedBox(height: 16),
-        _buildAmountRow(
-          'Descuento cupón del ${couponBloc.state.coupon.porcentage}% ',
-          '-\$${((total*(couponBloc.state.howMuchDiscount))*100).truncateToDouble()/100}', 
-          isCoupon: true
-        ),
+            if(!isPrimaryRed)
+            _buildAmountRow(
+              'Descuento cupón del ${couponBloc.state.coupon.porcentage}% ',
+              '-\$${((total*(couponBloc.state.howMuchDiscount))*100).truncateToDouble()/100}',
+              isCoupon: true
+            ),
         const Divider(
           color: Color(0xFFD4D6DD),
           height: 16,
