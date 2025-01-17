@@ -70,6 +70,7 @@ class CategoryBloc extends Bloc<CategoryEvent, CategoryState> {
 
       if (result.isSuccessful()) {
         final newCategories = result.getValue();
+        print('Fetched categories: $newCategories'); // Add this line
         final hasReachedMax = newCategories.isEmpty;
         emit(CategoryLoaded(
           categories: newCategories.isNotEmpty
@@ -80,9 +81,12 @@ class CategoryBloc extends Bloc<CategoryEvent, CategoryState> {
           name: name,
         ));
       } else {
+        print(
+            'Error fetching categories: ${result.getError().message}'); // Add this line
         emit(CategoryFailed(result.getError().message));
       }
     } catch (e) {
+      print('Exception: $e'); // Add this line
       emit(CategoryFailed(e.toString()));
     }
   }
@@ -100,7 +104,8 @@ class CategoryBloc extends Bloc<CategoryEvent, CategoryState> {
             name: null,
           );
 
-    final categoryName = event.categoryName;
+    final categoryName =
+        event.categoryNames.isNotEmpty ? event.categoryNames.first : null;
 
     emit(CategoryLoaded(
       categories: currentState.categories,

@@ -158,6 +158,7 @@ class CatalogScreenState extends State<CatalogScreen>
         page: _currentPage,
         perpage: 6,
         categories: [_selectedCategory ?? ''],
+        discount: _hasDiscount == true ? 'true' : null, // Add this line
       ),
     );
   }
