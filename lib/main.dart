@@ -20,15 +20,22 @@ import 'package:go_delivery_frontend/firebase_options.dart';
 import 'package:go_delivery_frontend/infrastructure/firebase/firebase_notifications_manager.dart';
 import 'package:go_delivery_frontend/infrastructure/mappers/local_notifications.dart';
 
+import 'package:go_delivery_frontend/infrastructure/datasources/localstorage/localstorage_impl.dart';
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
+
+  final LocalStorageService localStorageService = LocalStorageService();
 
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   await LocalNotifications().initializeLocalNotifications();
   await InjectManager.setUpInjections();
   await dotenv.load();
-  Stripe.publishableKey = dotenv.env['STRIPE_PUBLISHABLE_KEY'] ?? '';
+
+  String? currentStripeKey = await localStorageService.getValue<String>("stripeKey");
+
+  Stripe.publishableKey = (currentStripeKey ?? dotenv.env['STRIPE_PUBLISHABLE_KEY'])!;
   await Stripe.instance.applySettings();
   runApp(
     MultiBlocProvider(
