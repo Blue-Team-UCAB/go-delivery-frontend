@@ -10,6 +10,8 @@
 
 La aplicación **GoDely** en su frontend está desarrollada utilizando **Flutter** y sigue los principios de la **Arquitectura Limpia**(Clean Architecture) con un enfoque en gestión de estados mediante **BLoC** (Business Logic Component).
 
+<img src="https://cdn.discordapp.com/attachments/1293370284144853045/1329881390770294795/GoDely_-_Documentacion_-_Hexagonal_Frontend.jpeg?ex=678bf40f&is=678aa28f&hm=0133c2e8a0e7643fda41bcb102fa438f0d2bfd6f4b1edd7fc785f5c4d310967c&" alt="Flutter Logo" width="1000" style="margin: 15px;"> 
+
 # Herramientas
 
 <div align="center"> 
