@@ -293,7 +293,7 @@ class HomeScreenState extends State<HomeScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SizedBox(height: 16),
+            SizedBox(height: 4),
             CategoryTabs(
               onCategorySelected: (List<String> selectedCategories) {
                 setState(() {
@@ -326,8 +326,8 @@ class HomeScreenState extends State<HomeScreen> {
                 print(
                     'Categorías seleccionadas después de actualizarAAAAAAAAAAAAAAAAAAA: $_selectedCategories');
               },
+              selectedCategories: [],
             ),
-            SizedBox(height: 5),
             ComboSection(selectedCategories: _selectedCategories),
             const SizedBox(height: 14),
             RandomSection(selectedCategoryNames: _selectedCategories),

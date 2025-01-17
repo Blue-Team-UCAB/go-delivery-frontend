@@ -28,7 +28,10 @@ void main() {
       await tester.pumpWidget(
         BlocProvider<CategoryBloc>.value(
           value: categoryBloc,
-          child: const MaterialApp(home: CategoryTabs()),
+          child: const MaterialApp(
+              home: CategoryTabs(
+            selectedCategories: [],
+          )),
         ),
       );
 
@@ -44,7 +47,10 @@ void main() {
       await tester.pumpWidget(
         BlocProvider<CategoryBloc>.value(
           value: categoryBloc,
-          child: const MaterialApp(home: CategoryTabs()),
+          child: const MaterialApp(
+              home: CategoryTabs(
+            selectedCategories: [],
+          )),
         ),
       );
 
@@ -71,7 +77,10 @@ void main() {
       await tester.pumpWidget(
         BlocProvider<CategoryBloc>.value(
           value: categoryBloc,
-          child: const MaterialApp(home: CategoryTabs()),
+          child: const MaterialApp(
+              home: CategoryTabs(
+            selectedCategories: [],
+          )),
         ),
       );
 

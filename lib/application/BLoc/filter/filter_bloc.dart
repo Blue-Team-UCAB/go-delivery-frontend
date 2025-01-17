@@ -11,14 +11,7 @@ abstract class FilterEvent extends Equatable {
   List<Object?> get props => [];
 }
 
-class UpdateCategory extends FilterEvent {
-  final String? category;
-
-  const UpdateCategory(this.category);
-
-  @override
-  List<Object?> get props => [category];
-}
+// Remove UpdateCategory event
 
 class UpdateDiscount extends FilterEvent {
   final bool hasDiscount;
@@ -49,45 +42,61 @@ class UpdateCategories extends FilterEvent {
 
 class ResetFilters extends FilterEvent {} // Add this line
 
+class UpdateSelectedCategories extends FilterEvent {
+  final List<String> selectedCategories;
+
+  const UpdateSelectedCategories(this.selectedCategories);
+
+  @override
+  List<Object?> get props => [selectedCategories];
+}
+
 // States
 class FilterState extends Equatable {
-  final String? selectedCategory;
+  // Remove selectedCategory field
   final bool hasDiscount;
   final RangeValues priceRange;
   final List<Category> categories;
+  final List<String> selectedCategories;
 
   const FilterState({
-    this.selectedCategory,
+    // Remove selectedCategory parameter
     this.hasDiscount = false,
     this.priceRange = const RangeValues(0, 30), // Modify this line
     this.categories = const [],
+    this.selectedCategories = const [],
   });
 
   FilterState copyWith({
-    String? selectedCategory,
+    // Remove selectedCategory parameter
     bool? hasDiscount,
     RangeValues? priceRange,
     List<Category>? categories,
+    List<String>? selectedCategories,
   }) {
     return FilterState(
-      selectedCategory: selectedCategory ?? this.selectedCategory,
+      // Remove selectedCategory assignment
       hasDiscount: hasDiscount ?? this.hasDiscount,
       priceRange: priceRange ?? this.priceRange,
       categories: categories ?? this.categories,
+      selectedCategories: selectedCategories ?? this.selectedCategories,
     );
   }
 
   @override
-  List<Object?> get props =>
-      [selectedCategory, hasDiscount, priceRange, categories];
+  List<Object?> get props => [
+        // Remove selectedCategory from props
+        hasDiscount,
+        priceRange,
+        categories,
+        selectedCategories
+      ];
 }
 
 // BLoC
 class FilterBloc extends Bloc<FilterEvent, FilterState> {
   FilterBloc() : super(const FilterState()) {
-    on<UpdateCategory>((event, emit) {
-      emit(state.copyWith(selectedCategory: event.category));
-    });
+    // Remove UpdateCategory handler
 
     on<UpdateDiscount>((event, emit) {
       emit(state.copyWith(hasDiscount: event.hasDiscount));
@@ -103,6 +112,10 @@ class FilterBloc extends Bloc<FilterEvent, FilterState> {
 
     on<ResetFilters>((event, emit) {
       emit(const FilterState());
+    });
+
+    on<UpdateSelectedCategories>((event, emit) {
+      emit(state.copyWith(selectedCategories: event.selectedCategories));
     });
   }
 }

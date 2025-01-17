@@ -13,6 +13,12 @@ import '../../../domain/entities/product/product.dart';
 
 class OrderMapper {
   static Order fromJson(Map<String, dynamic> json) {
+
+    print('Query Parameters:');
+    json.forEach((key, value) {
+      print('  - $key: $value');
+    });
+
     return Order(
       id: json['orderId'],
       state: (json['orderState'] as List)
