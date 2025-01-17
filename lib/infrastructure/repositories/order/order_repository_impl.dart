@@ -46,7 +46,7 @@ class OrderRepositoryImpl extends OrderRepository {
     };
 
     final response = await _apiRequestManager.request(
-        '/api/order/user/many/?status=$status', 'GET',
+        '/api/order/user/many/?state=$status', 'GET',
         queryParameters: queryParameters, (data) {
       return OrderManyMapper.fromJson(data).orders;
     });
