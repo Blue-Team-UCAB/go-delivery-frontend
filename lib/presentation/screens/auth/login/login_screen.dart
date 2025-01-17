@@ -1,5 +1,6 @@
 import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -9,12 +10,11 @@ import 'package:go_router/go_router.dart';
 import 'package:go_delivery_frontend/application/BLoc/auth/login/login_bloc.dart';
 import 'package:go_delivery_frontend/injector.dart';
 import 'package:go_delivery_frontend/presentation/screens/auth/login/inputDecorationLogin.dart';
-
 import 'package:go_delivery_frontend/application/BLoc/themes/themes_bloc.dart';
 import 'package:go_delivery_frontend/infrastructure/datasources/localstorage/localstorage_impl.dart';
 import 'package:go_delivery_frontend/presentation/core/theme/theme.dart';
-
-import '../../../../application/BLoc/cart/cart_bloc.dart';
+import 'package:go_delivery_frontend/application/BLoc/cart/cart_bloc.dart';
+import 'package:go_delivery_frontend/presentation/widgets/dialog_darken_window.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -223,12 +223,35 @@ class LoginFormState extends State<LoginForm> {
                                 apiUrl = dotenv.env['API_URL']!;
                               }
 
-
                               await localStorageService.setKeyValue<String>(
                                   "CURRENT_API_URL", apiUrl);
                               await localStorageService.setKeyValue<String>(
                                   'colorMode', newMode.toString());
 
+                              Future.delayed(const Duration(seconds: 2), () {
+                                showDialog(
+                                  context: context,
+                                  barrierDismissible: false,
+                                  builder: (BuildContext context) {
+                                    return AnimatedSuccessDialog(
+                                      title: 'Hay que Reiniciar la app!',
+                                      message: 'para aplicar cambios!',
+                                      buttonText: 'Okey',
+                                      icon: Icons.warning,
+                                      iconColor: Colors.grey,
+                                      buttonColor: Colors.grey,
+                                      onButtonPressed: () {
+                                        context.pop();
+                                      },
+                                    );
+                                  },
+                                );
+                              });
+
+                              Future.delayed(const Duration(seconds: 4), () {
+                                SystemChannels.platform
+                                    .invokeMethod('SystemNavigator.pop');
+                              });
                             }
                           },
                         ),

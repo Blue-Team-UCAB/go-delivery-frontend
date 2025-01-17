@@ -139,7 +139,7 @@ Widget _buildAddressList(CouponListState state) {
                               child: Text('${coupon.porcentage}%',
                                   style: TextStyle(
                                     fontFamily: 'Inter',
-                                    fontSize: 24,
+                                    fontSize: 20,
                                     fontWeight: FontWeight.w600,
                                     color: currentSecondaryThemeColor,
                                   )
@@ -224,8 +224,7 @@ Widget _buildAddressList(CouponListState state) {
                 _showCouponResult(context, "Cupon agregado con exito.");
               } else if (state is CouponFailed) {
                 Navigator.pop(context);
-                _showCouponResult(
-                    context, "El Cupon ingresado no existe.");
+                _showCouponResult(context, "El Cupon Ingresado Ya estaba claimeado o No Disponible");
               }
             },
             child: StatefulBuilder(
@@ -342,7 +341,7 @@ Widget _buildAddressList(CouponListState state) {
           content: Text(message),
           actions: <Widget>[
             TextButton(
-              onPressed: () => Navigator.pop(context),
+              onPressed: () => context.push('/coupon'),
               child: const Text('Aceptar'),
             ),
           ],

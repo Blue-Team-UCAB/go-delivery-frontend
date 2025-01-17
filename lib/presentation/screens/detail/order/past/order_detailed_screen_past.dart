@@ -99,7 +99,7 @@ class PastOrderDetails extends StatelessWidget {
                     ],
                   ),
                 ),
-                const SizedBox(height: 24),
+                const SizedBox(),
                 if (state.lastState == 'DELIVERED')
                   Padding(
                     padding: const EdgeInsets.all(14.0),

@@ -83,14 +83,13 @@ class HomeScreenState extends State<HomeScreen> {
         builder: (context, state) {
           if (state is CurrentUserLoading) {
             return const HomescreenPlaceholder();
-            
           }
           if (state is CurrentUserInitial || state is CurrentUserError) {
             return const Center(child: Text('Usuario no cargado'));
           }
 
           if (state is CurrentUserLoaded) {
-            return _buildMainScreen(state,context);
+            return _buildMainScreen(state, context);
           }
 
           return const Center(child: Text('Something went wrong'));
@@ -120,7 +119,8 @@ class HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildMainScreen(CurrentUserLoaded userState, BuildContext context) {
-    final currentSecondaryThemeColor = AppThemesGetter.getSecondaryColor(context);
+    final currentSecondaryThemeColor =
+        AppThemesGetter.getSecondaryColor(context);
 
     return AnimatedContainer(
       transform: Matrix4.translationValues(xOffset, yOffset, 0)
@@ -179,7 +179,8 @@ class HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildHeader() {
-    final currentSecondaryThemeColor = AppThemesGetter.getSecondaryColor(context);
+    final currentSecondaryThemeColor =
+        AppThemesGetter.getSecondaryColor(context);
 
     return Container(
       color: currentSecondaryThemeColor,
@@ -292,19 +293,18 @@ class HomeScreenState extends State<HomeScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            SizedBox(height: 16),
             CategoryTabs(
               onCategorySelected: (List<String> selectedCategories) {
                 setState(() {
-                  if (selectedCategories.isNotEmpty) {
-                    _selectedCategories = selectedCategories;
-                  }
+                  _selectedCategories = selectedCategories;
                 });
                 context.read<CategoryBloc>().add(
-                      SelectCategory(
-                          categoryName: selectedCategories.join(',')),
+                      SelectCategory(categoryNames: selectedCategories),
                     );
               },
             ),
+            SizedBox(height: 5),
             ComboSection(selectedCategories: _selectedCategories),
             const SizedBox(height: 14),
             RandomSection(selectedCategoryNames: _selectedCategories),
