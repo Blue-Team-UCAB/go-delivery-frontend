@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_delivery_frontend/application/BLoc/notifications/bloc/notifications_bloc.dart';
-import 'package:go_router/go_router.dart';
 
 class NotificationScreen extends StatelessWidget {
   const NotificationScreen({super.key});
@@ -71,8 +70,6 @@ class NotificationScreen extends StatelessWidget {
                         : Icon(Icons.comment,color: Color(0xFF02066F),)
                     ),
                     onTap: () {
-                      context.push(
-                          '/push-details/${Uri.encodeComponent(notification.messageId)}');
                     },
                   ),
                 ),

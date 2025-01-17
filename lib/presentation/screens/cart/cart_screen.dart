@@ -33,6 +33,19 @@ class CartScreen extends StatelessWidget {
           'Mi Carrito',
           style: TextStyle(fontFamily: 'Montserrat',fontSize: 24,fontWeight: FontWeight.w700 ,color: Color(0xFF000000))
         ),
+        actions: [
+          //TODO: agregar condicional del team Rojo, ellos no tienen esta IA
+          Padding(
+            padding: const EdgeInsets.all(4.0),
+            child: IconButton(
+              icon: Icon(Icons.bubble_chart_outlined,color: Color(0xFF0000FF),),
+              iconSize: 35,
+              onPressed: (){
+                cartBloc.loadAiCart();
+              }, 
+              ),
+          )
+        ],
       ),
       body: cartBloc.state.items.isEmpty
         ?  CartEmptyStateWidget()
