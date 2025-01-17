@@ -21,16 +21,44 @@ class ProductRandomListBloc extends Bloc<ProductListEvent, ProductListState> {
     LoadProductList event,
     Emitter<ProductListState> emit,
   ) async {
-    await _loadProducts(
-      name: event.name ?? '',
-      categories: event.categories ?? [''],
-      price: event.price ?? 0,
-      discount: event.discount ?? '',
-      popular: event.popular ?? '',
-      page: event.page,
-      perPage: event.perpage,
-      emit: emit,
-    );
+    if (state is ProductListInitial || state is ProductListLoaded) {
+      try {
+        final currentState = state is ProductListLoaded
+            ? state
+            : const ProductListLoaded(
+                products: [], hasReachedMax: false, page: 1);
+
+        emit(ProductListLoading(currentState.products));
+
+        final result = await _getProductsUseCase.execute(
+          GetProductsUseCaseInput(
+            name: '',
+            categories: event.categories ?? [],
+            price: 0,
+            discount: '',
+            popular: '',
+            page: event.page,
+            perpage: event.perpage,
+          ),
+        );
+
+        if (result.isSuccessful()) {
+          final newProducts = result.getValue();
+          final hasReachedMax = newProducts.isEmpty;
+
+          emit(ProductListLoaded(
+            products: [...newProducts],
+            hasReachedMax: hasReachedMax,
+            page: event.page,
+            categories: event.categories ?? [],
+          ));
+        } else {
+          emit(ProductListFailed(result));
+        }
+      } catch (e) {
+        emit(ProductListFailed(Result.fail(e.toString() as Failure)));
+      }
+    }
   }
 
   Future<void> _onSearchProductList(

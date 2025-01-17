@@ -38,10 +38,10 @@ class SearchCategories extends CategoryEvent {
 }
 
 class SelectCategory extends CategoryEvent {
-  final String? categoryName;
+  final List<String> categoryNames; // changed from a single string
 
-  const SelectCategory({this.categoryName});
+  const SelectCategory({required this.categoryNames});
 
   @override
-  List<Object?> get props => [categoryName];
+  List<Object?> get props => [categoryNames];
 }
