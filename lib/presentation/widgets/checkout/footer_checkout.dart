@@ -101,10 +101,6 @@ class ContinueButton extends StatelessWidget {
       return;
     }
 
-    final String paymentMethod =
-        selectedCardId != null && selectedCardId!.isNotEmpty
-            ? "Credit"
-            : "Wallet";
 
     if (state.appliedCoupon != null) {
       context.read<CouponBloc>().add(LoadCoupon(coupon: state.appliedCoupon!));
@@ -112,9 +108,7 @@ class ContinueButton extends StatelessWidget {
 
     context.read<CheckoutBloc>().add(
           ProcessCheckoutEvent(
-            paymentId: "f13784a7-f134-4a14-91de-884634b952a3",
             stripePaymentMethod: selectedCardId,
-            paymentMethod: paymentMethod,
             idUserDirection: selectedAddress!['id'],
             couponId: state.appliedCoupon?.id,
             productItems: state.productItems
