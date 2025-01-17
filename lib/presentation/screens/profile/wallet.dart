@@ -23,7 +23,10 @@ import 'package:go_delivery_frontend/application/BLoc/payment/pago_movil/pago_mo
 import 'package:go_delivery_frontend/application/BLoc/payment/zelle/zelle_bloc.dart';
 import 'package:go_delivery_frontend/application/BLoc/payment/zelle/zelle_event.dart';
 import 'package:go_delivery_frontend/application/BLoc/payment/zelle/zelle_state.dart';
+import 'package:go_delivery_frontend/application/BLoc/themes/themes_bloc.dart';
+import 'package:go_delivery_frontend/presentation/core/theme/theme.dart';
 import 'package:go_delivery_frontend/presentation/screens/order/payment_card_screen.dart';
+import 'package:go_delivery_frontend/presentation/screens/profile/wallet_placeholder.dart';
 import 'package:go_delivery_frontend/presentation/widgets/checkout/credit_card_widget.dart';
 import 'package:go_delivery_frontend/presentation/widgets/wallet/transaction_widget.dart';
 import 'package:go_router/go_router.dart';
@@ -50,6 +53,7 @@ class _WalletScreenState extends State<WalletScreen> {
   TextEditingController emailController = TextEditingController();
   final TextEditingController _integerPartController = TextEditingController();
 
+
   @override
   void initState() {
     super.initState();
@@ -61,6 +65,9 @@ class _WalletScreenState extends State<WalletScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final themesBloc = context.watch<ThemesBloc>();
+    final appTheme = themesBloc.state.appTheme;
+    final isPrimaryRed = appTheme.colorMode == AppColorMode.red;
     final currentSecondaryThemeColor =
         AppThemesGetter.getSecondaryColor(context);
 
@@ -201,7 +208,8 @@ class _WalletScreenState extends State<WalletScreen> {
                   ),
                   _buildCreditCardOptions(),
                   const SizedBox(height: 16),
-                  PaymentTransactionsWidget(),
+                  if (!isPrimaryRed) PaymentTransactionsWidget()
+                  
                 ],
               ),
             ),
@@ -234,44 +242,46 @@ class _WalletScreenState extends State<WalletScreen> {
         padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 26),
         child: Column(
           children: [
-            SizedBox(
-              height: 200,
+            Container( 
               child: BlocBuilder<CardListBloc, CardListState>(
                 builder: (context, state) {
                   if (state is CardListInitial) {
                     context.read<CardListBloc>().add(LoadCardList());
-                    return const CircularProgressIndicator();
+                    return const WalletPlaceholder();
                   }
 
                   if (state is CardListLoading) {
-                    return const CircularProgressIndicator();
+                    return const WalletPlaceholder();
                   } else if (state is CardListLoaded) {
-                    return PageView(
-                      controller: pageController,
-                      scrollDirection: Axis.vertical,
-                      children: state.cards.map((card) {
-                        return Slidable(
-                            endActionPane: ActionPane(
-                                extentRatio: 0.2,
-                                motion: const ScrollMotion(),
-                                children: [
-                                  SlidableAction(
-                                    onPressed: (context) {
-                                      BlocProvider.of<DeleteCardBloc>(context)
-                                          .add(DeleteCardRequested(
-                                              cardId: card.id!));
-                                    },
-                                    icon: Icons.delete,
-                                    foregroundColor: Color(0xFFFF0000),
-                                    borderRadius: const BorderRadius.only(
-                                        topRight: Radius.circular(8),
-                                        bottomRight: Radius.circular(8)),
-                                  )
-                                ]),
-                            child: Transform.scale(
-                                scale: max(1, 1),
-                                child: CreditCardWidget(card: card)));
-                      }).toList(),
+                    return SizedBox(
+                      height: state.cards.isNotEmpty? 200: 0,
+                      child: PageView(
+                        controller: pageController,
+                        scrollDirection: Axis.vertical,
+                        children: state.cards.map((card) {
+                          return Slidable(
+                              endActionPane: ActionPane(
+                                  extentRatio: 0.2,
+                                  motion: const ScrollMotion(),
+                                  children: [
+                                    SlidableAction(
+                                      onPressed: (context) {
+                                        BlocProvider.of<DeleteCardBloc>(context)
+                                            .add(DeleteCardRequested(
+                                                cardId: card.id!));
+                                      },
+                                      icon: Icons.delete,
+                                      foregroundColor: Color(0xFFFF0000),
+                                      borderRadius: const BorderRadius.only(
+                                          topRight: Radius.circular(8),
+                                          bottomRight: Radius.circular(8)),
+                                    )
+                                  ]),
+                              child: Transform.scale(
+                                  scale: max(1, 1),
+                                  child: CreditCardWidget(card: card)));
+                        }).toList(),
+                      ),
                     );
                   } else if (state is CardListFailed) {
                     return Text('Error: ${state.result.getError()}');
