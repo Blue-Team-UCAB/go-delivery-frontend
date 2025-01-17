@@ -16,14 +16,14 @@ class CatalogScreen extends StatefulWidget {
   final int initialCounterNavbar;
   final String? selectedCategory;
   final RangeValues? selectedPriceRange;
-  final bool? hasDiscount; // Add this line
+  final bool? hasDiscount;
 
   const CatalogScreen({
     super.key,
     required this.initialCounterNavbar,
     this.selectedCategory,
     this.selectedPriceRange,
-    this.hasDiscount, // Add this line
+    this.hasDiscount,
   });
 
   @override
@@ -85,11 +85,10 @@ class CatalogScreenState extends State<CatalogScreen>
     if (widget.selectedCategory != oldWidget.selectedCategory ||
         widget.selectedPriceRange != oldWidget.selectedPriceRange ||
         widget.hasDiscount != oldWidget.hasDiscount) {
-      // Modify this line
       setState(() {
         _selectedCategory = widget.selectedCategory;
         _selectedPriceRange = widget.selectedPriceRange;
-        _hasDiscount = widget.hasDiscount; // Add this line
+        _hasDiscount = widget.hasDiscount;
         _currentPage = 1;
         _products.clear();
         _loadProducts();
@@ -111,7 +110,7 @@ class CatalogScreenState extends State<CatalogScreen>
         page: _currentPage,
         perpage: 6,
         categories: [_selectedCategory ?? ''],
-        discount: _hasDiscount == true ? 'true' : null, // Add this line
+        discount: _hasDiscount == true ? 'true' : null,
       ),
     );
   }
@@ -286,7 +285,7 @@ class CatalogScreenState extends State<CatalogScreen>
                         setState(() {
                           _selectedCategory = result['category'];
                           _selectedPriceRange = result['priceRange'];
-                          _hasDiscount = result['hasDiscount']; // Add this line
+                          _hasDiscount = result['hasDiscount'];
                           _currentPage = 1;
                           _products.clear();
                           _loadProducts();
