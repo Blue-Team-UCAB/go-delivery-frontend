@@ -14,6 +14,8 @@ import 'package:go_delivery_frontend/application/BLoc/themes/themes_bloc.dart';
 import 'package:go_delivery_frontend/infrastructure/datasources/localstorage/localstorage_impl.dart';
 import 'package:go_delivery_frontend/presentation/core/theme/theme.dart';
 
+import '../../../../application/BLoc/cart/cart_bloc.dart';
+
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
 
@@ -208,6 +210,8 @@ class LoginFormState extends State<LoginForm> {
                                         .colorMode) {
                               context.read<ThemesBloc>().changeTheme();
 
+                              context.read<CartBloc>().emptyCart();
+
                               final localStorageService = LocalStorageService();
 
                               String apiUrl;
@@ -219,10 +223,12 @@ class LoginFormState extends State<LoginForm> {
                                 apiUrl = dotenv.env['API_URL']!;
                               }
 
+
                               await localStorageService.setKeyValue<String>(
                                   "CURRENT_API_URL", apiUrl);
                               await localStorageService.setKeyValue<String>(
                                   'colorMode', newMode.toString());
+
                             }
                           },
                         ),
