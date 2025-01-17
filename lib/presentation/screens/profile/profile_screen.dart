@@ -14,6 +14,9 @@ import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:go_delivery_frontend/presentation/widgets/navbar.dart';
 
+import '../../../application/BLoc/themes/themes_bloc.dart';
+import '../../core/theme/theme.dart';
+
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
 
@@ -196,6 +199,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
         },
         child: BlocBuilder<CurrentUserBloc, CurrentUserState>(
           builder: (context, state) {
+            final themesBloc = context.watch<ThemesBloc>();
+            final appTheme = themesBloc.state.appTheme;
+            final isPrimaryRed = appTheme.colorMode == AppColorMode.red;
+
             if (state is CurrentUserLoading) {
               return ProfileScreenPlaceholder();
             } else if (state is CurrentUserLoaded) {
@@ -264,8 +271,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         _buildButton(context, "GoDely Wallet",
                             route: "/wallet"),
                         const SizedBox(height: 20),
-                        _buildButton(context, "Cupones",
-                            route: "/coupon"),
+                        if(!isPrimaryRed)
+                          _buildButton(context, "Cupones",route: "/coupon"),
                         const SizedBox(height: 20),
                         _buildButton(context, "Direcciones",
                             route: "/addresses"),
