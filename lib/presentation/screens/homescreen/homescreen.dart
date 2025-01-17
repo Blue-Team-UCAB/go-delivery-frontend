@@ -49,7 +49,7 @@ class HomeScreen extends StatefulWidget {
 
 class HomeScreenState extends State<HomeScreen> {
   int _counter = 0;
-  List<String>? _selectedCategories = [];
+  final List<String> _selectedCategories = [];
   final ScrollController _scrollController = ScrollController();
 
   double xOffset = 0;
@@ -297,11 +297,34 @@ class HomeScreenState extends State<HomeScreen> {
             CategoryTabs(
               onCategorySelected: (List<String> selectedCategories) {
                 setState(() {
-                  _selectedCategories = selectedCategories;
+                  // Añadir las categorías seleccionadas a _selectedCategories
+                  for (var category in selectedCategories) {
+                    if (!_selectedCategories.contains(category)) {
+                      print('Añadiendo categoría: $category');
+                      _selectedCategories.add(category);
+                    }
+                  }
+
+                  // Eliminar las categorías que no están en selectedCategories
+                  _selectedCategories.removeWhere((category) {
+                    bool shouldRemove = !selectedCategories.contains(category);
+                    if (shouldRemove) {
+                      print('Eliminando categoría: $category');
+                    }
+                    return shouldRemove;
+                  });
+
+                  print(
+                      'Categorías seleccionadas después de actualizar: $_selectedCategories');
                 });
+                print(
+                    'Categorías seleccionadas después de actualizarrrrrrrrrrrrrrr: $_selectedCategories');
+                // Notificar al Bloc para que se actualicen las categorías seleccionadas
                 context.read<CategoryBloc>().add(
-                      SelectCategory(categoryNames: selectedCategories),
+                      SelectCategory(categoryNames: _selectedCategories),
                     );
+                print(
+                    'Categorías seleccionadas después de actualizarAAAAAAAAAAAAAAAAAAA: $_selectedCategories');
               },
               selectedCategories: [],
             ),

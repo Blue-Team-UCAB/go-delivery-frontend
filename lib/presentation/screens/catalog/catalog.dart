@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'package:go_delivery_frontend/presentation/screens/homescreen/homescreen_locationbar.dart';
 import 'package:go_delivery_frontend/presentation/widgets/search/filter_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -11,13 +10,12 @@ import 'package:go_delivery_frontend/application/BLoc/product/product_many/produ
 import 'package:go_delivery_frontend/application/BLoc/product/product_many/product_many_event.dart';
 import 'package:go_router/go_router.dart';
 import 'package:go_delivery_frontend/domain/entities/product/product.dart';
-
-import '../../../application/BLoc/bundle/bundle_many/bundle_many_bloc.dart';
-import '../../../application/BLoc/bundle/bundle_many/bundle_many_event.dart';
-import '../../../application/BLoc/bundle/bundle_many/bundle_many_state.dart';
-import '../../../domain/entities/bundle/bundle.dart';
-import '../../core/theme/theme_getter.dart';
-import '../../widgets/bundle_card.dart';
+import 'package:go_delivery_frontend/application/BLoc/bundle/bundle_many/bundle_many_bloc.dart';
+import 'package:go_delivery_frontend/application/BLoc/bundle/bundle_many/bundle_many_event.dart';
+import 'package:go_delivery_frontend/application/BLoc/bundle/bundle_many/bundle_many_state.dart';
+import 'package:go_delivery_frontend/domain/entities/bundle/bundle.dart';
+import 'package:go_delivery_frontend/presentation/core/theme/theme_getter.dart';
+import 'package:go_delivery_frontend/presentation/widgets/bundle_card.dart';
 
 class CatalogScreen extends StatefulWidget {
   final int initialCounterNavbar;
@@ -53,7 +51,7 @@ class CatalogScreenState extends State<CatalogScreen>
   int _currentBundlePage = 1;
 
   String _searchQuery = '';
-  String? _selectedCategory;
+
   RangeValues? _selectedPriceRange;
   bool? _hasDiscount;
   List<String>? _selectedCategories;
@@ -73,19 +71,16 @@ class CatalogScreenState extends State<CatalogScreen>
   void initState() {
     super.initState();
     _counter = widget.initialCounterNavbar;
-    _selectedCategory = widget.selectedCategory;
+
     _selectedPriceRange = widget.selectedPriceRange;
     _hasDiscount = widget.hasDiscount;
     _selectedCategories = widget.selectedCategories;
 
-    // Initialize TabController
     _tabController = TabController(length: 2, vsync: this)
       ..addListener(_handleTabChange);
 
-    // Initial load of products
     _loadProducts();
 
-    // Initialize product and bundle subscriptions
     _initializeProductSubscription();
     _initializeBundleSubscription();
 
@@ -97,29 +92,29 @@ class CatalogScreenState extends State<CatalogScreen>
   void _initializeProductSubscription() {
     _productListSubscription =
         BlocProvider.of<ProductListBloc>(context).stream.listen((state) {
-          if (state is ProductListLoaded) {
-            if (mounted) {
-              setState(() {
-                _isLoadingMoreProducts = false;
-                _addUniqueProducts(state.products);
-              });
-            }
-          }
-        });
+      if (state is ProductListLoaded) {
+        if (mounted) {
+          setState(() {
+            _isLoadingMoreProducts = false;
+            _addUniqueProducts(state.products);
+          });
+        }
+      }
+    });
   }
 
   void _initializeBundleSubscription() {
     _bundleListSubscription =
         BlocProvider.of<BundleListBloc>(context).stream.listen((state) {
-          if (state is BundleListLoaded) {
-            if (mounted) {
-              setState(() {
-                _isLoadingMoreBundles = false;
-                _addUniqueBundles(state.bundles);
-              });
-            }
-          }
-        });
+      if (state is BundleListLoaded) {
+        if (mounted) {
+          setState(() {
+            _isLoadingMoreBundles = false;
+            _addUniqueBundles(state.bundles);
+          });
+        }
+      }
+    });
   }
 
   void _handleTabChange() {
@@ -276,7 +271,8 @@ class CatalogScreenState extends State<CatalogScreen>
   Widget build(BuildContext context) {
     super.build(context);
 
-    final currentSecondaryThemeColor = AppThemesGetter.getSecondaryColor(context);
+    final currentSecondaryThemeColor =
+        AppThemesGetter.getSecondaryColor(context);
 
     return Scaffold(
       backgroundColor: const Color(0xFFEBEAED),
@@ -303,7 +299,7 @@ class CatalogScreenState extends State<CatalogScreen>
           preferredSize: const Size.fromHeight(kToolbarHeight * 2),
           child: Column(
             children: [
-              // Search Bar
+              // Barra de búsqueda reemplazada
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 18),
                 child: Container(
@@ -337,12 +333,12 @@ class CatalogScreenState extends State<CatalogScreen>
                             border: InputBorder.none,
                             suffixIcon: _searchQuery.isNotEmpty
                                 ? IconButton(
-                              icon: const Icon(Icons.clear),
-                              onPressed: () {
-                                _textfieldController.clear();
-                                _handleSearch('');
-                              },
-                            )
+                                    icon: const Icon(Icons.clear),
+                                    onPressed: () {
+                                      _textfieldController.clear();
+                                      _handleSearch('');
+                                    },
+                                  )
                                 : null,
                           ),
                           style: const TextStyle(color: Colors.grey),
@@ -352,19 +348,18 @@ class CatalogScreenState extends State<CatalogScreen>
                         icon: const Icon(Icons.filter_list, color: Colors.grey),
                         onPressed: () async {
                           final result =
-                          await showModalBottomSheet<Map<String, dynamic>>(
+                              await showModalBottomSheet<Map<String, dynamic>>(
                             context: context,
                             isScrollControlled: true,
                             shape: const RoundedRectangleBorder(
-                              borderRadius:
-                              BorderRadius.vertical(top: Radius.circular(16)),
+                              borderRadius: BorderRadius.vertical(
+                                  top: Radius.circular(16)),
                             ),
                             builder: (context) => const FilterSheet(),
                           );
 
                           if (result != null) {
                             setState(() {
-                              _selectedCategory = result['category'];
                               _selectedPriceRange = result['priceRange'];
                               _hasDiscount = result['hasDiscount'];
                               _currentProductPage = 1;
@@ -381,10 +376,10 @@ class CatalogScreenState extends State<CatalogScreen>
                   ),
                 ),
               ),
-
-              // Tab Bar
+              // Aquí sigue el resto de tu código de tabs
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                 child: Container(
                   decoration: BoxDecoration(
                     color: Colors.white,
@@ -437,7 +432,7 @@ class CatalogScreenState extends State<CatalogScreen>
             child: TabBarView(
               controller: _tabController,
               children: [
-                // Products Tab
+                // Product Tab
                 BlocBuilder<ProductListBloc, ProductListState>(
                   builder: (context, state) {
                     if (state is ProductListInitial || _products.isEmpty) {
@@ -464,8 +459,7 @@ class CatalogScreenState extends State<CatalogScreen>
                     }
                   },
                 ),
-
-                // Bundles Tab
+                // Bundle Tab
                 BlocBuilder<BundleListBloc, BundleListState>(
                   builder: (context, state) {
                     if (state is BundleListInitial || _bundles.isEmpty) {
@@ -485,7 +479,7 @@ class CatalogScreenState extends State<CatalogScreen>
                     } else {
                       return Stack(
                         children: [
-                      const CatalogProductGridPlaceholder(),
+                          const CatalogProductGridPlaceholder(),
                           const Center(child: Text('Estado desconocido')),
                         ],
                       );
