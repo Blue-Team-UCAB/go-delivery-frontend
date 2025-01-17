@@ -9,6 +9,7 @@ class ChatBotBloc extends Bloc<ChatBotEvent, ChatBotState> {
 
   ChatBotBloc(this._sendMessageUseCase) : super(ChatBotInitial()) {
     on<SendMessageEvent>(_onSendMessageEvent);
+    on<ResetChatEvent>(_onResetChatEvent);
   }
 
   Future<void> _onSendMessageEvent(
@@ -20,6 +21,7 @@ class ChatBotBloc extends Bloc<ChatBotEvent, ChatBotState> {
         SendMessageInput(
           userId: 'user-id',
           message: event.message,
+          context: event.context,
         ),
       );
 
@@ -40,5 +42,10 @@ class ChatBotBloc extends Bloc<ChatBotEvent, ChatBotState> {
     } catch (e) {
       emit(ChatBotFailure(error: e.toString()));
     }
+  }
+
+  void _onResetChatEvent(ResetChatEvent event, Emitter<ChatBotState> emit) {
+    _lastBotResponse = null;
+    emit(ChatBotInitial());
   }
 }
