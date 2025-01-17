@@ -24,3 +24,4 @@ export 'package:go_delivery_frontend/application/BLoc/notifications/bloc/notific
 export 'package:go_delivery_frontend/application/BLoc/user/update_image/update_image_bloc.dart';
 export 'package:go_delivery_frontend/application/BLoc/themes/themes_bloc.dart';
 export 'package:go_delivery_frontend/application/BLoc/coupons/coupon/coupon_bloc.dart';
+export 'package:go_delivery_frontend/application/BLoc/chatbot/chatbot_bloc.dart';

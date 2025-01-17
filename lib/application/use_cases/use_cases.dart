@@ -22,3 +22,4 @@ export 'package:go_delivery_frontend/application/use_cases/direction/patch/patch
 export 'package:go_delivery_frontend/application/use_cases/direction/delete/delete_direction.dart';
 export 'package:go_delivery_frontend/application/use_cases/user/update_image/update_image_usecase.dart';
 export 'package:go_delivery_frontend/application/use_cases/user/wallet/get_wallet.dart';
+export 'package:go_delivery_frontend/application/use_cases/chatbot/sendmessage_use_case.dart';

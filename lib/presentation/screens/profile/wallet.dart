@@ -61,8 +61,8 @@ class _WalletScreenState extends State<WalletScreen> {
 
   @override
   Widget build(BuildContext context) {
-
-    final currentSecondaryThemeColor = AppThemesGetter.getSecondaryColor(context);
+    final currentSecondaryThemeColor =
+        AppThemesGetter.getSecondaryColor(context);
 
     return Scaffold(
       body: SingleChildScrollView(
@@ -121,7 +121,7 @@ class _WalletScreenState extends State<WalletScreen> {
                                         '${(state.walletAmount.amount * 100).truncateToDouble() / 100}';
                                     final fontSize =
                                         amountText.length > 7 ? 50.0 : 82.0;
-                          
+
                                     return RichText(
                                       text: TextSpan(
                                         children: [
@@ -212,17 +212,14 @@ class _WalletScreenState extends State<WalletScreen> {
   }
 
   Widget _buildCreditCardOptions() {
-    final pageController = PageController(
-      initialPage: 0,
-      viewportFraction: 0.9
-    );
+    final pageController =
+        PageController(initialPage: 0, viewportFraction: 0.9);
     return BlocListener<DeleteCardBloc, DeleteCardState>(
       listener: (context, state) {
         if (state is DeleteCardSuccess) {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text('Tarjeta eliminada con éxito')),
           );
-          // Notificar a CardListBloc para recargar la lista de tarjetas
           context.read<CardListBloc>().add(LoadCardList());
         } else if (state is DeleteCardFailure) {
           ScaffoldMessenger.of(context).showSnackBar(
@@ -234,7 +231,7 @@ class _WalletScreenState extends State<WalletScreen> {
         }
       },
       child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 12.0,horizontal: 26),
+        padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 26),
         child: Column(
           children: [
             SizedBox(
@@ -245,7 +242,7 @@ class _WalletScreenState extends State<WalletScreen> {
                     context.read<CardListBloc>().add(LoadCardList());
                     return const CircularProgressIndicator();
                   }
-              
+
                   if (state is CardListLoading) {
                     return const CircularProgressIndicator();
                   } else if (state is CardListLoaded) {
@@ -253,30 +250,27 @@ class _WalletScreenState extends State<WalletScreen> {
                       controller: pageController,
                       scrollDirection: Axis.vertical,
                       children: state.cards.map((card) {
-              
                         return Slidable(
-                          endActionPane: ActionPane(
-                            extentRatio: 0.2,
-                            motion: const ScrollMotion(), 
-                            children: [
-                              SlidableAction(
-                                onPressed: (context) {
-                                  BlocProvider.of<DeleteCardBloc>(context).add(DeleteCardRequested(cardId: card.id!));
-                                },
-                                icon: Icons.delete,
-                                foregroundColor: Color(0xFFFF0000),
-                                borderRadius: const BorderRadius.only(
-                                    topRight: Radius.circular(8),
-                                    bottomRight: Radius.circular(8)),
-                              )
-                            ]
-                          ),
-                          
-                          child: Transform.scale(
-                            scale: max(1, 1),
-                            child: CreditCardWidget(card: card)
-                            )
-                        );
+                            endActionPane: ActionPane(
+                                extentRatio: 0.2,
+                                motion: const ScrollMotion(),
+                                children: [
+                                  SlidableAction(
+                                    onPressed: (context) {
+                                      BlocProvider.of<DeleteCardBloc>(context)
+                                          .add(DeleteCardRequested(
+                                              cardId: card.id!));
+                                    },
+                                    icon: Icons.delete,
+                                    foregroundColor: Color(0xFFFF0000),
+                                    borderRadius: const BorderRadius.only(
+                                        topRight: Radius.circular(8),
+                                        bottomRight: Radius.circular(8)),
+                                  )
+                                ]),
+                            child: Transform.scale(
+                                scale: max(1, 1),
+                                child: CreditCardWidget(card: card)));
                       }).toList(),
                     );
                   } else if (state is CardListFailed) {
@@ -320,7 +314,9 @@ class _WalletScreenState extends State<WalletScreen> {
                 ),
               ),
             ),
-            SizedBox(height: 12,)
+            SizedBox(
+              height: 12,
+            )
           ],
         ),
       ),
