@@ -16,17 +16,17 @@ import 'package:go_delivery_frontend/application/BLoc/order/courier_position/ord
 import 'package:go_delivery_frontend/application/BLoc/order/courier_position/order_courier_position_event.dart';
 import 'package:go_delivery_frontend/application/BLoc/order/courier_position/order_courier_position_state.dart';
 
-import '../../../core/theme/theme_getter.dart';
+import 'package:go_delivery_frontend/presentation/core/theme/theme_getter.dart';
 
 class OrderProgress extends StatefulWidget {
   final OrderDetailLoadedState state;
   final String currentActiveState;
 
   const OrderProgress({
-    Key? key,
+    super.key,
     required this.state,
     required this.currentActiveState,
-  }) : super(key: key);
+  });
 
   @override
   OrderProgressState createState() => OrderProgressState();
@@ -72,6 +72,7 @@ class OrderProgressState extends State<OrderProgress>
     );
 
     // Initialize destination location
+
     _initializeDestinationLocation();
 
     // Initialize driver position bloc
@@ -115,7 +116,6 @@ class OrderProgressState extends State<OrderProgress>
               final wasNearDestination = _isDriverNearDestination;
               _isDriverNearDestination = _checkDriverProximity();
 
-              // Trigger side effects if proximity status changed
               if (_isDriverNearDestination != wasNearDestination) {
                 _handleProximityChange();
               }
@@ -150,7 +150,7 @@ class OrderProgressState extends State<OrderProgress>
 
     // Set up periodic updates
     if(widget.currentActiveState == "SHIPPED") {
-      _locationUpdateTimer = Timer.periodic(const Duration(seconds: 30), (_) {
+      _locationUpdateTimer = Timer.periodic(const Duration(seconds: 15), (_) {
         if (!mounted) {
           _locationUpdateTimer?.cancel();
           return;
@@ -176,9 +176,7 @@ class OrderProgressState extends State<OrderProgress>
   bool _checkDriverProximity() {
     if (_driverLocation == null || _destinationLocation == null) return false;
 
-    // Very close proximity threshold (extremely small distance)
-    final double veryCloseThreshold = 0.05; // 10 meters
-    final double nearbyThreshold = 0.4; // 100 meters
+    final double veryCloseThreshold = 1; // 10 meters
 
     final distance = _calculateDistance(
       _driverLocation!.latitude,
@@ -194,7 +192,7 @@ class OrderProgressState extends State<OrderProgress>
     }
 
     // Check for nearby proximity
-    return distance <= nearbyThreshold;
+    return distance <= veryCloseThreshold;
   }
 
   void _handleVeryCloseProximity() {
@@ -206,16 +204,16 @@ class OrderProgressState extends State<OrderProgress>
       SnackBar(
         content: Text('¡Tu entrega ha llegado!'),
         backgroundColor: Colors.green,
-        duration: Duration(seconds: 3),
+        duration: Duration(seconds: 2),
       ),
     );
-
-    _refreshOrderDetail();
+    Future.delayed(const Duration(seconds: 2), () {
+      _refreshOrderDetail();
+    });
   }
 
   void _refreshOrderDetail() {
-    context.go('/orderdetail/${widget.state.id}');
-
+    context.go('/order');
   }
 
   double _calculateDistance(double lat1, double lon1, double lat2, double lon2) {
@@ -250,13 +248,7 @@ class OrderProgressState extends State<OrderProgress>
         ),
       );
 
-      // Optional: Log or send analytics event
-      _logProximityEvent();
     }
-  }
-
-  void _logProximityEvent() {
-    print('Driver is near destination for order: ${widget.state.id}');
   }
 
   @override
@@ -404,18 +396,6 @@ class OrderProgressState extends State<OrderProgress>
                     fontFamily: "Inter",
                     fontWeight: FontWeight.bold,
                     fontSize: 16,
-                  ),
-                ),
-                Text(
-                  _isDriverNearDestination
-                      ? '¡Tu conductor está cerca!'
-                      : 'Tu conductor va en camino',
-                  style: TextStyle(
-                    fontFamily: "Inter",
-                    color: _isDriverNearDestination
-                        ? Colors.green
-                        : Colors.grey[600],
-                    fontSize: 14,
                   ),
                 ),
                 const SizedBox(height: 8),

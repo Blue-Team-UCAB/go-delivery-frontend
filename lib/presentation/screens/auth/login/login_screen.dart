@@ -2,6 +2,7 @@ import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_delivery_frontend/application/BLoc/notifications/bloc/notifications_bloc.dart';
 import 'package:go_delivery_frontend/presentation/screens/auth/login/login_validators.dart';
@@ -14,7 +15,8 @@ import 'package:go_delivery_frontend/application/BLoc/themes/themes_bloc.dart';
 import 'package:go_delivery_frontend/infrastructure/datasources/localstorage/localstorage_impl.dart';
 import 'package:go_delivery_frontend/presentation/core/theme/theme.dart';
 
-import '../../../../application/BLoc/cart/cart_bloc.dart';
+import 'package:go_delivery_frontend/application/BLoc/cart/cart_bloc.dart';
+import 'package:go_delivery_frontend/presentation/core/app.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -202,12 +204,7 @@ class LoginFormState extends State<LoginForm> {
                           },
                           onSelected: (AppColorMode? newMode) async {
                             if (newMode != null &&
-                                newMode !=
-                                    context
-                                        .read<ThemesBloc>()
-                                        .state
-                                        .appTheme
-                                        .colorMode) {
+                                newMode != context.read<ThemesBloc>().state.appTheme.colorMode) {
                               context.read<ThemesBloc>().changeTheme();
 
                               context.read<CartBloc>().emptyCart();
@@ -223,11 +220,11 @@ class LoginFormState extends State<LoginForm> {
                                 apiUrl = dotenv.env['API_URL']!;
                               }
 
-
                               await localStorageService.setKeyValue<String>(
                                   "CURRENT_API_URL", apiUrl);
                               await localStorageService.setKeyValue<String>(
                                   'colorMode', newMode.toString());
+
 
                             }
                           },
