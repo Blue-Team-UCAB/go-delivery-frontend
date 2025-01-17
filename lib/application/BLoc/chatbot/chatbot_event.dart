@@ -13,3 +13,8 @@ class SendMessageEvent extends ChatBotEvent {
   @override
   List<Object?> get props => [message, context];
 }
+
+class ResetChatEvent extends ChatBotEvent {
+  @override
+  List<Object?> get props => [];
+}

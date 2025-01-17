@@ -23,8 +23,19 @@ class ChatBotScreen extends StatelessWidget {
         iconTheme: const IconThemeData(
           color: Colors.white,
         ),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.refresh),
+            onPressed: () {
+              context.read<ChatBotBloc>().add(ResetChatEvent());
+            },
+            tooltip: 'Reiniciar chat',
+          ),
+        ],
       ),
-      body: _ChatBotView(chatBotBloc: chatBotBloc),
+      body: _ChatBotView(
+        chatBotBloc: chatBotBloc,
+      ),
     );
   }
 }
@@ -32,41 +43,22 @@ class ChatBotScreen extends StatelessWidget {
 class _ChatBotView extends StatefulWidget {
   final ChatBotBloc chatBotBloc;
 
-  const _ChatBotView({required this.chatBotBloc});
+  const _ChatBotView({
+    required this.chatBotBloc,
+  });
 
   @override
   _ChatBotViewState createState() => _ChatBotViewState();
 }
 
-class _ChatBotViewState extends State<_ChatBotView>
-    with TickerProviderStateMixin {
+class _ChatBotViewState extends State<_ChatBotView> {
   final List<types.Message> _messages = [];
   String? lastBotResponse;
-  late AnimationController _dotsAnimationController;
-  late Animation<String> _dotsAnimation;
-  bool isTyping = false;
 
   @override
   void initState() {
     super.initState();
     _addInitialMessage();
-
-    _dotsAnimationController = AnimationController(
-      vsync: this,
-      duration: const Duration(seconds: 1),
-    )..repeat();
-    _dotsAnimation = StepTween(begin: 0, end: 3).animate(
-      CurvedAnimation(
-        parent: _dotsAnimationController,
-        curve: Curves.easeInOut,
-      ),
-    ) as Animation<String>;
-  }
-
-  @override
-  void dispose() {
-    _dotsAnimationController.dispose();
-    super.dispose();
   }
 
   void _addInitialMessage() {
@@ -84,7 +76,7 @@ class _ChatBotViewState extends State<_ChatBotView>
 
   void _handleSendPressed(types.PartialText message) {
     final contextMessages = _messages
-        .take(5)
+        .take(10)
         .map((msg) {
           if (msg is types.TextMessage) {
             final authorName = msg.author.id == 'bot-id' ? 'Bluey' : 'User';
@@ -123,9 +115,9 @@ class _ChatBotViewState extends State<_ChatBotView>
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<ChatBotBloc, ChatBotState>(
+    return BlocBuilder<ChatBotBloc, ChatBotState>(
       bloc: widget.chatBotBloc,
-      listener: (context, state) {
+      builder: (context, state) {
         if (state is ChatBotFailure) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
             ScaffoldMessenger.of(context).showSnackBar(
@@ -133,72 +125,67 @@ class _ChatBotViewState extends State<_ChatBotView>
             );
           });
         }
-      },
-      child: BlocBuilder<ChatBotBloc, ChatBotState>(
-        bloc: widget.chatBotBloc,
-        builder: (context, state) {
-          if (state is ChatBotLoading) {
-            _handleTypingAnimation();
-          }
 
-          if (state is ChatBotMessageSent) {
-            _handleBotMessage(state);
-          }
+        if (state is ChatBotLoading) {
+          if (_messages.isEmpty ||
+              _messages.first is! types.TextMessage ||
+              (_messages.first as types.TextMessage).text !=
+                  'Bluey está escribiendo...') {
+            final typingMessage = types.TextMessage(
+              author: types.User(id: 'bot-id'),
+              id: const Uuid().v4(),
+              text: 'Bluey está escribiendo...',
+              createdAt: DateTime.now().millisecondsSinceEpoch,
+              metadata: {'isTyping': true},
+            );
 
-          return Chat(
-            messages: _messages,
-            onSendPressed: _handleSendPressed,
-            user: types.User(id: 'user-id'),
-            emptyState: Center(
-              child: Text(
-                'No hay mensajes por el momento.',
-                style: TextStyle(color: Colors.grey, fontSize: 16),
-              ),
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              setState(() {
+                _messages.insert(0, typingMessage);
+                _trimMessages();
+              });
+            });
+          }
+        }
+
+        if (state is ChatBotMessageSent) {
+          if (state.botResponse != lastBotResponse) {
+            if (_messages.isNotEmpty &&
+                _messages.first is types.TextMessage &&
+                (_messages.first as types.TextMessage).text ==
+                    'Bluey está escribiendo...') {
+              _messages.removeAt(0);
+            }
+
+            final botMessage = types.TextMessage(
+              author: types.User(id: 'bot-id'),
+              id: const Uuid().v4(),
+              text: state.botResponse.replaceFirst('Bluey: ', ''),
+              createdAt: DateTime.now().millisecondsSinceEpoch,
+            );
+
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              setState(() {
+                _messages.insert(0, botMessage);
+                lastBotResponse = state.botResponse;
+                _trimMessages();
+              });
+            });
+          }
+        }
+
+        return Chat(
+          messages: _messages,
+          onSendPressed: _handleSendPressed,
+          user: types.User(id: 'user-id'),
+          emptyState: Center(
+            child: Text(
+              'No hay mensajes por el momento.',
+              style: TextStyle(color: Colors.grey, fontSize: 16),
             ),
-          );
-        },
-      ),
-    );
-  }
-
-  void _handleTypingAnimation() {
-    if (!isTyping) {
-      setState(() {
-        isTyping = true;
-        final typingMessage = types.TextMessage(
-          author: types.User(id: 'bot-id'),
-          id: const Uuid().v4(),
-          text: 'Bluey está escribiendo${'.' * (_dotsAnimation.value.length)}',
-          createdAt: DateTime.now().millisecondsSinceEpoch,
+          ),
         );
-        _messages.insert(0, typingMessage);
-        _trimMessages();
-      });
-    }
-  }
-
-  void _handleBotMessage(ChatBotMessageSent state) {
-    if (state.botResponse != lastBotResponse) {
-      if (_messages.isNotEmpty &&
-          _messages.first is types.TextMessage &&
-          (_messages.first as types.TextMessage).text ==
-              'Bluey está escribiendo...') {
-        _messages.removeAt(0);
-        isTyping = false;
-      }
-
-      final botMessage = types.TextMessage(
-        author: types.User(id: 'bot-id'),
-        id: const Uuid().v4(),
-        text: state.botResponse.replaceFirst('Bluey: ', ''),
-        createdAt: DateTime.now().millisecondsSinceEpoch,
-      );
-
-      setState(() {
-        _messages.insert(0, botMessage);
-        lastBotResponse = state.botResponse;
-        _trimMessages();
-      });
-    }
+      },
+    );
   }
 }
