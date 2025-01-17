@@ -299,7 +299,7 @@ class CatalogScreenState extends State<CatalogScreen>
           preferredSize: const Size.fromHeight(kToolbarHeight * 2),
           child: Column(
             children: [
-              // Search Bar
+              // Barra de búsqueda reemplazada
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 18),
                 child: Container(
@@ -376,8 +376,7 @@ class CatalogScreenState extends State<CatalogScreen>
                   ),
                 ),
               ),
-
-              // Tab Bar
+              // Aquí sigue el resto de tu código de tabs
               Padding(
                 padding:
                     const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -433,7 +432,7 @@ class CatalogScreenState extends State<CatalogScreen>
             child: TabBarView(
               controller: _tabController,
               children: [
-                // Products Tab
+                // Product Tab
                 BlocBuilder<ProductListBloc, ProductListState>(
                   builder: (context, state) {
                     if (state is ProductListInitial || _products.isEmpty) {
@@ -460,8 +459,7 @@ class CatalogScreenState extends State<CatalogScreen>
                     }
                   },
                 ),
-
-                // Bundles Tab
+                // Bundle Tab
                 BlocBuilder<BundleListBloc, BundleListState>(
                   builder: (context, state) {
                     if (state is BundleListInitial || _bundles.isEmpty) {
