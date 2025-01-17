@@ -291,7 +291,7 @@ class _OrdersPageState extends State<OrdersPage>
           return OrderEmptyStateWidget();
         }
 
-        if (orders.isEmpty && state is ManyOrdersLoadingState) {
+        if (state is ManyOrdersLoadingState) {
           return OrderScreenPlaceholder();
         }
 

@@ -36,7 +36,7 @@ class CartItemMapper {
       id: producto.id,
       name: producto.name,
       imgUrl: producto.images.first,
-      price: producto.price,
+      price: producto.discounts.isNotEmpty ?  ((producto.price*(1-(producto.discounts[0].percentage/100)))*100).roundToDouble()/100 : producto.price,
       presentation: 'presentation',
       quantity: 1,
       type: 'product');
@@ -45,7 +45,7 @@ class CartItemMapper {
       id: bundle.id,
       name: bundle.name,
       imgUrl: bundle.images.first,
-      price: bundle.price,
+      price: bundle.discounts!.isNotEmpty ?  ((bundle.price*(1-(bundle.discounts![0].percentage/100)))*100).roundToDouble()/100 : bundle.price,
       presentation: bundle.description,
       quantity: 1,
       type: 'bundle');
