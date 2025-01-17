@@ -7,8 +7,15 @@ import 'package:go_delivery_frontend/application/BLoc/chatbot/chatbot_state.dart
 import 'package:uuid/uuid.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class ChatBotScreen extends StatelessWidget {
+class ChatBotScreen extends StatefulWidget {
   const ChatBotScreen({super.key});
+
+  @override
+  ChatBotScreenState createState() => ChatBotScreenState();
+}
+
+class ChatBotScreenState extends State<ChatBotScreen> {
+  Key _chatBotViewKey = UniqueKey();
 
   @override
   Widget build(BuildContext context) {
@@ -28,12 +35,17 @@ class ChatBotScreen extends StatelessWidget {
             icon: const Icon(Icons.refresh),
             onPressed: () {
               context.read<ChatBotBloc>().add(ResetChatEvent());
+              // Cambiar la clave para forzar el reinicio
+              setState(() {
+                _chatBotViewKey = UniqueKey();
+              });
             },
             tooltip: 'Reiniciar chat',
           ),
         ],
       ),
       body: _ChatBotView(
+        key: _chatBotViewKey,
         chatBotBloc: chatBotBloc,
       ),
     );
@@ -45,6 +57,7 @@ class _ChatBotView extends StatefulWidget {
 
   const _ChatBotView({
     required this.chatBotBloc,
+    super.key,
   });
 
   @override
