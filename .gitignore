@@ -14,6 +14,9 @@ doc/api/
 # dotenv environment variables file
 .env*
 
+# iOS local secrets
+ios/Flutter/Secrets.xcconfig
+
 # Avoid committing generated Javascript files:
 *.dart.js
 *.info.json      # Produced by the --dump-info flag.
