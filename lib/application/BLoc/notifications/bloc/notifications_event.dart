@@ -12,7 +12,7 @@ class SendFCMTokenEvent extends NotificationsEvent {}
 class RequestNotificationPermissionEvent extends NotificationsEvent {}
 
 class NotificationReceivedEvent extends NotificationsEvent {
-  final RemoteMessage message;
+  final PushMessageModel message;
 
   const NotificationReceivedEvent(this.message);
 

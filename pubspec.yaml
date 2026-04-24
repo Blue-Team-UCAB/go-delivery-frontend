@@ -1,6 +1,6 @@
 name: go_delivery_frontend
 description: "A new Flutter project."
-publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+publish_to: "none" # Remove this line if you wish to publish to pub.dev
 version: 1.0.0+1
 
 environment:
@@ -15,8 +15,6 @@ dependencies:
   dio: ^5.4.2+1
   dotted_separator: ^1.0.6
   equatable: ^2.0.5
-  firebase_core: ^3.9.0
-  firebase_messaging: ^15.1.6
   flutter:
     sdk: flutter
   flutter_bloc: ^8.1.5
@@ -37,12 +35,8 @@ dependencies:
   image_cropper: ^8.1.0
   image_picker: ^1.1.2
   intl: ^0.19.0
-  isar:
-    hosted: https://pub.isar-community.dev
-    version: 3.1.8
-  isar_flutter_libs:
-    hosted: https://pub.isar-community.dev
-    version: 3.1.8
+  isar: ^3.1.0+1
+  isar_flutter_libs: ^3.1.0+1
   latlong2: ^0.9.1
   path_provider: ^2.1.5
   shared_preferences: ^2.3.5
@@ -59,9 +53,6 @@ dev_dependencies:
   flutter_lints: ^5.0.0
   flutter_test:
     sdk: flutter
-  isar_generator:
-    hosted: https://pub.isar-community.dev
-    version: 3.1.8
   mocktail: ^1.0.4
 
 flutter:

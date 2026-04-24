@@ -64,7 +64,7 @@ const IsarCartitemSchema = CollectionSchema(
   getId: _isarCartitemGetId,
   getLinks: _isarCartitemGetLinks,
   attach: _isarCartitemAttach,
-  version: '3.1.8',
+  version: '3.1.0+1',
 );
 
 int _isarCartitemEstimateSize(
