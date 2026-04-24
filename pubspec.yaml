@@ -121,6 +121,6 @@ flutter:
 flutter_launcher_icons:
   android: "launcher_icon"
   ios: true
-  image_path: "assets/icon/icon_app.png"
+  image_path: "assets/logo/logo_go_dely.png"
   min_sdk_android: 21
   remove_alpha_ios: true
